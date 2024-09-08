@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Launcher</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: linear-gradient(to bottom right, #1a202c, #2d3748);
+            --bg-light: linear-gradient(to bottom right, #f7fafc, #edf2f7);
+            --text-dark: #ffffff;
+            --text-light: #1a202c;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .app-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .app-card {
+            border-radius: 1rem;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-card::after {
+            content: '';
+            position: absolute;
+            top: -2rem;
+            right: -2rem;
+            width: 6rem;
+            height: 6rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 0 0 0 100%;
+        }
+
+        .app-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .app-card:hover .app-icon-wrapper {
+            transform: rotate(12deg);
+        }
+
+        .app-icon {
+            font-size: 1.75rem;
+            color: var(--text-dark);
+        }
+
+        .app-info {
+            flex-grow: 1;
+        }
+
+        .app-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-link {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: inherit;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            display: inline-flex;
+            align-items: center;
+            transition: background-color 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .app-link:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .app-link i {
+            margin-left: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Dark theme */
+        body.dark-theme {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        body.dark-theme h1 {
+            background: linear-gradient(to right, #9f7aea, #ed64a6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.dark-theme .theme-toggle {
+            color: #f9a825;
+            background-color: #2d3748;
+        }
+
+        /* Light theme */
+        body.light-theme {
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        body.light-theme h1 {
+            color: var(--text-light);
+        }
+
+        body.light-theme .theme-toggle {
+            color: #2d3748;
+            background-color: #ffffff;
+        }
+
+        body.light-theme .app-icon {
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+        <i class="fas fa-sun"></i>
+    </button>
+    <div class="container">
+        <h1>App Launcher</h1>
+        <div class="app-list" id="appList">
+            <!-- App cards will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const apps = [
+            { title: 'خارجي قوي عاملة', url: 'https://datakid-github-io.vercel.app/', icon: 'fa-briefcase', gradient: ['#3b82f6', '#4f46e5'] },
+            { title: 'خارجي طلاب', url: 'https://datakid2.vercel.app/', icon: 'fa-graduation-cap', gradient: ['#10b981', '#14b8a6'] },
+            { title: 'مجموعات دوائية', url: '#', icon: 'fa-pills', gradient: ['#8b5cf6', '#ec4899'], comingSoon: true }
+        ];
+
+        function createAppCard(app) {
+            const card = document.createElement('div');
+            card.className = 'app-card';
+            card.style.background = `linear-gradient(to right, ${app.gradient[0]}, ${app.gradient[1]})`;
+
+            card.innerHTML = `
+                <div class="app-icon-wrapper">
+                    <i class="app-icon fas ${app.icon}"></i>
+                </div>
+                <div class="app-info">
+                    <h3 class="app-title">${app.title}</h3>
+                    <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="app-link">
+                        ${app.comingSoon ? 'Coming Soon' : 'Launch'} <i class="fas ${app.comingSoon ? 'fa-clock' : 'fa-external-link-alt'}"></i>
+                    </a>
+                </div>
+            `;
+
+            if (app.comingSoon) {
+                card.querySelector('.app-link').addEventListener('click', (e) => e.preventDefault());
+            }
+
+            return card;
+        }
+
+        function renderApps() {
+            const appList = document.getElementById('appList');
+            apps.forEach(app => {
+                appList.appendChild(createAppCard(app));
+            });
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            
+            if (body.classList.contains('dark-theme')) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                themeToggle.setAttribute('aria-label', 'Switch to dark mode');
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                themeToggle.setAttribute('aria-label', 'Switch to light mode');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderApps();
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+        });
+    </script>
+</body>
+</html>
