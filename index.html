@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Launcher</title>
+    <title>Enhanced App Launcher</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
         :root {
-            --bg-dark: linear-gradient(to bottom right, #1a202c, #2d3748);
-            --bg-light: linear-gradient(to bottom right, #f7fafc, #edf2f7);
+            --bg-dark: #1a202c;
+            --bg-light: #f7fafc;
             --text-dark: #ffffff;
             --text-light: #1a202c;
+            --primary-color: #3b82f6;
+            --secondary-color: #4f46e5;
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             min-height: 100vh;
@@ -22,98 +26,108 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s ease;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            background-color: var(--bg-dark);
+            color: var(--text-dark);
         }
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 1200px;
             padding: 2rem;
         }
 
         h1 {
-            font-size: 2.5rem;
-            font-weight: 800;
+            font-size: 3rem;
+            font-weight: 700;
             text-align: center;
-            margin-bottom: 2rem;
-            transition: all 0.3s ease;
+            margin-bottom: 3rem;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
         }
 
-        .app-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
         .app-card {
-            border-radius: 1rem;
-            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: 1.5rem;
+            padding: 2rem;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            transition: all 0.3s ease;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .app-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .app-card::after {
-            content: '';
-            position: absolute;
-            top: -2rem;
-            right: -2rem;
-            width: 6rem;
-            height: 6rem;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 0 0 0 100%;
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
         }
 
         .app-icon-wrapper {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-right: 1.5rem;
-            transition: transform 0.3s ease;
+            margin-bottom: 1.5rem;
+            transition: all 0.5s ease;
         }
 
         .app-card:hover .app-icon-wrapper {
-            transform: rotate(12deg);
+            transform: scale(1.1) rotate(360deg);
         }
 
         .app-icon {
-            font-size: 1.75rem;
+            font-size: 2.5rem;
             color: var(--text-dark);
-        }
-
-        .app-info {
-            flex-grow: 1;
+            transition: all 0.5s ease;
         }
 
         .app-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
         }
 
         .app-link {
             background-color: rgba(255, 255, 255, 0.2);
             color: inherit;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.5rem;
             border-radius: 9999px;
             display: inline-flex;
             align-items: center;
-            transition: background-color 0.3s ease;
-            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
         }
 
         .app-link:hover {
@@ -122,142 +136,130 @@
 
         .app-link i {
             margin-left: 0.5rem;
-            font-size: 0.75rem;
+            font-size: 0.875rem;
+            transition: transform 0.3s ease;
+        }
+
+        .app-link:hover i {
+            transform: translateX(5px);
         }
 
         .theme-toggle {
             position: fixed;
-            top: 1rem;
-            right: 1rem;
+            top: 1.5rem;
+            right: 1.5rem;
             background: none;
             border: none;
-            font-size: 1.5rem;
+            font-size: 2rem;
             cursor: pointer;
             z-index: 10;
-            padding: 0.5rem;
-            border-radius: 50%;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            color: var(--text-dark);
+            transition: all 0.5s ease;
         }
 
         .theme-toggle:hover {
-            transform: scale(1.1);
+            transform: rotate(180deg);
         }
 
-        /* Dark theme */
-        body.dark-theme {
-            background: var(--bg-dark);
-            color: var(--text-dark);
-        }
-
-        body.dark-theme h1 {
-            background: linear-gradient(to right, #9f7aea, #ed64a6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        body.dark-theme .theme-toggle {
-            color: #f9a825;
-            background-color: #2d3748;
-        }
-
-        /* Light theme */
         body.light-theme {
-            background: var(--bg-light);
+            background-color: var(--bg-light);
             color: var(--text-light);
         }
 
-        body.light-theme h1 {
-            color: var(--text-light);
-        }
-
-        body.light-theme .theme-toggle {
-            color: #2d3748;
-            background-color: #ffffff;
+        body.light-theme .app-card {
+            background: linear-gradient(135deg, rgba(0,0,0,0.05), rgba(0,0,0,0.02));
+            border: 1px solid rgba(0,0,0,0.1);
         }
 
         body.light-theme .app-icon {
             color: var(--text-light);
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
+        body.light-theme .theme-toggle {
+            color: var(--text-light);
+        }
 
-            .app-card {
-                padding: 1rem;
-                flex-direction: column;
-                align-items: flex-start;
-                text-align: center;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-
-            .app-icon-wrapper {
-                margin-bottom: 1rem;
-            }
-
-            .app-info {
-                text-align: center;
-            }
-
-            .app-title {
-                font-size: 1.125rem;
-            }
-
-            .app-link {
-                font-size: 0.75rem;
-                padding: 0.5rem;
-            }
-
-            .theme-toggle {
-                font-size: 1.25rem;
-                top: 0.5rem;
-                right: 0.5rem;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        @media (max-width: 480px) {
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .app-card {
+            animation: fadeInUp 0.6s ease-out forwards, pulse 2s infinite;
+            opacity: 0;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmer 3s infinite;
+            transform: rotate(30deg);
+        }
+
+        .app-card:nth-child(1) { animation-delay: 0.1s; }
+        .app-card:nth-child(2) { animation-delay: 0.2s; }
+        .app-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
             h1 {
-                font-size: 2rem;
-                margin-bottom: 1.5rem;
+                font-size: 2.5rem;
+                margin-bottom: 2.5rem;
             }
 
-            .app-card {
-                border-radius: 0.75rem;
-                padding: 0.75rem;
-            }
-
-            .app-icon-wrapper {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-
-            .app-title {
-                font-size: 1rem;
-            }
-
-            .app-link {
-                font-size: 0.625rem;
-                padding: 0.5rem 0.75rem;
-            }
-
-            .theme-toggle {
-                font-size: 1.125rem;
+            .app-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
-<body class="dark-theme">
+<body>
     <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
         <i class="fas fa-sun"></i>
     </button>
     <div class="container">
-        <h1>Rapid Access</h1>
-        <div class="app-list" id="appList">
-            <!-- App cards will be dynamically inserted here -->
-        </div>
+        <h1>Rapid Link</h1>
+        <div class="app-grid" id="appGrid"></div>
     </div>
 
     <script>
@@ -270,18 +272,16 @@
         function createAppCard(app) {
             const card = document.createElement('div');
             card.className = 'app-card';
-            card.style.background = `linear-gradient(to right, ${app.gradient[0]}, ${app.gradient[1]})`;
+            card.style.background = `linear-gradient(135deg, ${app.gradient[0]}22, ${app.gradient[1]}22)`;
 
             card.innerHTML = `
-                <div class="app-icon-wrapper">
+                <div class="app-icon-wrapper" style="background: linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]})">
                     <i class="app-icon fas ${app.icon}"></i>
                 </div>
-                <div class="app-info">
-                    <h3 class="app-title">${app.title}</h3>
-                    <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="app-link">
-                        ${app.comingSoon ? 'Coming Soon' : 'Launch'} <i class="fas ${app.comingSoon ? 'fa-clock' : 'fa-external-link-alt'}"></i>
-                    </a>
-                </div>
+                <h3 class="app-title">${app.title}</h3>
+                <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="app-link">
+                    ${app.comingSoon ? 'Coming Soon' : 'Launch'} <i class="fas ${app.comingSoon ? 'fa-clock' : 'fa-external-link-alt'}"></i>
+                </a>
             `;
 
             if (app.comingSoon) {
@@ -292,9 +292,9 @@
         }
 
         function renderApps() {
-            const appList = document.getElementById('appList');
+            const appGrid = document.getElementById('appGrid');
             apps.forEach(app => {
-                appList.appendChild(createAppCard(app));
+                appGrid.appendChild(createAppCard(app));
             });
         }
 
@@ -302,14 +302,12 @@
             const body = document.body;
             const themeToggle = document.getElementById('themeToggle');
             
-            if (body.classList.contains('dark-theme')) {
-                body.classList.remove('dark-theme');
-                body.classList.add('light-theme');
+            body.classList.toggle('light-theme');
+            
+            if (body.classList.contains('light-theme')) {
                 themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
                 themeToggle.setAttribute('aria-label', 'Switch to dark mode');
             } else {
-                body.classList.remove('light-theme');
-                body.classList.add('dark-theme');
                 themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
                 themeToggle.setAttribute('aria-label', 'Switch to light mode');
             }
@@ -318,6 +316,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderApps();
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Add hover effect to app cards
+            document.querySelectorAll('.app-card').forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
         });
     </script>
 </body>
