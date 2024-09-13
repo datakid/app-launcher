@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkExpress Ultra</title>
+    <title>LinkExpress Ultra - Platinum Edition</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
@@ -16,6 +16,9 @@
             --primary-color: #3b82f6;
             --secondary-color: #4f46e5;
             --accent-color: #f59e0b;
+            --silver-light: #e5e7eb;
+            --silver-dark: #4b5563;
+            --platinum: #e5e4e2;
             --card-bg-dark: rgba(255,255,255,0.05);
             --card-bg-light: rgba(0,0,0,0.02);
             --transition-speed: 0.3s;
@@ -34,6 +37,10 @@
             background-color: var(--bg-dark);
             color: var(--text-dark);
             overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(79, 70, 229, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
         .container {
@@ -45,15 +52,16 @@
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: 4.5rem;
             font-weight: 700;
             text-align: center;
             margin-bottom: 3rem;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--accent-color));
+            background: linear-gradient(to right, var(--platinum), var(--primary-color), var(--silver-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             position: relative;
             transition: transform var(--transition-speed) ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         h1::after {
@@ -61,12 +69,13 @@
             position: absolute;
             bottom: -10px;
             left: 50%;
-            width: 100px;
+            width: 150px;
             height: 4px;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--accent-color));
+            background: linear-gradient(to right, var(--platinum), var(--primary-color), var(--silver-dark));
             transform: translateX(-50%);
             border-radius: 2px;
             transition: width var(--transition-speed) ease, transform var(--transition-speed) ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         h1:hover {
@@ -74,21 +83,21 @@
         }
 
         h1:hover::after {
-            width: 150px;
+            width: 200px;
             transform: translateX(-50%) scaleX(1.2);
         }
 
         .app-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
             perspective: 1000px;
         }
 
         .app-card {
             background: linear-gradient(135deg, var(--card-bg-dark), rgba(255,255,255,0.1));
             border-radius: 1.5rem;
-            padding: 2rem;
+            padding: 2.5rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -98,27 +107,40 @@
             cursor: pointer;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 8px rgba(0, 0, 0, 0.2);
             transform-style: preserve-3d;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+            pointer-events: none;
         }
 
         .app-card:hover {
             transform: translateY(-10px) scale(1.05) rotateX(5deg) rotateY(5deg);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 15px 12px rgba(0, 0, 0, 0.1);
         }
 
         .app-icon-wrapper {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
             transition: all var(--transition-speed) ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1), inset 0 4px 8px rgba(255,255,255,0.1);
         }
 
         .app-card:hover .app-icon-wrapper {
@@ -143,36 +165,41 @@
         }
 
         .app-icon {
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: var(--text-dark);
             transition: all var(--transition-speed) ease;
             z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .app-title {
-            font-size: 1.75rem;
+            font-size: 2rem;
             font-weight: 600;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             text-align: center;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(to right, var(--platinum), var(--primary-color), var(--silver-dark));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .app-link {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: var(--text-dark);
+            background: linear-gradient(135deg, var(--platinum), var(--primary-color), var(--silver-dark));
+            color: var(--bg-dark);
             text-decoration: none;
-            padding: 0.75rem 1.5rem;
+            padding: 1rem 2rem;
             border-radius: 9999px;
             display: inline-flex;
             align-items: center;
             transition: all var(--transition-speed) ease;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 500;
             position: relative;
             overflow: hidden;
             z-index: 1;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .app-link::before {
@@ -182,7 +209,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            background: linear-gradient(135deg, var(--silver-dark), var(--primary-color), var(--platinum));
             opacity: 0;
             transition: opacity var(--transition-speed) ease;
             z-index: -1;
@@ -192,9 +219,15 @@
             opacity: 1;
         }
 
+        .app-link:hover {
+            color: var(--text-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.1);
+        }
+
         .app-link i {
-            margin-left: 0.5rem;
-            font-size: 0.875rem;
+            margin-left: 0.75rem;
+            font-size: 1rem;
             transition: transform var(--transition-speed) ease;
         }
 
@@ -208,26 +241,30 @@
             right: 1.5rem;
             background: none;
             border: none;
-            font-size: 2rem;
+            font-size: 2.5rem;
             cursor: pointer;
             z-index: 10;
             color: var(--text-dark);
             transition: all var(--transition-speed) ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .theme-toggle:hover {
-            transform: rotate(180deg);
+            transform: rotate(180deg) scale(1.1);
         }
 
         body.light-theme {
             background-color: var(--bg-light);
             color: var(--text-light);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(79, 70, 229, 0.05) 0%, transparent 50%);
         }
 
         body.light-theme .app-card {
             background: linear-gradient(135deg, var(--card-bg-light), rgba(255,255,255,0.5));
             border: 1px solid rgba(0,0,0,0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 8px rgba(0, 0, 0, 0.1);
         }
 
         body.light-theme .app-icon {
@@ -285,7 +322,7 @@
             }
 
             h1 {
-                font-size: 3rem;
+                font-size: 3.5rem;
                 margin-bottom: 2.5rem;
             }
 
@@ -312,6 +349,7 @@
             z-index: 0;
             pointer-events: none;
         }
+
         .app-link {
             position: relative;
             overflow: hidden;
@@ -347,17 +385,17 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         const apps = [
-            { title: 'خارجي قوي عاملة', url: 'https://datakid-github-io.vercel.app/', icon: 'fa-briefcase', gradient: ['#3b82f6', '#4f46e5'] },
-            { title: 'خارجي طلاب', url: 'https://datakid2.vercel.app/', icon: 'fa-graduation-cap', gradient: ['#10b981', '#14b8a6'] },
-            { title: 'مجموعات دوائية', url: '#', icon: 'fa-pills', gradient: ['#8b5cf6', '#ec4899'], comingSoon: true }
+            { title: 'خارجي قوي عاملة', url: 'https://datakid-github-io.vercel.app/', icon: 'fa-briefcase', gradient: ['#e5e4e2', '#3b82f6', '#4b5563'] },
+            { title: 'خارجي طلاب', url: 'https://datakid2.vercel.app/', icon: 'fa-graduation-cap', gradient: ['#e5e4e2', '#10b981', '#4b5563'] },
+            { title: 'مجموعات دوائية', url: '#', icon: 'fa-pills',gradient: ['#e5e4e2', '#8b5cf6', '#4b5563'], comingSoon: true }
         ];
 
         function createAppCard(app) {
             const card = document.createElement('div');
             card.className = 'app-card';
-            card.style.background = `linear-gradient(135deg, ${app.gradient[0]}22, ${app.gradient[1]}22)`;
+            card.style.background = `linear-gradient(135deg, ${app.gradient[0]}22, ${app.gradient[1]}22, ${app.gradient[2]}22)`;
 
-            const buttonGradient = `linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]})`;
+            const buttonGradient = `linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]}, ${app.gradient[2]})`;
 
             card.innerHTML = `
                 <div class="app-icon-wrapper" style="background: ${buttonGradient}">
@@ -410,6 +448,7 @@
                 window.pJSDom[0].pJS.fn.particlesRefresh();
             }
         }
+
         document.addEventListener('DOMContentLoaded', () => {
             renderApps();
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
@@ -427,10 +466,16 @@
                     const rotateY = (centerX - x) / 10;
 
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
+
+                    // Add dynamic shadow based on mouse position
+                    const shadowX = (x - centerX) / 10;
+                    const shadowY = (y - centerY) / 10;
+                    card.style.boxShadow = `${shadowX}px ${shadowY}px 30px rgba(0, 0, 0, 0.2)`;
                 });
 
                 card.addEventListener('mouseleave', () => {
                     card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                    card.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 8px rgba(0, 0, 0, 0.2)';
                 });
             });
 
@@ -438,16 +483,51 @@
                 particles: {
                     number: { value: 80, density: { enable: true, value_area: 800 } },
                     color: { value: '#e2e8f0' },
-                    shape: { type: 'circle' },
-                    opacity: { value: 0.5, random: false, anim: { enable: false } },
-                    size: { value: 3, random: true, anim: { enable: false } },
-                    line_linked: { enable: true, distance: 150, color: '#e2e8f0', opacity: 0.4, width: 1 },
-                    move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                    shape: { 
+                        type: 'circle',
+                        stroke: { width: 0, color: '#000000' },
+                        polygon: { nb_sides: 5 },
+                    },
+                    opacity: { 
+                        value: 0.5, 
+                        random: true, 
+                        anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } 
+                    },
+                    size: { 
+                        value: 3, 
+                        random: true, 
+                        anim: { enable: true, speed: 2, size_min: 0.1, sync: false } 
+                    },
+                    line_linked: { 
+                        enable: true, 
+                        distance: 150, 
+                        color: '#e2e8f0', 
+                        opacity: 0.4, 
+                        width: 1 
+                    },
+                    move: { 
+                        enable: true, 
+                        speed: 2, 
+                        direction: 'none', 
+                        random: false, 
+                        straight: false, 
+                        out_mode: 'out', 
+                        bounce: false,
+                        attract: { enable: true, rotateX: 600, rotateY: 1200 }
+                    }
                 },
                 interactivity: {
                     detect_on: 'canvas',
-                    events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
-                    modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+                    events: { 
+                        onhover: { enable: true, mode: 'repulse' }, 
+                        onclick: { enable: true, mode: 'push' }, 
+                        resize: true 
+                    },
+                    modes: { 
+                        repulse: { distance: 100, duration: 0.4 }, 
+                        push: { particles_nb: 4 },
+                        grab: { distance: 400, line_linked: { opacity: 1 } }
+                    }
                 },
                 retina_detect: true
             });
@@ -455,7 +535,7 @@
 
         // Preload gradients for smoother transitions
         function preloadGradients() {
-            const gradients = apps.map(app => `linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]})`);
+            const gradients = apps.map(app => `linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]}, ${app.gradient[2]})`);
             const preloadDiv = document.createElement('div');
             preloadDiv.style.position = 'absolute';
             preloadDiv.style.width = '0';
@@ -500,6 +580,48 @@
 
         document.querySelectorAll('.app-link').forEach(button => {
             button.addEventListener('click', createRipple);
+        });
+
+        // Add parallax effect to app cards
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.app-card');
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+
+            cards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardX = (rect.left + rect.width / 2) / window.innerWidth;
+                const cardY = (rect.top + rect.height / 2) / window.innerHeight;
+
+                const moveX = (mouseX - cardX) * 20;
+                const moveY = (mouseY - cardY) * 20;
+
+                card.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+        });
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add intersection observer for fade-in effect
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.app-card').forEach(card => {
+            observer.observe(card);
         });
     </script>
 </body>
