@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkExpress</title>
+    <title>LinkExpress Ultra</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
@@ -313,25 +313,25 @@
             pointer-events: none;
         }
         .app-link {
-    position: relative;
-    overflow: hidden;
-}
+            position: relative;
+            overflow: hidden;
+        }
 
-.ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.7);
-    transform: scale(0);
-    animation: ripple 0.6s linear;
-    pointer-events: none;
-}
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
 
-@keyframes ripple {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
-}
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -357,12 +357,14 @@
             card.className = 'app-card';
             card.style.background = `linear-gradient(135deg, ${app.gradient[0]}22, ${app.gradient[1]}22)`;
 
+            const buttonGradient = `linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]})`;
+
             card.innerHTML = `
-                <div class="app-icon-wrapper" style="background: linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]})">
+                <div class="app-icon-wrapper" style="background: ${buttonGradient}">
                     <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
                 </div>
-                <h3 class="app-title">${app.title}</h3>
-                <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="app-link">
+                <h3 class="app-title" style="background: ${buttonGradient}; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${app.title}</h3>
+                <a href="${app.url}" target="_blank" rel="noopener noreferrer" class="app-link" style="background: ${buttonGradient}">
                     ${app.comingSoon ? 'Coming Soon' : 'Launch'} <i class="fas ${app.comingSoon ? 'fa-clock' : 'fa-external-link-alt'}" aria-hidden="true"></i>
                 </a>
             `;
@@ -408,8 +410,7 @@
                 window.pJSDom[0].pJS.fn.particlesRefresh();
             }
         }
-
-      document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
             renderApps();
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
@@ -501,5 +502,5 @@
             button.addEventListener('click', createRipple);
         });
     </script>
-    </body>
-    </html>
+</body>
+</html>
