@@ -1,20 +1,23 @@
-<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced App Launcher</title>
+    <title>LinkExpress</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
         :root {
-            --bg-dark: #1a202c;
-            --bg-light: #f7fafc;
-            --text-dark: #ffffff;
-            --text-light: #1a202c;
+            --bg-dark: #0f172a;
+            --bg-light: #f8fafc;
+            --text-dark: #e2e8f0;
+            --text-light: #1e293b;
             --primary-color: #3b82f6;
             --secondary-color: #4f46e5;
-            --card-bg-dark: rgba(255,255,255,0.1);
-            --card-bg-light: rgba(0,0,0,0.05);
+            --accent-color: #f59e0b;
+            --card-bg-dark: rgba(255,255,255,0.05);
+            --card-bg-light: rgba(0,0,0,0.02);
             --transition-speed: 0.3s;
         }
 
@@ -30,20 +33,23 @@
             transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
             background-color: var(--bg-dark);
             color: var(--text-dark);
+            overflow-x: hidden;
         }
 
         .container {
             width: 100%;
             max-width: 1200px;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: 700;
             text-align: center;
             margin-bottom: 3rem;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--accent-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             position: relative;
@@ -55,12 +61,12 @@
             position: absolute;
             bottom: -10px;
             left: 50%;
-            width: 50px;
+            width: 100px;
             height: 4px;
-            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--accent-color));
             transform: translateX(-50%);
             border-radius: 2px;
-            transition: width var(--transition-speed) ease;
+            transition: width var(--transition-speed) ease, transform var(--transition-speed) ease;
         }
 
         h1:hover {
@@ -68,17 +74,19 @@
         }
 
         h1:hover::after {
-            width: 100px;
+            width: 150px;
+            transform: translateX(-50%) scaleX(1.2);
         }
 
         .app-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            perspective: 1000px;
         }
 
         .app-card {
-            background: linear-gradient(135deg, var(--card-bg-dark), rgba(255,255,255,0.05));
+            background: linear-gradient(135deg, var(--card-bg-dark), rgba(255,255,255,0.1));
             border-radius: 1.5rem;
             padding: 2rem;
             display: flex;
@@ -90,16 +98,18 @@
             cursor: pointer;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform-style: preserve-3d;
         }
 
         .app-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-10px) scale(1.05) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         }
 
         .app-icon-wrapper {
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.2);
             display: flex;
@@ -107,28 +117,51 @@
             justify-content: center;
             margin-bottom: 1.5rem;
             transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .app-card:hover .app-icon-wrapper {
             transform: scale(1.1) rotate(360deg);
         }
 
+        .app-icon-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shimmer 3s infinite;
+        }
+
         .app-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: var(--text-dark);
             transition: all var(--transition-speed) ease;
+            z-index: 1;
         }
 
         .app-title {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 600;
             margin-bottom: 1rem;
             text-align: center;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .app-link {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: inherit;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--text-dark);
             text-decoration: none;
             padding: 0.75rem 1.5rem;
             border-radius: 9999px;
@@ -139,10 +172,24 @@
             font-weight: 500;
             position: relative;
             overflow: hidden;
+            z-index: 1;
         }
 
-        .app-link:hover {
-            background-color: rgba(255, 255, 255, 0.3);
+        .app-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+            z-index: -1;
+        }
+
+        .app-link:hover::before {
+            opacity: 1;
         }
 
         .app-link i {
@@ -178,8 +225,9 @@
         }
 
         body.light-theme .app-card {
-            background: linear-gradient(135deg, var(--card-bg-light), rgba(0,0,0,0.02));
+            background: linear-gradient(135deg, var(--card-bg-light), rgba(255,255,255,0.5));
             border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
         body.light-theme .app-icon {
@@ -215,33 +263,16 @@
 
         @keyframes shimmer {
             0% {
-                background-position: -200% 0;
+                transform: translateX(-100%) rotate(30deg);
             }
             100% {
-                background-position: 200% 0;
+                transform: translateX(100%) rotate(30deg);
             }
         }
 
         .app-card {
             animation: fadeInUp 0.6s ease-out forwards, pulse 2s infinite;
             opacity: 0;
-        }
-
-        .app-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.3) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            animation: shimmer 3s infinite;
-            transform: rotate(30deg);
         }
 
         .app-card:nth-child(1) { animation-delay: 0.1s; }
@@ -254,7 +285,7 @@
             }
 
             h1 {
-                font-size: 2.5rem;
+                font-size: 3rem;
                 margin-bottom: 2.5rem;
             }
 
@@ -271,9 +302,40 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .app-link {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
     </style>
 </head>
 <body>
+    <div id="particles-js"></div>
     <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
         <i class="fas fa-sun"></i>
     </button>
@@ -282,6 +344,7 @@
         <div class="app-grid" id="appGrid"></div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
         const apps = [
             { title: 'خارجي قوي عاملة', url: 'https://datakid-github-io.vercel.app/', icon: 'fa-briefcase', gradient: ['#3b82f6', '#4f46e5'] },
@@ -330,41 +393,113 @@
             if (body.classList.contains('light-theme')) {
                 themeToggle.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i>';
                 themeToggle.setAttribute('aria-label', 'Switch to dark mode');
+                updateParticlesColor('#1e293b');
             } else {
                 themeToggle.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i>';
                 themeToggle.setAttribute('aria-label', 'Switch to light mode');
+                updateParticlesColor('#e2e8f0');
             }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
+        function updateParticlesColor(color) {
+            if (window.pJSDom && window.pJSDom[0].pJS) {
+                window.pJSDom[0].pJS.particles.color.value = color;
+                window.pJSDom[0].pJS.particles.line_linked.color = color;
+                window.pJSDom[0].pJS.fn.particlesRefresh();
+            }
+        }
+
+      document.addEventListener('DOMContentLoaded', () => {
             renderApps();
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-            // Add hover effect to app cards
             document.querySelectorAll('.app-card').forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
 
-                    card.style.setProperty('--mouse-x', `${x}px`);
-                    card.style.setProperty('--mouse-y', `${y}px`);
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = (y - centerY) / 10;
+                    const rotateY = (centerX - x) / 10;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.05, 1.05, 1.05)`;
                 });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+                });
+            });
+
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: '#e2e8f0' },
+                    shape: { type: 'circle' },
+                    opacity: { value: 0.5, random: false, anim: { enable: false } },
+                    size: { value: 3, random: true, anim: { enable: false } },
+                    line_linked: { enable: true, distance: 150, color: '#e2e8f0', opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                },
+                interactivity: {
+                    detect_on: 'canvas',
+                    events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                    modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+                },
+                retina_detect: true
             });
         });
 
-        // Keyboard navigation for app cards
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                if (e.target.classList.contains('app-card')) {
-                    const link = e.target.querySelector('.app-link');
-                    if (link && !link.getAttribute('aria-disabled')) {
-                        link.click();
-                    }
-                }
-            }
+        // Preload gradients for smoother transitions
+        function preloadGradients() {
+            const gradients = apps.map(app => `linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]})`);
+            const preloadDiv = document.createElement('div');
+            preloadDiv.style.position = 'absolute';
+            preloadDiv.style.width = '0';
+            preloadDiv.style.height = '0';
+            preloadDiv.style.overflow = 'hidden';
+            gradients.forEach(gradient => {
+                const img = document.createElement('div');
+                img.style.backgroundImage = gradient;
+                preloadDiv.appendChild(img);
+            });
+            document.body.appendChild(preloadDiv);
+        }
+
+        window.addEventListener('load', preloadGradients);
+
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            
+            document.body.style.backgroundPosition = `${50 + mouseX * 10}% ${50 + mouseY * 10}%`;
+        });
+
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = `${size}px`;
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+            ripple.classList.add('ripple');
+
+            button.appendChild(ripple);
+
+            ripple.addEventListener('animationend', () => {
+                ripple.remove();
+            });
+        }
+
+        document.querySelectorAll('.app-link').forEach(button => {
+            button.addEventListener('click', createRipple);
         });
     </script>
-
-
-</body></html>
+    </body>
+    </html>
