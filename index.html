@@ -10,7 +10,7 @@
 
         :root {
             --bg-dark: #0f172a;
-            --bg-light: #f8fafc;
+            --bg-light: #f0f4f8;
             --text-dark: #e2e8f0;
             --text-light: #1e293b;
             --primary-color: #3b82f6;
@@ -20,7 +20,7 @@
             --silver-dark: #4b5563;
             --platinum: #e5e4e2;
             --card-bg-dark: rgba(255,255,255,0.05);
-            --card-bg-light: rgba(0,0,0,0.02);
+            --card-bg-light: rgba(255,255,255,0.8);
             --transition-speed: 0.3s;
         }
 
@@ -262,7 +262,7 @@
         }
 
         body.light-theme .app-card {
-            background: linear-gradient(135deg, var(--card-bg-light), rgba(255,255,255,0.5));
+            background: linear-gradient(135deg, var(--card-bg-light), rgba(255,255,255,0.9));
             border: 1px solid rgba(0,0,0,0.1);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 8px rgba(0, 0, 0, 0.1);
         }
@@ -273,6 +273,31 @@
 
         body.light-theme .theme-toggle {
             color: var(--text-light);
+        }
+
+        body.light-theme .app-title {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-theme .app-link {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            color: var(--bg-light);
+        }
+
+        body.light-theme .app-link:hover {
+            color: var(--text-light);
+        }
+
+        body.light-theme h1 {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.light-theme h1::after {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--accent-color));
         }
 
         @keyframes fadeInUp {
