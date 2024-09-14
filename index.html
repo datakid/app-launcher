@@ -6,23 +6,19 @@
     <title>LinkExpress Ultimate - Diamond Edition</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-        :root {
-            --bg-dark: #0a0c1b;
+          :root {
+            --bg-dark: #0f1624;
             --bg-light: #f0f4f8;
             --text-dark: #e2e8f0;
             --text-light: #1e293b;
             --primary-color: #c0c0c0;
             --secondary-color: #e5e4e2;
-            --accent-color: #663399;
+            --accent-color: #a8a9ad;
             --card-bg-dark: rgba(255,255,255,0.05);
             --card-bg-light: rgba(255,255,255,0.9);
             --transition-speed: 0.3s;
-            --platinum: #e5e4e2;
-            --silver: #c0c0c0;
-            --gold: #ffd700;
-            --diamond: #b9f2ff;
         }
 
         body {
@@ -38,10 +34,6 @@
             background-color: var(--bg-dark);
             color: var(--text-dark);
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(185, 242, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(229, 228, 226, 0.1) 0%, transparent 50%);
-            background-attachment: fixed;
         }
 
         .container {
@@ -53,12 +45,11 @@
         }
 
         h1 {
-            font-family: 'Cinzel', serif;
             font-size: clamp(2.5rem, 5vw, 4.5rem);
             font-weight: 700;
             text-align: center;
             margin-bottom: 3rem;
-            background: linear-gradient(to right, var(--diamond), var(--platinum), var(--diamond));
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--primary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             position: relative;
@@ -73,7 +64,7 @@
             left: 50%;
             width: 150px;
             height: 4px;
-            background: linear-gradient(to right, var(--diamond), var(--platinum), var(--diamond));
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--primary-color));
             transform: translateX(-50%);
             border-radius: 2px;
             transition: width var(--transition-speed) ease, transform var(--transition-speed) ease;
@@ -91,14 +82,14 @@
 
         .app-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2.5rem;
             perspective: 1000px;
         }
 
         .app-card {
             background: linear-gradient(135deg, var(--card-bg-dark), rgba(255,255,255,0.1));
-            border-radius: 1.5rem;
+            border-radius: 20px;
             padding: 2.5rem;
             display: flex;
             flex-direction: column;
@@ -127,7 +118,7 @@
 
         .app-card:hover {
             transform: translateY(-10px) scale(1.05) rotateX(5deg) rotateY(5deg);
-            box-shadow: 0 20px 40px rgba(192, 192, 192, 0.2), 0 15px 12px rgba(192, 192, 192, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 112, 209, 0.2), 0 15px 12px rgba(0, 112, 209, 0.1);
         }
 
         .app-icon-wrapper {
@@ -179,18 +170,18 @@
             font-weight: 600;
             margin-bottom: 1.5rem;
             text-align: center;
-            background: linear-gradient(to right, var(--diamond), var(--platinum), var(--diamond));
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--primary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .app-link {
-            background: linear-gradient(135deg, var(--diamond), var(--platinum), var(--diamond));
+            background: linear-gradient(135deg, var(--accent-color), var(--primary-color), var(--accent-color));
             color: var(--bg-dark);
             text-decoration: none;
             padding: 1rem 2rem;
-            border-radius: 9999px;
+            border-radius: 30px;
             display: inline-flex;
             align-items: center;
             transition: all var(--transition-speed) ease;
@@ -199,7 +190,7 @@
             position: relative;
             overflow: hidden;
             z-index: 1;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(192,192,192,0.1), 0 1px 3px rgba(192,192,192,0.1);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -211,7 +202,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, var(--platinum), var(--diamond), var(--platinum));
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color), var(--primary-color));
             opacity: 0;
             transition: opacity var(--transition-speed) ease;
             z-index: -1;
@@ -224,7 +215,7 @@
         .app-link:hover {
             color: var(--bg-dark);
             transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(192,192,192,0.3), 0 3px 6px rgba(192,192,192,0.2);
+            box-shadow: 0 7px 14px rgba(192, 192, 192, 0.3), 0 3px 6px rgba(192, 192, 192, 0.2);
         }
 
         .app-link:focus {
@@ -241,7 +232,7 @@
             transform: translateX(5px);
         }
 
-       .theme-toggle {
+        .theme-toggle {
             position: fixed;
             top: 1.5rem;
             right: 1.5rem;
@@ -253,7 +244,7 @@
             color: var(--text-dark);
             transition: all var(--transition-speed) ease;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-            outline: none; 
+            outline: none;
         }
 
         .theme-toggle:hover {
@@ -261,8 +252,8 @@
         }
 
         .theme-toggle:focus {
-            outline: none; 
-            box-shadow: none; 
+            outline: none;
+            box-shadow: none;
         }
 
         .theme-toggle:focus-visible {
@@ -272,9 +263,6 @@
         body.light-theme {
             background-color: var(--bg-light);
             color: var(--text-light);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(185, 242, 255, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 90% 80%, rgba(229, 228, 226, 0.05) 0%, transparent 50%);
         }
 
         body.light-theme .app-card {
@@ -421,7 +409,7 @@
             opacity: 0.6;
         }
 
-        .ripple {
+.ripple {
             position: absolute;
             border-radius: 50%;
             transform: scale(0);
@@ -450,7 +438,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script>
-        const apps = [
+       const apps = [
             { 
                 title: 'خارجي قوي عاملة', 
                 url: 'https://datakid-github-io.vercel.app/', 
@@ -543,77 +531,92 @@
             if (body.classList.contains('light-theme')) {
                 themeToggle.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i><span class="visually-hidden">Switch to dark mode</span>';
                 themeToggle.setAttribute('aria-label', 'Switch to dark mode');
-                updateParticlesColor('#1e293b');
+                updateParticlesConfig(true);
             } else {
                 themeToggle.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i><span class="visually-hidden">Switch to light mode</span>';
                 themeToggle.setAttribute('aria-label', 'Switch to light mode');
-                updateParticlesColor('#e2e8f0');
+                updateParticlesConfig(false);
             }
         }
 
-        function updateParticlesColor(color) {
+        const particlesConfig = {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: '#e2e8f0' },
+                shape: { 
+                    type: 'circle',
+                    stroke: { width: 0, color: '#000000' },
+                    polygon: { nb_sides: 5 },
+                },
+                opacity: { 
+                    value: 0.5, 
+                    random: true, 
+                    anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } 
+                },
+                size: { 
+                    value: 3, 
+                    random: true, 
+                    anim: { enable: true, speed: 2, size_min: 0.1, sync: false } 
+                },
+                line_linked: { 
+                    enable: true, 
+                    distance: 150, 
+                    color: '#e2e8f0', 
+                    opacity: 0.4, 
+                    width: 1 
+                },
+                move: { 
+                    enable: true, 
+                    speed: 2, 
+                    direction: 'none', 
+                    random: false, 
+                    straight: false, 
+                    out_mode: 'out', 
+                    bounce: false,
+                    attract: { enable: true, rotateX: 600, rotateY: 1200 }
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { 
+                    onhover: { enable: true, mode: 'repulse' }, 
+                    onclick: { enable: true, mode: 'push' }, 
+                    resize: true 
+                },
+                modes: { 
+                    repulse: { distance: 100, duration: 0.4 }, 
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        };
+
+        function updateParticlesConfig(isLightMode) {
+            if (isLightMode) {
+                particlesConfig.particles.color.value = '#1e293b';
+                particlesConfig.particles.line_linked.color = '#1e293b';
+                particlesConfig.particles.move.speed = 4;
+                particlesConfig.particles.move.direction = 'bottom';
+                particlesConfig.particles.shape.type = 'star';
+            } else {
+                particlesConfig.particles.color.value = '#e2e8f0';
+                particlesConfig.particles.line_linked.color = '#e2e8f0';
+                particlesConfig.particles.move.speed = 2;
+                particlesConfig.particles.move.direction = 'none';
+                particlesConfig.particles.shape.type = 'circle';
+            }
+            
             if (window.pJSDom && window.pJSDom[0].pJS) {
-                window.pJSDom[0].pJS.particles.color.value = color;
-                window.pJSDom[0].pJS.particles.line_linked.color = color;
-                window.pJSDom[0].pJS.fn.particlesRefresh();
+                window.pJSDom[0].pJS.fn.vendors.destroypJS();
+                window.pJSDom = [];
+                particlesJS('particles-js', particlesConfig);
             }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             renderApps();
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
-            particlesJS('particles-js', {
-                particles: {
-                    number: { value: 80, density: { enable: true, value_area: 800 } },
-                    color: { value: '#e2e8f0' },
-                    shape: { 
-                        type: 'circle',
-                        stroke: { width: 0, color: '#000000' },
-                        polygon: { nb_sides: 5 },
-                    },
-                    opacity: { 
-                        value: 0.5, 
-                        random: true, 
-                        anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } 
-                    },
-                    size: { 
-                        value: 3, 
-                        random: true, 
-                        anim: { enable: true, speed: 2, size_min: 0.1, sync: false } 
-                    },
-                    line_linked: { 
-                        enable: true, 
-                        distance: 150, 
-                        color: '#e2e8f0', 
-                        opacity: 0.4, 
-                        width: 1 
-                    },
-                    move: { 
-                        enable: true, 
-                        speed: 2, 
-                        direction: 'none', 
-                        random: false, 
-                        straight: false, 
-                        out_mode: 'out', 
-                        bounce: false,
-                        attract: { enable: true, rotateX: 600, rotateY: 1200 }
-                    }
-                },
-                interactivity: {
-                    detect_on: 'canvas',
-                    events: { 
-                        onhover: { enable: true, mode: 'repulse' }, 
-                        onclick: { enable: true, mode: 'push' }, 
-                        resize: true 
-                    },
-                    modes: { 
-                        repulse: { distance: 100, duration: 0.4 }, 
-                        push: { particles_nb: 4 }
-                    }
-                },
-                retina_detect: true
-            });
+            particlesJS('particles-js', particlesConfig);
 
             document.querySelectorAll('.app-link').forEach(button => {
                 button.addEventListener('click', function(e) {
