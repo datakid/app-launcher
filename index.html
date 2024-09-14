@@ -111,9 +111,20 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
             transform: rotate(30deg);
-            pointer-events: none;
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+
+        .app-card:hover::before {
+            opacity: 1;
+            animation: shimmer 1.5s infinite;
         }
 
         .app-card:hover {
@@ -184,7 +195,7 @@
             border-radius: 30px;
             display: inline-flex;
             align-items: center;
-            transition: all var(--transition-speed) ease;
+            transition: all 0.1s ease;
             font-size: 1.1rem;
             font-weight: 500;
             position: relative;
@@ -216,6 +227,10 @@
             color: var(--bg-dark);
             transform: translateY(-2px);
             box-shadow: 0 7px 14px rgba(192, 192, 192, 0.3), 0 3px 6px rgba(192, 192, 192, 0.2);
+        }
+
+        .app-link:active {
+            transform: scale(0.95);
         }
 
         .app-link:focus {
@@ -397,8 +412,7 @@
                 transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.3s ease, opacity 0.3s ease;
             }
         }
-
-        .app-card.highlighted {
+.app-card.highlighted {
             transform: scale(1.15);
             box-shadow: 0 0 30px rgba(192, 192, 192, 0.3);
             z-index: 2;
@@ -409,7 +423,7 @@
             opacity: 0.6;
         }
 
-.ripple {
+        .ripple {
             position: absolute;
             border-radius: 50%;
             transform: scale(0);
@@ -634,12 +648,13 @@
                     ripple.style.top = e.clientY - rect.top - ripple.offsetHeight / 2 + 'px';
                     this.appendChild(ripple);
 
+                    if (!this.getAttribute('aria-disabled')) {
+                        window.open(this.href, '_blank', 'noopener,noreferrer');
+                    }
+
                     setTimeout(() => {
                         ripple.remove();
-                        if (!this.getAttribute('aria-disabled')) {
-                            window.open(this.href, '_blank', 'noopener,noreferrer');
-                        }
-                    }, 600);
+                    }, 300);
                 });
             });
         });
