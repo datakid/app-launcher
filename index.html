@@ -539,27 +539,33 @@ const apps = [
 function createAppCard(app) {
     const card = document.createElement('div');
     card.className = 'app-card';
-    card.style.background = `linear-gradient(135deg, ${app.gradient[0]}22, ${app.gradient[1]}22, ${app.gradient[2]}22)`;
-
-    const buttonGradient = `linear-gradient(135deg, ${app.gradient[0]}, ${app.gradient[1]}, ${app.gradient[2]})`;
-
+    
+    const gradientColors = app.gradient.map(color => `${color}22`).join(', ');
+    const buttonGradient = app.gradient.join(', ');
+    
     let appUrl = app.url;
     if (app.urls && app.urls.length === 2) {
         appUrl = Math.random() < 0.5 ? app.urls[0] : app.urls[1];
     }
-
+    
+    const isComingSoon = app.comingSoon;
+    const launchText = isComingSoon ? 'Coming Soon' : 'Launch';
+    const iconClass = isComingSoon ? 'fa-clock' : 'fa-external-link-alt';
+    
     card.innerHTML = `
-        <div class="app-icon-wrapper" style="background: ${buttonGradient}">
+        <div class="app-icon-wrapper" style="background: linear-gradient(135deg, ${buttonGradient})">
             <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
         </div>
-        <h3 class="app-title" style="background: ${buttonGradient}; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${app.title}</h3>
-        <a href="${appUrl}" target="_blank" rel="noopener noreferrer" class="app-link" style="background: ${buttonGradient}">
-            ${app.comingSoon ? 'Coming Soon' : 'Launch'} <i class="fas ${app.comingSoon ? 'fa-clock' : 'fa-external-link-alt'}" aria-hidden="true"></i>
-            <span class="visually-hidden">${app.comingSoon ? 'Coming Soon' : 'Launch'} ${app.title}</span>
+        <h3 class="app-title" style="background: linear-gradient(135deg, ${buttonGradient}); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${app.title}</h3>
+        <a href="${appUrl}" target="_blank" rel="noopener noreferrer" class="app-link" style="background: linear-gradient(135deg, ${buttonGradient})">
+            ${launchText} <i class="fas ${iconClass}" aria-hidden="true"></i>
+            <span class="visually-hidden">${launchText} ${app.title}</span>
         </a>
     `;
 
-    if (app.comingSoon) {
+    card.style.background = `linear-gradient(135deg, ${gradientColors})`;
+
+    if (isComingSoon) {
         const link = card.querySelector('.app-link');
         link.addEventListener('click', (e) => e.preventDefault());
         link.setAttribute('aria-disabled', 'true');
@@ -567,7 +573,7 @@ function createAppCard(app) {
     }
 
     card.addEventListener('mouseenter', () => highlightCard(card));
-    card.addEventListener('mouseleave', () => removeHighlight());
+    card.addEventListener('mouseleave', removeHighlight);
 
     return card;
 }
