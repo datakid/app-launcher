@@ -6,7 +6,7 @@
     <title>LinkExpress</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
           :root {
             --bg-dark: #0f1624;
@@ -187,54 +187,53 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
-       .app-link {
-            background: linear-gradient(135deg, var(--accent-color), var(--primary-color), var(--accent-color));
-            color: var(--bg-dark);
-            text-decoration: none;
-            padding: 1rem 2rem;
-            border-radius: 30px;
-            display: inline-flex;
-            align-items: center;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-            font-weight: 500;
-            position: relative;
-            overflow: hidden;
-            z-index: 1;
-            box-shadow: 0 4px 6px rgba(192,192,192,0.1), 0 1px 3px rgba(192,192,192,0.1);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+.app-link {
+    background: linear-gradient(135deg, var(--accent-color), var(--primary-color), var(--accent-color));
+    color: var(--bg-dark);
+    text-decoration: none;
+    padding: 1rem 2rem;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 0 4px 6px rgba(192,192,192,0.1), 0 1px 3px rgba(192,192,192,0.1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
 
-        .app-link::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.3) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            transform: rotate(30deg);
-            transition: all 0.5s ease;
-            opacity: 0;
-        }
+.app-link::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(30deg);
+    transition: all 0.5s ease;
+    opacity: 0;
+}
 
-        .app-link:hover::before {
-            opacity: 1;
-            animation: shimmer-button 1.5s infinite;
-        }
+.app-link:hover {
+    color: var(--bg-dark);
+    transform: scale(1.1) rotate(3deg);
+    box-shadow: 0 10px 20px rgba(192, 192, 192, 0.3);
+}
 
-
-        .app-link:hover {
-            color: var(--bg-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(192, 192, 192, 0.3), 0 3px 6px rgba(192, 192, 192, 0.2);
-        }
+.app-link:hover::before {
+    opacity: 1;
+    animation: button-wave 1s infinite linear;
+}
 
         .app-link:active {
             transform: scale(0.95);
@@ -244,15 +243,24 @@
             outline: none;
         }
 
-        .app-link i {
-            margin-left: 0.75rem;
-            font-size: 1rem;
-            transition: transform var(--transition-speed) ease;
-        }
+@keyframes button-wave {
+    0% {
+        transform: translateX(-100%) rotate(30deg);
+    }
+    100% {
+        transform: translateX(100%) rotate(30deg);
+    }
+}
 
-        .app-link:hover i {
-            transform: translateX(5px);
-        }
+.app-link i {
+    margin-left: 0.75rem;
+    font-size: 1rem;
+    transition: transform var(--transition-speed) ease;
+}
+
+.app-link:hover i {
+    transform: translateX(5px) rotate(-10deg);
+}
 
         .theme-toggle {
             position: fixed;
@@ -281,65 +289,56 @@
         .theme-toggle:focus-visible {
             transform: scale(1.1);
         }
+body.light-theme {
+    background-color: var(--bg-light);
+    color: var(--text-light);
+}
+body.light-theme .app-card {
+    background: linear-gradient(135deg, var(--card-bg-light), rgba(255,255,255,0.9));
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 8px rgba(0, 0, 0, 0.1);
+}
 
-        body.light-theme {
-            background-color: var(--bg-light);
-            color: var(--text-light);
-        }
-
-        body.light-theme .app-card {
-            background: linear-gradient(135deg, var(--card-bg-light), rgba(255,255,255,0.9));
-            border: 1px solid rgba(0,0,0,0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-                body.light-theme .app-card::before {
-            background: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.8) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-            
-        }
-                body.light-theme .app-link::before {
-            background: linear-gradient(
-                to right,
-                rgba(255, 255, 255, 0) 0%,
-                rgba(255, 255, 255, 0.5) 50%,
-                rgba(255, 255, 255, 0) 100%
-            );
-        }
-
-        body.light-theme .app-icon {
-            color: var(--text-light);
-        }
-
-        body.light-theme .theme-toggle {
-            color: var(--text-light);
-        }
-
-        body.light-theme .app-title {
-            background: linear-gradient(to right, var(--accent-color), var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        body.light-theme .app-link {
-            background: linear-gradient(135deg, var(--accent-color), var(--primary-color), var(--accent-color));
-            color: var(--bg-light);
-        }
-
-        body.light-theme .app-link:hover {
-            color: var(--bg-light);
-        }
-
-        body.light-theme h1 {
-            background: linear-gradient(to right, var(--accent-color), var(--text-light), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
-        }
+body.light-theme .app-card::before {
+    background: linear-gradient(
+        to right,
+        rgba(200, 200, 200, 0) 0%,
+        rgba(200, 200, 200, 0.8) 50%,
+        rgba(200, 200, 200, 0) 100%
+    );
+}
+body.light-theme .app-link::before {
+    background: linear-gradient(
+        to right,
+        rgba(200, 200, 200, 0) 0%,
+        rgba(200, 200, 200, 0.7) 50%,
+        rgba(200, 200, 200, 0) 100%
+    );
+}
+body.light-theme .app-icon {
+    color: var(--text-light);
+}
+body.light-theme .theme-toggle {
+    color: var(--text-light);
+}
+body.light-theme .app-title {
+    background: linear-gradient(to right, var(--accent-color), var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+body.light-theme .app-link {
+    background: linear-gradient(135deg, var(--accent-color), var(--primary-color), var(--accent-color));
+    color: var(--bg-light);
+}
+body.light-theme .app-link:hover {
+    color: var(--bg-light);
+}
+body.light-theme h1 {
+    background: linear-gradient(to right, var(--accent-color), var(--text-light), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+}
 
         @keyframes fadeInUp {
             from {
@@ -543,11 +542,6 @@ function createAppCard(app) {
     const gradientColors = app.gradient.map(color => `${color}22`).join(', ');
     const buttonGradient = app.gradient.join(', ');
     
-    let appUrl = app.url;
-    if (app.urls && app.urls.length === 2) {
-        appUrl = Math.random() < 0.5 ? app.urls[0] : app.urls[1];
-    }
-    
     const isComingSoon = app.comingSoon;
     const launchText = isComingSoon ? 'Coming Soon' : 'Launch';
     const iconClass = isComingSoon ? 'fa-clock' : 'fa-external-link-alt';
@@ -557,24 +551,33 @@ function createAppCard(app) {
             <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
         </div>
         <h3 class="app-title" style="background: linear-gradient(135deg, ${buttonGradient}); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${app.title}</h3>
-        <a href="${appUrl}" target="_blank" rel="noopener noreferrer" class="app-link" style="background: linear-gradient(135deg, ${buttonGradient})">
+        <a href="#" class="app-link" style="background: linear-gradient(135deg, ${buttonGradient})">
             ${launchText} <i class="fas ${iconClass}" aria-hidden="true"></i>
             <span class="visually-hidden">${launchText} ${app.title}</span>
         </a>
     `;
-
     card.style.background = `linear-gradient(135deg, ${gradientColors})`;
-
+    
+    const link = card.querySelector('.app-link');
+    
     if (isComingSoon) {
-        const link = card.querySelector('.app-link');
         link.addEventListener('click', (e) => e.preventDefault());
         link.setAttribute('aria-disabled', 'true');
         link.setAttribute('tabindex', '-1');
+    } else if (app.urls && app.urls.length === 2) {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const randomUrl = Math.random() < 0.5 ? app.urls[0] : app.urls[1];
+            window.open(randomUrl, '_blank', 'noopener,noreferrer');
+        });
+    } else {
+        link.href = app.url;
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
     }
-
+    
     card.addEventListener('mouseenter', () => highlightCard(card));
     card.addEventListener('mouseleave', removeHighlight);
-
     return card;
 }
 
@@ -620,80 +623,80 @@ function createAppCard(app) {
             }
         }
 
-        const particlesConfig = {
-            particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: '#e2e8f0' },
-                shape: { 
-                    type: 'circle',
-                    stroke: { width: 0, color: '#000000' },
-                    polygon: { nb_sides: 5 },
-                },
-                opacity: { 
-                    value: 0.5, 
-                    random: true, 
-                    anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } 
-                },
-                size: { 
-                    value: 3, 
-                    random: true, 
-                    anim: { enable: true, speed: 2, size_min: 0.1, sync: false } 
-                },
-                line_linked: { 
-                    enable: true, 
-                    distance: 150, 
-                    color: '#e2e8f0', 
-                    opacity: 0.4, 
-                    width: 1 
-                },
-                move: { 
-                    enable: true, 
-                    speed: 2, 
-                    direction: 'none', 
-                    random: false, 
-                    straight: false, 
-                    out_mode: 'out', 
-                    bounce: false,
-                    attract: { enable: true, rotateX: 600, rotateY: 1200 }
-                }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: { 
-                    onhover: { enable: true, mode: 'repulse' }, 
-                    onclick: { enable: true, mode: 'push' }, 
-                    resize: true 
-                },
-                modes: { 
-                    repulse: { distance: 100, duration: 0.4 }, 
-                    push: { particles_nb: 4 }
-                }
-            },
-            retina_detect: true
-        };
-
-        function updateParticlesConfig(isLightMode) {
-            if (isLightMode) {
-                particlesConfig.particles.color.value = '#1e293b';
-                particlesConfig.particles.line_linked.color = '#1e293b';
-                particlesConfig.particles.move.speed = 4;
-                particlesConfig.particles.move.direction = 'bottom';
-                particlesConfig.particles.shape.type = 'star';
-            } else {
-                particlesConfig.particles.color.value = '#e2e8f0';
-                particlesConfig.particles.line_linked.color = '#e2e8f0';
-                particlesConfig.particles.move.speed = 2;
-                particlesConfig.particles.move.direction = 'none';
-                particlesConfig.particles.shape.type = 'circle';
-            }
-            
-            if (window.pJSDom && window.pJSDom[0].pJS) {
-                window.pJSDom[0].pJS.fn.vendors.destroypJS();
-                window.pJSDom = [];
-                particlesJS('particles-js', particlesConfig);
-            }
+const particlesConfig = {
+    particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: '#e2e8f0' },
+        shape: { 
+            type: ['circle', 'triangle', 'polygon', 'star'],
+            stroke: { width: 0, color: '#000000' },
+            polygon: { nb_sides: 5 },
+            image: { src: 'img/github.svg', width: 100, height: 100 }
+        },
+        opacity: { 
+            value: 0.5, 
+            random: true, 
+            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } 
+        },
+        size: { 
+            value: 3, 
+            random: true, 
+            anim: { enable: true, speed: 2, size_min: 0.1, sync: false } 
+        },
+        line_linked: { 
+            enable: true, 
+            distance: 150, 
+            color: '#e2e8f0', 
+            opacity: 0.4, 
+            width: 1 
+        },
+        move: { 
+            enable: true, 
+            speed: 2, 
+            direction: 'none', 
+            random: false, 
+            straight: false, 
+            out_mode: 'out', 
+            bounce: false,
+            attract: { enable: true, rotateX: 600, rotateY: 1200 }
         }
+    },
+    interactivity: {
+        detect_on: 'canvas',
+        events: { 
+            onhover: { enable: true, mode: 'repulse' }, 
+            onclick: { enable: true, mode: 'push' }, 
+            resize: true 
+        },
+        modes: { 
+            repulse: { distance: 100, duration: 0.4 }, 
+            push: { particles_nb: 4 }
+        }
+    },
+    retina_detect: true
+};
 
+function updateParticlesConfig(isLightMode) {
+    if (isLightMode) {
+        particlesConfig.particles.color.value = '#1e293b';
+        particlesConfig.particles.line_linked.color = '#1e293b';
+        particlesConfig.particles.move.speed = 4;
+        particlesConfig.particles.move.direction = 'bottom';
+        particlesConfig.particles.shape.type = ['star', 'circle', 'triangle', 'polygon'];
+    } else {
+        particlesConfig.particles.color.value = '#e2e8f0';
+        particlesConfig.particles.line_linked.color = '#e2e8f0';
+        particlesConfig.particles.move.speed = 2;
+        particlesConfig.particles.move.direction = 'none';
+        particlesConfig.particles.shape.type = ['circle', 'triangle', 'polygon', 'star'];
+    }
+    
+    if (window.pJSDom && window.pJSDom[0].pJS) {
+        window.pJSDom[0].pJS.fn.vendors.destroypJS();
+        window.pJSDom = [];
+        particlesJS('particles-js', particlesConfig);
+    }
+}
         document.addEventListener('DOMContentLoaded', () => {
             renderApps();
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
