@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,13 +14,15 @@
   --bg-dark: #0f1624;
   --bg-light: #f0f4f8;
   --text-dark: #e2e8f0;
-  --text-light: #1e293b;
+  --text-light: #0a1520;
   --primary-color: #c0c0c0;
   --secondary-color: #e5e4e2;
   --accent-color: #a8a9ad;
   --card-bg-dark: rgba(255,255,255,0.05);
   --card-bg-light: rgba(255,255,255,0.9);
   --transition-speed: 0.3s;
+  --premium-gradient: linear-gradient(135deg, #c0c0c0, #e5e4e2, #a8a9ad, #c0c0c0);
+  --premium-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 1px 8px rgba(0, 0, 0, 0.3);
 }
 
 body {
@@ -34,6 +38,8 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-dark);
   overflow-x: hidden;
+  background-image: radial-gradient(circle at top right, rgba(192, 192, 192, 0.1) 0%, transparent 60%),
+                    radial-gradient(circle at bottom left, rgba(168, 169, 173, 0.1) 0%, transparent 60%);
 }
 
 .container {
@@ -49,12 +55,13 @@ h1 {
   font-weight: 700;
   text-align: center;
   margin-bottom: 3rem;
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--primary-color));
+  background: var(--premium-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
   transition: transform var(--transition-speed) ease;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  letter-spacing: 2px;
 }
 
 h1::after {
@@ -64,7 +71,7 @@ h1::after {
   left: 50%;
   width: 150px;
   height: 4px;
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--primary-color));
+  background: var(--premium-gradient);
   transform: translateX(-50%);
   border-radius: 2px;
   transition: width var(--transition-speed) ease, transform var(--transition-speed) ease;
@@ -94,64 +101,29 @@ h1:hover::after {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   transition: all var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1);
   position: relative;
   overflow: hidden;
   cursor: pointer;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--premium-shadow);
   transform-style: preserve-3d;
+  animation: breathe 4s ease-in-out infinite;
+  height: 350px; 
 }
 
-.app-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.5) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: rotate(30deg);
-  transition: opacity 0.3s;
-  opacity: 0;
+@keyframes breathe {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(1.03) translateY(-5px);
+  }
 }
 
-.app-card:hover::before {
-  opacity: 1;
-  animation: shimmer 1.5s infinite;
-}
-
-.app-card:hover {
-  transform: translateY(-10px) scale(1.05) rotateX(5deg) rotateY(5deg);
-  box-shadow: 0 20px 40px rgba(0, 112, 209, 0.2), 0 15px 12px rgba(0, 112, 209, 0.1);
-}
-
-.app-icon-wrapper {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 2rem;
-  transition: all var(--transition-speed) ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1), inset 0 4px 8px rgba(255,255,255,0.1);
-}
-
-.app-card:hover .app-icon-wrapper {
-  transform: scale(1.1) rotate(360deg);
-}
-
-.app-icon-wrapper::before {
+.app-card::before, .app-card::after {
   content: '';
   position: absolute;
   top: -50%;
@@ -165,11 +137,50 @@ h1:hover::after {
     rgba(255, 255, 255, 0) 100%
   );
   transform: rotate(30deg);
-  animation: shimmer 3s infinite;
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+
+.app-card:hover::before, .app-card:hover::after {
+  opacity: 1;
+  animation: ultra-shimmer 1.5s infinite;
+}
+
+@keyframes ultra-shimmer {
+  0% {
+    transform: translateX(-100%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+.app-card:hover {
+  transform: translateY(-10px) scale(1.05) rotateX(5deg) rotateY(5deg);
+  box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1), 0 15px 12px rgba(255, 255, 255, 0.1);
+}
+
+.app-icon-wrapper {
+  width: 130px; /* Increased from 110px */
+  height: 130px; /* Increased from 110px */
+  border-radius: 50%;
+  background: var(--premium-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: all var(--transition-speed) ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1), inset 0 4px 8px rgba(255,255,255,0.1);
+}
+
+.app-card:hover .app-icon-wrapper {
+  transform: scale(1.1) rotate(360deg);
 }
 
 .app-icon {
-  font-size: 3.5rem;
+  font-size: 3.8rem; /* Increased from 3.2rem */
   color: var(--text-dark);
   transition: all var(--transition-speed) ease;
   z-index: 1;
@@ -177,26 +188,27 @@ h1:hover::after {
 }
 
 .app-title {
-  font-size: 2rem;
+  font-size: 1.8rem; 
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
   text-align: center;
-  background: linear-gradient(to right, var(--primary-color), var(--secondary-color), var(--primary-color));
+  background: var(--premium-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  letter-spacing: 1px;
 }
 
 .app-link {
-  background: linear-gradient(135deg, var(--accent-color), var(--primary-color), var(--accent-color));
+  background: var(--premium-gradient);
   color: var(--bg-dark);
   text-decoration: none;
-  padding: 1rem 2rem;
+  padding: 0.9rem 1.8rem;
   border-radius: 30px;
   display: inline-flex;
   align-items: center;
   transition: all 0.3s ease;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
   position: relative;
   overflow: hidden;
@@ -226,13 +238,13 @@ h1:hover::after {
 
 .app-link:hover {
   color: var(--bg-dark);
-  transform: scale(1.1) rotate(3deg);
+  transform: scale(1.05) rotate(3deg);
   box-shadow: 0 10px 20px rgba(192, 192, 192, 0.3);
 }
 
 .app-link:hover::before {
   opacity: 1;
-  animation: button-wave 1s infinite linear;
+  animation: ultra-shimmer 1s infinite linear;
 }
 
 .app-link:active {
@@ -243,7 +255,26 @@ h1:hover::after {
   outline: none;
 }
 
-@keyframes button-wave {
+.app-link i {
+  margin-left: 0.75rem;
+  font-size: 1rem;
+  transition: transform var(--transition-speed) ease;
+}
+
+.app-link:hover i {
+  transform: translateX(5px) rotate(-10deg);
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+@keyframes shimmer-button {
   0% {
     transform: translateX(-100%) rotate(30deg);
   }
@@ -293,6 +324,8 @@ h1:hover::after {
 body.light-theme {
   background-color: var(--bg-light);
   color: var(--text-light);
+  background-image: radial-gradient(circle at top right, rgba(192, 192, 192, 0.1) 0%, transparent 60%),
+                    radial-gradient(circle at bottom left, rgba(168, 169, 173, 0.1) 0%, transparent 60%);
 }
 
 body.light-theme .app-card {
@@ -325,16 +358,18 @@ body.light-theme .app-icon {
 
 body.light-theme .theme-toggle {
   color: var(--text-light);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
 }
 
 body.light-theme .app-title {
-  background: linear-gradient(to right, var(--accent-color), var(--primary-color), var(--accent-color));
+  background: var(--premium-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: var(--text-light);
 }
 
 body.light-theme .app-link {
-  background: linear-gradient(135deg, var(--accent-color), var(--primary-color), var(--accent-color));
+  background: var(--premium-gradient);
   color: var(--bg-light);
 }
 
@@ -343,10 +378,11 @@ body.light-theme .app-link:hover {
 }
 
 body.light-theme h1 {
-  background: linear-gradient(to right, var(--accent-color), var(--text-light), var(--accent-color));
+  background: var(--premium-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+  color: var(--text-light);
 }
 
 @keyframes fadeInUp {
@@ -360,38 +396,8 @@ body.light-theme h1 {
   }
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%) rotate(30deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(30deg);
-  }
-}
-
-@keyframes shimmer-button {
-  0% {
-    transform: translateX(-100%) rotate(30deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(30deg);
-  }
-}
-
 .app-card {
-  animation: fadeInUp 0.6s ease-out forwards, pulse 2s infinite;
+  animation: fadeInUp 0.6s ease-out forwards, breathe 4s ease-in-out infinite;
   opacity: 0;
 }
 
@@ -411,6 +417,20 @@ body.light-theme h1 {
 
   .app-grid {
     grid-template-columns: 1fr;
+  }
+
+  .app-card {
+    height: auto; 
+    min-height: 300px; 
+  }
+
+  .app-icon-wrapper {
+    width: 120px; /* Slightly reduced for mobile, but still larger than original */
+    height: 120px;
+  }
+
+  .app-icon {
+    font-size: 3.5rem; /* Adjusted for mobile */
   }
 }
 
@@ -448,6 +468,7 @@ body.light-theme h1 {
 .app-card {
   will-change: transform;
 }
+
 @media (prefers-reduced-motion: no-preference) {
   .app-card {
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.3s ease, opacity 0.3s ease;
@@ -455,7 +476,7 @@ body.light-theme h1 {
 }
 
 .app-card.highlighted {
-  box-shadow: 0 0 30px rgba(192, 192, 192, 0.3);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
   z-index: 2;
 }
 
@@ -486,8 +507,262 @@ body.light-theme h1 {
 
 body.light-theme .sound-toggle {
   color: var(--text-light);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
 }
-    </style>
+
+.app-card {
+  backdrop-filter: blur(15px);
+  box-shadow: var(--premium-shadow), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+.app-card:hover {
+  box-shadow: 0 25px 50px rgba(255, 255, 255, 0.1), 0 20px 15px rgba(255, 255, 255, 0.05);
+}
+
+.app-icon-wrapper {
+  background: var(--premium-gradient);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 5px 10px rgba(255,255,255,0.2);
+}
+
+.app-icon {
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
+}
+
+.app-title {
+  position: relative;
+  display: inline-block;
+}
+
+.app-title::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--premium-gradient);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.app-card:hover .app-title::after {
+  transform: scaleX(1);
+}
+
+.app-link {
+  border: 2px solid transparent;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  background-image: linear-gradient(var(--bg-dark), var(--bg-dark)), var(--premium-gradient);
+}
+
+body.light-theme .app-link {
+  background-image: linear-gradient(var(--bg-light), var(--bg-light)), var(--premium-gradient);
+}
+
+.app-link:hover {
+  transform: scale(1.05) translateY(-3px) rotate(2deg);
+  box-shadow: 0 15px 25px rgba(192, 192, 192, 0.4);
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.app-card {
+  animation: fadeInUp 0.6s ease-out forwards, breathe 4s ease-in-out infinite;
+}
+
+.theme-toggle, .sound-toggle {
+  background: var(--premium-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.theme-toggle:hover, .sound-toggle:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(192, 192, 192, 0.1) 0%, transparent 60%),
+               radial-gradient(circle at bottom left, rgba(168, 169, 173, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+@media (max-width: 768px) {
+  .app-card {
+    padding: 2rem;
+  }
+
+  /* Icon size adjustments for mobile are already included in the previous section */
+
+  .app-title {
+    font-size: 1.75rem;
+  }
+
+  .app-link {
+    padding: 0.85rem 1.7rem;
+    font-size: 1rem;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+:root {
+  --premium-gradient: linear-gradient(135deg, #c0c0c0, #e5e4e2, #a8a9ad, #c0c0c0);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
+}
+
+body.light-theme .theme-toggle,
+body.light-theme .sound-toggle {
+  color: var(--text-light);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+body.light-theme .app-title,
+body.light-theme h1 {
+  color: var(--text-light);
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.app-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  transition: opacity 0.3s;
+  opacity: 0;
+}
+
+.app-card:hover::after {
+  opacity: 1;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%) rotate(30deg);
+  }
+  100% {
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+.app-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 350px; 
+}
+
+.app-icon-wrapper {
+  flex-shrink: 0;
+}
+
+.app-title {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-link {
+  align-self: center;
+  margin-top: auto;
+}
+
+body.light-theme {
+  --text-light: #0a1520; 
+}
+
+body.light-theme .app-title,
+body.light-theme h1,
+body.light-theme .theme-toggle,
+body.light-theme .sound-toggle {
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+}
+.app-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.app-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  transform: scale(0.9);
+}
+
+.app-card:hover::before {
+  opacity: 1;
+  transform: scale(1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+}
+</style>
 </head>
 <body>
     <div id="particles-js"></div>
@@ -512,7 +787,7 @@ const apps = [
         title: 'خارجي قوي عاملة', 
         url: 'https://datakid-github-io.vercel.app/', 
         icon: 'fa-briefcase', 
-        gradient: ['#3b82f6', '#60a5fa', '#2563eb'],
+        gradient: ['#4A90E2', '#5A9DE2', '#3A83D2'],
         description: '',
         stats: {}
     },
@@ -520,7 +795,7 @@ const apps = [
         title: 'خارجي طلاب', 
         url: 'https://datakid2.vercel.app/', 
         icon: 'fa-graduation-cap', 
-        gradient: ['#10b981', '#34d399', '#059669'],
+        gradient: ['#50C878', '#60D488', '#40BC68'],
         description: '',
         stats: {}
     },
@@ -528,7 +803,7 @@ const apps = [
         title: 'مجموعات دوائية (سبتمبر)', 
         url: 'https://finalapp-nine.vercel.app/', 
         icon: 'fa-pills', 
-        gradient: ['#663399', '#8a2be2', '#663399'], 
+        gradient: ['#8E44AD', '#9E54BD', '#7E349D'], 
         description: '',
         stats: {}
     },
@@ -536,7 +811,7 @@ const apps = [
         title: 'لستة الادوية', 
         url: 'https://searchbar-five-beta.vercel.app/', 
         icon: 'fa-search', 
-        gradient: ['#14B8A6', '#2DD4BF', '#0D9488'],
+        gradient: ['#20B2AA', '#30C2BA', '#10A29A'],
         description: '',
         stats: {}
     },
@@ -544,7 +819,7 @@ const apps = [
         title: 'المنفذ والتحمل', 
         urls: ['https://newlist-eta.vercel.app/', 'https://newlist2.vercel.app/'],
         icon: 'fa-dollar-sign', 
-        gradient: ['#FF1493', '#FF69B4', '#FF4081'],
+        gradient: ['#E84393', '#F853A3', '#D83383'],
         description: '',
         stats: {}
     },
@@ -552,7 +827,7 @@ const apps = [
         title: 'بروتوكولات الصرف', 
         url: 'https://protocols-one.vercel.app/', 
         icon: 'fa-book', 
-        gradient: ['#FF6F61', '#FF8A65', '#E57373'], 
+        gradient: ['#FF7F50', '#FF6347', '#FF8C69'], 
         description: '',
         stats: {}
     }
