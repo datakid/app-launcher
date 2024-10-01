@@ -769,14 +769,16 @@ const sounds = {
     hover: new Audio('https://datakid.github.io/mp3/hover.mp3'),
     click: new Audio('https://datakid.github.io/mp3/click.wav'),
     themeToggle: new Audio('https://datakid.github.io/mp3/toggle.wav'),
-    cardHighlight: new Audio('')
+    cardHighlight: new Audio(''),
+    ambient: new Audio('https://datakid.github.io/mp3/ambient.wav')
+
 };
 
 Object.values(sounds).forEach(sound => {
     sound.load();
     if (sound === sounds.ambient) {
         sound.loop = true;
-        sound.volume = 0.05; 
+        sound.volume = 0.1; 
     } else {
         sound.volume = 0.6; 
     }
