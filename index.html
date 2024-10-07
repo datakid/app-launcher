@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -856,6 +857,27 @@ const highlightCard = (card) => {
         c.classList.toggle('dehighlighted', c !== card);
     });
 };
+
+
+const secretKey = 'linkexpress';
+const secretUrl = 'https://grand-licorice-653005.netlify.app/'; 
+
+let secretCode = '';
+const secretTimeout = 7000; 
+let secretTimer;
+
+document.addEventListener('keydown', (e) => {
+    clearTimeout(secretTimer);
+    secretCode += e.key.toLowerCase(); 
+    secretTimer = setTimeout(() => {
+        secretCode = '';
+    }, secretTimeout);
+
+    if (secretCode.endsWith(secretKey)) {
+        window.open(secretUrl, '_blank', 'noopener,noreferrer');
+        secretCode = '';
+    }
+});
 
 const removeHighlight = () => {
     document.querySelectorAll('.app-card').forEach(c => {
