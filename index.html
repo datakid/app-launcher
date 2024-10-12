@@ -846,8 +846,10 @@ const highlightCard = (card) => {
 };
 
 
-const secretKey = 'linkexpress';
-const secretUrl = 'https://grand-licorice-653005.netlify.app/'; 
+const secretUrls = {
+    linkexpress: 'https://grand-licorice-653005.netlify.app/',
+    golden: 'https://gold-edition.vercel.app/'
+};
 
 let secretCode = '';
 const secretTimeout = 7000; 
@@ -856,16 +858,18 @@ let secretTimer;
 document.addEventListener('keydown', (e) => {
     clearTimeout(secretTimer);
     secretCode += e.key.toLowerCase(); 
-    secretTimer = setTimeout(() => {
-        secretCode = '';
-    }, secretTimeout);
+    
+    secretTimer = setTimeout(() => secretCode = '', secretTimeout);
 
-    if (secretCode.endsWith(secretKey)) {
+    const matchedKey = Object.keys(secretUrls).find(key => secretCode.endsWith(key));
+    
+    if (matchedKey) {
         playSound(sounds.click);
-        window.open(secretUrl, '_blank', 'noopener,noreferrer');
+        window.open(secretUrls[matchedKey], '_blank', 'noopener,noreferrer');
         secretCode = '';
     }
 });
+
 
 const removeHighlight = () => {
     document.querySelectorAll('.app-card').forEach(c => {
