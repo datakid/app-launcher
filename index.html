@@ -552,11 +552,11 @@ body.light-theme .app-link {
   -webkit-text-fill-color: transparent;
   padding: 10px;
   border-radius: 50%;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);  /* Increased shadow for better visibility */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
 }
 
 .theme-toggle:hover, .sound-toggle:hover {
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);  /* Increased shadow on hover */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
 }
 
 body::before {
@@ -613,8 +613,8 @@ body.light-theme .sound-toggle {
 
 body.light-theme .app-title,
 body.light-theme h1 {
-  color: #030709;  /* Darkened text color for better contrast */
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.25);  /* Increased shadow for better contrast */
+  color: #030709;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.25);
 }
 
 .app-card {
@@ -641,7 +641,7 @@ body.light-theme h1 {
 }
 
 body.light-theme {
-  --text-light: #050b11;  /* Darkened for better contrast */
+  --text-light: #050b11; 
 }
 
 .app-card {
@@ -695,8 +695,8 @@ body.light-theme {
         <i class="fas fa-sun" aria-hidden="true"></i>
         <span class="visually-hidden">Toggle theme</span>
     </button>
-    <button id="soundToggle" class="sound-toggle" aria-label="Toggle sound">
-        <i class="fas fa-volume-up" aria-hidden="true"></i>
+    <button id="soundToggle" class="sound-toggle" aria-label="Unmute sound">
+        <i class="fas fa-volume-mute" aria-hidden="true"></i>
         <span class="visually-hidden">Toggle sound</span>
     </button>
     <div class="container">
@@ -772,7 +772,7 @@ Object.values(sounds).forEach(sound => {
     }
 });
 
-let soundEnabled = true;
+let soundEnabled = false;
 
 const playSound = (sound) => {
     if (soundEnabled && sound !== sounds.ambient) {
@@ -1093,8 +1093,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.particlesJS) {
         window.particlesJS('particles-js', particlesConfig);
     }
-
-    toggleAmbientSound();
 });
     </script>
 </body>
