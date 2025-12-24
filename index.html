@@ -36,8 +36,55 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-dark);
   overflow-x: hidden;
-  background-image: radial-gradient(circle at top right, rgba(192, 192, 192, 0.1) 0%, transparent 60%),
-                    radial-gradient(circle at bottom left, rgba(168, 169, 173, 0.1) 0%, transparent 60%);
+}
+
+#gradient-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, transparent 0%, rgba(15, 22, 36, 0.4) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(192, 192, 192, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(168, 169, 173, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(229, 228, 226, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: morphBackground 15s ease-in-out infinite;
+}
+
+@keyframes morphBackground {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
 }
 
 .container {
@@ -53,36 +100,74 @@ h1 {
   font-weight: 700;
   text-align: center;
   margin-bottom: 3rem;
-  background: var(--premium-gradient);
+  background: linear-gradient(135deg, #e5e4e2 0%, #ffffff 25%, #c0c0c0 50%, #e5e4e2 75%, #a8a9ad 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   position: relative;
   transition: transform var(--transition-speed) ease;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-  letter-spacing: 2px;
+  letter-spacing: 3px;
+  filter: drop-shadow(0 0 20px rgba(192, 192, 192, 0.3)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  animation: titleShimmer 3s linear infinite;
+}
+
+@keyframes titleShimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+h1::before {
+  content: 'LinkExpress';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(192, 192, 192, 0.4), rgba(229, 228, 226, 0.4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: blur(10px);
+  z-index: -1;
+  opacity: 0.7;
 }
 
 h1::after {
   content: '';
   position: absolute;
-  bottom: -10px;
+  bottom: -15px;
   left: 50%;
-  width: 150px;
-  height: 4px;
-  background: var(--premium-gradient);
+  width: 200px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #c0c0c0, #e5e4e2, #c0c0c0, transparent);
   transform: translateX(-50%);
   border-radius: 2px;
-  transition: width var(--transition-speed) ease, transform var(--transition-speed) ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 0 10px rgba(192, 192, 192, 0.5), 0 0 20px rgba(192, 192, 192, 0.3);
+  animation: underlineGlow 2s ease-in-out infinite;
+}
+
+@keyframes underlineGlow {
+  0%, 100% {
+    opacity: 0.6;
+    box-shadow: 0 0 10px rgba(192, 192, 192, 0.5), 0 0 20px rgba(192, 192, 192, 0.3);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(192, 192, 192, 0.8), 0 0 40px rgba(192, 192, 192, 0.5);
+  }
 }
 
 h1:hover {
   transform: scale(1.05);
+  filter: drop-shadow(0 0 30px rgba(192, 192, 192, 0.5)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
 h1:hover::after {
-  width: 200px;
-  transform: translateX(-50%) scaleX(1.2);
+  width: 250px;
+  animation: underlineGlow 1s ease-in-out infinite;
 }
 
 .app-grid {
@@ -104,12 +189,53 @@ h1:hover::after {
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
   border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: var(--premium-shadow);
+  box-shadow: var(--premium-shadow), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   transform-style: preserve-3d;
   animation: breathe 4s ease-in-out infinite;
-  height: 350px; 
+  height: 350px;
+  will-change: transform;
+  user-select: none;
+}
+
+.app-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  transform: scale(0.9);
+}
+
+.app-card:hover::before {
+  opacity: 1;
+  transform: scale(1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
 }
 
 .app-card::after {
@@ -155,7 +281,7 @@ h1:hover::after {
 
 .app-card:hover {
   transform: translateY(-10px) scale(1.05) rotateX(5deg) rotateY(5deg);
-  box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1), 0 15px 12px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px rgba(255, 255, 255, 0.1), 0 20px 15px rgba(255, 255, 255, 0.05);
 }
 
 .app-icon-wrapper {
@@ -170,7 +296,8 @@ h1:hover::after {
   transition: all var(--transition-speed) ease;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.1), inset 0 4px 8px rgba(255,255,255,0.1);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 5px 10px rgba(255,255,255,0.2);
+  flex-shrink: 0;
 }
 
 .app-card:hover .app-icon-wrapper {
@@ -182,7 +309,7 @@ h1:hover::after {
   color: var(--text-dark);
   transition: all var(--transition-speed) ease;
   z-index: 1;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
 }
 
 .app-title {
@@ -195,6 +322,27 @@ h1:hover::after {
   -webkit-text-fill-color: transparent;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
   letter-spacing: 1px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.app-title::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--premium-gradient);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.app-card:hover .app-title::after {
+  transform: scaleX(1);
 }
 
 .app-link {
@@ -214,6 +362,14 @@ h1:hover::after {
   box-shadow: 0 4px 6px rgba(192,192,192,0.1), 0 1px 3px rgba(192,192,192,0.1);
   text-transform: uppercase;
   letter-spacing: 1px;
+  align-self: center;
+  margin-top: auto;
+  border: 2px solid transparent;
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  background-image: linear-gradient(var(--bg-dark), var(--bg-dark)), var(--premium-gradient);
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .app-link::before {
@@ -236,8 +392,8 @@ h1:hover::after {
 
 .app-link:hover {
   color: var(--bg-dark);
-  transform: scale(1.05) rotate(3deg);
-  box-shadow: 0 10px 20px rgba(192, 192, 192, 0.3);
+  transform: scale(1.05) translateY(-3px) rotate(2deg);
+  box-shadow: 0 15px 25px rgba(192, 192, 192, 0.4);
 }
 
 .app-link:hover::before {
@@ -267,19 +423,33 @@ h1:hover::after {
   position: fixed;
   top: 1.5rem;
   right: 1.5rem;
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 2.5rem;
   cursor: pointer;
   z-index: 10;
-  color: var(--text-dark);
   transition: all var(--transition-speed) ease;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
   outline: none;
+  padding: 0.75rem;
+  border-radius: 50%;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  color: var(--text-dark);
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle i {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .theme-toggle:hover {
   transform: rotate(180deg) scale(1.1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .theme-toggle:focus {
@@ -294,8 +464,17 @@ h1:hover::after {
 body.light-theme {
   background-color: var(--bg-light);
   color: var(--text-light);
-  background-image: radial-gradient(circle at top right, rgba(192, 192, 192, 0.1) 0%, transparent 60%),
-                    radial-gradient(circle at bottom left, rgba(168, 169, 173, 0.1) 0%, transparent 60%);
+}
+
+body.light-theme::before {
+  background: linear-gradient(180deg, transparent 0%, rgba(240, 244, 248, 0.3) 100%);
+}
+
+body.light-theme::after {
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(192, 192, 192, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(168, 169, 173, 0.2) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(229, 228, 226, 0.15) 0%, transparent 50%);
 }
 
 body.light-theme .app-card {
@@ -323,32 +502,85 @@ body.light-theme .app-icon {
 }
 
 body.light-theme .theme-toggle {
+  background: rgba(30, 41, 59, 0.1);
+  border: 1px solid rgba(30, 41, 59, 0.2);
   color: var(--text-light);
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+body.light-theme .theme-toggle i {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+body.light-theme .theme-toggle:hover {
+  background: rgba(30, 41, 59, 0.15);
+}
+
+body.light-theme .sound-toggle {
+  background: rgba(30, 41, 59, 0.1);
+  border: 1px solid rgba(30, 41, 59, 0.2);
+  color: var(--text-light);
+}
+
+body.light-theme .sound-toggle i {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+body.light-theme .sound-toggle:hover {
+  background: rgba(30, 41, 59, 0.15);
 }
 
 body.light-theme .app-title {
-  background: var(--premium-gradient);
+  color: #030709;
+}
+
+body.light-theme h1 {
+  background: linear-gradient(135deg, #6b7280 0%, #1e293b 25%, #475569 50%, #334155 75%, #64748b 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  color: var(--text-light);
+  filter: drop-shadow(0 0 15px rgba(30, 41, 59, 0.2)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+body.light-theme h1::before {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.3), rgba(71, 85, 105, 0.3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.light-theme h1::after {
+  background: linear-gradient(90deg, transparent, #475569, #1e293b, #475569, transparent);
+  box-shadow: 0 0 8px rgba(30, 41, 59, 0.4), 0 0 15px rgba(30, 41, 59, 0.2);
+}
+
+@keyframes underlineGlowLight {
+  0%, 100% {
+    opacity: 0.5;
+    box-shadow: 0 0 8px rgba(30, 41, 59, 0.4), 0 0 15px rgba(30, 41, 59, 0.2);
+  }
+  50% {
+    opacity: 0.9;
+    box-shadow: 0 0 15px rgba(30, 41, 59, 0.6), 0 0 30px rgba(30, 41, 59, 0.3);
+  }
+}
+
+body.light-theme h1::after {
+  animation: underlineGlowLight 2s ease-in-out infinite;
+}
+
+body.light-theme h1:hover {
+  filter: drop-shadow(0 0 25px rgba(30, 41, 59, 0.3)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+body.light-theme h1:hover::after {
+  animation: underlineGlowLight 1s ease-in-out infinite;
 }
 
 body.light-theme .app-link {
-  background: var(--premium-gradient);
-  color: var(--bg-light);
+  background-image: linear-gradient(var(--bg-light), var(--bg-light)), var(--premium-gradient);
 }
 
 body.light-theme .app-link:hover {
   color: var(--bg-light);
-}
-
-body.light-theme h1 {
-  background: var(--premium-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
-  color: var(--text-light);
 }
 
 @keyframes fadeInUp {
@@ -377,7 +609,6 @@ body.light-theme h1 {
   }
 
   h1 {
-    font-size: 3rem;
     margin-bottom: 2.5rem;
   }
 
@@ -387,7 +618,8 @@ body.light-theme h1 {
 
   .app-card {
     height: auto; 
-    min-height: 300px; 
+    min-height: 300px;
+    padding: 2rem;
   }
 
   .app-icon-wrapper {
@@ -398,6 +630,15 @@ body.light-theme h1 {
   .app-icon {
     font-size: 3.5rem;
   }
+
+  .app-title {
+    font-size: 1.75rem;
+  }
+
+  .app-link {
+    padding: 0.85rem 1.7rem;
+    font-size: 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -407,16 +648,6 @@ body.light-theme h1 {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-#particles-js {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
 }
 
 .visually-hidden {
@@ -431,15 +662,12 @@ body.light-theme h1 {
   border: 0;
 }
 
-.app-card {
-  will-change: transform;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .app-card {
     transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.3s ease, opacity 0.3s ease;
   }
 }
+
 .app-card.highlighted {
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
   z-index: 2;
@@ -455,242 +683,38 @@ body.light-theme h1 {
   position: fixed;
   top: 1.5rem;
   left: 1.5rem;
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   font-size: 2.5rem;
   cursor: pointer;
   z-index: 10;
-  color: var(--text-dark);
   transition: all var(--transition-speed) ease;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
   outline: none;
-}
-
-.sound-toggle:hover {
-  transform: scale(1.1);
-}
-
-body.light-theme .sound-toggle {
-  color: var(--text-light);
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
-}
-
-.app-card {
-  backdrop-filter: blur(15px);
-  box-shadow: var(--premium-shadow), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-}
-
-.app-card:hover {
-  box-shadow: 0 25px 50px rgba(255, 255, 255, 0.1), 0 20px 15px rgba(255, 255, 255, 0.05);
-}
-
-.app-icon-wrapper {
-  background: var(--premium-gradient);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 5px 10px rgba(255,255,255,0.2);
-}
-
-.app-icon {
-  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
-}
-
-.app-title {
-  position: relative;
-  display: inline-block;
-}
-
-.app-title::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--premium-gradient);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.app-card:hover .app-title::after {
-  transform: scaleX(1);
-}
-
-.app-link {
-  border: 2px solid transparent;
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  background-image: linear-gradient(var(--bg-dark), var(--bg-dark)), var(--premium-gradient);
-}
-
-body.light-theme .app-link {
-  background-image: linear-gradient(var(--bg-light), var(--bg-light)), var(--premium-gradient);
-}
-
-.app-link:hover {
-  transform: scale(1.05) translateY(-3px) rotate(2deg);
-  box-shadow: 0 15px 25px rgba(192, 192, 192, 0.4);
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-.app-card {
-  animation: fadeInUp 0.6s ease-out forwards, breathe 4s ease-in-out infinite;
-}
-
-.theme-toggle, .sound-toggle {
-  background: var(--premium-gradient);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  padding: 10px;
+  padding: 0.75rem;
   border-radius: 50%;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
-}
-
-.theme-toggle:hover, .sound-toggle:hover {
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top right, rgba(192, 192, 192, 0.1) 0%, transparent 60%),
-               radial-gradient(circle at bottom left, rgba(168, 169, 173, 0.1) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: -1;
-}
-
-@media (max-width: 768px) {
-  .app-card {
-    padding: 2rem;
-  }
-
-  .app-title {
-    font-size: 1.75rem;
-  }
-
-  .app-link {
-    padding: 0.85rem 1.7rem;
-    font-size: 1rem;
-  }
-}
-
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-:root {
-  --premium-gradient: linear-gradient(135deg, #c0c0c0, #e5e4e2, #a8a9ad, #c0c0c0);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-}
-
-body.light-theme .theme-toggle,
-body.light-theme .sound-toggle {
-  color: var(--text-light);
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-}
-
-body.light-theme .app-title,
-body.light-theme h1 {
-  color: #030709;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.25);
-}
-
-.app-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 350px; 
-}
-
-.app-icon-wrapper {
-  flex-shrink: 0;
-}
-
-.app-title {
-  flex-grow: 1;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  color: var(--text-dark);
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.app-link {
-  align-self: center;
-  margin-top: auto;
+.sound-toggle i {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-body.light-theme {
-  --text-light: #050b11; 
-}
-
-.app-card {
-  position: relative;
-  overflow: hidden;
-}
-
-.app-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-  transform: scale(0.9);
-}
-
-.app-card:hover::before {
-  opacity: 1;
-  transform: scale(1);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.95);
-    opacity: 0.7;
-  }
+.sound-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  background: rgba(255, 255, 255, 0.15);
 }
 </style>
 </head>
 <body>
-    <div id="particles-js"></div>
+    <canvas id="gradient-canvas"></canvas>
     <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
         <i class="fas fa-sun" aria-hidden="true"></i>
         <span class="visually-hidden">Toggle theme</span>
@@ -704,9 +728,8 @@ body.light-theme {
         <div class="app-grid" id="appGrid"></div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script>
-    const apps = [
+const apps = [
     { 
         title: 'خارجي قوي عاملة', 
         url: 'https://datakid-github-io.vercel.app/', 
@@ -759,7 +782,6 @@ const sounds = {
     themeToggle: new Audio('https://datakid.github.io/mp3/toggle.wav'),
     cardHighlight: new Audio(''),
     ambient: new Audio('https://datakid.github.io/mp3/ambient.wav')
-
 };
 
 Object.values(sounds).forEach(sound => {
@@ -792,6 +814,10 @@ const toggleAmbientSound = () => {
 const createAppCard = (app) => {
     const card = document.createElement('div');
     card.className = 'app-card';
+    card.setAttribute('data-url', app.url || '#');
+    if (app.urls) {
+        card.setAttribute('data-multiple-urls', JSON.stringify(app.urls));
+    }
     
     const gradientColors = app.gradient.map(color => `${color}22`).join(', ');
     const buttonGradient = app.gradient.join(', ');
@@ -819,7 +845,7 @@ const createAppCard = (app) => {
         <div class="app-status">
             <span class="status-text">${statusText}</span>
         </div>
-        <a href="${app.url || '#'}" class="app-link" style="background: linear-gradient(135deg, ${buttonGradient})" target="_blank" rel="noopener noreferrer" ${app.urls ? `data-multiple-urls='${JSON.stringify(app.urls)}'` : ''}>
+        <a href="${app.url || '#'}" class="app-link" style="background: linear-gradient(135deg, ${buttonGradient})" target="_blank" rel="noopener noreferrer">
             ${buttonText} <i class="fas ${iconClass}" aria-hidden="true"></i>
             <span class="visually-hidden">${buttonText} ${app.title}</span>
         </a>
@@ -846,7 +872,6 @@ const highlightCard = (card) => {
     });
 };
 
-
 const secretUrls = {
     linkexpress: 'https://grand-licorice-653005.netlify.app/',
     golden: 'https://gold-edition.vercel.app/'
@@ -871,7 +896,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-
 const removeHighlight = () => {
     document.querySelectorAll('.app-card').forEach(c => {
         c.classList.remove('highlighted', 'dehighlighted');
@@ -891,75 +915,9 @@ const toggleTheme = () => {
         : '<i class="fas fa-sun" aria-hidden="true"></i><span class="visually-hidden">Switch to light mode</span>';
     themeToggle.setAttribute('aria-label', `Switch to ${isLightTheme ? 'dark' : 'light'} mode`);
     
-    updateParticlesConfig(isLightTheme);
-};
-
-const updateParticlesConfig = (isLightMode) => {
-    const particlesConfig = {
-        particles: {
-            number: { value: window.innerWidth < 768 ? 60 : 80, density: { enable: true, value_area: 800 } },
-            color: { value: isLightMode ? '#1e293b' : '#e2e8f0' },
-            shape: { 
-                type: isLightMode ? ['star', 'circle', 'triangle', 'polygon'] : ['circle', 'triangle', 'polygon', 'star'],
-                stroke: { width: 0, color: '#000000' },
-                polygon: { nb_sides: 5 },
-                image: { src: 'img/github.svg', width: 100, height: 100 }
-            },
-            opacity: { 
-                value: 0.5, 
-                random: true, 
-                anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } 
-            },
-            size: { 
-                value: 3, 
-                random: true, 
-                anim: { enable: true, speed: 2, size_min: 0.1, sync: false } 
-            },
-            line_linked: { 
-                enable: true, 
-                distance: 150, 
-                color: isLightMode ? '#1e293b' : '#e2e8f0', 
-                opacity: 0.4, 
-                width: 1 
-            },
-            move: { 
-                enable: true, 
-                speed: isLightMode ? 4 : 2, 
-                direction: isLightMode ? 'bottom' : 'none', 
-                random: false, 
-                straight: false, 
-                out_mode: 'out', 
-                bounce: false,
-                attract: { enable: true, rotateX: 600, rotateY: 1200 }
-            }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: { 
-                onhover: { enable: true, mode: 'repulse' }, 
-                onclick: { enable: true, mode: 'push' }, 
-                resize: true 
-            },
-            modes: { 
-                repulse: { distance: 100, duration: 0.4 }, 
-                push: { particles_nb: 4 }
-            }
-        },
-        retina_detect: true
-    };
-
-    if (isLightMode) {
-        particlesConfig.particles.move.gravity = {
-            enable: true,
-            acceleration: 2
-        };
+    if (gradientAnim) {
+        gradientAnim.resize();
     }
-
-    if (window.pJSDom && window.pJSDom[0].pJS) {
-        window.pJSDom[0].pJS.fn.vendors.destroypJS();
-        window.pJSDom = [];
-    }
-    particlesJS('particles-js', particlesConfig);
 };
 
 const toggleSound = () => {
@@ -987,68 +945,218 @@ const debounce = (func, wait) => {
 const debouncedPlayHoverSound = debounce(() => playSound(sounds.hover), 100);
 
 const handleResize = debounce(() => {
-    if (!window.pJSDom || !window.pJSDom[0] || !window.pJSDom[0].pJS) return;
-    
-    const pJS = window.pJSDom[0].pJS;
-    pJS.particles.number.value = window.innerWidth < 768 ? 60 : 80;
-    pJS.fn.particlesRefresh();
+    const canvas = document.getElementById('gradient-canvas');
+    if (canvas && gradientAnim) {
+        gradientAnim.resize();
+    }
 }, 250);
 
-const particlesConfig = {
-    particles: {
-        number: { value: 93, density: { enable: true, value_area: 800 } },
-        color: { value: '#e2e8f0' },
-        shape: { 
-            type: ['circle', 'triangle', 'polygon', 'star'],
-            stroke: { width: 0, color: '#000000' },
-            polygon: { nb_sides: 5 },
-            image: { src: 'img/github.svg', width: 100, height: 100 }
-        },
-        opacity: { 
-            value: 0.5, 
-            random: true, 
-            anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } 
-        },
-        size: { 
-            value: 3, 
-            random: true, 
-            anim: { enable: true, speed: 2, size_min: 0.1, sync: false } 
-        },
-        line_linked: { 
-            enable: true, 
-            distance: 150, 
-            color: '#e2e8f0', 
-            opacity: 0.4, 
-            width: 1 
-        },
-        move: { 
-            enable: true, 
-            speed: 2, 
-            direction: 'none', 
-            random: false, 
-            straight: false, 
-            out_mode: 'out', 
-            bounce: false,
-            attract: { enable: true, rotateX: 600, rotateY: 1200 }
+class GradientAnimation {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        
+        this.orbs = [];
+        this.particles = [];
+        this.time = 0;
+        this.mouseX = window.innerWidth / 2;
+        this.mouseY = window.innerHeight / 2;
+        this.initOrbs();
+        this.initParticles();
+        this.setupMouseTracking();
+        this.animate();
+    }
+    
+    setupMouseTracking() {
+        document.addEventListener('mousemove', (e) => {
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
+        });
+    }
+    
+    initOrbs() {
+        const orbCount = window.innerWidth < 768 ? 3 : 5;
+        const isLight = document.body.classList.contains('light-theme');
+        
+        for (let i = 0; i < orbCount; i++) {
+            this.orbs.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                radius: Math.random() * 250 + 150,
+                vx: (Math.random() - 0.5) * (isLight ? 0.6 : 0.4),
+                vy: (Math.random() - 0.5) * (isLight ? 0.6 : 0.4),
+                hue: isLight ? Math.random() * 30 + 210 : Math.random() * 60 + 180,
+                phase: Math.random() * Math.PI * 2
+            });
         }
-    },
-    interactivity: {
-        detect_on: 'canvas',
-        events: { 
-            onhover: { enable: true, mode: 'repulse' }, 
-            onclick: { enable: true, mode: 'push' }, 
-            resize: true 
-        },
-        modes: { 
-            repulse: { distance: 100, duration: 0.4 }, 
-            push: { particles_nb: 4 }
+    }
+    
+    initParticles() {
+        const isLight = document.body.classList.contains('light-theme');
+        if (isLight) {
+            const particleCount = window.innerWidth < 768 ? 15 : 25;
+            for (let i = 0; i < particleCount; i++) {
+                this.particles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: Math.random() * this.canvas.height,
+                    size: Math.random() * 1.5 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: (Math.random() - 0.5) * 0.3,
+                    opacity: Math.random() * 0.3 + 0.1,
+                    hue: Math.random() * 30 + 210
+                });
+            }
         }
-    },
-    retina_detect: true
+    }
+    
+    animate() {
+        this.time += 0.005;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        const isLight = document.body.classList.contains('light-theme');
+        
+        this.orbs.forEach((orb, index) => {
+            const mouseDistX = this.mouseX - orb.x;
+            const mouseDistY = this.mouseY - orb.y;
+            const mouseDist = Math.sqrt(mouseDistX * mouseDistX + mouseDistY * mouseDistY);
+            const mouseInfluence = Math.max(0, 1 - mouseDist / 300) * (isLight ? 1.2 : 1);
+            
+            orb.x += orb.vx + Math.sin(this.time * 2 + orb.phase) * 0.8 + mouseDistX * mouseInfluence * 0.015;
+            orb.y += orb.vy + Math.cos(this.time * 2 + orb.phase) * 0.8 + mouseDistY * mouseInfluence * 0.015;
+            
+            if (orb.x < -orb.radius) orb.x = this.canvas.width + orb.radius;
+            if (orb.x > this.canvas.width + orb.radius) orb.x = -orb.radius;
+            if (orb.y < -orb.radius) orb.y = this.canvas.height + orb.radius;
+            if (orb.y > this.canvas.height + orb.radius) orb.y = -orb.radius;
+            
+            const gradient = this.ctx.createRadialGradient(
+                orb.x, orb.y, 0,
+                orb.x, orb.y, orb.radius
+            );
+            
+            if (isLight) {
+                const intensity = 0.12 + Math.sin(this.time * 3 + index) * 0.03;
+                gradient.addColorStop(0, `hsla(${orb.hue}, 60%, 55%, ${intensity})`);
+                gradient.addColorStop(0.3, `hsla(${orb.hue}, 55%, 65%, ${intensity * 0.6})`);
+                gradient.addColorStop(0.6, `hsla(${orb.hue}, 50%, 75%, ${intensity * 0.3})`);
+                gradient.addColorStop(1, 'hsla(0, 0%, 100%, 0)');
+            } else {
+                const intensity = 0.15 + Math.sin(this.time * 2 + index) * 0.03;
+                gradient.addColorStop(0, `hsla(${orb.hue}, 75%, 65%, ${intensity})`);
+                gradient.addColorStop(0.4, `hsla(${orb.hue}, 70%, 60%, ${intensity * 0.6})`);
+                gradient.addColorStop(0.7, `hsla(${orb.hue}, 65%, 55%, ${intensity * 0.3})`);
+                gradient.addColorStop(1, 'hsla(0, 0%, 0%, 0)');
+            }
+            
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        });
+        
+        if (isLight && this.particles.length > 0) {
+            this.particles.forEach((particle, index) => {
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+                
+                if (particle.x < 0) particle.x = this.canvas.width;
+                if (particle.x > this.canvas.width) particle.x = 0;
+                if (particle.y < 0) particle.y = this.canvas.height;
+                if (particle.y > this.canvas.height) particle.y = 0;
+                
+                particle.opacity = 0.15 + Math.sin(this.time * 3 + index) * 0.08;
+                
+                this.ctx.beginPath();
+                this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                this.ctx.fillStyle = `hsla(${particle.hue}, 50%, 45%, ${particle.opacity})`;
+                this.ctx.fill();
+                
+                const gradient = this.ctx.createRadialGradient(
+                    particle.x, particle.y, 0,
+                    particle.x, particle.y, particle.size * 3
+                );
+                gradient.addColorStop(0, `hsla(${particle.hue}, 60%, 55%, ${particle.opacity * 0.2})`);
+                gradient.addColorStop(1, 'hsla(0, 0%, 100%, 0)');
+                
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(
+                    particle.x - particle.size * 3,
+                    particle.y - particle.size * 3,
+                    particle.size * 6,
+                    particle.size * 6
+                );
+            });
+        }
+        
+        if (isLight) {
+            for (let i = 0; i < this.particles.length; i++) {
+                for (let j = i + 1; j < this.particles.length; j++) {
+                    const dx = this.particles[i].x - this.particles[j].x;
+                    const dy = this.particles[i].y - this.particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 120) {
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+                        this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+                        this.ctx.strokeStyle = `hsla(210, 50%, 45%, ${0.06 * (1 - distance / 120)})`;
+                        this.ctx.lineWidth = 0.5;
+                        this.ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        requestAnimationFrame(() => this.animate());
+    }
+    
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.orbs = [];
+        this.particles = [];
+        this.initOrbs();
+        this.initParticles();
+    }
+}
+
+const detectSystemTheme = () => {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        return 'light';
+    }
+    return 'dark';
 };
 
+const applySystemTheme = () => {
+    const systemTheme = detectSystemTheme();
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    
+    if (systemTheme === 'light') {
+        body.classList.add('light-theme');
+        themeToggle.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i><span class="visually-hidden">Switch to dark mode</span>';
+        themeToggle.setAttribute('aria-label', 'Switch to dark mode');
+    } else {
+        body.classList.remove('light-theme');
+        themeToggle.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i><span class="visually-hidden">Switch to light mode</span>';
+        themeToggle.setAttribute('aria-label', 'Switch to light mode');
+    }
+    
+    if (gradientAnim) {
+        gradientAnim.resize();
+    }
+};
+
+let gradientAnim;
+
 document.addEventListener('DOMContentLoaded', () => {
+    applySystemTheme();
     renderApps();
+    
+    const canvas = document.getElementById('gradient-canvas');
+    if (canvas) {
+        gradientAnim = new GradientAnimation(canvas);
+    }
     
     const themeToggle = document.getElementById('themeToggle');
     const soundToggle = document.getElementById('soundToggle');
@@ -1058,14 +1166,29 @@ document.addEventListener('DOMContentLoaded', () => {
     soundToggle.addEventListener('click', toggleSound);
     
     appGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.app-card');
         const link = e.target.closest('.app-link');
+        
         if (link) {
             playSound(sounds.click);
-            if (link.getAttribute('data-multiple-urls')) {
+            const multipleUrls = card.getAttribute('data-multiple-urls');
+            if (multipleUrls) {
                 e.preventDefault();
-                const urls = JSON.parse(link.getAttribute('data-multiple-urls'));
+                const urls = JSON.parse(multipleUrls);
                 const randomUrl = urls[Math.floor(Math.random() * urls.length)];
                 window.open(randomUrl, '_blank', 'noopener,noreferrer');
+            }
+        } else if (card && !link) {
+            playSound(sounds.click);
+            const url = card.getAttribute('data-url');
+            const multipleUrls = card.getAttribute('data-multiple-urls');
+            
+            if (multipleUrls) {
+                const urls = JSON.parse(multipleUrls);
+                const randomUrl = urls[Math.floor(Math.random() * urls.length)];
+                window.open(randomUrl, '_blank', 'noopener,noreferrer');
+            } else if (url && url !== '#') {
+                window.open(url, '_blank', 'noopener,noreferrer');
             }
         }
     });
@@ -1081,7 +1204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-  appGrid.addEventListener('mouseout', (e) => {
+    appGrid.addEventListener('mouseout', (e) => {
         if (!e.relatedTarget || !e.relatedTarget.closest('.app-card')) {
             removeHighlight();
             currentHighlightedCard = null;
@@ -1090,8 +1213,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('resize', handleResize);
     
-    if (window.particlesJS) {
-        window.particlesJS('particles-js', particlesConfig);
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
+            applySystemTheme();
+        });
     }
 });
     </script>
