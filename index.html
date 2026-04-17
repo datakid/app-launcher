@@ -3,33 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LinkExpress</title>
+<title>LinkExpress Ultra</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
 :root {
-  --bg: #080c16;
-  --bg-light: #f4f6f9;
-  --surface: rgba(255,255,255,0.025);
-  --surface-hover: rgba(255,255,255,0.05);
-  --border: rgba(255,255,255,0.06);
-  --border-top: rgba(255,255,255,0.12);
+  --bg: #03050a;
+  --bg-light: #eaeff4;
+  --surface: rgba(255, 255, 255, 0.015);
+  --surface-hover: rgba(255, 255, 255, 0.035);
+  --border: rgba(255, 255, 255, 0.05);
+  --border-highlight: rgba(255, 255, 255, 0.15);
   --text: #ffffff;
-  --text-light: #0d1117;
-  --shadow-a: 0 4px 24px rgba(0,0,0,0.2);
-  --shadow-b: 0 1px 2px rgba(0,0,0,0.4);
-  --card-shadow: var(--shadow-a), var(--shadow-b);
-  --card-shadow-hover: 0 12px 40px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.5);
-  --radius: 28px;
-  --gap: 1.25rem;
-  --speed: 0.5s;
-  --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --ease: cubic-bezier(0.25, 1, 0.5, 1);
-  --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --shadow-base: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 20px -5px var(--c1);
+  --radius: 32px;
+  --gap: 1.5rem;
+  --spring: cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --spring-bouncy: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.08'/%3E%3C/svg%3E");
 }
 
-*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+body.light-theme {
+  --bg: var(--bg-light);
+  --surface: rgba(255, 255, 255, 0.6);
+  --surface-hover: rgba(255, 255, 255, 0.9);
+  --border: rgba(0, 0, 0, 0.04);
+  --border-highlight: rgba(255, 255, 255, 1);
+  --text: #0a0d14;
+  --text-muted: rgba(0, 0, 0, 0.5);
+  --shadow-base: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.1), 0 8px 16px -4px rgba(0, 0, 0, 0.05);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
   font-family: 'Cairo', sans-serif;
@@ -41,7 +55,8 @@ body {
   align-items: center;
   justify-content: center;
   overflow-x: hidden;
-  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
+  transition: background 0.7s var(--ease-out), color 0.7s var(--ease-out);
+  perspective: 1000px;
 }
 
 #gradient-canvas {
@@ -49,14 +64,28 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  filter: blur(60px);
+  transform: scale(1.2);
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 30%, var(--bg) 110%);
+  transition: background 0.7s var(--ease-out);
 }
 
 .container {
   width: 100%;
-  max-width: 1240px;
-  padding: clamp(1.5rem, 4vw, 3rem);
+  max-width: 1300px;
+  padding: clamp(2rem, 5vw, 4rem);
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 6vw, 5rem);
 }
 
 .site-header {
@@ -64,97 +93,107 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  animation: slideDown 1.2s var(--spring-bouncy) both;
 }
 
 h1 {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(3.5rem, 6vw, 6rem);
-  letter-spacing: 0.05em;
-  background: linear-gradient(135deg, #d0d0d0 0%, #ffffff 30%, #b8b8b8 55%, #e8e8e8 75%, #a0a0a0 100%);
+  font-size: clamp(4rem, 8vw, 7.5rem);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  background: linear-gradient(135deg, #fff 0%, #a5b4fc 50%, #fff 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: shimmerTitle 4s linear infinite;
-  filter: drop-shadow(0 0 24px rgba(255,255,255,0.15)) drop-shadow(0 4px 8px rgba(0,0,0,0.6));
+  animation: textShine 6s linear infinite;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
   position: relative;
 }
 
-@keyframes shimmerTitle {
-  0% { background-position: 0% center; }
-  100% { background-position: 200% center; }
+body.light-theme h1 {
+  background: linear-gradient(135deg, #0f172a 0%, #3b82f6 50%, #0f172a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
 }
 
-h1::after {
-  content: '';
-  position: absolute;
-  bottom: -16px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 140px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
-  animation: lineGlow 3s ease-in-out infinite;
+@keyframes textShine {
+  to { background-position: 200% center; }
 }
 
-@keyframes lineGlow {
-  0%,100% { opacity: 0.4; width: 100px; }
-  50% { opacity: 1; width: 180px; }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-40px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .controls-pill {
   position: fixed;
-  top: 1.5rem;
-  left: 1.5rem;
+  top: 2rem;
+  left: 2rem;
   display: flex;
   align-items: center;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid var(--border);
   border-radius: 50px;
-  padding: 0.35rem;
-  gap: 0.1rem;
+  padding: 0.4rem;
+  gap: 0.2rem;
   z-index: 100;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.05);
+  transition: all 0.5s var(--ease-out);
+}
+
+body.light-theme .controls-pill {
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05), inset 0 1px 1px #fff;
 }
 
 .controls-pill button {
   background: transparent;
   border: none;
   color: var(--text);
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1.05rem;
-  transition: all 0.3s var(--spring);
-  outline: none;
+  font-size: 1.1rem;
+  transition: all 0.4s var(--spring-bouncy);
 }
 
 .controls-pill button:hover {
-  background: rgba(255,255,255,0.12);
-  transform: scale(1.15);
+  background: var(--surface-hover);
+  transform: scale(1.1) rotate(5deg);
+  color: #fff;
+}
+
+body.light-theme .controls-pill button:hover {
+  background: rgba(0,0,0,0.04);
+  color: #000;
 }
 
 .controls-divider {
   width: 1px;
-  height: 20px;
-  background: rgba(255,255,255,0.15);
+  height: 24px;
+  background: var(--border);
   margin: 0 0.2rem;
 }
 
 .app-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 240px 240px 180px;
+  grid-auto-rows: 260px;
   gap: var(--gap);
+  perspective: 1200px;
+  transform-style: preserve-3d;
 }
 
 .app-card {
@@ -166,123 +205,172 @@ h1::after {
   border-radius: var(--radius);
   background: var(--surface);
   border: 1px solid var(--border);
-  box-shadow: var(--card-shadow), inset 0 1px 0 var(--border-top);
-  overflow: hidden;
-  padding: 1.8rem;
+  box-shadow: var(--shadow-base), inset 0 1px 1px rgba(255,255,255,0.05);
+  padding: 2rem;
   cursor: pointer;
-  transition: transform var(--speed) var(--spring), box-shadow var(--speed) var(--ease), border-color var(--speed) var(--ease), filter var(--speed) var(--ease), opacity var(--speed) var(--ease);
-  animation: fadeUp 0.6s var(--ease) both;
-  will-change: transform, filter, opacity;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  will-change: transform, box-shadow, filter, opacity;
+  transition: box-shadow 0.5s var(--ease-out), border-color 0.5s var(--ease-out), filter 0.6s var(--ease-out), opacity 0.6s var(--ease-out), background 0.5s var(--ease-out);
+  animation: cardEnter 0.8s var(--spring-bouncy) both;
 }
 
-.app-card::before {
-  content: '';
+@keyframes cardEnter {
+  from { opacity: 0; transform: translate3d(0, 60px, -100px) rotateX(10deg); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) rotateX(0deg); }
+}
+
+.app-card:nth-child(1) { animation-delay: 0.1s; grid-column: span 1; }
+.app-card:nth-child(2) { animation-delay: 0.2s; grid-column: span 2; }
+.app-card:nth-child(3) { animation-delay: 0.3s; grid-column: span 1; }
+.app-card:nth-child(4) { animation-delay: 0.4s; grid-column: span 2; }
+.app-card:nth-child(5) { animation-delay: 0.5s; grid-column: span 1; }
+.app-card:nth-child(6) { animation-delay: 0.6s; grid-column: span 1; }
+.app-card:nth-child(7) { animation-delay: 0.7s; grid-column: span 4; }
+
+.card-noise {
   position: absolute;
   inset: 0;
   background-image: var(--noise);
+  opacity: 0.8;
+  mix-blend-mode: overlay;
   pointer-events: none;
   z-index: 1;
+  border-radius: inherit;
+}
+
+.card-glare {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(circle 400px at var(--mx, 50%) var(--my, -20%), rgba(255,255,255,0.1), transparent 40%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.4s var(--ease-out);
+  mix-blend-mode: overlay;
+}
+
+body.light-theme .card-glare {
+  background: radial-gradient(circle 400px at var(--mx, 50%) var(--my, -20%), rgba(255,255,255,0.8), transparent 50%);
+  mix-blend-mode: normal;
 }
 
 .card-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 0%, var(--c1), transparent 70%);
-  opacity: 0.08;
-  transition: opacity var(--speed) var(--ease), transform var(--speed) var(--ease);
+  background: radial-gradient(circle 500px at var(--mx, 50%) var(--my, 150%), var(--c1), transparent 60%);
+  opacity: 0;
+  pointer-events: none;
   z-index: 0;
+  transition: opacity 0.5s var(--ease-out);
 }
 
 .app-card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: var(--card-shadow-hover), inset 0 1px 0 rgba(255,255,255,0.25);
-  border-color: rgba(255,255,255,0.18);
   background: var(--surface-hover);
+  box-shadow: var(--shadow-hover), inset 0 1px 2px rgba(255,255,255,0.1);
+  border-color: var(--border-highlight);
+  z-index: 10;
 }
 
-.app-card:hover .card-glow {
-  opacity: 0.2;
-  transform: translateY(10px) scale(1.1);
+body.light-theme .app-card:hover {
+  box-shadow: var(--shadow-hover), inset 0 2px 5px rgba(255,255,255,1);
 }
 
-.app-card:nth-child(1) { animation-delay: 0.05s; grid-column: span 1; }
-.app-card:nth-child(2) { animation-delay: 0.12s; grid-column: span 2; }
-.app-card:nth-child(3) { animation-delay: 0.19s; grid-column: span 1; }
-.app-card:nth-child(4) { animation-delay: 0.26s; grid-column: span 2; }
-.app-card:nth-child(5) { animation-delay: 0.33s; grid-column: span 1; }
-.app-card:nth-child(6) { animation-delay: 0.40s; grid-column: span 1; }
-.app-card:nth-child(7) { animation-delay: 0.47s; grid-column: span 4; }
+.app-card:hover .card-glare { opacity: 1; }
+.app-card:hover .card-glow { opacity: 0.15; }
+body.light-theme .app-card:hover .card-glow { opacity: 0.08; }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px) scale(0.95); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+.bento-header, .bento-footer {
+  position: relative;
+  z-index: 3;
+  transform: translateZ(30px);
+  display: flex;
+  width: 100%;
 }
 
 .bento-header {
-  display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  width: 100%;
-  z-index: 2;
+}
+
+.bento-footer {
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
 .app-icon-wrapper {
-  width: 64px;
-  height: 64px;
-  border-radius: 18px;
+  width: 68px;
+  height: 68px;
+  border-radius: 20px;
   background: linear-gradient(135deg, var(--c1), var(--c3));
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.2);
-  transition: transform var(--speed) var(--spring);
+  box-shadow: 0 10px 20px -5px rgba(0,0,0,0.4), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
+  transition: transform 0.6s var(--spring-bouncy), box-shadow 0.4s var(--ease-out);
+  position: relative;
 }
 
-.card-wide .app-icon-wrapper { width: 72px; height: 72px; border-radius: 20px; }
-.card-hero .app-icon-wrapper { width: 84px; height: 84px; border-radius: 24px; }
+.app-icon-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 20px var(--c2);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-out);
+}
+
+.app-card:hover .app-icon-wrapper {
+  transform: scale(1.15) rotate(-6deg) translateZ(20px);
+  box-shadow: 0 15px 30px -5px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.2);
+}
+
+.app-card:hover .app-icon-wrapper::after { opacity: 0.4; }
 
 .app-icon {
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   color: #fff;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
 
-.card-wide .app-icon { font-size: 1.9rem; }
-.card-hero .app-icon { font-size: 2.4rem; }
-
-.app-card:hover .app-icon-wrapper {
-  transform: scale(1.12) rotate(-8deg);
-}
-
 .badges {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.6rem;
   flex-direction: row-reverse;
+  transform: translateZ(20px);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.8rem;
+  gap: 0.4rem;
+  padding: 0.4rem 0.9rem;
   border-radius: 50px;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.4s var(--ease-out);
 }
 
+body.light-theme .badge { background: rgba(255,255,255,0.6); border-color: rgba(0,0,0,0.05); }
+
 .badge-new {
-  background: rgba(245, 166, 35, 0.15);
-  border: 1px solid rgba(245, 166, 35, 0.3);
-  color: #f7c948;
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.3);
+  background: rgba(251, 191, 36, 0.1);
 }
 
 .badge-closed {
-  background: rgba(235, 87, 87, 0.12);
-  border: 1px solid rgba(235, 87, 87, 0.25);
-  color: #ff7675;
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.3);
+  background: rgba(248, 113, 113, 0.1);
 }
 
 .badge-dot {
@@ -290,133 +378,78 @@ h1::after {
   height: 6px;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 8px currentColor;
+  box-shadow: 0 0 10px currentColor, 0 0 4px #fff;
 }
 
-.badge-new .badge-dot {
-  animation: pulseDot 2s ease-in-out infinite;
-}
+.badge-new .badge-dot { animation: pulseDot 2s ease-in-out infinite; }
 
 @keyframes pulseDot {
-  0%,100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.5); opacity: 0.4; }
-}
-
-.bento-footer {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  z-index: 2;
-  width: 100%;
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.6); opacity: 1; box-shadow: 0 0 15px currentColor, 0 0 6px #fff; }
 }
 
 .app-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #ffffff 20%, var(--c2) 100%);
+  font-size: 1.8rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffffff 10%, var(--c2) 90%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  transform: translateZ(0);
+  transform: translateZ(40px);
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+  transition: transform 0.4s var(--spring-bouncy);
 }
 
-.card-wide .app-title { font-size: 2rem; }
-.card-hero .app-title { font-size: 2.8rem; }
-
-.app-card.status-closed {
-  filter: saturate(0.4) opacity(0.85);
+body.light-theme .app-title {
+  background: linear-gradient(135deg, #0a0d14 10%, var(--c3) 90%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.05));
 }
 
-.app-card.status-closed:hover {
-  filter: saturate(0.8) opacity(1);
+.app-card:hover .app-title {
+  transform: translateZ(50px) scale(1.02);
 }
+
+.card-wide .app-icon-wrapper { width: 76px; height: 76px; border-radius: 22px; }
+.card-wide .app-icon { font-size: 2rem; }
+.card-wide .app-title { font-size: 2.2rem; }
 
 .card-hero {
   flex-direction: row;
   align-items: center;
 }
 
-.card-hero .bento-header {
-  width: auto;
-  align-items: center;
-  gap: 2rem;
+.card-hero .bento-header { width: auto; align-items: center; gap: 2.5rem; }
+.card-hero .bento-footer { width: auto; flex: 1; justify-content: flex-end; }
+.card-hero .app-icon-wrapper { width: 96px; height: 96px; border-radius: 28px; }
+.card-hero .app-icon { font-size: 2.8rem; }
+.card-hero .app-title { font-size: 3.2rem; }
+
+.app-card.status-closed {
+  filter: saturate(0) opacity(0.7);
 }
 
-.card-hero .bento-footer {
-  width: auto;
-  flex: 1;
-  justify-content: flex-end;
+.app-card.status-closed:hover {
+  filter: saturate(0.6) opacity(1);
 }
 
-.app-card.highlighted {
-  border-color: rgba(255,255,255,0.25);
-  z-index: 10;
+.app-card.status-closed .app-icon-wrapper {
+  background: linear-gradient(135deg, #4b5563, #374151);
+}
+.app-card.status-closed .card-glow { display: none; }
+
+.app-grid:hover .app-card:not(:hover) {
+  filter: blur(8px) saturate(0.3);
+  opacity: 0.4;
+  transform: scale(0.95) translateZ(-40px);
 }
 
-.app-card.dehighlighted {
-  filter: blur(4px) saturate(0.5);
-  opacity: 0.35;
-  transform: scale(0.96);
-}
-
-body.light-theme {
-  background: var(--bg-light);
-  color: var(--text-light);
-  --surface: rgba(255,255,255,0.5);
-  --surface-hover: rgba(255,255,255,0.85);
-  --border: rgba(0,0,0,0.06);
-  --border-top: rgba(255,255,255,0.8);
-  --text: var(--text-light);
-  --shadow-a: 0 4px 16px rgba(0,0,0,0.04);
-  --shadow-b: 0 1px 2px rgba(0,0,0,0.02);
-  --card-shadow-hover: 0 16px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
-}
-
-body.light-theme .controls-pill {
-  background: rgba(255,255,255,0.8);
-  border-color: rgba(0,0,0,0.08);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-}
-
-body.light-theme .controls-pill button { color: var(--text-light); }
-body.light-theme .controls-pill button:hover { background: rgba(0,0,0,0.05); }
-
-body.light-theme .app-card {
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-}
-
-body.light-theme h1 {
-  background: linear-gradient(135deg, #111 0%, #444 30%, #222 55%, #555 75%, #000 100%);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-}
-
-body.light-theme h1::after {
-  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.3), transparent);
-}
-
-body.light-theme .app-title {
-  background: linear-gradient(135deg, #000000 20%, var(--c3) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-body.light-theme .badge-closed {
-  background: rgba(235, 87, 87, 0.1);
-  border-color: rgba(235, 87, 87, 0.3);
-  color: #e74c3c;
-}
-
-body.light-theme .badge-new {
-  color: #d35400;
-  border-color: rgba(211, 84, 0, 0.3);
+.app-grid:hover .app-card.status-closed:not(:hover) {
+  filter: blur(8px) saturate(0) opacity(0.2);
 }
 
 .visually-hidden {
@@ -425,12 +458,12 @@ body.light-theme .badge-new {
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1024px) {
   .app-grid {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: none;
-    grid-auto-rows: 220px;
+    grid-auto-rows: 240px;
   }
+  .app-card:nth-child(n) { animation-delay: 0.1s; }
   .app-card:nth-child(1) { grid-column: span 1; }
   .app-card:nth-child(2) { grid-column: span 2; }
   .app-card:nth-child(3) { grid-column: span 1; }
@@ -438,36 +471,42 @@ body.light-theme .badge-new {
   .app-card:nth-child(5) { grid-column: span 1; }
   .app-card:nth-child(6) { grid-column: span 1; }
   .app-card:nth-child(7) { grid-column: span 2; }
+  
   .card-hero { flex-direction: column; align-items: flex-start; justify-content: space-between; }
-  .card-hero .bento-header { gap: 0; justify-content: space-between; width: 100%; }
+  .card-hero .bento-header { width: 100%; justify-content: space-between; gap: 0; }
+  .card-hero .bento-footer { width: 100%; justify-content: flex-end; }
+  .card-hero .app-title { font-size: 2.6rem; }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .app-grid {
     grid-template-columns: 1fr;
-    grid-auto-rows: 180px;
+    grid-auto-rows: 200px;
+    gap: 1rem;
   }
   .app-card:nth-child(n) { grid-column: span 1; }
-  .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper { width: 64px; height: 64px; border-radius: 18px; }
-  .card-wide .app-icon, .card-hero .app-icon { font-size: 1.7rem; }
+  .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper { width: 68px; height: 68px; border-radius: 20px; }
+  .card-wide .app-icon, .card-hero .app-icon { font-size: 1.8rem; }
   .card-wide .app-title, .card-hero .app-title { font-size: 1.8rem; }
-  .controls-pill { top: 1rem; left: 1rem; }
+  h1 { font-size: 3rem; }
+  .controls-pill { top: 1.5rem; left: 1.5rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation: none !important;
+    transition: none !important;
   }
 }
 </style>
 </head>
 <body>
+
 <canvas id="gradient-canvas"></canvas>
+<div class="vignette"></div>
 
 <div class="controls-pill">
-  <button id="soundToggle" aria-label="Unmute sound">
+  <button id="soundToggle" aria-label="Toggle sound">
     <i class="fas fa-volume-mute" aria-hidden="true"></i>
     <span class="visually-hidden">Toggle sound</span>
   </button>
@@ -491,7 +530,7 @@ const apps =[
     title: 'خارجي 2',
     url: 'https://slippery-form.vercel.app/',
     icon: 'fa-briefcase',
-    gradient:['#4A90E2','#5A9DE2','#3A83D2'],
+    gradient:['#3b82f6', '#60a5fa', '#2563eb'],
     closed: true,
     size: 'small'
   },
@@ -499,42 +538,42 @@ const apps =[
     title: 'خارجي 0',
     url: 'https://lx-parser.vercel.app/',
     icon: 'fa-eye',
-    gradient:['#50C878','#60D488','#40BC68'],
+    gradient: ['#10b981', '#34d399', '#059669'],
     size: 'wide'
   },
   {
     title: 'مجموعات دوائية',
     url: 'https://desktop-ru4x.vercel.app/',
     icon: 'fa-pills',
-    gradient:['#8E44AD','#9E54BD','#7E349D'],
+    gradient:['#8b5cf6', '#a78bfa', '#7c3aed'],
     size: 'small'
   },
   {
     title: 'لستة الادوية',
     url: 'https://lx-search-kappa.vercel.app/',
     icon: 'fa-search',
-    gradient:['#20B2AA','#30C2BA','#10A29A'],
+    gradient:['#0ea5e9', '#38bdf8', '#0284c7'],
     size: 'wide'
   },
   {
     title: 'المنفذ والتحمل',
     url: 'https://newlist-eta.vercel.app/',
     icon: 'fa-dollar-sign',
-    gradient:['#E84393','#F853A3','#D83383'],
+    gradient:['#ec4899', '#f472b6', '#db2777'],
     size: 'small'
   },
   {
     title: 'بروتوكولات الصرف',
     url: 'https://strong-snickerdoodle-02a92f.netlify.app/',
     icon: 'fa-folder-open',
-    gradient:['#FF7F50','#FF6347','#FF8C69'],
+    gradient:['#f97316', '#fb923c', '#ea580c'],
     size: 'small'
   },
   {
     title: 'فهرس الادوية',
     url: 'https://lx-index.vercel.app/',
     icon: 'fa-book-medical',
-    gradient:['#F5A623','#F7C948','#E8920D'],
+    gradient:['#f59e0b', '#fbbf24', '#d97706'],
     size: 'hero',
     isNew: true
   }
@@ -546,7 +585,11 @@ const sounds = {
   toggle: new Audio('https://datakid.github.io/mp3/toggle.wav'),
   ambient: new Audio('https://datakid.github.io/mp3/ambient.wav')
 };
-Object.values(sounds).forEach(s => { s.load(); s.volume = s === sounds.ambient ? 0.2 : 0.4; });
+
+Object.values(sounds).forEach(s => { 
+  s.load(); 
+  s.volume = s === sounds.ambient ? 0.15 : 0.3; 
+});
 sounds.ambient.loop = true;
 let soundEnabled = false;
 
@@ -562,13 +605,15 @@ const createCard = app => {
   el.target = '_blank';
   el.rel = 'noopener noreferrer';
   
-  const classes =['app-card'];
+  const classes = ['app-card'];
   if (app.size === 'wide') classes.push('card-wide');
   if (app.size === 'hero') classes.push('card-hero');
   if (app.closed) classes.push('status-closed');
-  
   el.className = classes.join(' ');
-  el.style.cssText = `--c1:${app.gradient[0]};--c2:${app.gradient[1]};--c3:${app.gradient[2]}`;
+  
+  el.style.setProperty('--c1', app.gradient[0]);
+  el.style.setProperty('--c2', app.gradient[1]);
+  el.style.setProperty('--c3', app.gradient[2]);
 
   let badgesHtml = '';
   if (app.isNew) {
@@ -579,7 +624,9 @@ const createCard = app => {
   }
 
   el.innerHTML = `
+    <div class="card-noise"></div>
     <div class="card-glow"></div>
+    <div class="card-glare"></div>
     <div class="bento-header">
       <div class="app-icon-wrapper">
         <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
@@ -592,6 +639,44 @@ const createCard = app => {
   `;
 
   el.addEventListener('click', () => play(sounds.click));
+  el.addEventListener('mouseenter', () => play(sounds.hover));
+
+  let bounds;
+  let rafId;
+
+  const updatePosition = (e) => {
+    if (!bounds) return;
+    const x = e.clientX - bounds.left;
+    const y = e.clientY - bounds.top;
+    
+    el.style.setProperty('--mx', `${x}px`);
+    el.style.setProperty('--my', `${y}px`);
+
+    const centerX = bounds.width / 2;
+    const centerY = bounds.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -6;
+    const rotateY = ((x - centerX) / centerX) * 6;
+
+    el.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px) scale3d(1.02, 1.02, 1.02)`;
+  };
+
+  el.addEventListener('mouseenter', () => {
+    bounds = el.getBoundingClientRect();
+    el.style.transition = 'box-shadow 0.5s ease, background 0.5s ease, border-color 0.5s ease, filter 0.6s ease, opacity 0.6s ease';
+  });
+
+  el.addEventListener('mousemove', (e) => {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => updatePosition(e));
+  });
+
+  el.addEventListener('mouseleave', () => {
+    if (rafId) cancelAnimationFrame(rafId);
+    el.style.transition = 'all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.15)';
+    el.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale3d(1, 1, 1)`;
+    el.style.setProperty('--mx', `50%`);
+    el.style.setProperty('--my', `-20%`);
+  });
 
   return el;
 };
@@ -603,89 +688,77 @@ const renderApps = () => {
   grid.appendChild(frag);
 };
 
-class GradientAnimation {
+class SuperGradient {
   constructor(canvas) {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
-    this.t = 0;
-    this.mx = innerWidth / 2;
-    this.my = innerHeight / 2;
+    this.time = 0;
     this.orbs =[];
     this.resize();
-    document.addEventListener('mousemove', e => { this.mx = e.clientX; this.my = e.clientY; });
-    this.tick();
+    this.initOrbs();
+    this.animate();
+  }
+
+  resize() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
   }
 
   initOrbs() {
-    const count = innerWidth < 768 ? 4 : 6;
-    const light = document.body.classList.contains('light-theme');
+    const isLight = document.body.classList.contains('light-theme');
+    const count = window.innerWidth < 768 ? 4 : 6;
     this.orbs = Array.from({ length: count }, (_, i) => ({
       x: Math.random() * this.canvas.width,
       y: Math.random() * this.canvas.height,
-      r: Math.random() * 280 + 160,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      hue: light ? Math.random() * 40 + 200 : Math.random() * 70 + 175,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      radius: Math.random() * 300 + 200,
+      hue: isLight ? [210, 220, 230][i % 3] :[220, 260, 280][i % 3],
       phase: Math.random() * Math.PI * 2
     }));
   }
 
-  tick() {
-    this.t += 0.003;
+  animate() {
+    this.time += 0.002;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    const light = document.body.classList.contains('light-theme');
+    const isLight = document.body.classList.contains('light-theme');
 
-    this.orbs.forEach((o, i) => {
-      const dx = this.mx - o.x, dy = this.my - o.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      const inf = Math.max(0, 1 - dist / 400) * 0.012;
-      o.x += o.vx + Math.sin(this.t * 1.5 + o.phase) * 0.6 + dx * inf;
-      o.y += o.vy + Math.cos(this.t * 1.5 + o.phase) * 0.6 + dy * inf;
-      if (o.x < -o.r) o.x = this.canvas.width + o.r;
-      if (o.x > this.canvas.width + o.r) o.x = -o.r;
-      if (o.y < -o.r) o.y = this.canvas.height + o.r;
-      if (o.y > this.canvas.height + o.r) o.y = -o.r;
+    this.ctx.globalCompositeOperation = isLight ? 'multiply' : 'screen';
 
-      const g = this.ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
-      const a = (light ? 0.08 : 0.1) + Math.sin(this.t * 2 + i) * 0.02;
-      g.addColorStop(0, `hsla(${o.hue},70%,${light ? 55 : 65}%,${a})`);
-      g.addColorStop(0.4, `hsla(${o.hue},65%,${light ? 60 : 60}%,${a * 0.5})`);
-      g.addColorStop(1, 'hsla(0,0%,0%,0)');
-      this.ctx.fillStyle = g;
-      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.orbs.forEach((orb, i) => {
+      orb.x += orb.vx + Math.sin(this.time + orb.phase) * 0.5;
+      orb.y += orb.vy + Math.cos(this.time + orb.phase) * 0.5;
+
+      if (orb.x < -orb.radius) orb.x = this.canvas.width + orb.radius;
+      if (orb.x > this.canvas.width + orb.radius) orb.x = -orb.radius;
+      if (orb.y < -orb.radius) orb.y = this.canvas.height + orb.radius;
+      if (orb.y > this.canvas.height + orb.radius) orb.y = -orb.radius;
+
+      const grad = this.ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, orb.radius);
+      const alpha = isLight ? 0.3 : 0.4;
+      
+      grad.addColorStop(0, `hsla(${orb.hue}, 80%, ${isLight ? 60 : 40}%, ${alpha})`);
+      grad.addColorStop(0.5, `hsla(${orb.hue}, 70%, ${isLight ? 70 : 30}%, ${alpha * 0.5})`);
+      grad.addColorStop(1, 'hsla(0, 0%, 0%, 0)');
+
+      this.ctx.fillStyle = grad;
+      this.ctx.beginPath();
+      this.ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
+      this.ctx.fill();
     });
 
-    requestAnimationFrame(() => this.tick());
-  }
-
-  resize() {
-    this.canvas.width = innerWidth;
-    this.canvas.height = innerHeight;
-    this.initOrbs();
+    requestAnimationFrame(() => this.animate());
   }
 }
 
-const secretUrls = { linkexpress: 'https://grand-licorice-653005.netlify.app/', golden: 'https://gold-edition.vercel.app/' };
-let secretCode = '', secretTimer;
-document.addEventListener('keydown', e => {
-  clearTimeout(secretTimer);
-  secretCode += e.key.toLowerCase();
-  secretTimer = setTimeout(() => secretCode = '', 7000);
-  const hit = Object.keys(secretUrls).find(k => secretCode.endsWith(k));
-  if (hit) { play(sounds.click); window.open(secretUrls[hit], '_blank', 'noopener'); secretCode = ''; }
-});
-
-let gradAnim, debTimer;
-const debounce = (fn, ms) => (...a) => { clearTimeout(debTimer); debTimer = setTimeout(() => fn(...a), ms); };
-
 const applyTheme = (force) => {
-  const light = force !== undefined ? force : window.matchMedia('(prefers-color-scheme: light)').matches;
-  document.body.classList.toggle('light-theme', light);
+  const isLight = force !== undefined ? force : window.matchMedia('(prefers-color-scheme: light)').matches;
+  document.body.classList.toggle('light-theme', isLight);
   const btn = document.getElementById('themeToggle');
-  btn.innerHTML = light
-    ? '<i class="fas fa-moon" aria-hidden="true"></i><span class="visually-hidden">وضع مظلم</span>'
-    : '<i class="fas fa-sun" aria-hidden="true"></i><span class="visually-hidden">وضع مضيء</span>';
-  gradAnim?.resize();
+  btn.innerHTML = isLight
+    ? '<i class="fas fa-moon" aria-hidden="true"></i><span class="visually-hidden">Dark Mode</span>'
+    : '<i class="fas fa-sun" aria-hidden="true"></i><span class="visually-hidden">Light Mode</span>';
+  if (window.bgAnim) window.bgAnim.initOrbs();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -693,28 +766,12 @@ document.addEventListener('DOMContentLoaded', () => {
   renderApps();
 
   const canvas = document.getElementById('gradient-canvas');
-  gradAnim = new GradientAnimation(canvas);
+  window.bgAnim = new SuperGradient(canvas);
 
-  const grid = document.getElementById('appGrid');
-  let currentCard = null;
-
-  grid.addEventListener('mouseover', e => {
-    const card = e.target.closest('.app-card');
-    if (card && card !== currentCard) {
-      currentCard = card;
-      if (soundEnabled) { sounds.hover.currentTime = 0; sounds.hover.play().catch(() => {}); }
-      grid.querySelectorAll('.app-card').forEach(c => {
-        c.classList.toggle('highlighted', c === card);
-        c.classList.toggle('dehighlighted', c !== card);
-      });
-    }
-  });
-
-  grid.addEventListener('mouseout', e => {
-    if (!e.relatedTarget?.closest('.app-card')) {
-      currentCard = null;
-      grid.querySelectorAll('.app-card').forEach(c => c.classList.remove('highlighted','dehighlighted'));
-    }
+  let debTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(debTimer);
+    debTimer = setTimeout(() => window.bgAnim.resize(), 200);
   });
 
   document.getElementById('themeToggle').addEventListener('click', () => {
@@ -726,16 +783,30 @@ document.addEventListener('DOMContentLoaded', () => {
     soundEnabled = !soundEnabled;
     const btn = document.getElementById('soundToggle');
     btn.innerHTML = soundEnabled
-      ? '<i class="fas fa-volume-up" aria-hidden="true"></i><span class="visually-hidden">كتم الصوت</span>'
-      : '<i class="fas fa-volume-mute" aria-hidden="true"></i><span class="visually-hidden">تشغيل الصوت</span>';
-    soundEnabled ? sounds.ambient.play().catch(()=>{}) : sounds.ambient.pause();
+      ? '<i class="fas fa-volume-up" aria-hidden="true"></i><span class="visually-hidden">Mute</span>'
+      : '<i class="fas fa-volume-mute" aria-hidden="true"></i><span class="visually-hidden">Unmute</span>';
+    
+    if (soundEnabled) {
+      sounds.ambient.play().catch(()=>{});
+      play(sounds.toggle);
+    } else {
+      sounds.ambient.pause();
+    }
   });
 
-  window.addEventListener('resize', debounce(() => gradAnim?.resize(), 220));
-
-  if (window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => applyTheme(e.matches));
-  }
+  const secretUrls = { linkexpress: 'https://grand-licorice-653005.netlify.app/', golden: 'https://gold-edition.vercel.app/' };
+  let secretCode = '', secretTimer;
+  document.addEventListener('keydown', e => {
+    clearTimeout(secretTimer);
+    secretCode += e.key.toLowerCase();
+    secretTimer = setTimeout(() => secretCode = '', 5000);
+    const hit = Object.keys(secretUrls).find(k => secretCode.endsWith(k));
+    if (hit) { 
+      play(sounds.click); 
+      window.open(secretUrls[hit], '_blank', 'noopener'); 
+      secretCode = ''; 
+    }
+  });
 });
 </script>
 </body>
