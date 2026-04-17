@@ -1,644 +1,457 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkExpress</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkExpress</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
 :root {
-  --bg-dark: #0f1624;
-  --bg-light: #f0f4f8;
-  --text-dark: #e2e8f0;
-  --text-light: #050b11;  
-  --primary-color: #c0c0c0;
-  --secondary-color: #e5e4e2;
-  --accent-color: #a8a9ad;
-  --card-bg-dark: rgba(255,255,255,0.05);
-  --card-bg-light: rgba(255,255,255,0.9);
-  --transition-speed: 0.3s;
-  --premium-gradient: linear-gradient(135deg, #c0c0c0, #e5e4e2, #a8a9ad, #c0c0c0);
-  --premium-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 1px 8px rgba(0, 0, 0, 0.3);
+  --bg: #080c16;
+  --bg-light: #f4f6f9;
+  --surface: rgba(255,255,255,0.025);
+  --surface-hover: rgba(255,255,255,0.05);
+  --border: rgba(255,255,255,0.06);
+  --border-top: rgba(255,255,255,0.12);
+  --text: #ffffff;
+  --text-light: #0d1117;
+  --shadow-a: 0 4px 24px rgba(0,0,0,0.2);
+  --shadow-b: 0 1px 2px rgba(0,0,0,0.4);
+  --card-shadow: var(--shadow-a), var(--shadow-b);
+  --card-shadow-hover: 0 12px 40px rgba(0,0,0,0.35), 0 2px 4px rgba(0,0,0,0.5);
+  --radius: 28px;
+  --gap: 1.25rem;
+  --speed: 0.5s;
+  --spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+  --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
 }
 
+*,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
+  font-family: 'Cairo', sans-serif;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
-  background-color: var(--bg-dark);
-  color: var(--text-dark);
   overflow-x: hidden;
+  transition: background var(--speed) var(--ease), color var(--speed) var(--ease);
 }
 
 #gradient-canvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   z-index: 0;
   pointer-events: none;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, transparent 0%, rgba(15, 22, 36, 0.4) 100%);
-  pointer-events: none;
-  z-index: 0;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    radial-gradient(ellipse at 20% 30%, rgba(192, 192, 192, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(168, 169, 173, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(229, 228, 226, 0.1) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 0;
-  animation: morphBackground 15s ease-in-out infinite;
-}
-
-@keyframes morphBackground {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
 }
 
 .container {
   width: 100%;
-  max-width: 1200px;
-  padding: 2rem;
+  max-width: 1240px;
+  padding: clamp(1.5rem, 4vw, 3rem);
   position: relative;
   z-index: 1;
 }
 
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+}
+
 h1 {
-  font-size: clamp(2.5rem, 5vw, 4.5rem);
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 3rem;
-  background: linear-gradient(135deg, #e5e4e2 0%, #ffffff 25%, #c0c0c0 50%, #e5e4e2 75%, #a8a9ad 100%);
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-style: italic;
+  font-size: clamp(3.5rem, 6vw, 6rem);
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #d0d0d0 0%, #ffffff 30%, #b8b8b8 55%, #e8e8e8 75%, #a0a0a0 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmerTitle 4s linear infinite;
+  filter: drop-shadow(0 0 24px rgba(255,255,255,0.15)) drop-shadow(0 4px 8px rgba(0,0,0,0.6));
   position: relative;
-  transition: transform var(--transition-speed) ease;
-  letter-spacing: 3px;
-  filter: drop-shadow(0 0 20px rgba(192, 192, 192, 0.3)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
-  animation: titleShimmer 3s linear infinite;
 }
 
-@keyframes titleShimmer {
-  0% {
-    background-position: 0% center;
-  }
-  100% {
-    background-position: 200% center;
-  }
-}
-
-h1::before {
-  content: 'LinkExpress';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(192, 192, 192, 0.4), rgba(229, 228, 226, 0.4));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: blur(10px);
-  z-index: -1;
-  opacity: 0.7;
+@keyframes shimmerTitle {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 h1::after {
   content: '';
   position: absolute;
-  bottom: -15px;
+  bottom: -16px;
   left: 50%;
-  width: 200px;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, #c0c0c0, #e5e4e2, #c0c0c0, transparent);
   transform: translateX(-50%);
-  border-radius: 2px;
-  box-shadow: 0 0 10px rgba(192, 192, 192, 0.5), 0 0 20px rgba(192, 192, 192, 0.3);
-  animation: underlineGlow 2s ease-in-out infinite;
+  width: 140px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+  animation: lineGlow 3s ease-in-out infinite;
 }
 
-@keyframes underlineGlow {
-  0%, 100% {
-    opacity: 0.6;
-    box-shadow: 0 0 10px rgba(192, 192, 192, 0.5), 0 0 20px rgba(192, 192, 192, 0.3);
-  }
-  50% {
-    opacity: 1;
-    box-shadow: 0 0 20px rgba(192, 192, 192, 0.8), 0 0 40px rgba(192, 192, 192, 0.5);
-  }
+@keyframes lineGlow {
+  0%,100% { opacity: 0.4; width: 100px; }
+  50% { opacity: 1; width: 180px; }
 }
 
-h1:hover {
-  transform: scale(1.05);
-  filter: drop-shadow(0 0 30px rgba(192, 192, 192, 0.5)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+.controls-pill {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50px;
+  padding: 0.35rem;
+  gap: 0.1rem;
+  z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
 }
 
-h1:hover::after {
-  width: 250px;
-  animation: underlineGlow 1s ease-in-out infinite;
+.controls-pill button {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.05rem;
+  transition: all 0.3s var(--spring);
+  outline: none;
+}
+
+.controls-pill button:hover {
+  background: rgba(255,255,255,0.12);
+  transform: scale(1.15);
+}
+
+.controls-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255,255,255,0.15);
+  margin: 0 0.2rem;
 }
 
 .app-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2.5rem;
-  perspective: 1000px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 240px 240px 180px;
+  gap: var(--gap);
 }
 
 .app-card {
-  background: linear-gradient(135deg, var(--card-bg-dark), rgba(255,255,255,0.1));
-  border-radius: 20px;
-  padding: 2.5rem;
+  position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: space-between;
-  transition: all var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1);
-  position: relative;
+  text-decoration: none;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow), inset 0 1px 0 var(--border-top);
   overflow: hidden;
+  padding: 1.8rem;
   cursor: pointer;
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: var(--premium-shadow), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  transform-style: preserve-3d;
-  animation: breathe 4s ease-in-out infinite;
-  height: 350px;
-  will-change: transform;
-  user-select: none;
+  transition: transform var(--speed) var(--spring), box-shadow var(--speed) var(--ease), border-color var(--speed) var(--ease), filter var(--speed) var(--ease), opacity var(--speed) var(--ease);
+  animation: fadeUp 0.6s var(--ease) both;
+  will-change: transform, filter, opacity;
 }
 
 .app-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.1) 0%,
-    rgba(255, 255, 255, 0) 70%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  inset: 0;
+  background-image: var(--noise);
   pointer-events: none;
-  transform: scale(0.9);
+  z-index: 1;
 }
 
-.app-card:hover::before {
-  opacity: 1;
-  transform: scale(1);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.95);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.95);
-    opacity: 0.7;
-  }
-}
-
-.app-card::after {
-  content: '';
+.card-glow {
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: rotate(30deg);
-  transition: opacity 0.3s;
-  opacity: 0;
-}
-
-.app-card:hover::after {
-  opacity: 1;
-  animation: shimmer 1.5s infinite;
-}
-
-@keyframes breathe {
-  0%, 100% {
-    transform: scale(1) translateY(0);
-  }
-  50% {
-    transform: scale(1.03) translateY(-5px);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%) rotate(30deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(30deg);
-  }
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, var(--c1), transparent 70%);
+  opacity: 0.08;
+  transition: opacity var(--speed) var(--ease), transform var(--speed) var(--ease);
+  z-index: 0;
 }
 
 .app-card:hover {
-  transform: translateY(-10px) scale(1.05) rotateX(5deg) rotateY(5deg);
-  box-shadow: 0 25px 50px rgba(255, 255, 255, 0.1), 0 20px 15px rgba(255, 255, 255, 0.05);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: var(--card-shadow-hover), inset 0 1px 0 rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.18);
+  background: var(--surface-hover);
+}
+
+.app-card:hover .card-glow {
+  opacity: 0.2;
+  transform: translateY(10px) scale(1.1);
+}
+
+.app-card:nth-child(1) { animation-delay: 0.05s; grid-column: span 1; }
+.app-card:nth-child(2) { animation-delay: 0.12s; grid-column: span 2; }
+.app-card:nth-child(3) { animation-delay: 0.19s; grid-column: span 1; }
+.app-card:nth-child(4) { animation-delay: 0.26s; grid-column: span 2; }
+.app-card:nth-child(5) { animation-delay: 0.33s; grid-column: span 1; }
+.app-card:nth-child(6) { animation-delay: 0.40s; grid-column: span 1; }
+.app-card:nth-child(7) { animation-delay: 0.47s; grid-column: span 4; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.bento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  z-index: 2;
 }
 
 .app-icon-wrapper {
-  width: 130px;
-  height: 130px;
-  border-radius: 50%;
-  background: var(--premium-gradient);
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--c1), var(--c3));
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.5rem;
-  transition: all var(--transition-speed) ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 5px 10px rgba(255,255,255,0.2);
-  flex-shrink: 0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.2);
+  transition: transform var(--speed) var(--spring);
 }
 
-.app-card:hover .app-icon-wrapper {
-  transform: scale(1.1) rotate(360deg);
-}
+.card-wide .app-icon-wrapper { width: 72px; height: 72px; border-radius: 20px; }
+.card-hero .app-icon-wrapper { width: 84px; height: 84px; border-radius: 24px; }
 
 .app-icon {
-  font-size: 3.8rem;
-  color: var(--text-dark);
-  transition: all var(--transition-speed) ease;
-  z-index: 1;
-  filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));
+  font-size: 1.7rem;
+  color: #fff;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.card-wide .app-icon { font-size: 1.9rem; }
+.card-hero .app-icon { font-size: 2.4rem; }
+
+.app-card:hover .app-icon-wrapper {
+  transform: scale(1.12) rotate(-8deg);
+}
+
+.badges {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row-reverse;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.badge-new {
+  background: rgba(245, 166, 35, 0.15);
+  border: 1px solid rgba(245, 166, 35, 0.3);
+  color: #f7c948;
+}
+
+.badge-closed {
+  background: rgba(235, 87, 87, 0.12);
+  border: 1px solid rgba(235, 87, 87, 0.25);
+  color: #ff7675;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.badge-new .badge-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.4; }
+}
+
+.bento-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  z-index: 2;
+  width: 100%;
 }
 
 .app-title {
-  font-size: 1.8rem; 
-  font-weight: 600;
-  margin-bottom: 1.2rem;
-  text-align: center;
-  background: var(--premium-gradient);
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 20%, var(--c2) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-  letter-spacing: 1px;
-  flex-grow: 1;
-  display: flex;
+  background-clip: text;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  transform: translateZ(0);
+}
+
+.card-wide .app-title { font-size: 2rem; }
+.card-hero .app-title { font-size: 2.8rem; }
+
+.app-card.status-closed {
+  filter: saturate(0.4) opacity(0.85);
+}
+
+.app-card.status-closed:hover {
+  filter: saturate(0.8) opacity(1);
+}
+
+.card-hero {
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  position: relative;
 }
 
-.app-title::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--premium-gradient);
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-.app-card:hover .app-title::after {
-  transform: scaleX(1);
-}
-
-.app-link {
-  background: var(--premium-gradient);
-  color: var(--bg-dark);
-  text-decoration: none;
-  padding: 0.9rem 1.8rem;
-  border-radius: 30px;
-  display: inline-flex;
+.card-hero .bento-header {
+  width: auto;
   align-items: center;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  font-weight: 500;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  box-shadow: 0 4px 6px rgba(192,192,192,0.1), 0 1px 3px rgba(192,192,192,0.1);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  align-self: center;
-  margin-top: auto;
-  border: 2px solid transparent;
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  background-image: linear-gradient(var(--bg-dark), var(--bg-dark)), var(--premium-gradient);
-  cursor: pointer;
-  pointer-events: auto;
+  gap: 2rem;
 }
 
-.app-link::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: rotate(30deg);
-  transition: all 0.5s ease;
-  opacity: 0;
+.card-hero .bento-footer {
+  width: auto;
+  flex: 1;
+  justify-content: flex-end;
 }
 
-.app-link:hover {
-  color: var(--bg-dark);
-  transform: scale(1.05) translateY(-3px) rotate(2deg);
-  box-shadow: 0 15px 25px rgba(192, 192, 192, 0.4);
-}
-
-.app-link:hover::before {
-  opacity: 1;
-  animation: shimmer 1s infinite linear;
-}
-
-.app-link:active {
-  transform: scale(0.95);
-}
-
-.app-link:focus {
-  outline: none;
-}
-
-.app-link i {
-  margin-left: 0.75rem;
-  font-size: 1rem;
-  transition: transform var(--transition-speed) ease;
-}
-
-.app-link:hover i {
-  transform: translateX(5px) rotate(-10deg);
-}
-
-.theme-toggle {
-  position: fixed;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 2.5rem;
-  cursor: pointer;
+.app-card.highlighted {
+  border-color: rgba(255,255,255,0.25);
   z-index: 10;
-  transition: all var(--transition-speed) ease;
-  outline: none;
-  padding: 0.75rem;
-  border-radius: 50%;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  color: var(--text-dark);
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.theme-toggle i {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.theme-toggle:hover {
-  transform: rotate(180deg) scale(1.1);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.theme-toggle:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.theme-toggle:focus-visible {
-  transform: scale(1.1);
+.app-card.dehighlighted {
+  filter: blur(4px) saturate(0.5);
+  opacity: 0.35;
+  transform: scale(0.96);
 }
 
 body.light-theme {
-  background-color: var(--bg-light);
+  background: var(--bg-light);
   color: var(--text-light);
+  --surface: rgba(255,255,255,0.5);
+  --surface-hover: rgba(255,255,255,0.85);
+  --border: rgba(0,0,0,0.06);
+  --border-top: rgba(255,255,255,0.8);
+  --text: var(--text-light);
+  --shadow-a: 0 4px 16px rgba(0,0,0,0.04);
+  --shadow-b: 0 1px 2px rgba(0,0,0,0.02);
+  --card-shadow-hover: 0 16px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
 }
 
-body.light-theme::before {
-  background: linear-gradient(180deg, transparent 0%, rgba(240, 244, 248, 0.3) 100%);
+body.light-theme .controls-pill {
+  background: rgba(255,255,255,0.8);
+  border-color: rgba(0,0,0,0.08);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
 
-body.light-theme::after {
-  background: 
-    radial-gradient(ellipse at 20% 30%, rgba(192, 192, 192, 0.2) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 70%, rgba(168, 169, 173, 0.2) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(229, 228, 226, 0.15) 0%, transparent 50%);
-}
+body.light-theme .controls-pill button { color: var(--text-light); }
+body.light-theme .controls-pill button:hover { background: rgba(0,0,0,0.05); }
 
 body.light-theme .app-card {
-  background: linear-gradient(135deg, var(--card-bg-light), rgba(255,255,255,0.9));
-  border: 1px solid rgba(0,0,0,0.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 8px rgba(0, 0, 0, 0.1);
-}
-
-body.light-theme .app-card::after {
-  background: linear-gradient(
-    to right,
-    rgba(200, 200, 200, 0) 0%,
-    rgba(200, 200, 200, 0.8) 50%,
-    rgba(200, 200, 200, 0) 100%
-  );
-}
-
-body.light-theme .app-card:hover::after {
-  opacity: 1;
-  animation: shimmer 2s infinite;
-}
-
-body.light-theme .app-icon {
-  color: var(--text-light);
-}
-
-body.light-theme .theme-toggle {
-  background: rgba(30, 41, 59, 0.1);
-  border: 1px solid rgba(30, 41, 59, 0.2);
-  color: var(--text-light);
-}
-
-body.light-theme .theme-toggle i {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-body.light-theme .theme-toggle:hover {
-  background: rgba(30, 41, 59, 0.15);
-}
-
-body.light-theme .sound-toggle {
-  background: rgba(30, 41, 59, 0.1);
-  border: 1px solid rgba(30, 41, 59, 0.2);
-  color: var(--text-light);
-}
-
-body.light-theme .sound-toggle i {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-body.light-theme .sound-toggle:hover {
-  background: rgba(30, 41, 59, 0.15);
-}
-
-body.light-theme .app-title {
-  color: #030709;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
 
 body.light-theme h1 {
-  background: linear-gradient(135deg, #6b7280 0%, #1e293b 25%, #475569 50%, #334155 75%, #64748b 100%);
+  background: linear-gradient(135deg, #111 0%, #444 30%, #222 55%, #555 75%, #000 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 15px rgba(30, 41, 59, 0.2)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
 }
 
-body.light-theme h1::before {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.3), rgba(71, 85, 105, 0.3));
+body.light-theme h1::after {
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.3), transparent);
+}
+
+body.light-theme .app-title {
+  background: linear-gradient(135deg, #000000 20%, var(--c3) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-body.light-theme h1::after {
-  background: linear-gradient(90deg, transparent, #475569, #1e293b, #475569, transparent);
-  box-shadow: 0 0 8px rgba(30, 41, 59, 0.4), 0 0 15px rgba(30, 41, 59, 0.2);
+body.light-theme .badge-closed {
+  background: rgba(235, 87, 87, 0.1);
+  border-color: rgba(235, 87, 87, 0.3);
+  color: #e74c3c;
 }
 
-@keyframes underlineGlowLight {
-  0%, 100% {
-    opacity: 0.5;
-    box-shadow: 0 0 8px rgba(30, 41, 59, 0.4), 0 0 15px rgba(30, 41, 59, 0.2);
+body.light-theme .badge-new {
+  color: #d35400;
+  border-color: rgba(211, 84, 0, 0.3);
+}
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+@media (max-width: 960px) {
+  .app-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: none;
+    grid-auto-rows: 220px;
   }
-  50% {
-    opacity: 0.9;
-    box-shadow: 0 0 15px rgba(30, 41, 59, 0.6), 0 0 30px rgba(30, 41, 59, 0.3);
-  }
+  .app-card:nth-child(1) { grid-column: span 1; }
+  .app-card:nth-child(2) { grid-column: span 2; }
+  .app-card:nth-child(3) { grid-column: span 1; }
+  .app-card:nth-child(4) { grid-column: span 2; }
+  .app-card:nth-child(5) { grid-column: span 1; }
+  .app-card:nth-child(6) { grid-column: span 1; }
+  .app-card:nth-child(7) { grid-column: span 2; }
+  .card-hero { flex-direction: column; align-items: flex-start; justify-content: space-between; }
+  .card-hero .bento-header { gap: 0; justify-content: space-between; width: 100%; }
 }
 
-body.light-theme h1::after {
-  animation: underlineGlowLight 2s ease-in-out infinite;
-}
-
-body.light-theme h1:hover {
-  filter: drop-shadow(0 0 25px rgba(30, 41, 59, 0.3)) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
-}
-
-body.light-theme h1:hover::after {
-  animation: underlineGlowLight 1s ease-in-out infinite;
-}
-
-body.light-theme .app-link {
-  background-image: linear-gradient(var(--bg-light), var(--bg-light)), var(--premium-gradient);
-}
-
-body.light-theme .app-link:hover {
-  color: var(--bg-light);
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.app-card {
-  animation: fadeInUp 0.6s ease-out forwards, breathe 4s ease-in-out infinite;
-  opacity: 0;
-}
-
-.app-card:nth-child(1) { animation-delay: 0.1s; }
-.app-card:nth-child(2) { animation-delay: 0.2s; }
-.app-card:nth-child(3) { animation-delay: 0.3s; }
-
-@media (max-width: 768px) {
-  .container {
-    padding: 1.5rem;
-  }
-
-  h1 {
-    margin-bottom: 2.5rem;
-  }
-
+@media (max-width: 600px) {
   .app-grid {
     grid-template-columns: 1fr;
+    grid-auto-rows: 180px;
   }
-
-  .app-card {
-    height: auto; 
-    min-height: 300px;
-    padding: 2rem;
-  }
-
-  .app-icon-wrapper {
-    width: 120px;
-    height: 120px;
-  }
-
-  .app-icon {
-    font-size: 3.5rem;
-  }
-
-  .app-title {
-    font-size: 1.75rem;
-  }
-
-  .app-link {
-    padding: 0.85rem 1.7rem;
-    font-size: 1rem;
-  }
+  .app-card:nth-child(n) { grid-column: span 1; }
+  .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper { width: 64px; height: 64px; border-radius: 18px; }
+  .card-wide .app-icon, .card-hero .app-icon { font-size: 1.7rem; }
+  .card-wide .app-title, .card-hero .app-title { font-size: 1.8rem; }
+  .controls-pill { top: 1rem; left: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -646,578 +459,284 @@ body.light-theme .app-link:hover {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .app-card {
-    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), filter 0.3s ease, opacity 0.3s ease;
-  }
-}
-
-.app-card.highlighted {
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
-  z-index: 2;
-}
-
-.app-card.dehighlighted {
-  filter: blur(2px) grayscale(50%);
-  transform: scale(0.85);
-  opacity: 0.6;
-}
-
-.sound-toggle {
-  position: fixed;
-  top: 1.5rem;
-  left: 1.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 2.5rem;
-  cursor: pointer;
-  z-index: 10;
-  transition: all var(--transition-speed) ease;
-  outline: none;
-  padding: 0.75rem;
-  border-radius: 50%;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  color: var(--text-dark);
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sound-toggle i {
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
-.sound-toggle:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  background: rgba(255, 255, 255, 0.15);
 }
 </style>
 </head>
 <body>
-    <canvas id="gradient-canvas"></canvas>
-    <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
-        <i class="fas fa-sun" aria-hidden="true"></i>
-        <span class="visually-hidden">Toggle theme</span>
-    </button>
-    <button id="soundToggle" class="sound-toggle" aria-label="Unmute sound">
-        <i class="fas fa-volume-mute" aria-hidden="true"></i>
-        <span class="visually-hidden">Toggle sound</span>
-    </button>
-    <div class="container">
-        <h1>LinkExpress</h1>
-        <div class="app-grid" id="appGrid"></div>
-    </div>
+<canvas id="gradient-canvas"></canvas>
 
-    <script>
-const apps = [
-    { 
-        title: 'خارجي 2', 
-        url: 'https://slippery-form.vercel.app/', 
-        icon: 'fa-briefcase', 
-        gradient: ['#4A90E2', '#5A9DE2', '#3A83D2'],
-        description: '',
-        closed: true
-    },
-    { 
-        title: 'خارجي 0', 
-        url: 'https://lx-parser.vercel.app/', 
-        icon: 'fa fa-eye', 
-        gradient: ['#50C878', '#60D488', '#40BC68'],
-        description: '',
-    },
-    { 
-        title: 'مجموعات دوائية', 
-        url: 'https://desktop-ru4x.vercel.app/',
-        icon: 'fa-pills', 
-        gradient: ['#8E44AD', '#9E54BD', '#7E349D'], 
-        description: '',
-    },
-    { 
-        title: 'لستة الادوية', 
-        url: 'https://lx-search-kappa.vercel.app/',
-        icon: 'fa-search', 
-        gradient: ['#20B2AA', '#30C2BA', '#10A29A'],
-        description: '',
-    },
-    { 
-        title: 'المنفذ والتحمل', 
-        url: 'https://newlist-eta.vercel.app/',
-        icon: 'fa-dollar-sign', 
-        gradient: ['#E84393', '#F853A3', '#D83383'],
-        description: '',
-    },
-    { 
-        title: 'بروتوكولات الصرف', 
-        url: 'https://strong-snickerdoodle-02a92f.netlify.app/', 
-        icon: 'fa-folder-open', 
-        gradient: ['#FF7F50', '#FF6347', '#FF8C69'], 
-        description: '',
-    }
+<div class="controls-pill">
+  <button id="soundToggle" aria-label="Unmute sound">
+    <i class="fas fa-volume-mute" aria-hidden="true"></i>
+    <span class="visually-hidden">Toggle sound</span>
+  </button>
+  <div class="controls-divider"></div>
+  <button id="themeToggle" aria-label="Toggle theme">
+    <i class="fas fa-sun" aria-hidden="true"></i>
+    <span class="visually-hidden">Toggle theme</span>
+  </button>
+</div>
+
+<div class="container">
+  <header class="site-header">
+    <h1>LinkExpress</h1>
+  </header>
+  <div class="app-grid" id="appGrid"></div>
+</div>
+
+<script>
+const apps =[
+  {
+    title: 'خارجي 2',
+    url: 'https://slippery-form.vercel.app/',
+    icon: 'fa-briefcase',
+    gradient:['#4A90E2','#5A9DE2','#3A83D2'],
+    closed: true,
+    size: 'small'
+  },
+  {
+    title: 'خارجي 0',
+    url: 'https://lx-parser.vercel.app/',
+    icon: 'fa-eye',
+    gradient:['#50C878','#60D488','#40BC68'],
+    size: 'wide'
+  },
+  {
+    title: 'مجموعات دوائية',
+    url: 'https://desktop-ru4x.vercel.app/',
+    icon: 'fa-pills',
+    gradient:['#8E44AD','#9E54BD','#7E349D'],
+    size: 'small'
+  },
+  {
+    title: 'لستة الادوية',
+    url: 'https://lx-search-kappa.vercel.app/',
+    icon: 'fa-search',
+    gradient:['#20B2AA','#30C2BA','#10A29A'],
+    size: 'wide'
+  },
+  {
+    title: 'المنفذ والتحمل',
+    url: 'https://newlist-eta.vercel.app/',
+    icon: 'fa-dollar-sign',
+    gradient:['#E84393','#F853A3','#D83383'],
+    size: 'small'
+  },
+  {
+    title: 'بروتوكولات الصرف',
+    url: 'https://strong-snickerdoodle-02a92f.netlify.app/',
+    icon: 'fa-folder-open',
+    gradient:['#FF7F50','#FF6347','#FF8C69'],
+    size: 'small'
+  },
+  {
+    title: 'فهرس الادوية',
+    url: 'https://lx-index.vercel.app/',
+    icon: 'fa-book-medical',
+    gradient:['#F5A623','#F7C948','#E8920D'],
+    size: 'hero',
+    isNew: true
+  }
 ];
 
 const sounds = {
-    hover: new Audio('https://datakid.github.io/mp3/hover.mp3'),
-    click: new Audio('https://datakid.github.io/mp3/click.wav'),
-    themeToggle: new Audio('https://datakid.github.io/mp3/toggle.wav'),
-    cardHighlight: new Audio(''),
-    ambient: new Audio('https://datakid.github.io/mp3/ambient.wav')
+  hover: new Audio('https://datakid.github.io/mp3/hover.mp3'),
+  click: new Audio('https://datakid.github.io/mp3/click.wav'),
+  toggle: new Audio('https://datakid.github.io/mp3/toggle.wav'),
+  ambient: new Audio('https://datakid.github.io/mp3/ambient.wav')
 };
-
-Object.values(sounds).forEach(sound => {
-    sound.load();
-    if (sound === sounds.ambient) {
-        sound.loop = true;
-        sound.volume = 0.2; 
-    } else {
-        sound.volume = 0.6; 
-    }
-});
-
+Object.values(sounds).forEach(s => { s.load(); s.volume = s === sounds.ambient ? 0.2 : 0.4; });
+sounds.ambient.loop = true;
 let soundEnabled = false;
 
-const playSound = (sound) => {
-    if (soundEnabled && sound !== sounds.ambient) {
-        sound.currentTime = 0;
-        sound.play().catch(e => console.error("Error playing sound:", e));
-    }
+const play = s => {
+  if (!soundEnabled) return;
+  s.currentTime = 0;
+  s.play().catch(() => {});
 };
 
-const toggleAmbientSound = () => {
-    if (soundEnabled) {
-        sounds.ambient.play().catch(e => console.error("Error playing ambient sound:", e));
-    } else {
-        sounds.ambient.pause();
-    }
-};
+const createCard = app => {
+  const el = document.createElement('a');
+  el.href = app.url;
+  el.target = '_blank';
+  el.rel = 'noopener noreferrer';
+  
+  const classes =['app-card'];
+  if (app.size === 'wide') classes.push('card-wide');
+  if (app.size === 'hero') classes.push('card-hero');
+  if (app.closed) classes.push('status-closed');
+  
+  el.className = classes.join(' ');
+  el.style.cssText = `--c1:${app.gradient[0]};--c2:${app.gradient[1]};--c3:${app.gradient[2]}`;
 
-const createAppCard = (app) => {
-    const card = document.createElement('div');
-    card.className = 'app-card';
-    card.setAttribute('data-url', app.url || '#');
-    if (app.urls) {
-        card.setAttribute('data-multiple-urls', JSON.stringify(app.urls));
-    }
-    
-    const gradientColors = app.gradient.map(color => `${color}22`).join(', ');
-    const buttonGradient = app.gradient.join(', ');
-    
-    let statusText, buttonText, iconClass;
-    if (app.closed) {
-        statusText = '';
-        buttonText = 'Closed';
-        iconClass = 'fa-lock';
-    } else if (app.comingSoon) {
-        statusText = '';
-        buttonText = 'Coming Soon';
-        iconClass = 'fa-clock';
-    } else {
-        statusText = '';
-        buttonText = 'Launch';
-        iconClass = 'fa-external-link-alt';
-    }
-    
-    card.innerHTML = `
-        <div class="app-icon-wrapper" style="background: linear-gradient(135deg, ${buttonGradient})">
-            <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
-        </div>
-        <h3 class="app-title" style="background: linear-gradient(135deg, ${buttonGradient}); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${app.title}</h3>
-        <div class="app-status">
-            <span class="status-text">${statusText}</span>
-        </div>
-        <a href="${app.url || '#'}" class="app-link" style="background: linear-gradient(135deg, ${buttonGradient})" target="_blank" rel="noopener noreferrer">
-            ${buttonText} <i class="fas ${iconClass}" aria-hidden="true"></i>
-            <span class="visually-hidden">${buttonText} ${app.title}</span>
-        </a>
-    `;
-    card.style.background = `linear-gradient(135deg, ${gradientColors})`;
-    
-    return card;
+  let badgesHtml = '';
+  if (app.isNew) {
+    badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>جديد</div>`;
+  }
+  if (app.closed) {
+    badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>مغلق</div>`;
+  }
+
+  el.innerHTML = `
+    <div class="card-glow"></div>
+    <div class="bento-header">
+      <div class="app-icon-wrapper">
+        <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
+      </div>
+      ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
+    </div>
+    <div class="bento-footer">
+      <h3 class="app-title">${app.title}</h3>
+    </div>
+  `;
+
+  el.addEventListener('click', () => play(sounds.click));
+
+  return el;
 };
 
 const renderApps = () => {
-    const appGrid = document.getElementById('appGrid');
-    const fragment = document.createDocumentFragment();
-    apps.forEach(app => {
-        fragment.appendChild(createAppCard(app));
-    });
-    appGrid.appendChild(fragment);
+  const grid = document.getElementById('appGrid');
+  const frag = document.createDocumentFragment();
+  apps.forEach(a => frag.appendChild(createCard(a)));
+  grid.appendChild(frag);
 };
-
-const highlightCard = (card) => {
-    playSound(sounds.cardHighlight);
-    document.querySelectorAll('.app-card').forEach(c => {
-        c.classList.toggle('highlighted', c === card);
-        c.classList.toggle('dehighlighted', c !== card);
-    });
-};
-
-const secretUrls = {
-    linkexpress: 'https://grand-licorice-653005.netlify.app/',
-    golden: 'https://gold-edition.vercel.app/'
-};
-
-let secretCode = '';
-const secretTimeout = 7000; 
-let secretTimer;
-
-document.addEventListener('keydown', (e) => {
-    clearTimeout(secretTimer);
-    secretCode += e.key.toLowerCase(); 
-    
-    secretTimer = setTimeout(() => secretCode = '', secretTimeout);
-
-    const matchedKey = Object.keys(secretUrls).find(key => secretCode.endsWith(key));
-    
-    if (matchedKey) {
-        playSound(sounds.click);
-        window.open(secretUrls[matchedKey], '_blank', 'noopener,noreferrer');
-        secretCode = '';
-    }
-});
-
-const removeHighlight = () => {
-    document.querySelectorAll('.app-card').forEach(c => {
-        c.classList.remove('highlighted', 'dehighlighted');
-    });
-};
-
-const toggleTheme = () => {
-    playSound(sounds.themeToggle);
-    const body = document.body;
-    const themeToggle = document.getElementById('themeToggle');
-    
-    body.classList.toggle('light-theme');
-    
-    const isLightTheme = body.classList.contains('light-theme');
-    themeToggle.innerHTML = isLightTheme
-        ? '<i class="fas fa-moon" aria-hidden="true"></i><span class="visually-hidden">Switch to dark mode</span>'
-        : '<i class="fas fa-sun" aria-hidden="true"></i><span class="visually-hidden">Switch to light mode</span>';
-    themeToggle.setAttribute('aria-label', `Switch to ${isLightTheme ? 'dark' : 'light'} mode`);
-    
-    if (gradientAnim) {
-        gradientAnim.resize();
-    }
-};
-
-const toggleSound = () => {
-    soundEnabled = !soundEnabled;
-    const soundToggle = document.getElementById('soundToggle');
-    soundToggle.innerHTML = soundEnabled
-        ? '<i class="fas fa-volume-up" aria-hidden="true"></i><span class="visually-hidden">Mute sound</span>'
-        : '<i class="fas fa-volume-mute" aria-hidden="true"></i><span class="visually-hidden">Unmute sound</span>';
-    soundToggle.setAttribute('aria-label', soundEnabled ? 'Mute sound' : 'Unmute sound');
-    toggleAmbientSound();
-};
-
-const debounce = (func, wait) => {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-};
-
-const debouncedPlayHoverSound = debounce(() => playSound(sounds.hover), 100);
-
-const handleResize = debounce(() => {
-    const canvas = document.getElementById('gradient-canvas');
-    if (canvas && gradientAnim) {
-        gradientAnim.resize();
-    }
-}, 250);
 
 class GradientAnimation {
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        
-        this.orbs = [];
-        this.particles = [];
-        this.time = 0;
-        this.mouseX = window.innerWidth / 2;
-        this.mouseY = window.innerHeight / 2;
-        this.initOrbs();
-        this.initParticles();
-        this.setupMouseTracking();
-        this.animate();
-    }
-    
-    setupMouseTracking() {
-        document.addEventListener('mousemove', (e) => {
-            this.mouseX = e.clientX;
-            this.mouseY = e.clientY;
-        });
-    }
-    
-    initOrbs() {
-        const orbCount = window.innerWidth < 768 ? 3 : 5;
-        const isLight = document.body.classList.contains('light-theme');
-        
-        for (let i = 0; i < orbCount; i++) {
-            this.orbs.push({
-                x: Math.random() * this.canvas.width,
-                y: Math.random() * this.canvas.height,
-                radius: Math.random() * 250 + 150,
-                vx: (Math.random() - 0.5) * (isLight ? 0.6 : 0.4),
-                vy: (Math.random() - 0.5) * (isLight ? 0.6 : 0.4),
-                hue: isLight ? Math.random() * 30 + 210 : Math.random() * 60 + 180,
-                phase: Math.random() * Math.PI * 2
-            });
-        }
-    }
-    
-    initParticles() {
-        const isLight = document.body.classList.contains('light-theme');
-        if (isLight) {
-            const particleCount = window.innerWidth < 768 ? 15 : 25;
-            for (let i = 0; i < particleCount; i++) {
-                this.particles.push({
-                    x: Math.random() * this.canvas.width,
-                    y: Math.random() * this.canvas.height,
-                    size: Math.random() * 1.5 + 0.5,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: (Math.random() - 0.5) * 0.3,
-                    opacity: Math.random() * 0.3 + 0.1,
-                    hue: Math.random() * 30 + 210
-                });
-            }
-        }
-    }
-    
-    animate() {
-        this.time += 0.005;
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        const isLight = document.body.classList.contains('light-theme');
-        
-        this.orbs.forEach((orb, index) => {
-            const mouseDistX = this.mouseX - orb.x;
-            const mouseDistY = this.mouseY - orb.y;
-            const mouseDist = Math.sqrt(mouseDistX * mouseDistX + mouseDistY * mouseDistY);
-            const mouseInfluence = Math.max(0, 1 - mouseDist / 300) * (isLight ? 1.2 : 1);
-            
-            orb.x += orb.vx + Math.sin(this.time * 2 + orb.phase) * 0.8 + mouseDistX * mouseInfluence * 0.015;
-            orb.y += orb.vy + Math.cos(this.time * 2 + orb.phase) * 0.8 + mouseDistY * mouseInfluence * 0.015;
-            
-            if (orb.x < -orb.radius) orb.x = this.canvas.width + orb.radius;
-            if (orb.x > this.canvas.width + orb.radius) orb.x = -orb.radius;
-            if (orb.y < -orb.radius) orb.y = this.canvas.height + orb.radius;
-            if (orb.y > this.canvas.height + orb.radius) orb.y = -orb.radius;
-            
-            const gradient = this.ctx.createRadialGradient(
-                orb.x, orb.y, 0,
-                orb.x, orb.y, orb.radius
-            );
-            
-            if (isLight) {
-                const intensity = 0.12 + Math.sin(this.time * 3 + index) * 0.03;
-                gradient.addColorStop(0, `hsla(${orb.hue}, 60%, 55%, ${intensity})`);
-                gradient.addColorStop(0.3, `hsla(${orb.hue}, 55%, 65%, ${intensity * 0.6})`);
-                gradient.addColorStop(0.6, `hsla(${orb.hue}, 50%, 75%, ${intensity * 0.3})`);
-                gradient.addColorStop(1, 'hsla(0, 0%, 100%, 0)');
-            } else {
-                const intensity = 0.15 + Math.sin(this.time * 2 + index) * 0.03;
-                gradient.addColorStop(0, `hsla(${orb.hue}, 75%, 65%, ${intensity})`);
-                gradient.addColorStop(0.4, `hsla(${orb.hue}, 70%, 60%, ${intensity * 0.6})`);
-                gradient.addColorStop(0.7, `hsla(${orb.hue}, 65%, 55%, ${intensity * 0.3})`);
-                gradient.addColorStop(1, 'hsla(0, 0%, 0%, 0)');
-            }
-            
-            this.ctx.fillStyle = gradient;
-            this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        });
-        
-        if (isLight && this.particles.length > 0) {
-            this.particles.forEach((particle, index) => {
-                particle.x += particle.vx;
-                particle.y += particle.vy;
-                
-                if (particle.x < 0) particle.x = this.canvas.width;
-                if (particle.x > this.canvas.width) particle.x = 0;
-                if (particle.y < 0) particle.y = this.canvas.height;
-                if (particle.y > this.canvas.height) particle.y = 0;
-                
-                particle.opacity = 0.15 + Math.sin(this.time * 3 + index) * 0.08;
-                
-                this.ctx.beginPath();
-                this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-                this.ctx.fillStyle = `hsla(${particle.hue}, 50%, 45%, ${particle.opacity})`;
-                this.ctx.fill();
-                
-                const gradient = this.ctx.createRadialGradient(
-                    particle.x, particle.y, 0,
-                    particle.x, particle.y, particle.size * 3
-                );
-                gradient.addColorStop(0, `hsla(${particle.hue}, 60%, 55%, ${particle.opacity * 0.2})`);
-                gradient.addColorStop(1, 'hsla(0, 0%, 100%, 0)');
-                
-                this.ctx.fillStyle = gradient;
-                this.ctx.fillRect(
-                    particle.x - particle.size * 3,
-                    particle.y - particle.size * 3,
-                    particle.size * 6,
-                    particle.size * 6
-                );
-            });
-        }
-        
-        if (isLight) {
-            for (let i = 0; i < this.particles.length; i++) {
-                for (let j = i + 1; j < this.particles.length; j++) {
-                    const dx = this.particles[i].x - this.particles[j].x;
-                    const dy = this.particles[i].y - this.particles[j].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    
-                    if (distance < 120) {
-                        this.ctx.beginPath();
-                        this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
-                        this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
-                        this.ctx.strokeStyle = `hsla(210, 50%, 45%, ${0.06 * (1 - distance / 120)})`;
-                        this.ctx.lineWidth = 0.5;
-                        this.ctx.stroke();
-                    }
-                }
-            }
-        }
-        
-        requestAnimationFrame(() => this.animate());
-    }
-    
-    resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this.orbs = [];
-        this.particles = [];
-        this.initOrbs();
-        this.initParticles();
-    }
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.t = 0;
+    this.mx = innerWidth / 2;
+    this.my = innerHeight / 2;
+    this.orbs =[];
+    this.resize();
+    document.addEventListener('mousemove', e => { this.mx = e.clientX; this.my = e.clientY; });
+    this.tick();
+  }
+
+  initOrbs() {
+    const count = innerWidth < 768 ? 4 : 6;
+    const light = document.body.classList.contains('light-theme');
+    this.orbs = Array.from({ length: count }, (_, i) => ({
+      x: Math.random() * this.canvas.width,
+      y: Math.random() * this.canvas.height,
+      r: Math.random() * 280 + 160,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      hue: light ? Math.random() * 40 + 200 : Math.random() * 70 + 175,
+      phase: Math.random() * Math.PI * 2
+    }));
+  }
+
+  tick() {
+    this.t += 0.003;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    const light = document.body.classList.contains('light-theme');
+
+    this.orbs.forEach((o, i) => {
+      const dx = this.mx - o.x, dy = this.my - o.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      const inf = Math.max(0, 1 - dist / 400) * 0.012;
+      o.x += o.vx + Math.sin(this.t * 1.5 + o.phase) * 0.6 + dx * inf;
+      o.y += o.vy + Math.cos(this.t * 1.5 + o.phase) * 0.6 + dy * inf;
+      if (o.x < -o.r) o.x = this.canvas.width + o.r;
+      if (o.x > this.canvas.width + o.r) o.x = -o.r;
+      if (o.y < -o.r) o.y = this.canvas.height + o.r;
+      if (o.y > this.canvas.height + o.r) o.y = -o.r;
+
+      const g = this.ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
+      const a = (light ? 0.08 : 0.1) + Math.sin(this.t * 2 + i) * 0.02;
+      g.addColorStop(0, `hsla(${o.hue},70%,${light ? 55 : 65}%,${a})`);
+      g.addColorStop(0.4, `hsla(${o.hue},65%,${light ? 60 : 60}%,${a * 0.5})`);
+      g.addColorStop(1, 'hsla(0,0%,0%,0)');
+      this.ctx.fillStyle = g;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    });
+
+    requestAnimationFrame(() => this.tick());
+  }
+
+  resize() {
+    this.canvas.width = innerWidth;
+    this.canvas.height = innerHeight;
+    this.initOrbs();
+  }
 }
 
-const detectSystemTheme = () => {
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
-        return 'light';
-    }
-    return 'dark';
-};
+const secretUrls = { linkexpress: 'https://grand-licorice-653005.netlify.app/', golden: 'https://gold-edition.vercel.app/' };
+let secretCode = '', secretTimer;
+document.addEventListener('keydown', e => {
+  clearTimeout(secretTimer);
+  secretCode += e.key.toLowerCase();
+  secretTimer = setTimeout(() => secretCode = '', 7000);
+  const hit = Object.keys(secretUrls).find(k => secretCode.endsWith(k));
+  if (hit) { play(sounds.click); window.open(secretUrls[hit], '_blank', 'noopener'); secretCode = ''; }
+});
 
-const applySystemTheme = () => {
-    const systemTheme = detectSystemTheme();
-    const body = document.body;
-    const themeToggle = document.getElementById('themeToggle');
-    
-    if (systemTheme === 'light') {
-        body.classList.add('light-theme');
-        themeToggle.innerHTML = '<i class="fas fa-moon" aria-hidden="true"></i><span class="visually-hidden">Switch to dark mode</span>';
-        themeToggle.setAttribute('aria-label', 'Switch to dark mode');
-    } else {
-        body.classList.remove('light-theme');
-        themeToggle.innerHTML = '<i class="fas fa-sun" aria-hidden="true"></i><span class="visually-hidden">Switch to light mode</span>';
-        themeToggle.setAttribute('aria-label', 'Switch to light mode');
-    }
-    
-    if (gradientAnim) {
-        gradientAnim.resize();
-    }
-};
+let gradAnim, debTimer;
+const debounce = (fn, ms) => (...a) => { clearTimeout(debTimer); debTimer = setTimeout(() => fn(...a), ms); };
 
-let gradientAnim;
+const applyTheme = (force) => {
+  const light = force !== undefined ? force : window.matchMedia('(prefers-color-scheme: light)').matches;
+  document.body.classList.toggle('light-theme', light);
+  const btn = document.getElementById('themeToggle');
+  btn.innerHTML = light
+    ? '<i class="fas fa-moon" aria-hidden="true"></i><span class="visually-hidden">وضع مظلم</span>'
+    : '<i class="fas fa-sun" aria-hidden="true"></i><span class="visually-hidden">وضع مضيء</span>';
+  gradAnim?.resize();
+};
 
 document.addEventListener('DOMContentLoaded', () => {
-    applySystemTheme();
-    renderApps();
-    
-    const canvas = document.getElementById('gradient-canvas');
-    if (canvas) {
-        gradientAnim = new GradientAnimation(canvas);
+  applyTheme();
+  renderApps();
+
+  const canvas = document.getElementById('gradient-canvas');
+  gradAnim = new GradientAnimation(canvas);
+
+  const grid = document.getElementById('appGrid');
+  let currentCard = null;
+
+  grid.addEventListener('mouseover', e => {
+    const card = e.target.closest('.app-card');
+    if (card && card !== currentCard) {
+      currentCard = card;
+      if (soundEnabled) { sounds.hover.currentTime = 0; sounds.hover.play().catch(() => {}); }
+      grid.querySelectorAll('.app-card').forEach(c => {
+        c.classList.toggle('highlighted', c === card);
+        c.classList.toggle('dehighlighted', c !== card);
+      });
     }
-    
-    const themeToggle = document.getElementById('themeToggle');
-    const soundToggle = document.getElementById('soundToggle');
-    const appGrid = document.getElementById('appGrid');
-    
-    themeToggle.addEventListener('click', toggleTheme);
-    soundToggle.addEventListener('click', toggleSound);
-    
-    appGrid.addEventListener('click', (e) => {
-        const card = e.target.closest('.app-card');
-        const link = e.target.closest('.app-link');
-        
-        if (link) {
-            playSound(sounds.click);
-            const multipleUrls = card.getAttribute('data-multiple-urls');
-            if (multipleUrls) {
-                e.preventDefault();
-                const urls = JSON.parse(multipleUrls);
-                const randomUrl = urls[Math.floor(Math.random() * urls.length)];
-                window.open(randomUrl, '_blank', 'noopener,noreferrer');
-            }
-        } else if (card && !link) {
-            playSound(sounds.click);
-            const url = card.getAttribute('data-url');
-            const multipleUrls = card.getAttribute('data-multiple-urls');
-            
-            if (multipleUrls) {
-                const urls = JSON.parse(multipleUrls);
-                const randomUrl = urls[Math.floor(Math.random() * urls.length)];
-                window.open(randomUrl, '_blank', 'noopener,noreferrer');
-            } else if (url && url !== '#') {
-                window.open(url, '_blank', 'noopener,noreferrer');
-            }
-        }
-    });
-    
-    let currentHighlightedCard = null;
-    
-    appGrid.addEventListener('mouseover', (e) => {
-        const card = e.target.closest('.app-card');
-        if (card && card !== currentHighlightedCard) {
-            highlightCard(card);
-            debouncedPlayHoverSound();
-            currentHighlightedCard = card;
-        }
-    });
-    
-    appGrid.addEventListener('mouseout', (e) => {
-        if (!e.relatedTarget || !e.relatedTarget.closest('.app-card')) {
-            removeHighlight();
-            currentHighlightedCard = null;
-        }
-    });
-    
-    window.addEventListener('resize', handleResize);
-    
-    if (window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
-            applySystemTheme();
-        });
+  });
+
+  grid.addEventListener('mouseout', e => {
+    if (!e.relatedTarget?.closest('.app-card')) {
+      currentCard = null;
+      grid.querySelectorAll('.app-card').forEach(c => c.classList.remove('highlighted','dehighlighted'));
     }
+  });
+
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    play(sounds.toggle);
+    applyTheme(!document.body.classList.contains('light-theme'));
+  });
+
+  document.getElementById('soundToggle').addEventListener('click', () => {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('soundToggle');
+    btn.innerHTML = soundEnabled
+      ? '<i class="fas fa-volume-up" aria-hidden="true"></i><span class="visually-hidden">كتم الصوت</span>'
+      : '<i class="fas fa-volume-mute" aria-hidden="true"></i><span class="visually-hidden">تشغيل الصوت</span>';
+    soundEnabled ? sounds.ambient.play().catch(()=>{}) : sounds.ambient.pause();
+  });
+
+  window.addEventListener('resize', debounce(() => gradAnim?.resize(), 220));
+
+  if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => applyTheme(e.matches));
+  }
 });
-    </script>
+</script>
 </body>
 </html>
