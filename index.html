@@ -496,7 +496,7 @@ class AudioEngine {
 
   async hover(idx = 0) {
     await this._boot(); if (!this.ok()) return;
-    const scale = [523.25,587.33,659.25,698.46,783.99,880,987.77];
+    const scale =[523.25,587.33,659.25,698.46,783.99,880,987.77];
     const f = scale[idx % scale.length], t = this.ctx.currentTime;
     this._v(f,'sine',t,0.16,0.024); this._v(f*2,'sine',t+0.006,0.11,0.006);
     this._v(f*3,'sine',t+0.01,0.08,0.002); this._v(f*0.5,'sine',t,0.12,0.008);
@@ -512,14 +512,13 @@ class AudioEngine {
 
   async arpUp() {
     await this._boot(); if (!this.ok()) return;
-    const t = this.ctx.currentTime;
-    [523.25,659.25,783.99,1046.5].forEach((f,i) => this._v(f,'sine',t+i*0.08,0.2,0.046-i*0.007));
+    const t = this.ctx.currentTime;[523.25,659.25,783.99,1046.5].forEach((f,i) => this._v(f,'sine',t+i*0.08,0.2,0.046-i*0.007));
   }
 
   async chime(toLight) {
     await this._boot(); if (!this.ok()) return;
     const t = this.ctx.currentTime;
-    const ns = toLight ? [392,493.88,587.33,698.46] : [698.46,587.33,493.88,392];
+    const ns = toLight ?[392,493.88,587.33,698.46] :[698.46,587.33,493.88,392];
     ns.forEach((f,i) => this._v(f,'sine',t+i*0.07,0.22,0.036));
   }
 
@@ -533,7 +532,7 @@ class AudioEngine {
 
 const sfx = new AudioEngine();
 
-const apps = [
+const apps =[
   { title:'خارجي 2',         url:'https://slippery-form.vercel.app/',              icon:'fa-briefcase',    gradient:['#3b82f6','#60a5fa','#2563eb'], closed:true, size:'small' },
   { title:'خارجي 0',         url:'https://lx-parser.vercel.app/',                  icon:'fa-eye',          gradient:['#10b981','#34d399','#059669'],              size:'wide'  },
   { title:'مجموعات دوائية',  url:'https://desktop-ru4x.vercel.app/',               icon:'fa-pills',        gradient:['#8b5cf6','#a78bfa','#7c3aed'],              size:'small' },
@@ -620,7 +619,7 @@ const renderApps = () => {
 class OrbField {
   constructor(canvas) {
     this.cv = canvas; this.cx = canvas.getContext('2d');
-    this.t = 0; this.orbs = [];
+    this.t = 0; this.orbs =[];
     this.resize(); this.spawn(); this.tick();
   }
   resize() { this.cv.width = window.innerWidth; this.cv.height = window.innerHeight; }
@@ -679,6 +678,9 @@ document.addEventListener('DOMContentLoaded', () => {
     clearTimeout(debTimer);
     debTimer = setTimeout(() => window.bgAnim.resize(), 180);
   });
+  
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => applyTheme(e.matches));
+  
   document.getElementById('themeToggle').addEventListener('click', () => {
     const isLight = !document.body.classList.contains('light-theme');
     applyTheme(isLight); sfx.chime(isLight);
