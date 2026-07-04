@@ -127,7 +127,6 @@ h1 {
 body.light-theme h1 {
   background: linear-gradient(135deg, #0f172a 0%, #2563eb 40%, #0f172a 80%);
   background-size: 200% auto;
-  background-position: 0% center;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 8px 16px rgba(37,99,235,0.15));
@@ -363,6 +362,13 @@ body.light-theme .badge {
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
   transition: transform 0.6s var(--ease-spring), background 0.6s var(--ease-lux);
   background: linear-gradient(135deg, var(--text) 45%, var(--c2) 130%);
+  background-size: 180% auto; background-position: 0% center;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+body:not(.light-theme) .app-title {
+  background: linear-gradient(135deg, var(--text) 30%, var(--c1) 150%);
   background-size: 180% auto; background-position: 0% center;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
