@@ -192,7 +192,6 @@ body.light-theme .controls-pill button:hover { background: rgba(20,18,15,0.05); 
   box-shadow: var(--shadow-soft), inset 0 1px 1px rgba(255,255,255,0.05);
   padding: clamp(1.2rem, 2.5vh, 1.8rem);
   overflow: hidden; transform-style: preserve-3d;
-  will-change: transform, box-shadow, filter, opacity;
   transition: box-shadow 0.6s var(--ease-lux), border-color 0.6s var(--ease-lux), filter 0.6s var(--ease-lux), opacity 0.6s var(--ease-lux), transform 0.6s var(--ease-lux), background 0.6s var(--ease-lux);
   animation: cardEnter 0.7s var(--ease-lux) both;
   backdrop-filter: blur(22px) saturate(150%);
@@ -204,13 +203,8 @@ body.light-theme .controls-pill button:hover { background: rgba(20,18,15,0.05); 
   to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
 }
 
-.app-card:nth-child(1) { grid-column: 1/2; grid-row: 1/2; animation-delay: 0.03s; }
-.app-card:nth-child(2) { grid-column: 2/4; grid-row: 1/2; animation-delay: 0.06s; }
-.app-card:nth-child(3) { grid-column: 4/5; grid-row: 1/2; animation-delay: 0.09s; }
-.app-card:nth-child(4) { grid-column: 1/3; grid-row: 2/3; animation-delay: 0.12s; }
-.app-card:nth-child(5) { grid-column: 3/4; grid-row: 2/3; animation-delay: 0.15s; }
-.app-card:nth-child(6) { grid-column: 4/5; grid-row: 2/3; animation-delay: 0.18s; }
-.app-card:nth-child(7) { grid-column: 1/5; grid-row: 3/4; animation-delay: 0.21s; }
+/* Grid placement is data-driven (see LAYOUTS further down) — el.style.gridColumn/gridRow
+   are set inline per card, and animation-delay is set inline for the entry cascade. */
 
 .card-noise {
   position: absolute; inset: 0;
@@ -221,10 +215,13 @@ body.light-theme .controls-pill button:hover { background: rgba(20,18,15,0.05); 
 
 .card-glow {
   position: absolute; inset: 0;
-  background: radial-gradient(circle 600px at var(--mx, 50%) var(--my, 150%), var(--c1), transparent 60%);
+  background: radial-gradient(circle var(--glow-r, 600px) at var(--mx, 50%) var(--my, 150%), var(--c1), transparent 60%);
   opacity: 0; pointer-events: none; z-index: 0;
   transition: opacity 0.8s var(--ease-lux);
+  animation: glowBreathe 0.9s var(--ease-lux) both;
 }
+
+@keyframes glowBreathe { from { --glow-r: 0px; } to { --glow-r: 600px; } }
 
 .card-glare {
   position: absolute; inset: -1px; border-radius: inherit;
@@ -319,6 +316,7 @@ body.light-theme .app-card:hover .card-glow { opacity: 0.06; }
   font-size: clamp(1.1rem, 2.5vh, 1.4rem);
   color: #fff; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
   position: relative; z-index: 1;
+  transition: opacity 0.175s var(--ease-lux);
 }
 
 .badges { display: flex; gap: 0.5rem; flex-direction: row-reverse; transform: translateZ(20px); }
@@ -339,6 +337,7 @@ body.light-theme .badge {
 
 .badge-new { color: #fbbf24; border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.1); }
 .badge-closed { color: #f87171; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.1); }
+.badge-variant { color: #93c5fd; border-color: rgba(147,197,253,0.3); background: rgba(147,197,253,0.1); }
 
 .badge-dot {
   width: 5px; height: 5px; border-radius: 50%; background: currentColor;
@@ -350,6 +349,15 @@ body.light-theme .badge {
 @keyframes pulseDot {
   0%, 100% { transform: scale(1); opacity: 0.8; }
   50% { transform: scale(1.5); opacity: 1; }
+}
+
+/* Ring pulse for the palette's "reveal in grid" action — announces which
+   card the search just jumped to. */
+.app-card.is-revealed { animation: revealPulse 1.1s var(--ease-lux); }
+
+@keyframes revealPulse {
+  0% { box-shadow: 0 0 0 0 var(--c1); }
+  100% { box-shadow: 0 0 0 14px transparent; }
 }
 
 .app-title {
@@ -391,6 +399,38 @@ body.light-theme .open-affordance { background: rgba(20,18,15,0.06); border-colo
 
 .app-card:hover .open-affordance { opacity: 0.9; transform: translateY(0) scale(1); }
 
+/* Segmented variant selector — sits opposite the title in .bento-footer via
+   the footer's existing justify-content: space-between. Reuses the tab
+   rail's FLIP-stretch indicator technique (see moveVariantIndicator), just
+   scaled down. */
+.variant-chips {
+  position: relative; z-index: 1;
+  display: flex; gap: 2px; padding: 3px;
+  border-radius: 999px; flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+}
+body.light-theme .variant-chips { background: rgba(20,18,15,0.055); }
+
+.variant-chip-indicator {
+  position: absolute; top: 3px; left: 0; height: calc(100% - 6px);
+  border-radius: 999px; width: 0; transform: translateX(0);
+  background: rgba(255,255,255,0.16);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.2);
+  pointer-events: none;
+}
+body.light-theme .variant-chip-indicator { background: rgba(20,18,15,0.09); }
+
+.variant-chip {
+  position: relative; z-index: 1;
+  height: 26px; padding: 0 0.75rem; border-radius: 999px;
+  border: none; background: transparent; cursor: pointer;
+  color: var(--text-muted);
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.68rem; font-weight: 600;
+  transition: color 0.25s var(--ease-lux);
+}
+.variant-chip.is-active { color: var(--text); }
+.variant-chip:focus-visible { outline: 2px solid var(--c1, #7c9bff); outline-offset: 1px; }
+
 .card-wide .app-icon-wrapper { width: clamp(52px, 7.2vh, 62px); height: clamp(52px, 7.2vh, 62px); border-radius: 18px; }
 .card-wide .app-icon { font-size: clamp(1.3rem, 3vh, 1.6rem); }
 .card-wide .app-title { font-size: clamp(1.3rem, 3vh, 1.6rem); }
@@ -420,6 +460,188 @@ body.light-theme .open-affordance { background: rgba(20,18,15,0.06); border-colo
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
+@property --glow-r { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
+/* ---------- Liquid Rail (tab bar) ---------- */
+
+.tab-rail {
+  position: relative; align-self: center; flex-shrink: 0;
+  display: flex; align-items: center; gap: 0.15rem;
+  padding: 0.35rem; border-radius: 999px;
+  background: rgba(255,255,255,0.025);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft), inset 0 1px 1px rgba(255,255,255,0.05);
+  animation: slideDown 0.9s var(--ease-lux) 0.05s both;
+}
+
+body.light-theme .tab-rail {
+  background: rgba(255,255,255,0.55);
+  box-shadow: var(--shadow-soft), inset 0 1px 1px rgba(255,255,255,0.9);
+}
+
+/* Goo filter is scoped to ONLY the indicator + trail dot — never wraps text or
+   any backdrop-filter surface, or it flattens/blurs everything inside it. */
+.tab-goo {
+  position: absolute; inset: 0; z-index: 0;
+  filter: url(#lx-goo); isolation: isolate; pointer-events: none;
+}
+
+.tab-indicator, .tab-indicator-trail {
+  position: absolute; top: 4px; left: 0; height: calc(100% - 8px);
+  border-radius: 999px; width: 60px;
+  transform: translateX(0);
+}
+
+.tab-indicator {
+  background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04));
+  box-shadow: 0 4px 18px -4px var(--tab-accent, rgba(124,155,255,0.55)), inset 0 1px 1px rgba(255,255,255,0.25);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+body.light-theme .tab-indicator { background: linear-gradient(135deg, rgba(20,18,15,0.1), rgba(20,18,15,0.03)); }
+
+.tab-indicator-trail {
+  background: rgba(255,255,255,0.12);
+  transition: transform 0.5s var(--ease-spring) 0.06s, width 0.5s var(--ease-spring) 0.06s;
+}
+
+body.light-theme .tab-indicator-trail { background: rgba(20,18,15,0.06); }
+
+.tab-btn {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; gap: 0.55rem;
+  background: transparent; border: none; color: var(--text-muted);
+  padding: 0.65rem 1.35rem; border-radius: 999px;
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.92rem; font-weight: 600; white-space: nowrap;
+  transition: color 0.5s var(--ease-lux);
+}
+
+.tab-btn i { font-size: 0.85rem; transition: color 0.5s var(--ease-lux); }
+.tab-btn[aria-selected="true"] { color: var(--text); }
+.tab-btn[aria-selected="true"] i { color: var(--tab-accent-solid, inherit); }
+
+/* ---------- View Transitions (panel switch) ---------- */
+
+.app-grid { view-transition-name: grid; }
+
+::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-lux) both; }
+::view-transition-new(grid) { animation: lx-grid-in 0.28s var(--ease-lux) both; }
+
+@keyframes lx-grid-out {
+  to { transform: translateX(calc(var(--dir, 1) * -32px)); filter: blur(6px); opacity: 0; }
+}
+@keyframes lx-grid-in {
+  from { transform: translateX(calc(var(--dir, 1) * 32px)) scale(0.98); filter: blur(6px); opacity: 0; }
+  to { transform: none; filter: blur(0); opacity: 1; }
+}
+
+.app-grid.is-out { animation: lx-grid-out 0.22s var(--ease-lux) both; }
+
+/* ---------- Command palette ---------- */
+
+.palette-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(2,3,5,0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: min(18vh, 160px);
+  animation: fadeIn 0.25s var(--ease-lux) both;
+}
+
+/* The [hidden] attribute alone loses to the `display: flex` above (author style beats the
+   UA default at equal specificity) — this rule is what actually makes hiding it work. */
+.palette-overlay[hidden] { display: none; }
+
+body.light-theme .palette-overlay { background: rgba(20,18,15,0.28); }
+
+.palette {
+  width: min(760px, 94vw); max-height: 72vh;
+  display: flex; flex-direction: column;
+  background: var(--bg); border: 1px solid var(--border-highlight);
+  border-radius: 20px; box-shadow: var(--shadow-deep);
+  overflow: hidden;
+  animation: paletteIn 0.3s var(--ease-spring) both;
+}
+
+@keyframes paletteIn { from { opacity: 0; transform: translateY(-10px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+.palette-input-row { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.palette-input-row i { color: var(--text-muted); }
+.palette-input-row kbd { margin-inline-start: auto; font-size: 0.7rem; color: var(--text-muted); border: 1px solid var(--border); border-radius: 6px; padding: 0.15rem 0.5rem; }
+#paletteInput { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 1rem; }
+#paletteInput::placeholder { color: var(--text-muted); }
+
+/* Two-pane body: results list + detail/actions. In RTL source order, the list
+   (first child) lands on the right and the detail pane (second child) on the
+   left — so ArrowRight/ArrowLeft-style intuitions still map correctly. We use
+   Tab to switch panes instead of the arrow keys so cursor movement inside the
+   search input is never hijacked. */
+.palette-body { display: flex; flex: 1; min-height: 0; }
+
+.palette-results { list-style: none; overflow-y: auto; padding: 0.5rem; width: 44%; flex-shrink: 0; border-inline-start: 1px solid var(--border); }
+.palette-item {
+  display: flex; align-items: center; gap: 0.85rem;
+  padding: 0.7rem 0.9rem; border-radius: 12px; cursor: pointer;
+  transition: background 0.2s var(--ease-lux);
+}
+.palette-item .app-icon-wrapper { width: 34px; height: 34px; border-radius: 10px; }
+.palette-item .app-icon { font-size: 0.85rem; }
+.palette-item-text { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.palette-item-title { font-weight: 600; color: var(--text); font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.palette-item-cat { font-size: 0.72rem; color: var(--text-muted); }
+.palette-item.is-active, .palette-item:hover { background: var(--surface-hover); }
+.palette-empty { padding: 1.5rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.88rem; }
+
+.palette-detail { flex: 1; min-width: 0; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.15rem; overflow-y: auto; }
+
+.palette-detail-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--text-muted); font-size: 0.85rem; text-align: center; }
+.palette-detail-empty i { font-size: 1.4rem; opacity: 0.5; }
+
+.palette-detail-header { display: flex; align-items: center; gap: 0.85rem; }
+.palette-detail .app-icon-wrapper { width: 48px; height: 48px; border-radius: 14px; }
+.palette-detail .app-icon { font-size: 1.15rem; }
+
+.palette-detail-title-wrap { min-width: 0; }
+.palette-detail-title {
+  font-family: 'El Messiri', 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 1.1rem; font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.palette-detail-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; flex-wrap: wrap; }
+.palette-detail-cat { font-size: 0.76rem; color: var(--text-muted); }
+.palette-detail-badge {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.64rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 50px;
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05);
+}
+body.light-theme .palette-detail-badge { background: rgba(255,255,255,0.7); border-color: rgba(20,18,15,0.05); }
+.palette-detail-badge.badge-new { color: #fbbf24; border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.1); }
+.palette-detail-badge.badge-closed { color: #f87171; border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.1); }
+.palette-detail-badge.badge-variant { color: #93c5fd; border-color: rgba(147,197,253,0.3); background: rgba(147,197,253,0.1); }
+.palette-detail-badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+.palette-actions { display: flex; flex-direction: column; gap: 0.4rem; }
+.palette-action {
+  display: flex; align-items: center; gap: 0.75rem; width: 100%; text-align: start;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text);
+  padding: 0.65rem 0.85rem; border-radius: 12px;
+  font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.86rem; font-weight: 600;
+  transition: background 0.25s var(--ease-lux), border-color 0.25s var(--ease-lux);
+}
+.palette-action i { width: 16px; text-align: center; color: var(--text-muted); flex-shrink: 0; }
+.palette-action-label { flex: 1; }
+.palette-action kbd { font-size: 0.64rem; color: var(--text-muted); border: 1px solid var(--border); border-radius: 6px; padding: 0.15rem 0.5rem; flex-shrink: 0; }
+.palette-action:hover { background: var(--surface-hover); }
+.palette-action.is-primary { border-color: rgba(124,155,255,0.3); }
+.palette-action.is-active { background: linear-gradient(135deg, rgba(124,155,255,0.22), rgba(124,155,255,0.08)); border-color: rgba(124,155,255,0.5); }
+.palette-action.is-active i { color: var(--text); }
+body.light-theme .palette-action.is-active { background: linear-gradient(135deg, rgba(37,99,235,0.16), rgba(37,99,235,0.05)); }
+
 @media (max-width: 1024px) {
   html, body { height: auto; min-height: 100dvh; overflow-y: auto; overflow-x: hidden; }
   body { display: block; }
@@ -429,13 +651,10 @@ body.light-theme .open-affordance { background: rgba(20,18,15,0.06); border-colo
     grid-template-columns: repeat(2, 1fr); grid-template-rows: none;
     grid-auto-rows: 220px;
   }
-  .app-card:nth-child(1) { grid-column: span 1; grid-row: auto; }
-  .app-card:nth-child(2) { grid-column: span 2; grid-row: auto; }
-  .app-card:nth-child(3) { grid-column: span 1; grid-row: auto; }
-  .app-card:nth-child(4) { grid-column: span 2; grid-row: auto; }
-  .app-card:nth-child(5) { grid-column: span 1; grid-row: auto; }
-  .app-card:nth-child(6) { grid-column: span 1; grid-row: auto; }
-  .app-card:nth-child(7) { grid-column: span 2; grid-row: auto; }
+  /* JS sets grid-column/grid-row inline for desktop bento placement — clear it here
+     or the inline styles win over everything below and the mobile layout breaks. */
+  .app-card { grid-column: auto !important; grid-row: auto !important; }
+  .app-card.card-wide, .app-card.card-hero { grid-column: span 2 !important; }
   .card-hero { flex-direction: column; align-items: flex-start; justify-content: space-between; }
   .card-hero .bento-header { width: 100%; justify-content: space-between; gap: 0; }
   .card-hero .bento-footer { width: 100%; justify-content: flex-end; }
@@ -446,11 +665,20 @@ body.light-theme .open-affordance { background: rgba(20,18,15,0.06); border-colo
   body { display: block; }
   .container { height: auto; padding-top: 5rem; padding-bottom: 2rem; gap: 1rem; }
   .app-grid { flex: none; grid-template-columns: 1fr; grid-auto-rows: 180px; gap: 1rem; }
-  .app-card:nth-child(n) { grid-column: span 1; grid-row: auto; }
+  .app-card, .app-card.card-wide, .app-card.card-hero { grid-column: 1 / -1 !important; grid-row: auto !important; }
   .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper { width: 60px; height: 60px; border-radius: 16px; }
   .card-wide .app-icon, .card-hero .app-icon { font-size: 1.6rem; }
   .card-wide .app-title, .card-hero .app-title { font-size: 1.6rem; }
   h1 { font-size: 3rem; }
+  .tab-rail { max-width: 100%; overflow-x: auto; }
+  .palette-overlay { padding-top: 8vh; }
+}
+
+@media (max-width: 720px) {
+  .palette { width: 94vw; max-height: 84vh; }
+  .palette-body { flex-direction: column; }
+  .palette-results { width: 100%; max-height: 32vh; border-inline-start: none; border-bottom: 1px solid var(--border); }
+  .palette-detail { padding: 1rem; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
@@ -458,12 +686,28 @@ body.light-theme .open-affordance { background: rgba(20,18,15,0.06); border-colo
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="lx-goo">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur" />
+      <feColorMatrix in="blur" mode="matrix"
+        values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -9" result="goo" />
+      <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+    </filter>
+  </defs>
+</svg>
+
 <canvas id="gradient-canvas"></canvas>
 <div class="vignette"></div>
 <div class="noise-overlay"></div>
 <div class="spotlight" id="spotlight"></div>
 
 <div class="controls-pill">
+  <button id="paletteToggle" aria-label="بحث سريع" title="بحث سريع (Ctrl/Cmd+K)">
+    <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+    <span class="visually-hidden">Open quick search</span>
+  </button>
+  <div class="controls-divider"></div>
   <button id="soundToggle" aria-label="تفعيل الصوت" title="تفعيل الصوت">
     <i class="fas fa-volume-mute" aria-hidden="true"></i>
     <span class="visually-hidden">Toggle sound</span>
@@ -479,7 +723,29 @@ body.light-theme .open-affordance { background: rgba(20,18,15,0.06); border-colo
   <header class="site-header">
     <h1>LinkExpress</h1>
   </header>
-  <div class="app-grid" id="appGrid"></div>
+
+  <div class="tab-rail" role="tablist" aria-label="التصنيفات" id="tabRail">
+    <div class="tab-goo" aria-hidden="true">
+      <div class="tab-indicator-trail" id="tabIndicatorTrail"></div>
+      <div class="tab-indicator" id="tabIndicator"></div>
+    </div>
+  </div>
+
+  <div class="app-grid" id="appGrid" role="tabpanel" tabindex="0"></div>
+</div>
+
+<div class="palette-overlay" id="paletteOverlay" hidden>
+  <div class="palette" role="dialog" aria-modal="true" aria-label="بحث سريع">
+    <div class="palette-input-row">
+      <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+      <input type="text" id="paletteInput" placeholder="ابحث عن تطبيق..." autocomplete="off" aria-label="بحث سريع عن تطبيق" />
+      <kbd>Esc</kbd>
+    </div>
+    <div class="palette-body">
+      <ul class="palette-results" id="paletteResults" role="listbox" aria-label="نتائج البحث"></ul>
+      <div class="palette-detail" id="paletteDetail"></div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -490,6 +756,7 @@ class AudioEngine {
     this.reverb = null;
     this.rvbSend = null;
     this.enabled = false;
+    this.scale = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77];
   }
 
   async _boot() {
@@ -543,11 +810,20 @@ class AudioEngine {
   async hover(idx = 0) {
     await this._boot();
     if (!this.ok()) return;
-    const scale = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77];
-    const f = scale[idx % scale.length];
+    const f = this.scale[((idx % this.scale.length) + this.scale.length) % this.scale.length];
     const t = this.ctx.currentTime;
     this._v(f, 'sine', t, 0.18, 0.02);
     this._v(f * 2, 'sine', t + 0.008, 0.12, 0.005);
+  }
+
+  async switchSweep(fromKey, toKey) {
+    await this._boot();
+    if (!this.ok()) return;
+    const root = (k) => this.scale[((k % this.scale.length) + this.scale.length) % this.scale.length];
+    const from = root(fromKey), to = root(toKey);
+    const t = this.ctx.currentTime;
+    this._v(from, 'sine', t, 0.18, 0.025, to);
+    this._v(from * 1.5, 'sine', t, 0.18, 0.015, to * 1.5);
   }
 
   async click() {
@@ -584,27 +860,119 @@ class AudioEngine {
 
 const sfx = new AudioEngine();
 
-const apps = [
-  { title: 'خارجي 2', url: 'https://slippery-form.vercel.app/', icon: 'fa-briefcase', gradient: ['#3f5fe0', '#7c9bff', '#1c2f8f'], closed: true, size: 'small' },
-  { title: 'خارجي 0', url: 'https://lx-parser.vercel.app/', icon: 'fa-eye', gradient: ['#0f9e72', '#5eead4', '#075c46'], size: 'wide' },
-  { title: 'مجموعات دوائية', url: 'https://desktop-ru4x.vercel.app/', icon: 'fa-pills', gradient: ['#7c3aed', '#c4a6ff', '#4c1d95'], size: 'small' },
-  { title: 'لستة الادوية', url: 'https://lx-search-kappa.vercel.app/', icon: 'fa-search', gradient: ['#0b8fd1', '#7dd3fc', '#075985'], size: 'wide' },
-  { title: 'المنفذ والتحمل', url: 'https://newlist-eta.vercel.app/', icon: 'fa-dollar-sign', gradient: ['#db2777', '#ffb3d9', '#8a1150'], size: 'small' },
-  { title: 'بروتوكولات الصرف', url: 'https://strong-snickerdoodle-02a92f.netlify.app/', icon: 'fa-folder-open', gradient: ['#ea580c', '#fdba74', '#7c2d12'], size: 'small' },
-  { title: 'فهرس الادوية', url: 'https://lx-index.vercel.app/', icon: 'fa-book-medical', gradient: ['#d97706', '#fde68a', '#78350f'], isNew: true, size: 'hero' }
+const lerp = (a, b, t) => a + (b - a) * t;
+
+const hexToRgba = (hex, a) => {
+  const n = parseInt(hex.replace('#', ''), 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
+const categories = [
+  {
+    id: 'core', label: 'الأساسية', icon: 'fa-layer-group', accent: '#7c9bff', key: 0,
+    apps: [
+      { title: 'خارجي 2', url: 'https://slippery-form.vercel.app/', icon: 'fa-briefcase', gradient: ['#3f5fe0', '#7c9bff', '#1c2f8f'], closed: true },
+      { title: 'خارجي 0', url: 'https://lx-parser.vercel.app/', icon: 'fa-eye', gradient: ['#0f9e72', '#5eead4', '#075c46'] },
+      { title: 'مجموعات دوائية', url: 'https://desktop-ru4x.vercel.app/', icon: 'fa-pills', gradient: ['#7c3aed', '#c4a6ff', '#4c1d95'] },
+      { title: 'لستة الادوية', url: 'https://lx-search-kappa.vercel.app/', icon: 'fa-search', gradient: ['#0b8fd1', '#7dd3fc', '#075985'] },
+      { title: 'المنفذ والتحمل', url: 'https://newlist-eta.vercel.app/', icon: 'fa-dollar-sign', gradient: ['#db2777', '#ffb3d9', '#8a1150'] },
+      { title: 'بروتوكولات الصرف', url: 'https://strong-snickerdoodle-02a92f.netlify.app/', icon: 'fa-folder-open', gradient: ['#ea580c', '#fdba74', '#7c2d12'] },
+      { title: 'فهرس الادوية', url: 'https://lx-index.vercel.app/', icon: 'fa-book-medical', gradient: ['#d97706', '#fde68a', '#78350f'], isNew: true }
+    ]
+  },
+  {
+    id: 'tools', label: 'أدوات وتحليل', icon: 'fa-calculator', accent: '#22c1a4', key: 4,
+    apps: [
+      { title: 'الرقم القومي والتاريخ', url: 'https://lx-id.vercel.app/', icon: 'fa-id-card', gradient: ['#0891b2', '#67e8f9', '#083344'], isNew: true },
+      {
+        title: 'عائد الاستثمار', icon: 'fa-chart-line', gradient: ['#16a34a', '#bbf7d0', '#14532d'], isNew: true,
+        variants: [
+          { label: 'السريع', url: 'https://roi-calc-express.vercel.app/', icon: 'fa-bolt' },
+          { label: 'الكامل', url: 'https://roi-calculator-eight-omega.vercel.app/', icon: 'fa-sliders' }
+        ],
+        defaultVariant: 0
+      },
+      { title: 'تحليل البيانات', url: 'https://duckbench2.vercel.app/', icon: 'fa-chart-column', gradient: ['#6366f1', '#c7d2fe', '#312e81'], isNew: true },
+      { title: 'بيان جهات متعاقدة', url: 'https://entity-tracker-pi.vercel.app/', icon: 'fa-file-contract', gradient: ['#e11d48', '#fecdd3', '#881337'], isNew: true }
+    ]
+  }
 ];
 
-const createCard = (app, idx) => {
+const LAYOUTS = {
+  4: [['1/3', '1/2'], ['3/5', '1/2'], ['1/3', '2/4'], ['3/5', '2/4']],
+  5: [['1/3', '1/2'], ['3/5', '1/2'], ['1/2', '2/4'], ['2/4', '2/4'], ['4/5', '2/4']],
+  6: [['1/3', '1/2'], ['3/5', '1/2'], ['1/2', '2/4'], ['2/4', '2/3'], ['4/5', '2/4'], ['2/4', '3/4']],
+  7: [['1/2', '1/2'], ['2/4', '1/2'], ['4/5', '1/2'], ['1/3', '2/3'], ['3/4', '2/3'], ['4/5', '2/3'], ['1/5', '3/4']]
+};
+
+const spanOf = (track) => {
+  if (!track) return 1;
+  const [a, b] = track.split('/').map(Number);
+  return b - a;
+};
+
+const variantFor = (colTrack) => {
+  const span = spanOf(colTrack);
+  if (span >= 4) return 'card-hero';
+  if (span >= 2) return 'card-wide';
+  return null;
+};
+
+const getSelectedVariantIndex = (app) => {
+  if (!app.variants) return -1;
+  try {
+    const stored = localStorage.getItem('lx-variant-' + app.title);
+    if (stored !== null && app.variants[Number(stored)]) return Number(stored);
+  } catch (e) {}
+  return typeof app.defaultVariant === 'number' ? app.defaultVariant : 0;
+};
+
+// Sliding pill for a variant-chip group — same FLIP-stretch technique as the
+// tab rail's moveIndicator, scaled down (0.3 max stretch instead of 0.55).
+const moveVariantIndicator = (chipsEl, btn, instant) => {
+  const indicator = chipsEl.querySelector('.variant-chip-indicator');
+  if (!indicator || !btn) return;
+  const p = chipsEl.getBoundingClientRect(), b = btn.getBoundingClientRect();
+  const x = b.left - p.left, w = b.width;
+  const prevX = chipsEl._lastX ?? x;
+  const dx = x - prevX;
+  const stretch = Math.min(Math.abs(dx) / Math.max(w, 1), 0.3);
+
+  indicator.style.width = `${w}px`;
+  indicator.style.transformOrigin = dx >= 0 ? 'left center' : 'right center';
+
+  if (instant) {
+    indicator.style.transition = 'none';
+    indicator.style.transform = `translateX(${x}px)`;
+  } else {
+    indicator.style.transition = 'transform 0.3s var(--ease-lux)';
+    indicator.style.transform = `translateX(${x}px) scaleX(${1 + stretch})`;
+    clearTimeout(chipsEl._settleTimer);
+    chipsEl._settleTimer = setTimeout(() => {
+      indicator.style.transition = 'transform 0.25s var(--ease-spring)';
+      indicator.style.transform = `translateX(${x}px) scaleX(1)`;
+    }, 140);
+  }
+  chipsEl._lastX = x;
+};
+
+const createCard = (app, idx, colTrack, rowTrack) => {
   const el = document.createElement('a');
-  el.href = app.url;
+  const variantIndex = getSelectedVariantIndex(app);
+  const activeVariant = app.variants ? app.variants[variantIndex] : null;
+  el.href = activeVariant ? activeVariant.url : app.url;
   el.target = '_blank';
   el.rel = 'noopener noreferrer';
   el.classList.add('app-card');
-  el.setAttribute('aria-label', app.title);
-  el.setAttribute('title', app.title);
+  el.dataset.appTitle = app.title;
+  el.setAttribute('aria-label', activeVariant ? `${app.title} — ${activeVariant.label}` : app.title);
+  el.style.gridColumn = colTrack || '';
+  el.style.gridRow = rowTrack || '';
+  el.style.animationDelay = `${idx * 30}ms`;
 
-  if (app.size === 'wide') el.classList.add('card-wide');
-  if (app.size === 'hero') el.classList.add('card-hero');
+  const variant = variantFor(colTrack);
+  if (variant) el.classList.add(variant);
   if (app.closed) el.classList.add('status-closed');
 
   el.style.setProperty('--c1', app.gradient[0]);
@@ -614,6 +982,17 @@ const createCard = (app, idx) => {
   let badgesHtml = '';
   if (app.isNew) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>جديد</div>`;
   if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>مغلق</div>`;
+  if (app.variantBadge) badgesHtml += `<div class="badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${app.variantBadge}</div>`;
+
+  const iconClass = activeVariant ? activeVariant.icon : app.icon;
+
+  const chipsHtml = app.variants ? `
+      <div class="variant-chips" role="radiogroup" aria-label="اختر نسخة ${app.title}">
+        <div class="variant-chip-indicator" aria-hidden="true"></div>
+        ${app.variants.map((v, i) => `
+          <button type="button" class="variant-chip${i === variantIndex ? ' is-active' : ''}" role="radio" aria-checked="${i === variantIndex}" data-variant-index="${i}">${v.label}</button>
+        `).join('')}
+      </div>` : '';
 
   el.innerHTML = `
     <div class="card-noise"></div>
@@ -622,7 +1001,7 @@ const createCard = (app, idx) => {
     <div class="card-shimmer"></div>
     <div class="card-border-highlight"></div>
     <div class="bento-header">
-      <div class="app-icon-wrapper"><i class="app-icon fas ${app.icon}" aria-hidden="true"></i></div>
+      <div class="app-icon-wrapper"><i class="app-icon fas ${iconClass}" aria-hidden="true"></i></div>
       ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
     </div>
     <div class="bento-footer">
@@ -630,6 +1009,7 @@ const createCard = (app, idx) => {
         <h3 class="app-title">${app.title}</h3>
         <span class="open-affordance" aria-hidden="true"><i class="fas fa-arrow-up-right-from-square"></i></span>
       </div>
+      ${chipsHtml}
     </div>
   `;
 
@@ -637,44 +1017,128 @@ const createCard = (app, idx) => {
   el.addEventListener('mouseenter', () => sfx.hover(idx));
   el.addEventListener('focus', () => sfx.hover(idx));
 
-  let bounds, rafId;
+  if (app.variants) {
+    const chipsEl = el.querySelector('.variant-chips');
+    const iconEl = el.querySelector('.app-icon');
 
-  const updatePosition = (e) => {
-    if (!bounds) return;
-    const x = e.clientX - bounds.left;
-    const y = e.clientY - bounds.top;
-    el.style.setProperty('--mx', `${x}px`);
-    el.style.setProperty('--my', `${y}px`);
-    const rotateX = ((y - bounds.height / 2) / (bounds.height / 2)) * -3.5;
-    const rotateY = ((x - bounds.width / 2) / (bounds.width / 2)) * 3.5;
-    el.style.transform = `perspective(1600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(24px) scale3d(1.012, 1.012, 1.012)`;
+    // Only ever called from a chip click — the initial state above is
+    // already correct, this just handles switching.
+    const applyVariant = (i) => {
+      const v = app.variants[i];
+      if (!v) return;
+      el.href = v.url;
+      el.setAttribute('aria-label', `${app.title} — ${v.label}`);
+      chipsEl.querySelectorAll('.variant-chip').forEach((chip, ci) => {
+        chip.classList.toggle('is-active', ci === i);
+        chip.setAttribute('aria-checked', String(ci === i));
+      });
+      moveVariantIndicator(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
+      iconEl.style.opacity = '0';
+      setTimeout(() => {
+        iconEl.className = `app-icon fas ${v.icon}`;
+        iconEl.style.opacity = '1';
+      }, 175);
+      try { localStorage.setItem('lx-variant-' + app.title, String(i)); } catch (e) {}
+      sfx.click();
+    };
+
+    chipsEl.querySelectorAll('.variant-chip').forEach((chip, i) => {
+      // Must stop propagation — these buttons sit inside the card's <a>,
+      // so an unguarded click would also fire the anchor's navigation.
+      chip.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        applyVariant(i);
+      });
+    });
+
+    // Position the sliding indicator once the card is actually laid out —
+    // href/label/icon are already correct from the synchronous render above.
+    requestAnimationFrame(() => moveVariantIndicator(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), true));
+  }
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let bounds, rafId, hovering = false;
+  const cur = { x: 0, y: 0 }, tgt = { x: 0, y: 0 };
+  const rot = { x: 0, y: 0 }, tgtRot = { x: 0, y: 0 };
+
+  const paint = () => {
+    el.style.setProperty('--mx', `${cur.x}px`);
+    el.style.setProperty('--my', `${cur.y}px`);
+    el.style.transform = `perspective(1600px) rotateX(${rot.x}deg) rotateY(${rot.y}deg) translateZ(24px) scale3d(1.012, 1.012, 1.012)`;
   };
 
-  el.addEventListener('mouseenter', () => {
+  const loop = () => {
+    // Two different lerp rates on the same pointer input — the glare tracks tighter
+    // than the tilt — is what reads as viscosity instead of a mechanical snap.
+    cur.x = lerp(cur.x, tgt.x, 0.10);
+    cur.y = lerp(cur.y, tgt.y, 0.10);
+    rot.x = lerp(rot.x, tgtRot.x, 0.18);
+    rot.y = lerp(rot.y, tgtRot.y, 0.18);
+    paint();
+    const settled = Math.abs(rot.x - tgtRot.x) < 0.01 && Math.abs(rot.y - tgtRot.y) < 0.01 &&
+      Math.abs(cur.x - tgt.x) < 0.5 && Math.abs(cur.y - tgt.y) < 0.5;
+    rafId = (hovering || !settled) ? requestAnimationFrame(loop) : null;
+  };
+
+  const updateTarget = (e) => {
+    if (!bounds) return;
+    tgt.x = e.clientX - bounds.left;
+    tgt.y = e.clientY - bounds.top;
+    tgtRot.x = ((tgt.y - bounds.height / 2) / (bounds.height / 2)) * -3.5;
+    tgtRot.y = ((tgt.x - bounds.width / 2) / (bounds.width / 2)) * 3.5;
+  };
+
+  el.addEventListener('mouseenter', (e) => {
     bounds = el.getBoundingClientRect();
+    hovering = true;
+    el.style.willChange = 'transform';
+    // Keep `transform` out of the CSS transition list while hovered — the rAF loop
+    // owns it now, or CSS and rAF fight and stutter.
     el.style.transition = 'box-shadow 0.6s var(--ease-lux), border-color 0.6s var(--ease-lux), filter 0.6s var(--ease-lux), opacity 0.6s var(--ease-lux), background 0.6s var(--ease-lux)';
+    if (reducedMotion) { updateTarget(e); cur.x = tgt.x; cur.y = tgt.y; paint(); return; }
+    if (!rafId) rafId = requestAnimationFrame(loop);
   });
 
   el.addEventListener('mousemove', (e) => {
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = requestAnimationFrame(() => updatePosition(e));
+    updateTarget(e);
+    if (reducedMotion) { cur.x = tgt.x; cur.y = tgt.y; paint(); }
   });
 
   el.addEventListener('mouseleave', () => {
-    if (rafId) cancelAnimationFrame(rafId);
-    el.style.transition = 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)';
+    hovering = false;
+    el.style.willChange = 'auto';
+    el.style.transition = 'all 0.8s var(--ease-lux)';
     el.style.transform = 'perspective(1600px) rotateX(0deg) rotateY(0deg) translateZ(0px) scale3d(1, 1, 1)';
     el.style.setProperty('--mx', '50%');
     el.style.setProperty('--my', '-20%');
+    tgt.x = 0; tgt.y = 0; tgtRot.x = 0; tgtRot.y = 0;
+    cur.x = 0; cur.y = 0; rot.x = 0; rot.y = 0;
+  });
+
+  // Once the settle transition finishes, drop the inline transform/transition
+  // entirely. Left in place, that inline value permanently outranks the
+  // stylesheet's .app-grid:hover .app-card:not(:hover) recede/dim rule — so a
+  // card that's been hovered once would stop receding for the rest of the session.
+  el.addEventListener('transitionend', (ev) => {
+    if (ev.propertyName === 'transform' && !hovering) {
+      el.style.transform = '';
+      el.style.transition = '';
+    }
   });
 
   return el;
 };
 
-const renderApps = () => {
-  const grid = document.getElementById('appGrid');
+const renderCards = (grid, categoryId) => {
+  const cat = categories.find(c => c.id === categoryId);
+  const layout = LAYOUTS[cat.apps.length];
   const frag = document.createDocumentFragment();
-  apps.forEach((a, i) => frag.appendChild(createCard(a, i)));
+  cat.apps.forEach((app, i) => {
+    const track = layout ? layout[i] : null;
+    frag.appendChild(createCard(app, i, track ? track[0] : null, track ? track[1] : null));
+  });
+  grid.innerHTML = '';
   grid.appendChild(frag);
 };
 
@@ -684,9 +1148,13 @@ class OrbField {
     this.cx = canvas.getContext('2d');
     this.t = 0;
     this.orbs = [];
+    this.running = false;
     this.resize();
     this.spawn();
-    this.tick();
+    this.start();
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) this.stop(); else this.start();
+    });
   }
 
   resize() {
@@ -708,7 +1176,17 @@ class OrbField {
     }));
   }
 
+  start() {
+    if (this.running || document.hidden) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    this.running = true;
+    this.tick();
+  }
+
+  stop() { this.running = false; }
+
   tick() {
+    if (!this.running) return;
     this.t += 0.001;
     this.cx.clearRect(0, 0, this.cv.width, this.cv.height);
     const isLight = document.body.classList.contains('light-theme');
@@ -749,9 +1227,501 @@ const applyTheme = (force) => {
   if (window.bgAnim) window.bgAnim.spawn();
 };
 
+/* ---------- Liquid Rail: tab buttons + FLIP indicator ---------- */
+
+let lastX = 0;
+let indicatorTimer;
+let activeViewTransition = null;
+let currentTabId = null;
+
+const catIndex = (id) => categories.findIndex(c => c.id === id);
+
+const moveIndicator = (btn, instant) => {
+  const rail = document.getElementById('tabRail');
+  const ind = document.getElementById('tabIndicator');
+  const trail = document.getElementById('tabIndicatorTrail');
+  if (!rail || !ind || !trail || !btn) return;
+
+  const p = rail.getBoundingClientRect(), b = btn.getBoundingClientRect();
+  const x = b.left - p.left, w = b.width;
+  const dx = x - lastX;
+  const stretch = Math.min(Math.abs(dx) / Math.max(w, 1), 0.55);
+
+  clearTimeout(indicatorTimer);
+
+  ind.style.width = `${w}px`;
+  trail.style.width = `${w}px`;
+  ind.style.transformOrigin = dx >= 0 ? 'left center' : 'right center';
+
+  const accent = btn.dataset.accent;
+  if (accent) {
+    rail.style.setProperty('--tab-accent', hexToRgba(accent, 0.55));
+    rail.style.setProperty('--tab-accent-solid', accent);
+  }
+
+  if (instant) {
+    ind.style.transition = 'none';
+    ind.style.transform = `translateX(${x}px)`;
+    trail.style.transition = 'none';
+    trail.style.transform = `translateX(${x}px)`;
+  } else {
+    ind.style.transition = 'transform 0.42s var(--ease-lux)';
+    ind.style.transform = `translateX(${x}px) scaleX(${1 + stretch}) scaleY(${1 - stretch * 0.35})`;
+    trail.style.transition = 'transform 0.5s var(--ease-spring) 0.06s, width 0.5s var(--ease-spring) 0.06s';
+    trail.style.transform = `translateX(${x}px)`;
+    indicatorTimer = setTimeout(() => {
+      ind.style.transition = 'transform 0.5s var(--ease-spring)';
+      ind.style.transform = `translateX(${x}px) scaleX(1) scaleY(1)`;
+    }, 190);
+  }
+  lastX = x;
+};
+
+const setActiveButtonStates = (id) => {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    const active = btn.dataset.id === id;
+    btn.setAttribute('aria-selected', String(active));
+    btn.tabIndex = active ? 0 : -1;
+  });
+};
+
+const activateTab = (id, opts = {}) => {
+  const { pushHash = true, playSound = true, instant = false } = opts;
+  if (!categories.some(c => c.id === id)) return Promise.resolve();
+  const prevId = currentTabId;
+  const dir = prevId ? (catIndex(id) > catIndex(prevId) ? 1 : -1) : 1;
+  currentTabId = id;
+
+  setActiveButtonStates(id);
+  const activeBtn = document.getElementById(`tab-${id}`);
+  moveIndicator(activeBtn, instant);
+
+  const g = document.getElementById('appGrid');
+  const cat = categories.find(c => c.id === id);
+  g.setAttribute('aria-labelledby', `tab-${id}`);
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.style.setProperty('--dir', dir);
+
+  const run = () => renderCards(g, id);
+
+  let rendered;
+  if (instant || reducedMotion) {
+    run();
+    rendered = Promise.resolve();
+  } else if (document.startViewTransition) {
+    if (activeViewTransition) { try { activeViewTransition.skipTransition(); } catch (e) {} }
+    activeViewTransition = document.startViewTransition(run);
+    rendered = activeViewTransition.finished.catch(() => {}).finally(() => { activeViewTransition = null; });
+  } else {
+    g.classList.add('is-out');
+    rendered = new Promise((resolve) => {
+      setTimeout(() => { run(); g.classList.remove('is-out'); resolve(); }, 220);
+    });
+  }
+
+  try { localStorage.setItem('lx-last-tab', id); } catch (e) {}
+  if (pushHash && location.hash.replace('#', '') !== id) location.hash = id;
+
+  if (playSound && prevId && prevId !== id) {
+    const prevCat = categories.find(c => c.id === prevId);
+    if (prevCat) sfx.switchSweep(prevCat.key, cat.key);
+  }
+
+  return rendered;
+};
+
+const buildTabRail = () => {
+  const rail = document.getElementById('tabRail');
+  categories.forEach((cat, i) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'tab-btn';
+    btn.id = `tab-${cat.id}`;
+    btn.dataset.id = cat.id;
+    btn.dataset.accent = cat.accent;
+    btn.setAttribute('role', 'tab');
+    btn.setAttribute('aria-selected', 'false');
+    btn.setAttribute('aria-controls', 'appGrid');
+    btn.tabIndex = -1;
+    btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span>${cat.label}</span>`;
+    btn.addEventListener('click', () => activateTab(cat.id));
+    btn.addEventListener('mouseenter', () => sfx.hover(cat.key + i));
+    btn.addEventListener('focus', () => sfx.hover(cat.key + i));
+    rail.appendChild(btn);
+  });
+};
+
+const getInitialTab = () => {
+  const fromHash = location.hash.replace('#', '');
+  if (categories.some(c => c.id === fromHash)) return fromHash;
+  let stored = null;
+  try { stored = localStorage.getItem('lx-last-tab'); } catch (e) {}
+  if (categories.some(c => c.id === stored)) return stored;
+  return categories[0].id;
+};
+
+const handleHashNav = () => {
+  const id = location.hash.replace('#', '');
+  if (categories.some(c => c.id === id) && id !== currentTabId) {
+    activateTab(id, { pushHash: false, playSound: false });
+  }
+};
+
+/* ---------- Command palette (Ctrl/Cmd+K) ---------- */
+
+// Normalizes Arabic letter variants (أ/إ/آ/ٱ → ا, ى → ي, ة/ه → ه, ؤ/ئ → ء),
+// strips tashkeel/tatweel, and lowercases — so a search doesn't fail just
+// because of an alef-hamza the person typed differently. No-op on Latin text.
+const normalizeAr = (s) => s.toLowerCase()
+  .replace(/[\u064B-\u0652\u0670\u0640]/g, '')
+  .replace(/[أإآٱ]/g, 'ا').replace(/ى/g, 'ي')
+  .replace(/[ةه]/g, 'ه').replace(/[ؤئ]/g, 'ء')
+  .replace(/\s+/g, ' ').trim();
+
+const fuzzyScore = (query, target) => {
+  const t = normalizeAr(target), q = normalizeAr(query);
+  if (!q) return 0;
+  const i = t.indexOf(q);
+  if (i === 0) return 1000;                     // prefix
+  if (i > 0 && t[i - 1] === ' ') return 850;     // word-start
+  if (i > 0) return 700 - i;                     // substring
+  let qi = 0, run = 0, s = 0;                    // subsequence w/ run bonus
+  for (let k = 0; k < t.length && qi < q.length; k++) {
+    if (t[k] === q[qi]) { qi++; run++; s += 4 + run * 3; } else run = 0;
+  }
+  return qi === q.length ? s : -1;
+};
+
+/* Hidden apps unlocked via the secret key-code (see DOMContentLoaded below).
+   Once a code has been typed successfully, its app becomes findable in the
+   command palette too — but only ever for apps this browser has already
+   unlocked, never anything not yet triggered. */
+const secretApps = {
+  linkexpress: { title: 'LinkExpress — النسخة الأصلية', url: 'https://grand-licorice-653005.netlify.app/', icon: 'fa-link', gradient: ['#64748b', '#cbd5e1', '#334155'] },
+  golden: { title: 'الإصدار الذهبي', url: 'https://gold-edition.vercel.app/', icon: 'fa-crown', gradient: ['#d97706', '#fde68a', '#78350f'] },
+  alt: { title: 'الحساب البديل', url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }
+};
+
+let unlockedSecrets = new Set();
+try {
+  const storedSecrets = JSON.parse(localStorage.getItem('lx-unlocked-secrets') || '[]');
+  if (Array.isArray(storedSecrets)) storedSecrets.forEach(k => { if (secretApps[k]) unlockedSecrets.add(k); });
+} catch (e) {}
+
+const unlockSecret = (key) => {
+  if (!secretApps[key] || unlockedSecrets.has(key)) return;
+  unlockedSecrets.add(key);
+  try { localStorage.setItem('lx-unlocked-secrets', JSON.stringify([...unlockedSecrets])); } catch (e) {}
+};
+
+const allPaletteEntries = () => {
+  const normal = categories.flatMap(cat => cat.apps.flatMap(app => {
+    if (app.variants) {
+      // One palette row per variant, since each has its own URL/icon —
+      // the parent app card itself only ever shows one at a time.
+      return app.variants.map((v, i) => ({
+        app: {
+          title: `${app.title} · ${v.label}`,
+          url: v.url,
+          icon: v.icon,
+          gradient: app.gradient,
+          isNew: app.isNew,
+          closed: app.closed,
+          parentTitle: app.title,
+          variantIndex: i
+        },
+        cat
+      }));
+    }
+    return [{ app, cat }];
+  }));
+  const unlocked = [...unlockedSecrets].map(key => ({ app: secretApps[key], cat: { id: '_secret', label: 'مخفي' } }));
+  return normal.concat(unlocked);
+};
+
+let paletteItems = [];
+let paletteActiveIndex = -1;
+let paletteActionIndex = 0;
+let paletteZone = 'list'; // 'list' | 'actions' — which pane arrow keys currently drive
+let lastFocusedBeforePalette = null;
+
+const getActionsForEntry = (entry) => {
+  const actions = [
+    { id: 'new-tab', icon: 'fa-arrow-up-right-from-square', label: 'فتح في تبويب جديد', kbd: 'Enter' },
+    { id: 'same-tab', icon: 'fa-arrow-right-to-bracket', label: 'فتح في نفس التبويب', kbd: 'Shift+Enter' },
+    { id: 'copy-link', icon: 'fa-copy', label: 'نسخ الرابط', kbd: 'Ctrl/Cmd+Enter' },
+    { id: 'copy-title', icon: 'fa-font', label: 'نسخ الاسم', kbd: '' }
+  ];
+  // Secret apps deliberately live only in the palette, never on a tab/grid —
+  // so there's nowhere for "reveal in grid" to point them at.
+  if (entry && entry.cat.id !== '_secret') {
+    actions.push({ id: 'reveal', icon: 'fa-crosshairs', label: 'إظهار في الشبكة', kbd: '' });
+  }
+  return actions;
+};
+
+// Also matches on category label and the URL's host, so e.g. typing the
+// tool's memorable dev-facing slug ("duckbench") finds it even though the
+// display title is a full Arabic phrase. Host matches are weighted down.
+const scoreEntry = (query, entry) => {
+  const titleScore = fuzzyScore(query, entry.app.title);
+  const catScore = fuzzyScore(query, entry.cat.label);
+  let hostScore = -1;
+  try { hostScore = fuzzyScore(query, new URL(entry.app.url).hostname) * 0.4; } catch (e) {}
+  return Math.max(titleScore, catScore, hostScore);
+};
+
+const renderPaletteResults = (query) => {
+  const paletteResults = document.getElementById('paletteResults');
+  const entries = allPaletteEntries()
+    .map(e => ({ app: e.app, cat: e.cat, score: scoreEntry(query, e) }))
+    .filter(e => e.score >= 0)
+    .sort((a, b) => b.score - a.score);
+
+  paletteItems = entries;
+  paletteActiveIndex = entries.length ? 0 : -1;
+  paletteActionIndex = 0;
+  paletteZone = 'list';
+
+  if (!entries.length) {
+    paletteResults.innerHTML = `<li class="palette-empty">لا توجد نتائج</li>`;
+    renderPaletteDetail();
+    return;
+  }
+
+  paletteResults.innerHTML = entries.map((e, i) => `
+    <li class="palette-item${i === 0 ? ' is-active' : ''}" role="option" aria-selected="${i === 0}" data-index="${i}">
+      <div class="app-icon-wrapper" style="background:linear-gradient(150deg, ${e.app.gradient[1]} 0%, ${e.app.gradient[0]} 55%, ${e.app.gradient[2]} 100%);">
+        <i class="app-icon fas ${e.app.icon}" aria-hidden="true"></i>
+      </div>
+      <div class="palette-item-text">
+        <span class="palette-item-title">${e.app.title}</span>
+        <span class="palette-item-cat">${e.cat.label}</span>
+      </div>
+    </li>
+  `).join('');
+
+  paletteResults.querySelectorAll('.palette-item').forEach(li => {
+    li.addEventListener('mouseenter', () => setPaletteActive(Number(li.dataset.index)));
+    li.addEventListener('click', () => openPaletteItem(Number(li.dataset.index)));
+  });
+
+  renderPaletteDetail();
+};
+
+const setPaletteActive = (i) => {
+  paletteActiveIndex = i;
+  paletteZone = 'list';
+  paletteActionIndex = 0;
+  document.querySelectorAll('.palette-item').forEach((li, idx) => {
+    li.classList.toggle('is-active', idx === i);
+    li.setAttribute('aria-selected', String(idx === i));
+  });
+  renderPaletteDetail();
+};
+
+/* Rebuilds the whole detail pane — icon, title, badges and the action list —
+   for whichever app is currently active. Only called when the active app
+   itself changes; pure highlight changes use updateActionHighlight instead
+   so hovering/arrowing between actions never tears down the DOM mid-hover. */
+const renderPaletteDetail = () => {
+  const detail = document.getElementById('paletteDetail');
+  const entry = paletteItems[paletteActiveIndex];
+
+  if (!entry) {
+    detail.innerHTML = `
+      <div class="palette-detail-empty">
+        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+        <span>لا توجد نتائج مطابقة</span>
+      </div>`;
+    return;
+  }
+
+  const { app, cat } = entry;
+  let badgesHtml = '';
+  if (app.isNew) badgesHtml += `<span class="palette-detail-badge badge-new"><span class="badge-dot"></span>جديد</span>`;
+  if (app.closed) badgesHtml += `<span class="palette-detail-badge badge-closed"><span class="badge-dot"></span>مغلق</span>`;
+  if (app.variantBadge) badgesHtml += `<span class="palette-detail-badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${app.variantBadge}</span>`;
+
+  detail.innerHTML = `
+    <div class="palette-detail-header">
+      <div class="app-icon-wrapper" style="background:linear-gradient(150deg, ${app.gradient[1]} 0%, ${app.gradient[0]} 55%, ${app.gradient[2]} 100%);">
+        <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
+      </div>
+      <div class="palette-detail-title-wrap">
+        <h3 class="palette-detail-title">${app.title}</h3>
+        <div class="palette-detail-meta">
+          <span class="palette-detail-cat">${cat.label}</span>
+          ${badgesHtml}
+        </div>
+      </div>
+    </div>
+    <div class="palette-actions" role="listbox" aria-label="الإجراءات">
+      ${getActionsForEntry(entry).map(a => `
+        <button type="button" class="palette-action${a.id === 'new-tab' ? ' is-primary' : ''}" data-action="${a.id}" role="option" aria-selected="false">
+          <i class="fas ${a.icon}" aria-hidden="true"></i>
+          <span class="palette-action-label">${a.label}</span>
+          ${a.kbd ? `<kbd>${a.kbd}</kbd>` : ''}
+        </button>
+      `).join('')}
+    </div>
+  `;
+
+  detail.querySelectorAll('.palette-action').forEach((btn) => {
+    const actionId = btn.dataset.action;
+    btn.addEventListener('mouseenter', () => {
+      paletteActionIndex = getActionsForEntry(entry).findIndex(a => a.id === actionId);
+      paletteZone = 'actions';
+      updateActionHighlight();
+    });
+    btn.addEventListener('click', () => executeAction(actionId));
+  });
+
+  updateActionHighlight();
+};
+
+/* Lightweight class toggle for switching which action row reads as
+   keyboard-focused — never rebuilds the DOM, so it's safe to call from
+   Tab/arrow handling and from mouseenter without any hover flicker. */
+const updateActionHighlight = () => {
+  document.querySelectorAll('.palette-action').forEach((btn, i) => {
+    const active = paletteZone === 'actions' && i === paletteActionIndex;
+    btn.classList.toggle('is-active', active);
+    btn.setAttribute('aria-selected', String(active));
+  });
+};
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (e) {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      return true;
+    } catch (e2) {
+      return false;
+    }
+  }
+};
+
+let actionFeedbackTimer;
+
+const showActionFeedback = (actionId, ok, okLabel, failLabel) => {
+  const btn = document.querySelector(`.palette-action[data-action="${actionId}"]`);
+  if (!btn) return;
+  clearTimeout(actionFeedbackTimer);
+  const icon = btn.querySelector('i');
+  const label = btn.querySelector('.palette-action-label');
+  const prevIconClass = icon.className;
+  const prevLabelText = label.textContent;
+  icon.className = ok ? 'fas fa-check' : 'fas fa-triangle-exclamation';
+  label.textContent = ok ? okLabel : failLabel;
+  actionFeedbackTimer = setTimeout(() => {
+    icon.className = prevIconClass;
+    label.textContent = prevLabelText;
+  }, 1400);
+};
+
+// Jumps to the app's card on the grid: closes the palette, switches tab if
+// needed and waits for that render to actually finish, then scrolls to and
+// pulses the card. No-op for secret entries (they have no grid card).
+const revealInGrid = async (entry) => {
+  if (entry.cat.id === '_secret') return;
+  const targetTitle = entry.app.parentTitle || entry.app.title;
+  const targetCatId = entry.cat.id;
+  closePalette();
+  if (currentTabId !== targetCatId) await activateTab(targetCatId);
+  requestAnimationFrame(() => {
+    const card = document.querySelector(`#appGrid .app-card[data-app-title="${CSS.escape(targetTitle)}"]`);
+    if (!card) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    card.scrollIntoView({ block: 'center', behavior: reducedMotion ? 'auto' : 'smooth' });
+    card.classList.add('is-revealed');
+    card.addEventListener('animationend', () => card.classList.remove('is-revealed'), { once: true });
+  });
+};
+
+const executeAction = async (actionId) => {
+  const entry = paletteItems[paletteActiveIndex];
+  if (!entry) return;
+  if (entry.app.parentTitle && (actionId === 'new-tab' || actionId === 'same-tab')) {
+    try { localStorage.setItem('lx-variant-' + entry.app.parentTitle, String(entry.app.variantIndex)); } catch (e) {}
+  }
+  if (actionId === 'new-tab') {
+    sfx.click();
+    window.open(entry.app.url, '_blank', 'noopener');
+    closePalette();
+  } else if (actionId === 'same-tab') {
+    sfx.click();
+    window.location.href = entry.app.url;
+  } else if (actionId === 'copy-link') {
+    const ok = await copyToClipboard(entry.app.url);
+    sfx.click();
+    showActionFeedback('copy-link', ok, 'تم نسخ الرابط', 'تعذر النسخ');
+  } else if (actionId === 'copy-title') {
+    const ok = await copyToClipboard(entry.app.parentTitle || entry.app.title);
+    sfx.click();
+    showActionFeedback('copy-title', ok, 'تم نسخ الاسم', 'تعذر النسخ');
+  } else if (actionId === 'reveal') {
+    sfx.click();
+    await revealInGrid(entry);
+  }
+};
+
+const openPaletteItem = (i) => {
+  paletteActiveIndex = i;
+  executeAction('new-tab');
+};
+
+const openPalette = () => {
+  const overlay = document.getElementById('paletteOverlay');
+  const input = document.getElementById('paletteInput');
+  lastFocusedBeforePalette = document.activeElement;
+  overlay.hidden = false;
+  document.querySelector('.container').inert = true;
+  document.querySelector('.controls-pill').inert = true;
+  input.value = '';
+  renderPaletteResults('');
+  requestAnimationFrame(() => input.focus());
+};
+
+const closePalette = () => {
+  const overlay = document.getElementById('paletteOverlay');
+  document.getElementById('paletteInput').blur();
+  overlay.hidden = true;
+  document.querySelector('.container').inert = false;
+  document.querySelector('.controls-pill').inert = false;
+  if (lastFocusedBeforePalette && document.body.contains(lastFocusedBeforePalette)) {
+    lastFocusedBeforePalette.focus();
+  }
+  lastFocusedBeforePalette = null;
+};
+
+const togglePalette = () => {
+  const overlay = document.getElementById('paletteOverlay');
+  if (overlay.hidden) openPalette(); else closePalette();
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   applyTheme();
-  renderApps();
+  buildTabRail();
+
+  const initialTab = getInitialTab();
+  activateTab(initialTab, { pushHash: false, playSound: false, instant: true });
+
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => moveIndicator(document.getElementById(`tab-${currentTabId}`), true));
+  }
+
   const canvas = document.getElementById('gradient-canvas');
   window.bgAnim = new OrbField(canvas);
 
@@ -774,7 +1744,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let debTimer;
   window.addEventListener('resize', () => {
     clearTimeout(debTimer);
-    debTimer = setTimeout(() => window.bgAnim.resize(), 180);
+    debTimer = setTimeout(() => {
+      window.bgAnim.resize();
+      moveIndicator(document.getElementById(`tab-${currentTabId}`), true);
+    }, 180);
   });
 
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => applyTheme(e.matches));
@@ -795,25 +1768,154 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sfx.enabled) sfx.arpUp();
   });
 
-  const secretUrls = {
-    linkexpress: 'https://grand-licorice-653005.netlify.app/',
-    golden: 'https://gold-edition.vercel.app/',
-    alt: 'https://alt-app-lanucher.vercel.app/'
-  };
+  document.getElementById('paletteToggle').addEventListener('click', () => togglePalette());
 
   let secretCode = '';
   let secretTimer;
 
   document.addEventListener('keydown', e => {
+    // Never accumulate keystrokes while typing in a text field (the search
+    // palette's input, most importantly) — otherwise searching for an app
+    // whose name happens to contain a secret word could trigger it by accident.
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    // Only real single-character keystrokes count — "tab", "arrowleft", "shift"
+    // etc. would otherwise pollute the buffer every time someone navigates
+    // the page with the keyboard.
+    if (e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
+
     clearTimeout(secretTimer);
     secretCode += e.key.toLowerCase();
     secretTimer = setTimeout(() => secretCode = '', 4200);
 
-    const hit = Object.keys(secretUrls).find(k => secretCode.endsWith(k));
+    const hit = Object.keys(secretApps).find(k => secretCode.endsWith(k));
     if (hit) {
       sfx.click();
-      window.open(secretUrls[hit], '_blank', 'noopener');
+      window.open(secretApps[hit].url, '_blank', 'noopener');
+      unlockSecret(hit);
       secretCode = '';
+    }
+  });
+
+  window.addEventListener('popstate', handleHashNav);
+  window.addEventListener('hashchange', handleHashNav);
+
+  document.getElementById('tabRail').addEventListener('keydown', (e) => {
+    const tabs = Array.from(document.querySelectorAll('.tab-btn'));
+    const i = tabs.findIndex(t => t.dataset.id === currentTabId);
+    if (i === -1) return;
+    let next = null;
+    if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
+    else if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+    else if (e.key === 'Home') next = tabs[0];
+    else if (e.key === 'End') next = tabs[tabs.length - 1];
+    if (next) {
+      e.preventDefault();
+      activateTab(next.dataset.id);
+      next.focus();
+    }
+  });
+
+  let touchStartX = 0, touchStartY = 0;
+  const appGrid = document.getElementById('appGrid');
+  appGrid.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  appGrid.addEventListener('touchend', (e) => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    const i = catIndex(currentTabId);
+    const next = dx < 0 ? categories[i + 1] : categories[i - 1];
+    if (next) activateTab(next.id);
+  }, { passive: true });
+
+  const paletteOverlay = document.getElementById('paletteOverlay');
+  const paletteInput = document.getElementById('paletteInput');
+
+  paletteInput.addEventListener('input', () => {
+    const raw = paletteInput.value;
+    // Exact match only — never endsWith — so half-typing a secret word while
+    // searching for something else can't accidentally trigger it. Typing it
+    // fully in here reveals the entry instead of navigating away.
+    const hit = Object.keys(secretApps).find(k => normalizeAr(raw) === k);
+    if (hit && !unlockedSecrets.has(hit)) {
+      unlockSecret(hit);
+      sfx.arpUp();
+      paletteInput.value = '';
+      renderPaletteResults('');
+      return;
+    }
+    renderPaletteResults(raw);
+  });
+
+  paletteInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); closePalette(); return; }
+
+    // Tab switches focus between the results list and the actions pane —
+    // deliberately not ArrowLeft/ArrowRight, so cursor movement while
+    // editing the search text is never intercepted.
+    if (e.key === 'Tab') {
+      if (paletteActiveIndex === -1) return;
+      e.preventDefault();
+      paletteZone = paletteZone === 'list' ? 'actions' : 'list';
+      if (paletteZone === 'actions') paletteActionIndex = 0;
+      updateActionHighlight();
+      return;
+    }
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (paletteZone === 'actions') {
+        const n = getActionsForEntry(paletteItems[paletteActiveIndex]).length;
+        paletteActionIndex = (paletteActionIndex + 1) % n;
+        updateActionHighlight();
+      } else if (paletteItems.length) {
+        setPaletteActive((paletteActiveIndex + 1) % paletteItems.length);
+      }
+      return;
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (paletteZone === 'actions') {
+        const n = getActionsForEntry(paletteItems[paletteActiveIndex]).length;
+        paletteActionIndex = (paletteActionIndex - 1 + n) % n;
+        updateActionHighlight();
+      } else if (paletteItems.length) {
+        setPaletteActive((paletteActiveIndex - 1 + paletteItems.length) % paletteItems.length);
+      }
+      return;
+    }
+
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (paletteActiveIndex === -1) return;
+      if (e.shiftKey) { executeAction('same-tab'); return; }
+      if (e.ctrlKey || e.metaKey) { executeAction('copy-link'); return; }
+      if (paletteZone === 'actions') { executeAction(getActionsForEntry(paletteItems[paletteActiveIndex])[paletteActionIndex].id); return; }
+      executeAction('new-tab');
+      return;
+    }
+  });
+
+  paletteOverlay.addEventListener('click', (e) => { if (e.target === paletteOverlay) closePalette(); });
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      togglePalette();
+      return;
+    }
+    if (!paletteOverlay.hidden) return;
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    if (/^[1-9]$/.test(e.key)) {
+      const cards = document.querySelectorAll('#appGrid .app-card');
+      const card = cards[Number(e.key) - 1];
+      if (card) card.click();
     }
   });
 });
