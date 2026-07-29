@@ -6,7 +6,7 @@
 <title>LinkExpress</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=El+Messiri:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400;1,500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=El+Messiri:wght@500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
@@ -102,6 +102,14 @@ body.light-theme .spotlight {
   padding: clamp(3rem, 5vh, 4.5rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3vh, 2.5rem);
   position: relative; z-index: 3;
   display: flex; flex-direction: column; gap: clamp(1.5rem, 3vh, 2.5rem);
+  transition: transform 0.45s var(--ease-lux), filter 0.45s var(--ease-lux);
+}
+
+/* The palette is a lens over the launcher, not a dialog on top of it — the
+   page itself defocuses while it's open instead of just sitting behind a
+   flat overlay. Toggled alongside .controls-pill in open/closePalette. */
+.container.is-dollied, .controls-pill.is-dollied {
+  transform: scale(0.96); filter: blur(9px) brightness(0.75);
 }
 
 .site-header {
@@ -148,6 +156,7 @@ body.light-theme h1 {
   border: 1px solid var(--border);
   border-radius: 50px; padding: 0.35rem; gap: 0.2rem;
   z-index: 100;
+  transition: transform 0.45s var(--ease-lux), filter 0.45s var(--ease-lux);
   box-shadow: var(--shadow-soft), inset 0 1px 1px rgba(255,255,255,0.05);
   transition: all 0.6s var(--ease-smooth);
 }
@@ -277,7 +286,19 @@ body.light-theme .app-card:hover .card-glow { opacity: 0.06; }
   position: relative; z-index: 5;
   transform: translateZ(30px);
   display: flex; width: 100%;
+  pointer-events: none;
 }
+
+.card-link-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  border-radius: inherit;
+}
+/* .app-card has overflow:hidden (for the rounded decorative layers), which
+   would clip a normal outset focus ring drawn on this now-nested anchor —
+   inset it instead so it stays visible. */
+.card-link-overlay:focus-visible { outline-offset: -3px; }
+
+.variant-chips, .variant-chip { pointer-events: auto; }
 
 .bento-header { justify-content: space-between; align-items: flex-start; }
 .bento-footer { align-items: flex-end; justify-content: space-between; }
@@ -460,7 +481,7 @@ body.light-theme .variant-chip-indicator { background: rgba(20,18,15,0.09); }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
-@property --glow-r { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --glow-r { syntax: '<length>'; inherits: false; initial-value: 600px; }
 
 /* ---------- Liquid Rail (tab bar) ---------- */
 
@@ -496,9 +517,20 @@ body.light-theme .tab-rail {
 
 .tab-indicator {
   background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04));
-  box-shadow: 0 4px 18px -4px var(--tab-accent, rgba(124,155,255,0.55)), inset 0 1px 1px rgba(255,255,255,0.25);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.25);
   transform-origin: left center;
   will-change: transform;
+}
+
+/* The soft ambient glow lives on its own unfiltered element, in sync with
+   the indicator but outside .tab-goo — inside it, the SVG alpha-threshold
+   that creates the liquid merge effect also hard-clips any soft box-shadow
+   into a crunchy ring. */
+.tab-indicator-glow {
+  position: absolute; top: 4px; left: 0; height: calc(100% - 8px);
+  border-radius: 999px; width: 60px; transform: translateX(0);
+  box-shadow: 0 4px 18px -4px var(--tab-accent, rgba(124,155,255,0.55));
+  pointer-events: none; z-index: -1;
 }
 
 body.light-theme .tab-indicator { background: linear-gradient(135deg, rgba(20,18,15,0.1), rgba(20,18,15,0.03)); }
@@ -545,9 +577,9 @@ body.light-theme .tab-indicator-trail { background: rgba(20,18,15,0.06); }
 
 .palette-overlay {
   position: fixed; inset: 0; z-index: 1000;
-  background: rgba(2,3,5,0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  background: rgba(2,3,5,0.4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   display: flex; align-items: flex-start; justify-content: center;
   padding-top: min(18vh, 160px);
   animation: fadeIn 0.25s var(--ease-lux) both;
@@ -559,13 +591,16 @@ body.light-theme .tab-indicator-trail { background: rgba(20,18,15,0.06); }
 
 body.light-theme .palette-overlay { background: rgba(20,18,15,0.28); }
 
+@property --live-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
+
 .palette {
   width: min(760px, 94vw); max-height: 72vh;
   display: flex; flex-direction: column;
-  background: var(--bg); border: 1px solid var(--border-highlight);
-  border-radius: 20px; box-shadow: var(--shadow-deep);
+  background: var(--bg); border: 1px solid var(--live-accent, var(--border-highlight));
+  border-radius: 20px; box-shadow: var(--shadow-deep), 0 0 60px -24px var(--live-accent);
   overflow: hidden;
   animation: paletteIn 0.3s var(--ease-spring) both;
+  transition: --live-accent 0.45s var(--ease-lux), box-shadow 0.45s var(--ease-lux), border-color 0.45s var(--ease-lux);
 }
 
 @keyframes paletteIn { from { opacity: 0; transform: translateY(-10px) scale(0.97); } to { opacity: 1; transform: none; } }
@@ -573,47 +608,91 @@ body.light-theme .palette-overlay { background: rgba(20,18,15,0.28); }
 .palette-input-row { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .palette-input-row i { color: var(--text-muted); }
 .palette-input-row kbd { margin-inline-start: auto; font-size: 0.7rem; color: var(--text-muted); border: 1px solid var(--border); border-radius: 6px; padding: 0.15rem 0.5rem; }
-#paletteInput { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 1rem; }
+#paletteInput { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 1rem; caret-color: var(--live-accent); }
 #paletteInput::placeholder { color: var(--text-muted); }
+
+.palette-live-dot {
+  width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+  background: var(--live-accent); box-shadow: 0 0 10px 1px var(--live-accent);
+  transition: --live-accent 0.45s var(--ease-lux);
+}
 
 /* Two-pane body: results list + detail/actions. In RTL source order, the list
    (first child) lands on the right and the detail pane (second child) on the
-   left — so ArrowRight/ArrowLeft-style intuitions still map correctly. We use
-   Tab to switch panes instead of the arrow keys so cursor movement inside the
-   search input is never hijacked. */
+   left. Tab (and Right/Left, RTL-aware — see the keydown handler) switches
+   panes; the caret stays put in the common case of editing at the end of a
+   short query, which is the only case the arrow keys get intercepted in. */
 .palette-body { display: flex; flex: 1; min-height: 0; }
 
 .palette-results { list-style: none; overflow-y: auto; padding: 0.5rem; width: 44%; flex-shrink: 0; border-inline-start: 1px solid var(--border); }
+
+.palette-group-header {
+  padding: 0.5rem 0.9rem 0.3rem;
+  font-size: 0.66rem; font-weight: 700; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+
 .palette-item {
+  position: relative;
   display: flex; align-items: center; gap: 0.85rem;
   padding: 0.7rem 0.9rem; border-radius: 12px; cursor: pointer;
   transition: background 0.2s var(--ease-lux);
+  animation: paletteRowIn 0.3s var(--ease-lux) both;
 }
+@keyframes paletteRowIn { from { opacity: 0; transform: translateY(6px); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
+
+.palette-item::before {
+  content: ''; position: absolute; inset-inline-start: 2px; top: 20%; bottom: 20%;
+  width: 3px; border-radius: 999px; background: var(--live-accent);
+  transform: scaleY(0.4); opacity: 0; transition: transform 0.3s var(--ease-spring), opacity 0.3s var(--ease-lux);
+}
+.palette-item.is-active::before { transform: scaleY(1); opacity: 1; }
+
 .palette-item .app-icon-wrapper { width: 34px; height: 34px; border-radius: 10px; }
 .palette-item .app-icon { font-size: 0.85rem; }
 .palette-item-text { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
 .palette-item-title { font-weight: 600; color: var(--text); font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.palette-item-title mark { background: none; color: var(--live-accent); font-weight: 700; }
 .palette-item-cat { font-size: 0.72rem; color: var(--text-muted); }
 .palette-item.is-active, .palette-item:hover { background: var(--surface-hover); }
 .palette-empty { padding: 1.5rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.88rem; }
 
-.palette-detail { flex: 1; min-width: 0; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.15rem; overflow-y: auto; }
+.palette-detail { position: relative; flex: 1; min-width: 0; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.15rem; overflow-y: auto; }
 
 .palette-detail-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.6rem; color: var(--text-muted); font-size: 0.85rem; text-align: center; }
 .palette-detail-empty i { font-size: 1.4rem; opacity: 0.5; }
 
-.palette-detail-header { display: flex; align-items: center; gap: 0.85rem; }
+/* Full-bleed wash behind the header — makes the pane feel authored instead
+   of a plain header + button list. */
+.palette-detail-slab {
+  position: absolute; inset: 0; z-index: 0;
+  opacity: 0.1; overflow: hidden; pointer-events: none;
+}
+.palette-detail-slab-noise { position: absolute; inset: 0; background-image: var(--noise); opacity: 0.5; mix-blend-mode: overlay; }
+.palette-detail-watermark {
+  position: absolute; inset-inline-start: -0.5rem; bottom: -1.5rem;
+  font-size: 9rem; opacity: 0.16; transform: rotate(-8deg); color: #fff;
+}
+body.light-theme .palette-detail-watermark { color: #000; opacity: 0.08; }
+
+.palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 0.85rem; }
 .palette-detail .app-icon-wrapper { width: 48px; height: 48px; border-radius: 14px; }
 .palette-detail .app-icon { font-size: 1.15rem; }
 
 .palette-detail-title-wrap { min-width: 0; }
 .palette-detail-title {
   font-family: 'El Messiri', 'IBM Plex Sans Arabic', sans-serif;
-  font-size: 1.1rem; font-weight: 600; color: var(--text);
+  font-size: 1.2rem; font-weight: 600; color: var(--text);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.palette-detail-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; flex-wrap: wrap; }
+.palette-detail-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; flex-wrap: wrap; }
 .palette-detail-cat { font-size: 0.76rem; color: var(--text-muted); }
+.palette-detail-host {
+  display: block; font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 0.68rem; color: var(--text-muted); opacity: 0.7;
+  unicode-bidi: isolate; direction: ltr; text-align: left;
+  margin-top: 0.35rem;
+}
 .palette-detail-badge {
   display: inline-flex; align-items: center; gap: 0.3rem;
   font-size: 0.64rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 50px;
@@ -625,22 +704,30 @@ body.light-theme .palette-detail-badge { background: rgba(255,255,255,0.7); bord
 .palette-detail-badge.badge-variant { color: #93c5fd; border-color: rgba(147,197,253,0.3); background: rgba(147,197,253,0.1); }
 .palette-detail-badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-.palette-actions { display: flex; flex-direction: column; gap: 0.4rem; }
+.palette-actions { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.4rem; }
 .palette-action {
   display: flex; align-items: center; gap: 0.75rem; width: 100%; text-align: start;
   background: var(--surface); border: 1px solid var(--border); color: var(--text);
-  padding: 0.65rem 0.85rem; border-radius: 12px;
+  padding: 0.55rem 0.85rem; border-radius: 12px;
   font-family: 'IBM Plex Sans Arabic', sans-serif; font-size: 0.86rem; font-weight: 600;
   transition: background 0.25s var(--ease-lux), border-color 0.25s var(--ease-lux);
 }
-.palette-action i { width: 16px; text-align: center; color: var(--text-muted); flex-shrink: 0; }
+.palette-action-icon {
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 28px; height: 28px; border-radius: 9px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text-muted);
+  transition: background 0.25s var(--ease-lux), color 0.25s var(--ease-lux);
+}
+body.light-theme .palette-action-icon { background: rgba(20,18,15,0.04); }
 .palette-action-label { flex: 1; }
 .palette-action kbd { font-size: 0.64rem; color: var(--text-muted); border: 1px solid var(--border); border-radius: 6px; padding: 0.15rem 0.5rem; flex-shrink: 0; }
 .palette-action:hover { background: var(--surface-hover); }
 .palette-action.is-primary { border-color: rgba(124,155,255,0.3); }
-.palette-action.is-active { background: linear-gradient(135deg, rgba(124,155,255,0.22), rgba(124,155,255,0.08)); border-color: rgba(124,155,255,0.5); }
-.palette-action.is-active i { color: var(--text); }
+.palette-action.is-active { background: linear-gradient(135deg, rgba(124,155,255,0.22), rgba(124,155,255,0.08)); border-color: var(--live-accent); }
+.palette-action.is-active .palette-action-icon { background: var(--live-accent); color: #fff; }
 body.light-theme .palette-action.is-active { background: linear-gradient(135deg, rgba(37,99,235,0.16), rgba(37,99,235,0.05)); }
+
 
 @media (max-width: 1024px) {
   html, body { height: auto; min-height: 100dvh; overflow-y: auto; overflow-x: hidden; }
@@ -729,6 +816,7 @@ body.light-theme .palette-action.is-active { background: linear-gradient(135deg,
       <div class="tab-indicator-trail" id="tabIndicatorTrail"></div>
       <div class="tab-indicator" id="tabIndicator"></div>
     </div>
+    <div class="tab-indicator-glow" id="tabIndicatorGlow" aria-hidden="true"></div>
   </div>
 
   <div class="app-grid" id="appGrid" role="tabpanel" tabindex="0"></div>
@@ -738,7 +826,8 @@ body.light-theme .palette-action.is-active { background: linear-gradient(135deg,
   <div class="palette" role="dialog" aria-modal="true" aria-label="بحث سريع">
     <div class="palette-input-row">
       <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-      <input type="text" id="paletteInput" placeholder="ابحث عن تطبيق..." autocomplete="off" aria-label="بحث سريع عن تطبيق" />
+      <input type="text" id="paletteInput" role="combobox" aria-expanded="false" aria-controls="paletteResults" aria-autocomplete="list" aria-activedescendant="" placeholder="ابحث عن تطبيق..." autocomplete="off" aria-label="بحث سريع عن تطبيق" />
+      <span class="palette-live-dot" id="paletteLiveDot" aria-hidden="true"></span>
       <kbd>Esc</kbd>
     </div>
     <div class="palette-body">
@@ -868,33 +957,40 @@ const hexToRgba = (hex, a) => {
   return `rgba(${r}, ${g}, ${b}, ${a})`;
 };
 
+// Every title/label below goes into innerHTML — this is app-authored data
+// today, but escaping costs nothing and means a stray "&" in a future title
+// can't ever break the markup.
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+}[c]));
+
 const categories = [
   {
     id: 'core', label: 'الأساسية', icon: 'fa-layer-group', accent: '#7c9bff', key: 0,
     apps: [
-      { title: 'خارجي 2', url: 'https://slippery-form.vercel.app/', icon: 'fa-briefcase', gradient: ['#3f5fe0', '#7c9bff', '#1c2f8f'], closed: true },
-      { title: 'خارجي 0', url: 'https://lx-parser.vercel.app/', icon: 'fa-eye', gradient: ['#0f9e72', '#5eead4', '#075c46'] },
-      { title: 'مجموعات دوائية', url: 'https://desktop-ru4x.vercel.app/', icon: 'fa-pills', gradient: ['#7c3aed', '#c4a6ff', '#4c1d95'] },
-      { title: 'لستة الادوية', url: 'https://lx-search-kappa.vercel.app/', icon: 'fa-search', gradient: ['#0b8fd1', '#7dd3fc', '#075985'] },
-      { title: 'المنفذ والتحمل', url: 'https://newlist-eta.vercel.app/', icon: 'fa-dollar-sign', gradient: ['#db2777', '#ffb3d9', '#8a1150'] },
-      { title: 'بروتوكولات الصرف', url: 'https://strong-snickerdoodle-02a92f.netlify.app/', icon: 'fa-folder-open', gradient: ['#ea580c', '#fdba74', '#7c2d12'] },
-      { title: 'فهرس الادوية', url: 'https://lx-index.vercel.app/', icon: 'fa-book-medical', gradient: ['#d97706', '#fde68a', '#78350f'], isNew: true }
+      { title: 'خارجي 2', titleEn: 'External 2', url: 'https://slippery-form.vercel.app/', icon: 'fa-briefcase', gradient: ['#3f5fe0', '#7c9bff', '#1c2f8f'], closed: true },
+      { title: 'خارجي 0', titleEn: 'External 0', url: 'https://lx-parser.vercel.app/', icon: 'fa-eye', gradient: ['#0f9e72', '#5eead4', '#075c46'] },
+      { title: 'مجموعات دوائية', titleEn: 'Drug Classes', url: 'https://desktop-ru4x.vercel.app/', icon: 'fa-pills', gradient: ['#7c3aed', '#c4a6ff', '#4c1d95'] },
+      { title: 'لستة الادوية', titleEn: 'Drug List', url: 'https://lx-search-kappa.vercel.app/', icon: 'fa-search', gradient: ['#0b8fd1', '#7dd3fc', '#075985'] },
+      { title: 'المنفذ والتحمل', titleEn: 'Paid List', url: 'https://newlist-eta.vercel.app/', icon: 'fa-dollar-sign', gradient: ['#db2777', '#ffb3d9', '#8a1150'] },
+      { title: 'بروتوكولات الصرف', titleEn: 'Protocols', url: 'https://strong-snickerdoodle-02a92f.netlify.app/', icon: 'fa-folder-open', gradient: ['#ea580c', '#fdba74', '#7c2d12'] },
+      { title: 'فهرس الادوية', titleEn: 'Index Builder', url: 'https://lx-index.vercel.app/', icon: 'fa-book-medical', gradient: ['#d97706', '#fde68a', '#78350f'], isNew: true }
     ]
   },
   {
-    id: 'tools', label: 'أدوات وتحليل', icon: 'fa-calculator', accent: '#22c1a4', key: 4,
+    id: 'tools', label: 'أدوات', icon: 'fa-calculator', accent: '#22c1a4', key: 4,
     apps: [
-      { title: 'الرقم القومي والتاريخ', url: 'https://lx-id.vercel.app/', icon: 'fa-id-card', gradient: ['#0891b2', '#67e8f9', '#083344'], isNew: true },
+      { title: 'الرقم القومي والتاريخ', titleEn: 'ID Tools', url: 'https://lx-id.vercel.app/', icon: 'fa-id-card', gradient: ['#0891b2', '#67e8f9', '#083344'], isNew: true },
       {
-        title: 'عائد الاستثمار', icon: 'fa-chart-line', gradient: ['#16a34a', '#bbf7d0', '#14532d'], isNew: true,
+        title: 'عائد الاستثمار', titleEn: 'ROI Calc', icon: 'fa-chart-line', gradient: ['#16a34a', '#bbf7d0', '#14532d'], isNew: true,
         variants: [
-          { label: 'السريع', url: 'https://roi-calc-express.vercel.app/', icon: 'fa-bolt' },
-          { label: 'الكامل', url: 'https://roi-calculator-eight-omega.vercel.app/', icon: 'fa-sliders' }
+          { label: 'السريع', labelEn: 'Express', url: 'https://roi-calc-express.vercel.app/', icon: 'fa-bolt' },
+          { label: 'الكامل', labelEn: 'Full', url: 'https://roi-calculator-eight-omega.vercel.app/', icon: 'fa-sliders' }
         ],
         defaultVariant: 0
       },
-      { title: 'تحليل البيانات', url: 'https://duckbench2.vercel.app/', icon: 'fa-chart-column', gradient: ['#6366f1', '#c7d2fe', '#312e81'], isNew: true },
-      { title: 'بيان جهات متعاقدة', url: 'https://entity-tracker-pi.vercel.app/', icon: 'fa-file-contract', gradient: ['#e11d48', '#fecdd3', '#881337'], isNew: true }
+      { title: 'تحليل البيانات', titleEn: 'DuckBench', url: 'https://duckbench2.vercel.app/', icon: 'fa-chart-column', gradient: ['#6366f1', '#c7d2fe', '#312e81'], isNew: true },
+      { title: 'بيان جهات متعاقدة', titleEn: 'Entity Tracker', url: 'https://entity-tracker-pi.vercel.app/', icon: 'fa-file-contract', gradient: ['#e11d48', '#fecdd3', '#881337'], isNew: true }
     ]
   }
 ];
@@ -958,15 +1054,13 @@ const moveVariantIndicator = (chipsEl, btn, instant) => {
 };
 
 const createCard = (app, idx, colTrack, rowTrack) => {
-  const el = document.createElement('a');
+  const el = document.createElement('div');
   const variantIndex = getSelectedVariantIndex(app);
   const activeVariant = app.variants ? app.variants[variantIndex] : null;
-  el.href = activeVariant ? activeVariant.url : app.url;
-  el.target = '_blank';
-  el.rel = 'noopener noreferrer';
+  const activeUrl = activeVariant ? activeVariant.url : app.url;
+  const activeLabel = activeVariant ? `${app.title} — ${activeVariant.label}` : app.title;
   el.classList.add('app-card');
   el.dataset.appTitle = app.title;
-  el.setAttribute('aria-label', activeVariant ? `${app.title} — ${activeVariant.label}` : app.title);
   el.style.gridColumn = colTrack || '';
   el.style.gridRow = rowTrack || '';
   el.style.animationDelay = `${idx * 30}ms`;
@@ -982,19 +1076,27 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   let badgesHtml = '';
   if (app.isNew) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>جديد</div>`;
   if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>مغلق</div>`;
-  if (app.variantBadge) badgesHtml += `<div class="badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${app.variantBadge}</div>`;
+  if (app.variantBadge) badgesHtml += `<div class="badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${escapeHtml(app.variantBadge)}</div>`;
 
   const iconClass = activeVariant ? activeVariant.icon : app.icon;
 
   const chipsHtml = app.variants ? `
-      <div class="variant-chips" role="radiogroup" aria-label="اختر نسخة ${app.title}">
+      <div class="variant-chips" role="radiogroup" aria-label="اختر نسخة ${escapeHtml(app.title)}">
         <div class="variant-chip-indicator" aria-hidden="true"></div>
         ${app.variants.map((v, i) => `
-          <button type="button" class="variant-chip${i === variantIndex ? ' is-active' : ''}" role="radio" aria-checked="${i === variantIndex}" data-variant-index="${i}">${v.label}</button>
+          <button type="button" class="variant-chip${i === variantIndex ? ' is-active' : ''}" role="radio" aria-checked="${i === variantIndex}" data-variant-index="${i}">${escapeHtml(v.label)}</button>
         `).join('')}
       </div>` : '';
 
+  // The card itself is a plain div — the clickable "open" target is a
+  // stretched, invisible <a> sibling (z-index below the header/footer text,
+  // which get pointer-events:none so clicks pass through to it). Anything
+  // that needs its own click — the variant chips — re-enables pointer-events
+  // and so naturally intercepts first. This keeps every keyboard/AT
+  // interaction native instead of relying on stopPropagation tricks on a
+  // button nested inside an anchor.
   el.innerHTML = `
+    <a class="card-link-overlay" href="${escapeHtml(activeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(activeLabel)}"></a>
     <div class="card-noise"></div>
     <div class="card-glow"></div>
     <div class="card-glare"></div>
@@ -1006,7 +1108,7 @@ const createCard = (app, idx, colTrack, rowTrack) => {
     </div>
     <div class="bento-footer">
       <div class="title-row">
-        <h3 class="app-title">${app.title}</h3>
+        <h3 class="app-title">${escapeHtml(app.title)}</h3>
         <span class="open-affordance" aria-hidden="true"><i class="fas fa-arrow-up-right-from-square"></i></span>
       </div>
       ${chipsHtml}
@@ -1015,19 +1117,20 @@ const createCard = (app, idx, colTrack, rowTrack) => {
 
   el.addEventListener('click', () => sfx.click());
   el.addEventListener('mouseenter', () => sfx.hover(idx));
-  el.addEventListener('focus', () => sfx.hover(idx));
+  el.addEventListener('focusin', () => sfx.hover(idx));
 
   if (app.variants) {
     const chipsEl = el.querySelector('.variant-chips');
     const iconEl = el.querySelector('.app-icon');
+    const linkEl = el.querySelector('.card-link-overlay');
 
     // Only ever called from a chip click — the initial state above is
     // already correct, this just handles switching.
     const applyVariant = (i) => {
       const v = app.variants[i];
       if (!v) return;
-      el.href = v.url;
-      el.setAttribute('aria-label', `${app.title} — ${v.label}`);
+      linkEl.href = v.url;
+      linkEl.setAttribute('aria-label', `${app.title} — ${v.label}`);
       chipsEl.querySelectorAll('.variant-chip').forEach((chip, ci) => {
         chip.classList.toggle('is-active', ci === i);
         chip.setAttribute('aria-checked', String(ci === i));
@@ -1043,8 +1146,10 @@ const createCard = (app, idx, colTrack, rowTrack) => {
     };
 
     chipsEl.querySelectorAll('.variant-chip').forEach((chip, i) => {
-      // Must stop propagation — these buttons sit inside the card's <a>,
-      // so an unguarded click would also fire the anchor's navigation.
+      // stopPropagation here isn't guarding against anchor navigation
+      // anymore (the chip has no anchor ancestor) — it's guarding against
+      // the click bubbling to the card's own listener and double-firing
+      // the click sound on top of applyVariant's.
       chip.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -1240,6 +1345,7 @@ const moveIndicator = (btn, instant) => {
   const rail = document.getElementById('tabRail');
   const ind = document.getElementById('tabIndicator');
   const trail = document.getElementById('tabIndicatorTrail');
+  const glow = document.getElementById('tabIndicatorGlow');
   if (!rail || !ind || !trail || !btn) return;
 
   const p = rail.getBoundingClientRect(), b = btn.getBoundingClientRect();
@@ -1252,6 +1358,7 @@ const moveIndicator = (btn, instant) => {
   ind.style.width = `${w}px`;
   trail.style.width = `${w}px`;
   ind.style.transformOrigin = dx >= 0 ? 'left center' : 'right center';
+  if (glow) glow.style.width = `${w}px`;
 
   const accent = btn.dataset.accent;
   if (accent) {
@@ -1264,11 +1371,13 @@ const moveIndicator = (btn, instant) => {
     ind.style.transform = `translateX(${x}px)`;
     trail.style.transition = 'none';
     trail.style.transform = `translateX(${x}px)`;
+    if (glow) { glow.style.transition = 'none'; glow.style.transform = `translateX(${x}px)`; }
   } else {
     ind.style.transition = 'transform 0.42s var(--ease-lux)';
     ind.style.transform = `translateX(${x}px) scaleX(${1 + stretch}) scaleY(${1 - stretch * 0.35})`;
     trail.style.transition = 'transform 0.5s var(--ease-spring) 0.06s, width 0.5s var(--ease-spring) 0.06s';
     trail.style.transform = `translateX(${x}px)`;
+    if (glow) { glow.style.transition = 'transform 0.42s var(--ease-lux)'; glow.style.transform = `translateX(${x}px)`; }
     indicatorTimer = setTimeout(() => {
       ind.style.transition = 'transform 0.5s var(--ease-spring)';
       ind.style.transform = `translateX(${x}px) scaleX(1) scaleY(1)`;
@@ -1379,6 +1488,52 @@ const normalizeAr = (s) => s.toLowerCase()
   .replace(/[ةه]/g, 'ه').replace(/[ؤئ]/g, 'ء')
   .replace(/\s+/g, ' ').trim();
 
+// Maps normalized-string index -> original-string index, so a match found
+// after normalization can be traced back to the real characters.
+const normMap = (s) => {
+  let out = '', map = [];
+  for (let i = 0; i < s.length; i++) {
+    let c = s[i].toLowerCase();
+    if (/[\u064B-\u0652\u0670\u0640]/.test(c)) continue;
+    c = c.replace(/[أإآٱ]/, 'ا').replace(/ى/, 'ي').replace(/[ةه]/, 'ه').replace(/[ؤئ]/, 'ء');
+    out += c; map.push(i);
+  }
+  return { out, map };
+};
+
+// Highlights at *word* granularity, never wraps individual letters — an
+// element between Arabic letters breaks their cursive joining and the word
+// visibly shatters. Prefers the same precise contiguous match fuzzyScore's
+// prefix/word-start/substring tiers already find; only falls back to a
+// greedy subsequence walk for genuinely non-contiguous fuzzy matches.
+const highlightTitle = (title, query) => {
+  const nq = normalizeAr(query);
+  if (!nq) return escapeHtml(title);
+  const { out, map } = normMap(title);
+  const hits = new Set();
+
+  const i = out.indexOf(nq);
+  if (i >= 0) {
+    for (let k = i; k < i + nq.length; k++) hits.add(map[k]);
+  } else {
+    let qi = 0;
+    for (let k = 0; k < out.length && qi < nq.length; k++) {
+      if (out[k] === nq[qi]) { hits.add(map[k]); qi++; }
+    }
+    if (qi < nq.length) return escapeHtml(title);
+  }
+
+  let idx = 0;
+  return title.split(/(\s+)/).map((part) => {
+    const start = idx;
+    idx += part.length;
+    if (/^\s+$/.test(part)) return escapeHtml(part);
+    let matched = false;
+    for (let k = start; k < start + part.length; k++) if (hits.has(k)) { matched = true; break; }
+    return matched ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part);
+  }).join('');
+};
+
 const fuzzyScore = (query, target) => {
   const t = normalizeAr(target), q = normalizeAr(query);
   if (!q) return 0;
@@ -1423,6 +1578,7 @@ const allPaletteEntries = () => {
       return app.variants.map((v, i) => ({
         app: {
           title: `${app.title} · ${v.label}`,
+          titleEn: v.labelEn && app.titleEn ? `${app.titleEn} — ${v.labelEn}` : app.titleEn,
           url: v.url,
           icon: v.icon,
           gradient: app.gradient,
@@ -1440,11 +1596,45 @@ const allPaletteEntries = () => {
   return normal.concat(unlocked);
 };
 
+const RECENTS_KEY = 'lx-recents';
+const RECENTS_CAP = 8;
+
+const getRecentTitles = () => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(RECENTS_KEY) || '[]');
+    return Array.isArray(stored) ? stored : [];
+  } catch (e) { return []; }
+};
+
+const pushRecent = (title) => {
+  try {
+    const list = getRecentTitles().filter(t => t !== title);
+    list.unshift(title);
+    localStorage.setItem(RECENTS_KEY, JSON.stringify(list.slice(0, RECENTS_CAP)));
+  } catch (e) {}
+};
+
+// Resolves stored recent titles back to live entries — an app may have been
+// removed from the data since, so titles with no match are silently dropped.
+const getRecentEntries = (allEntries, limit) => {
+  const titles = getRecentTitles();
+  const byTitle = new Map();
+  allEntries.forEach(e => { if (!byTitle.has(e.app.title)) byTitle.set(e.app.title, e); });
+  const out = [];
+  for (const t of titles) {
+    const e = byTitle.get(t);
+    if (e) out.push(e);
+    if (out.length >= limit) break;
+  }
+  return out;
+};
+
 let paletteItems = [];
 let paletteActiveIndex = -1;
 let paletteActionIndex = 0;
 let paletteZone = 'list'; // 'list' | 'actions' — which pane arrow keys currently drive
 let lastFocusedBeforePalette = null;
+let paletteTryPicks = null; // cached "جرّب" suggestions for the current empty-results streak
 
 const getActionsForEntry = (entry) => {
   const actions = [
@@ -1466,47 +1656,91 @@ const getActionsForEntry = (entry) => {
 // display title is a full Arabic phrase. Host matches are weighted down.
 const scoreEntry = (query, entry) => {
   const titleScore = fuzzyScore(query, entry.app.title);
+  const titleEnScore = entry.app.titleEn ? fuzzyScore(query, entry.app.titleEn) : -1;
   const catScore = fuzzyScore(query, entry.cat.label);
   let hostScore = -1;
   try { hostScore = fuzzyScore(query, new URL(entry.app.url).hostname) * 0.4; } catch (e) {}
-  return Math.max(titleScore, catScore, hostScore);
+  return Math.max(titleScore, titleEnScore, catScore, hostScore);
 };
+
+// Builds one <li> for a palette result — shared by the recents, normal, and
+// "جرّب" suggestion render paths so they stay visually identical.
+const paletteItemHtml = (e, globalIndex, query) => `
+  <li class="palette-item${globalIndex === 0 ? ' is-active' : ''}" role="option" id="palette-item-${globalIndex}" aria-selected="${globalIndex === 0}" data-index="${globalIndex}" style="animation-delay:${Math.min(globalIndex, 8) * 18}ms">
+    <div class="app-icon-wrapper" style="background:linear-gradient(150deg, ${e.app.gradient[1]} 0%, ${e.app.gradient[0]} 55%, ${e.app.gradient[2]} 100%);">
+      <i class="app-icon fas ${e.app.icon}" aria-hidden="true"></i>
+    </div>
+    <div class="palette-item-text">
+      <span class="palette-item-title">${highlightTitle(e.app.title, query)}</span>
+      <span class="palette-item-cat">${escapeHtml(e.cat.label)}</span>
+    </div>
+  </li>`;
 
 const renderPaletteResults = (query) => {
   const paletteResults = document.getElementById('paletteResults');
-  const entries = allPaletteEntries()
+  const allEntries = allPaletteEntries();
+  const scored = allEntries
     .map(e => ({ app: e.app, cat: e.cat, score: scoreEntry(query, e) }))
     .filter(e => e.score >= 0)
     .sort((a, b) => b.score - a.score);
 
-  paletteItems = entries;
-  paletteActiveIndex = entries.length ? 0 : -1;
+  let html = '';
+
+  if (!query && !scored.length) {
+    // Nothing at all (shouldn't normally happen with real data, but stay safe)
+    paletteItems = [];
+  } else if (!query) {
+    paletteTryPicks = null;
+    const recents = getRecentEntries(allEntries, 5);
+    const recentTitles = new Set(recents.map(e => e.app.title));
+    const rest = scored.filter(e => !recentTitles.has(e.app.title));
+    paletteItems = [...recents, ...rest];
+    if (recents.length) {
+      html += `<li class="palette-group-header" role="presentation">الأخيرة</li>`;
+      recents.forEach((e, i) => { html += paletteItemHtml(e, i, query); });
+      html += `<li class="palette-group-header" role="presentation">الكل</li>`;
+      rest.forEach((e, i) => { html += paletteItemHtml(e, recents.length + i, query); });
+    } else {
+      rest.forEach((e, i) => { html += paletteItemHtml(e, i, query); });
+    }
+  } else if (scored.length) {
+    paletteTryPicks = null;
+    paletteItems = scored;
+    scored.forEach((e, i) => { html += paletteItemHtml(e, i, query); });
+  } else {
+    // No matches — offer something instead of a dead end. Suggestions stay
+    // stable while the no-match streak continues, so they don't jump around
+    // on every keystroke; never drawn from unlocked-but-still-hidden secrets.
+    if (!paletteTryPicks) {
+      const pool = allEntries.filter(e => e.cat.id !== '_secret');
+      const picks = [];
+      const used = new Set();
+      while (picks.length < Math.min(3, pool.length)) {
+        const idx = Math.floor(Math.random() * pool.length);
+        if (used.has(idx)) continue;
+        used.add(idx);
+        picks.push(pool[idx]);
+      }
+      paletteTryPicks = picks;
+    }
+    paletteItems = paletteTryPicks;
+    html += `<li class="palette-group-header" role="presentation">جرّب</li>`;
+    paletteTryPicks.forEach((e, i) => { html += paletteItemHtml(e, i, ''); });
+  }
+
+  paletteActiveIndex = paletteItems.length ? 0 : -1;
   paletteActionIndex = 0;
   paletteZone = 'list';
 
-  if (!entries.length) {
-    paletteResults.innerHTML = `<li class="palette-empty">لا توجد نتائج</li>`;
-    renderPaletteDetail();
-    return;
-  }
-
-  paletteResults.innerHTML = entries.map((e, i) => `
-    <li class="palette-item${i === 0 ? ' is-active' : ''}" role="option" aria-selected="${i === 0}" data-index="${i}">
-      <div class="app-icon-wrapper" style="background:linear-gradient(150deg, ${e.app.gradient[1]} 0%, ${e.app.gradient[0]} 55%, ${e.app.gradient[2]} 100%);">
-        <i class="app-icon fas ${e.app.icon}" aria-hidden="true"></i>
-      </div>
-      <div class="palette-item-text">
-        <span class="palette-item-title">${e.app.title}</span>
-        <span class="palette-item-cat">${e.cat.label}</span>
-      </div>
-    </li>
-  `).join('');
+  paletteResults.innerHTML = html || `<li class="palette-empty">لا توجد نتائج</li>`;
 
   paletteResults.querySelectorAll('.palette-item').forEach(li => {
     li.addEventListener('mouseenter', () => setPaletteActive(Number(li.dataset.index)));
     li.addEventListener('click', () => openPaletteItem(Number(li.dataset.index)));
   });
 
+  updateActiveDescendant();
+  updateLiveAccent();
   renderPaletteDetail();
 };
 
@@ -1518,6 +1752,8 @@ const setPaletteActive = (i) => {
     li.classList.toggle('is-active', idx === i);
     li.setAttribute('aria-selected', String(idx === i));
   });
+  updateActiveDescendant();
+  updateLiveAccent();
   renderPaletteDetail();
 };
 
@@ -1542,26 +1778,34 @@ const renderPaletteDetail = () => {
   let badgesHtml = '';
   if (app.isNew) badgesHtml += `<span class="palette-detail-badge badge-new"><span class="badge-dot"></span>جديد</span>`;
   if (app.closed) badgesHtml += `<span class="palette-detail-badge badge-closed"><span class="badge-dot"></span>مغلق</span>`;
-  if (app.variantBadge) badgesHtml += `<span class="palette-detail-badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${app.variantBadge}</span>`;
+  if (app.variantBadge) badgesHtml += `<span class="palette-detail-badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${escapeHtml(app.variantBadge)}</span>`;
+
+  let host = '';
+  try { host = new URL(app.url).hostname; } catch (e) {}
 
   detail.innerHTML = `
+    <div class="palette-detail-slab" style="background:linear-gradient(150deg, ${app.gradient[1]} 0%, ${app.gradient[0]} 55%, ${app.gradient[2]} 100%);">
+      <div class="palette-detail-slab-noise"></div>
+      <i class="palette-detail-watermark fas ${app.icon}" aria-hidden="true"></i>
+    </div>
     <div class="palette-detail-header">
       <div class="app-icon-wrapper" style="background:linear-gradient(150deg, ${app.gradient[1]} 0%, ${app.gradient[0]} 55%, ${app.gradient[2]} 100%);">
         <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
       </div>
       <div class="palette-detail-title-wrap">
-        <h3 class="palette-detail-title">${app.title}</h3>
+        <h3 class="palette-detail-title">${escapeHtml(app.title)}</h3>
         <div class="palette-detail-meta">
-          <span class="palette-detail-cat">${cat.label}</span>
+          <span class="palette-detail-cat">${escapeHtml(cat.label)}</span>
           ${badgesHtml}
         </div>
+        ${host ? `<span class="palette-detail-host" dir="ltr">${escapeHtml(host)}</span>` : ''}
       </div>
     </div>
-    <div class="palette-actions" role="listbox" aria-label="الإجراءات">
+    <div class="palette-actions" role="group" aria-label="الإجراءات">
       ${getActionsForEntry(entry).map(a => `
-        <button type="button" class="palette-action${a.id === 'new-tab' ? ' is-primary' : ''}" data-action="${a.id}" role="option" aria-selected="false">
-          <i class="fas ${a.icon}" aria-hidden="true"></i>
-          <span class="palette-action-label">${a.label}</span>
+        <button type="button" class="palette-action${a.id === 'new-tab' ? ' is-primary' : ''}" id="palette-action-${a.id}" data-action="${a.id}">
+          <span class="palette-action-icon"><i class="fas ${a.icon}" aria-hidden="true"></i></span>
+          <span class="palette-action-label">${escapeHtml(a.label)}</span>
           ${a.kbd ? `<kbd>${a.kbd}</kbd>` : ''}
         </button>
       `).join('')}
@@ -1588,8 +1832,35 @@ const updateActionHighlight = () => {
   document.querySelectorAll('.palette-action').forEach((btn, i) => {
     const active = paletteZone === 'actions' && i === paletteActionIndex;
     btn.classList.toggle('is-active', active);
-    btn.setAttribute('aria-selected', String(active));
   });
+  updateActiveDescendant();
+};
+
+// Keeps the input's aria-activedescendant pointing at whichever row or
+// action is currently the virtual focus — the standard combobox pattern,
+// so a screen reader user arrowing through results/actions isn't left in
+// silence even though real DOM focus never leaves the input.
+const updateActiveDescendant = () => {
+  const input = document.getElementById('paletteInput');
+  if (!input) return;
+  if (paletteZone === 'actions') {
+    const actions = getActionsForEntry(paletteItems[paletteActiveIndex]);
+    const a = actions[paletteActionIndex];
+    input.setAttribute('aria-activedescendant', a ? `palette-action-${a.id}` : '');
+  } else {
+    input.setAttribute('aria-activedescendant', paletteActiveIndex >= 0 ? `palette-item-${paletteActiveIndex}` : '');
+  }
+};
+
+// Lerps a --live-accent custom property (registered via @property so the
+// browser animates color changes natively) toward the active result's own
+// accent — drives the palette border, caret, status dot, active row's
+// accent bar, and the active action's icon fill.
+const updateLiveAccent = () => {
+  const entry = paletteItems[paletteActiveIndex];
+  const palette = document.querySelector('.palette');
+  if (!palette) return;
+  palette.style.setProperty('--live-accent', entry ? entry.app.gradient[0] : '#7c9bff');
 };
 
 const copyToClipboard = async (text) => {
@@ -1656,6 +1927,9 @@ const executeAction = async (actionId) => {
   if (entry.app.parentTitle && (actionId === 'new-tab' || actionId === 'same-tab')) {
     try { localStorage.setItem('lx-variant-' + entry.app.parentTitle, String(entry.app.variantIndex)); } catch (e) {}
   }
+  if (actionId === 'new-tab' || actionId === 'same-tab') {
+    pushRecent(entry.app.title);
+  }
   if (actionId === 'new-tab') {
     sfx.click();
     window.open(entry.app.url, '_blank', 'noopener');
@@ -1689,7 +1963,11 @@ const openPalette = () => {
   overlay.hidden = false;
   document.querySelector('.container').inert = true;
   document.querySelector('.controls-pill').inert = true;
+  document.querySelector('.container').classList.add('is-dollied');
+  document.querySelector('.controls-pill').classList.add('is-dollied');
+  input.setAttribute('aria-expanded', 'true');
   input.value = '';
+  paletteTryPicks = null;
   renderPaletteResults('');
   requestAnimationFrame(() => input.focus());
 };
@@ -1697,9 +1975,12 @@ const openPalette = () => {
 const closePalette = () => {
   const overlay = document.getElementById('paletteOverlay');
   document.getElementById('paletteInput').blur();
+  document.getElementById('paletteInput').setAttribute('aria-expanded', 'false');
   overlay.hidden = true;
   document.querySelector('.container').inert = false;
   document.querySelector('.controls-pill').inert = false;
+  document.querySelector('.container').classList.remove('is-dollied');
+  document.querySelector('.controls-pill').classList.remove('is-dollied');
   if (lastFocusedBeforePalette && document.body.contains(lastFocusedBeforePalette)) {
     lastFocusedBeforePalette.focus();
   }
@@ -1915,7 +2196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (/^[1-9]$/.test(e.key)) {
       const cards = document.querySelectorAll('#appGrid .app-card');
       const card = cards[Number(e.key) - 1];
-      if (card) card.click();
+      if (card) card.querySelector('.card-link-overlay')?.click();
     }
   });
 });
