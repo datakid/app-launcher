@@ -182,6 +182,11 @@ h1 {
 
 .controls-pill button[aria-pressed="true"] { color: var(--text); background: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.1)); }
 
+.lang-toggle-label {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.02em;
+}
+
 .controls-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.2rem; }
 
 .app-grid {
@@ -622,6 +627,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 }
 
 .app-grid.is-out { animation: lx-grid-out 0.22s var(--ease-lux) both; }
+.app-grid.is-relang .app-card { animation: none !important; }
 
 
 #lx-palette {
@@ -794,7 +800,16 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   text-wrap: pretty;
 }
-.palette-detail-title-en { display: none; }
+.palette-detail-title-en {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  margin-top: 0.15rem;
+}
 .palette-detail-meta { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; flex-wrap: wrap; }
 .palette-detail-cat { font-size: 0.84rem; color: var(--text-muted); }
 .palette-detail-host {
@@ -957,6 +972,10 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   <button type="button" id="themeToggle" aria-pressed="false" aria-label="تبديل المظهر" title="تبديل المظهر">
     <i class="fas fa-sun" aria-hidden="true"></i>
   </button>
+  <div class="controls-divider"></div>
+  <button type="button" id="langToggle" aria-pressed="false" aria-label="التبديل إلى الإنجليزية" title="التبديل إلى الإنجليزية">
+    <span class="lang-toggle-label" aria-hidden="true">EN</span>
+  </button>
 </div>
 
 <div class="container">
@@ -1000,23 +1019,23 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 {
   "categories": [
     {
-      "id": "core", "label": "الأساسية", "icon": "fa-layer-group", "accent": "#7c9bff", "key": 0,
+      "id": "core", "label": "الأساسية", "labelEn": "Core", "icon": "fa-layer-group", "accent": "#7c9bff", "key": 0,
       "apps": [
-        { "title": "خارجي 2", "titleEn": "External 2", "url": "https://slippery-form.vercel.app/", "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true },
-        { "title": "خارجي 0", "titleEn": "External 0", "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"] },
-        { "title": "مجموعات دوائية", "titleEn": "Drug Classes", "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"] },
+        { "title": "خارجي 2", "titleEn": "Ledger Form", "url": "https://slippery-form.vercel.app/", "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true },
+        { "title": "خارجي 0", "titleEn": "Parser", "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"] },
+        { "title": "مجموعات دوائية", "titleEn": "Workspace", "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"] },
         { "title": "لستة الادوية", "titleEn": "Drug List", "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-search", "gradient": ["#5e8df0", "#7dd3fc", "#075985"] },
-        { "title": "المنفذ والتحمل", "titleEn": "Paid List", "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"] },
+        { "title": "المنفذ والتحمل", "titleEn": "Paid Calculator", "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"] },
         { "title": "بروتوكولات الصرف", "titleEn": "Protocols", "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"] },
         { "title": "فهرس الادوية", "titleEn": "Index Builder", "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11" }
       ]
     },
     {
-      "id": "tools", "label": "أدوات", "icon": "fa-calculator", "accent": "#22c1a4", "key": 4,
+      "id": "tools", "label": "أدوات", "labelEn": "Tools", "icon": "fa-calculator", "accent": "#22c1a4", "key": 4,
       "apps": [
-        { "title": "الرقم القومي والتاريخ", "titleEn": "ID Tools", "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11" },
+        { "title": "الرقم القومي والتاريخ", "titleEn": "ID and Dates", "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11" },
         {
-          "title": "عائد الاستثمار", "titleEn": "ROI Calc", "icon": "fa-chart-line", "gradient": ["#42a374", "#bbf7d0", "#14532d"], "isNew": true, "since": "2026-08-11",
+          "title": "عائد الاستثمار", "titleEn": "ROI Calculator", "icon": "fa-chart-line", "gradient": ["#42a374", "#bbf7d0", "#14532d"], "isNew": true, "since": "2026-08-11",
           "variants": [
             { "label": "السريع", "labelEn": "Express", "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt" },
             { "label": "الكامل", "labelEn": "Full", "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders" }
@@ -1028,15 +1047,15 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
       ]
     },
     {
-      "id": "experimental", "label": "تجريبي", "icon": "fa-flask", "accent": "#a78bfa", "key": 8,
+      "id": "experimental", "label": "تجريبي", "labelEn": "Experimental", "icon": "fa-flask", "accent": "#a78bfa", "key": 8,
       "apps": [
-        { "title": "تقارير", "titleEn": "Reports", "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
-        { "title": "دفتر الحركة", "titleEn": "Daftar", "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" },
+        { "title": "تقارير", "titleEn": "To Do", "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
+        { "title": "دفتر الحركة", "titleEn": "Dafter", "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" },
         {
           "title": "قسمة العوائد", "titleEn": "Dividend Split", "icon": "fa-scale-balanced", "gradient": ["#ab8a4f", "#fef08a", "#713f12"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "label": "السريع", "labelEn": "Express", "url": "https://m-izan.vercel.app/", "icon": "fa-bolt" },
-            { "label": "الكامل", "labelEn": "Full", "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders" }
+            { "label": "السريع", "labelEn": "Mizan", "url": "https://m-izan.vercel.app/", "icon": "fa-bolt" },
+            { "label": "الكامل", "labelEn": "Qisma", "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders" }
           ],
           "defaultVariant": 0
         }
@@ -1223,9 +1242,95 @@ const moveVariantIndicatorLegacy = (chipsEl, btn, instant) => {
   chipsEl._lastX = x;
 };
 
-const gradVars = (g) => `--c1:${g[0]};`;
+const STRINGS = {
+  ar: {
+    paletteToggleLabel: 'بحث سريع',
+    paletteToggleTitle: 'بحث سريع (Ctrl/Cmd+K)',
+    soundEnable: 'تفعيل الصوت',
+    soundMute: 'كتم الصوت',
+    themeToggle: 'تبديل المظهر',
+    themeToDark: 'التبديل إلى المظهر الداكن',
+    themeToLight: 'التبديل إلى المظهر الفاتح',
+    langToEnglish: 'التبديل إلى الإنجليزية',
+    langToArabic: 'التبديل إلى العربية',
+    langButtonLabel: 'EN',
+    categoriesLabel: 'التصنيفات',
+    commandPaletteLabel: 'لوحة الأوامر',
+    searchPlaceholder: 'ابحث عن تطبيق أو أداة…',
+    resultsLabel: 'النتائج',
+    hintNavigate: 'تنقل',
+    hintSwitchZone: 'تبديل اللوحة',
+    hintOpen: 'فتح',
+    hintClose: 'إغلاق',
+    closedReasonDefault: 'هذا الرابط مغلق مؤقتًا وقد لا يعمل عند فتحه.',
+    badgeNew: 'جديد',
+    badgeClosed: 'مغلق',
+    chooseVersionOf: 'اختر نسخة',
+    actionNewTab: 'فتح في تبويب جديد',
+    actionSameTab: 'فتح في نفس التبويب',
+    actionCopyLink: 'نسخ الرابط',
+    actionCopyTitle: 'نسخ الاسم',
+    actionReveal: 'إظهار في الشبكة',
+    groupRecent: 'الأخيرة',
+    groupAll: 'الكل',
+    groupTry: 'جرّب',
+    noResults: 'لا توجد نتائج',
+    noMatchingResults: 'لا توجد نتائج مطابقة',
+    actionsLabel: 'الإجراءات',
+    copiedLink: 'تم نسخ الرابط',
+    copyFailed: 'تعذر النسخ',
+    copiedTitle: 'تم نسخ الاسم',
+    metaDescription: 'لوحة انطلاق للأدوات والروابط الداخلية',
+  },
+  en: {
+    paletteToggleLabel: 'Quick search',
+    paletteToggleTitle: 'Quick search (Ctrl/Cmd+K)',
+    soundEnable: 'Enable sound',
+    soundMute: 'Mute sound',
+    themeToggle: 'Toggle theme',
+    themeToDark: 'Switch to dark mode',
+    themeToLight: 'Switch to light mode',
+    langToEnglish: 'Switch to English',
+    langToArabic: 'Switch to Arabic',
+    langButtonLabel: 'AR',
+    categoriesLabel: 'Categories',
+    commandPaletteLabel: 'Command palette',
+    searchPlaceholder: 'Search for an app or tool…',
+    resultsLabel: 'Results',
+    hintNavigate: 'Navigate',
+    hintSwitchZone: 'Switch panel',
+    hintOpen: 'Open',
+    hintClose: 'Close',
+    closedReasonDefault: 'This link is temporarily closed and may not work when opened.',
+    badgeNew: 'New',
+    badgeClosed: 'Closed',
+    chooseVersionOf: 'Choose version of',
+    actionNewTab: 'Open in new tab',
+    actionSameTab: 'Open in same tab',
+    actionCopyLink: 'Copy link',
+    actionCopyTitle: 'Copy name',
+    actionReveal: 'Show in grid',
+    groupRecent: 'Recent',
+    groupAll: 'All',
+    groupTry: 'Try',
+    noResults: 'No results',
+    noMatchingResults: 'No matching results',
+    actionsLabel: 'Actions',
+    copiedLink: 'Link copied',
+    copyFailed: 'Copy failed',
+    copiedTitle: 'Name copied',
+    metaDescription: 'A launchpad for internal tools and links',
+  },
+};
 
-const CLOSED_REASON_DEFAULT = 'هذا الرابط مغلق مؤقتًا وقد لا يعمل عند فتحه.';
+let currentLang = 'ar';
+const t = (key) => (STRINGS[currentLang] && STRINGS[currentLang][key]) || STRINGS.ar[key] || key;
+const dispTitle = (app) => (currentLang === 'en' && app.titleEn) ? app.titleEn : app.title;
+const otherTitle = (app) => (currentLang === 'en') ? app.title : (app.titleEn || '');
+const dispVariantLabel = (v) => (currentLang === 'en' && v.labelEn) ? v.labelEn : v.label;
+const dispCatLabel = (cat) => (currentLang === 'en' && cat.labelEn) ? cat.labelEn : cat.label;
+
+const gradVars = (g) => `--c1:${g[0]};`;
 
 const NEW_TTL_DAYS = 30;
 const isFresh = (app) => {
@@ -1242,7 +1347,8 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   const variantIndex = getSelectedVariantIndex(app);
   const activeVariant = app.variants ? app.variants[variantIndex] : null;
   const activeUrl = activeVariant ? activeVariant.url : app.url;
-  const activeLabel = activeVariant ? `${app.title} — ${activeVariant.label}` : app.title;
+  const dTitle = dispTitle(app);
+  const activeLabel = activeVariant ? `${dTitle} — ${dispVariantLabel(activeVariant)}` : dTitle;
   el.classList.add('app-card');
   el.dataset.appTitle = app.title;
   el.style.gridColumn = colTrack || '';
@@ -1255,22 +1361,22 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   if (app.closed) el.classList.add('status-closed');
 
   let badgesHtml = '';
-  if (isFresh(app)) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>جديد</div>`;
-  if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>مغلق</div>`;
+  if (isFresh(app)) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>${t('badgeNew')}</div>`;
+  if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>${t('badgeClosed')}</div>`;
   if (app.variantBadge) badgesHtml += `<div class="badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${escapeHtml(app.variantBadge)}</div>`;
 
   const iconClass = activeVariant ? activeVariant.icon : app.icon;
   const digitHtml = idx < 9 ? `<span class="digit-badge" aria-hidden="true">${idx + 1}</span>` : '';
 
   const chipsHtml = app.variants ? `
-      <div class="variant-chips" role="radiogroup" aria-label="اختر نسخة ${escapeHtml(app.title)}">
+      <div class="variant-chips" role="radiogroup" aria-label="${t('chooseVersionOf')} ${escapeHtml(dTitle)}">
         <div class="variant-chip-indicator" aria-hidden="true"></div>
         ${app.variants.map((v, i) => `
-          <button type="button" class="variant-chip${i === variantIndex ? ' is-active' : ''}" role="radio" aria-checked="${i === variantIndex}" data-variant-index="${i}">${escapeHtml(v.label)}</button>
+          <button type="button" class="variant-chip${i === variantIndex ? ' is-active' : ''}" role="radio" aria-checked="${i === variantIndex}" data-variant-index="${i}">${escapeHtml(dispVariantLabel(v))}</button>
         `).join('')}
       </div>` : '';
 
-  const overlayLabel = app.closed ? `${activeLabel} — مغلق` : activeLabel;
+  const overlayLabel = app.closed ? `${activeLabel} — ${t('badgeClosed')}` : activeLabel;
   const overlayAttrs = `href="${escapeHtml(activeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
 
   el.innerHTML = `
@@ -1282,7 +1388,7 @@ const createCard = (app, idx, colTrack, rowTrack) => {
     </div>
     <div class="bento-footer">
       <div class="title-row">
-        <h3 class="app-title">${escapeHtml(app.title)}</h3>
+        <h3 class="app-title">${escapeHtml(dTitle)}</h3>
         <span class="open-affordance" aria-hidden="true"><i class="fas fa-arrow-up-right-from-square"></i></span>
       </div>
       ${chipsHtml}
@@ -1302,7 +1408,8 @@ const createCard = (app, idx, colTrack, rowTrack) => {
       const v = app.variants[i];
       if (!v) return;
       linkEl.href = v.url;
-      linkEl.setAttribute('aria-label', app.closed ? `${app.title} — ${v.label} — مغلق` : `${app.title} — ${v.label}`);
+      const vLabel = `${dTitle} — ${dispVariantLabel(v)}`;
+      linkEl.setAttribute('aria-label', app.closed ? `${vLabel} — ${t('badgeClosed')}` : vLabel);
       chipsEl.querySelectorAll('.variant-chip').forEach((chip, ci) => {
         chip.classList.toggle('is-active', ci === i);
         chip.setAttribute('aria-checked', String(ci === i));
@@ -1550,10 +1657,81 @@ const applyTheme = (explicit) => {
 
   const btn = document.getElementById('themeToggle');
   btn.setAttribute('aria-pressed', String(isLight));
-  btn.setAttribute('aria-label', isLight ? 'التبديل إلى المظهر الداكن' : 'التبديل إلى المظهر الفاتح');
+  btn.setAttribute('aria-label', isLight ? t('themeToDark') : t('themeToLight'));
+  btn.setAttribute('title', isLight ? t('themeToDark') : t('themeToLight'));
   btn.querySelector('i').className = `fas ${isLight ? 'fa-moon' : 'fa-sun'}`;
 
   if (window.bgAnim) window.bgAnim.spawn();
+};
+
+const getStoredLang = () => {
+  try { return localStorage.getItem('lx-lang'); } catch (e) { return null; }
+};
+
+const applyLang = (explicit) => {
+  const stored = explicit !== undefined ? explicit : getStoredLang();
+  const lang = (stored === 'en' || stored === 'ar') ? stored : 'ar';
+  currentLang = lang;
+
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === 'en' ? 'ltr' : 'rtl';
+
+  if (explicit !== undefined) {
+    try { localStorage.setItem('lx-lang', explicit); } catch (e) {}
+  }
+
+  document.title = 'LinkExpress';
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', t('metaDescription'));
+
+  const paletteBtn = document.getElementById('paletteToggle');
+  paletteBtn.setAttribute('aria-label', t('paletteToggleLabel'));
+  paletteBtn.setAttribute('title', t('paletteToggleTitle'));
+
+  const soundBtn = document.getElementById('soundToggle');
+  soundBtn.setAttribute('aria-label', sfx.enabled ? t('soundMute') : t('soundEnable'));
+  soundBtn.setAttribute('title', sfx.enabled ? t('soundMute') : t('soundEnable'));
+
+  const langBtn = document.getElementById('langToggle');
+  langBtn.setAttribute('aria-pressed', String(lang === 'en'));
+  langBtn.setAttribute('aria-label', lang === 'en' ? t('langToArabic') : t('langToEnglish'));
+  langBtn.setAttribute('title', lang === 'en' ? t('langToArabic') : t('langToEnglish'));
+  langBtn.querySelector('.lang-toggle-label').textContent = t('langButtonLabel');
+
+  applyTheme();
+
+  const tabRail = document.getElementById('tabRail');
+  if (tabRail) tabRail.setAttribute('aria-label', t('categoriesLabel'));
+  updateTabLabels();
+
+  const dialog = document.getElementById('lx-palette');
+  if (dialog) dialog.setAttribute('aria-label', t('commandPaletteLabel'));
+
+  const input = document.getElementById('paletteInput');
+  if (input) input.setAttribute('placeholder', t('searchPlaceholder'));
+
+  const results = document.getElementById('paletteResults');
+  if (results) results.setAttribute('aria-label', t('resultsLabel'));
+
+  const hints = document.querySelectorAll('.palette-hints span');
+  const hintKeys = ['hintNavigate', 'hintSwitchZone', 'hintOpen', 'hintClose'];
+  hints.forEach((span, i) => {
+    const kbd = span.querySelector('kbd');
+    const kbdHtml = kbd ? kbd.outerHTML : '';
+    span.innerHTML = `${kbdHtml} ${t(hintKeys[i])}`;
+  });
+
+  if (currentTabId) {
+    const grid = document.getElementById('appGrid');
+    if (grid) {
+      grid.classList.add('is-relang');
+      renderCards(grid, currentTabId);
+      requestAnimationFrame(() => requestAnimationFrame(() => grid.classList.remove('is-relang')));
+    }
+  }
+  if (dialog && dialog.open && input) {
+    renderPaletteResults(input.value);
+  }
 };
 
 let lastX = 0;
@@ -1672,11 +1850,21 @@ const buildTabRail = () => {
     btn.setAttribute('aria-selected', 'false');
     btn.setAttribute('aria-controls', 'appGrid');
     btn.tabIndex = -1;
-    btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span>${cat.label}</span>`;
+    btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span>${dispCatLabel(cat)}</span>`;
     btn.addEventListener('click', () => activateTab(cat.id));
     btn.addEventListener('mouseenter', () => sfx.hover(cat.key + i));
     btn.addEventListener('focus', () => sfx.hover(cat.key + i));
     rail.appendChild(btn);
+  });
+};
+
+const updateTabLabels = () => {
+  categories.forEach((cat) => {
+    const btn = document.getElementById(`tab-${cat.id}`);
+    if (btn) {
+      const span = btn.querySelector('span');
+      if (span) span.textContent = dispCatLabel(cat);
+    }
   });
 };
 
@@ -1756,9 +1944,9 @@ const fuzzyScore = (query, target) => {
 };
 
 const secretApps = {
-  linkexpress: { title: 'LinkExpress — النسخة الأصلية', url: 'https://grand-licorice-653005.netlify.app/', icon: 'fa-link', gradient: ['#64748b', '#cbd5e1', '#334155'] },
-  golden: { title: 'الإصدار الذهبي', url: 'https://gold-edition.vercel.app/', icon: 'fa-crown', gradient: ['#d97706', '#fde68a', '#78350f'] },
-  alt: { title: 'الحساب البديل', url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }
+  linkexpress: { title: 'LinkExpress — النسخة الأصلية', titleEn: 'LinkExpress — Original', url: 'https://grand-licorice-653005.netlify.app/', icon: 'fa-link', gradient: ['#64748b', '#cbd5e1', '#334155'] },
+  golden: { title: 'الإصدار الذهبي', titleEn: 'Golden Edition', url: 'https://gold-edition.vercel.app/', icon: 'fa-crown', gradient: ['#d97706', '#fde68a', '#78350f'] },
+  alt: { title: 'الحساب البديل', titleEn: 'Alt Account', url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }
 };
 
 let unlockedSecrets = new Set();
@@ -1794,7 +1982,7 @@ const allPaletteEntries = () => {
     }
     return [{ app, cat }];
   }));
-  const unlocked = [...unlockedSecrets].map(key => ({ app: secretApps[key], cat: { id: '_secret', label: 'مخفي' } }));
+  const unlocked = [...unlockedSecrets].map(key => ({ app: secretApps[key], cat: { id: '_secret', label: 'مخفي', labelEn: 'Hidden' } }));
   return normal.concat(unlocked);
 };
 
@@ -1837,13 +2025,13 @@ let paletteTryPicks = null;
 
 const getActionsForEntry = (entry) => {
   const actions = [
-    { id: 'new-tab', icon: 'fa-arrow-up-right-from-square', label: 'فتح في تبويب جديد', kbd: 'Enter' },
-    { id: 'same-tab', icon: 'fa-arrow-right-to-bracket', label: 'فتح في نفس التبويب', kbd: 'Shift+Enter' },
-    { id: 'copy-link', icon: 'fa-copy', label: 'نسخ الرابط', kbd: 'Ctrl/Cmd+Enter' },
-    { id: 'copy-title', icon: 'fa-font', label: 'نسخ الاسم', kbd: '' }
+    { id: 'new-tab', icon: 'fa-arrow-up-right-from-square', label: t('actionNewTab'), kbd: 'Enter' },
+    { id: 'same-tab', icon: 'fa-arrow-right-to-bracket', label: t('actionSameTab'), kbd: 'Shift+Enter' },
+    { id: 'copy-link', icon: 'fa-copy', label: t('actionCopyLink'), kbd: 'Ctrl/Cmd+Enter' },
+    { id: 'copy-title', icon: 'fa-font', label: t('actionCopyTitle'), kbd: '' }
   ];
   if (entry && entry.cat.id !== '_secret') {
-    actions.push({ id: 'reveal', icon: 'fa-crosshairs', label: 'إظهار في الشبكة', kbd: '' });
+    actions.push({ id: 'reveal', icon: 'fa-crosshairs', label: t('actionReveal'), kbd: '' });
   }
   return actions;
 };
@@ -1852,9 +2040,10 @@ const scoreEntry = (query, entry) => {
   const titleScore = fuzzyScore(query, entry.app.title);
   const titleEnScore = entry.app.titleEn ? fuzzyScore(query, entry.app.titleEn) : -1;
   const catScore = fuzzyScore(query, entry.cat.label);
+  const catEnScore = entry.cat.labelEn ? fuzzyScore(query, entry.cat.labelEn) : -1;
   let hostScore = -1;
   try { hostScore = fuzzyScore(query, new URL(entry.app.url).hostname) * 0.4; } catch (e) {}
-  return Math.max(titleScore, titleEnScore, catScore, hostScore);
+  return Math.max(titleScore, titleEnScore, catScore, catEnScore, hostScore);
 };
 
 const paletteItemHtml = (e, globalIndex, query) => `
@@ -1863,8 +2052,8 @@ const paletteItemHtml = (e, globalIndex, query) => `
       <i class="app-icon fas ${e.app.icon}" aria-hidden="true"></i>
     </div>
     <div class="palette-item-text">
-      <span class="palette-item-title">${highlightTitle(e.app.title, query)}</span>
-      <span class="palette-item-cat">${escapeHtml(e.cat.label)}</span>
+      <span class="palette-item-title">${highlightTitle(dispTitle(e.app), query)}</span>
+      <span class="palette-item-cat">${escapeHtml(dispCatLabel(e.cat))}</span>
     </div>
   </li>`;
 
@@ -1887,9 +2076,9 @@ const renderPaletteResults = (query) => {
     const rest = scored.filter(e => !recentTitles.has(e.app.title));
     paletteItems = [...recents, ...rest];
     if (recents.length) {
-      html += `<li class="palette-group-header" role="presentation">الأخيرة</li>`;
+      html += `<li class="palette-group-header" role="presentation">${t('groupRecent')}</li>`;
       recents.forEach((e, i) => { html += paletteItemHtml(e, i, query); });
-      html += `<li class="palette-group-header" role="presentation">الكل</li>`;
+      html += `<li class="palette-group-header" role="presentation">${t('groupAll')}</li>`;
       rest.forEach((e, i) => { html += paletteItemHtml(e, recents.length + i, query); });
     } else {
       rest.forEach((e, i) => { html += paletteItemHtml(e, i, query); });
@@ -1912,7 +2101,7 @@ const renderPaletteResults = (query) => {
       paletteTryPicks = picks;
     }
     paletteItems = paletteTryPicks;
-    html += `<li class="palette-group-header" role="presentation">جرّب</li>`;
+    html += `<li class="palette-group-header" role="presentation">${t('groupTry')}</li>`;
     paletteTryPicks.forEach((e, i) => { html += paletteItemHtml(e, i, ''); });
   }
 
@@ -1920,7 +2109,7 @@ const renderPaletteResults = (query) => {
   paletteActionIndex = 0;
   paletteZone = 'list';
 
-  paletteResults.innerHTML = html || `<li class="palette-empty">لا توجد نتائج</li>`;
+  paletteResults.innerHTML = html || `<li class="palette-empty">${t('noResults')}</li>`;
 
   paletteResults.querySelectorAll('.palette-item').forEach(li => {
     li.addEventListener('mouseenter', () => setPaletteActive(Number(li.dataset.index)));
@@ -1954,7 +2143,7 @@ const renderPaletteDetail = () => {
     detail.innerHTML = `
       <div class="palette-detail-empty">
         <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-        <span>لا توجد نتائج مطابقة</span>
+        <span>${t('noMatchingResults')}</span>
       </div>`;
     return;
   }
@@ -1963,15 +2152,17 @@ const renderPaletteDetail = () => {
   detail.setAttribute('style', gradVars(app.gradient));
 
   let badgesHtml = '';
-  if (isFresh(app)) badgesHtml += `<span class="palette-detail-badge badge-new"><span class="badge-dot"></span>جديد</span>`;
-  if (app.closed) badgesHtml += `<span class="palette-detail-badge badge-closed"><span class="badge-dot"></span>مغلق</span>`;
+  if (isFresh(app)) badgesHtml += `<span class="palette-detail-badge badge-new"><span class="badge-dot"></span>${t('badgeNew')}</span>`;
+  if (app.closed) badgesHtml += `<span class="palette-detail-badge badge-closed"><span class="badge-dot"></span>${t('badgeClosed')}</span>`;
   if (app.variantBadge) badgesHtml += `<span class="palette-detail-badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${escapeHtml(app.variantBadge)}</span>`;
 
   let host = '';
   try { host = new URL(app.url).hostname; } catch (e) {}
 
-  const titleEnHtml = app.titleEn ? `<span class="palette-detail-title-en" dir="ltr">${escapeHtml(app.titleEn)}</span>` : '';
-  const reasonHtml = app.closed ? `<p class="palette-detail-reason">${escapeHtml(app.closedReason || CLOSED_REASON_DEFAULT)}</p>` : '';
+  const otherName = otherTitle(app);
+  const otherDir = currentLang === 'en' ? 'rtl' : 'ltr';
+  const titleEnHtml = otherName ? `<span class="palette-detail-title-en" dir="${otherDir}">${escapeHtml(otherName)}</span>` : '';
+  const reasonHtml = app.closed ? `<p class="palette-detail-reason">${escapeHtml(app.closedReason || t('closedReasonDefault'))}</p>` : '';
 
   detail.innerHTML = `
     <div class="palette-detail-slab">
@@ -1983,17 +2174,17 @@ const renderPaletteDetail = () => {
         <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
       </div>
       <div class="palette-detail-title-wrap">
-        <h3 class="palette-detail-title">${escapeHtml(app.title)}</h3>
+        <h3 class="palette-detail-title">${escapeHtml(dispTitle(app))}</h3>
         ${titleEnHtml}
         <div class="palette-detail-meta">
-          <span class="palette-detail-cat">${escapeHtml(cat.label)}</span>
+          <span class="palette-detail-cat">${escapeHtml(dispCatLabel(cat))}</span>
           ${badgesHtml}
         </div>
         ${host ? `<span class="palette-detail-host" dir="ltr">${escapeHtml(host)}</span>` : ''}
       </div>
     </div>
     ${reasonHtml}
-    <div class="palette-actions" role="group" aria-label="الإجراءات">
+    <div class="palette-actions" role="group" aria-label="${t('actionsLabel')}">
       ${getActionsForEntry(entry).map(a => `
         <button type="button" class="palette-action${a.id === 'new-tab' ? ' is-primary' : ''}" id="palette-action-${a.id}" data-action="${a.id}">
           <span class="palette-action-icon"><i class="fas ${a.icon}" aria-hidden="true"></i></span>
@@ -2125,11 +2316,11 @@ const executeAction = async (actionId) => {
   } else if (actionId === 'copy-link') {
     const ok = await copyToClipboard(entry.app.url);
     sfx.click();
-    showActionFeedback('copy-link', ok, 'تم نسخ الرابط', 'تعذر النسخ');
+    showActionFeedback('copy-link', ok, t('copiedLink'), t('copyFailed'));
   } else if (actionId === 'copy-title') {
-    const ok = await copyToClipboard(entry.app.parentTitle || entry.app.title);
+    const ok = await copyToClipboard(dispTitle(entry.app));
     sfx.click();
-    showActionFeedback('copy-title', ok, 'تم نسخ الاسم', 'تعذر النسخ');
+    showActionFeedback('copy-title', ok, t('copiedTitle'), t('copyFailed'));
   } else if (actionId === 'reveal') {
     sfx.click();
     await revealInGrid(entry);
@@ -2165,7 +2356,7 @@ const togglePalette = () => {
 };
 
 const setupInteractions = () => {
-  applyTheme();
+  applyLang();
   buildTabRail();
 
   const initialTab = getInitialTab();
@@ -2204,12 +2395,19 @@ const setupInteractions = () => {
     sfx.chime(isLight);
   });
 
+  document.getElementById('langToggle').addEventListener('click', () => {
+    const next = currentLang === 'en' ? 'ar' : 'en';
+    applyLang(next);
+    sfx.chime(next === 'en');
+  });
+
   const soundBtn = document.getElementById('soundToggle');
   soundBtn.addEventListener('click', async () => {
     await sfx.resume();
     sfx.enabled = !sfx.enabled;
     soundBtn.setAttribute('aria-pressed', String(sfx.enabled));
-    soundBtn.setAttribute('aria-label', sfx.enabled ? 'كتم الصوت' : 'تفعيل الصوت');
+    soundBtn.setAttribute('aria-label', sfx.enabled ? t('soundMute') : t('soundEnable'));
+    soundBtn.setAttribute('title', sfx.enabled ? t('soundMute') : t('soundEnable'));
     soundBtn.querySelector('i').className = `fas ${sfx.enabled ? 'fa-volume-up' : 'fa-volume-mute'}`;
     if (sfx.enabled) sfx.arpUp();
   });
