@@ -247,6 +247,12 @@ h1 {
 }
 .app-card.is-tracking { --tx-ty-transition: 0.12s linear; }
 
+/* Re-rendering the grid on a language toggle rebuilds every card's DOM
+   node, which would otherwise replay the staggered entrance animation
+   across the whole grid — jarring on something that isn't a real
+   navigation. Suppress it for that one render pass only. */
+.app-grid.is-relang .app-card { animation: none !important; }
+
 :root[data-theme="light"] .app-card {
   background-image: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0) 44%);
 }
@@ -459,8 +465,6 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-
-:root:lang(en) .app-title { font-size: 0.94em; letter-spacing: -0.01em; }
 
 .app-card:hover .app-title, .app-card:focus-within .app-title { transform: translateZ(40px); background-position: 100% center; }
 
@@ -1613,8 +1617,14 @@ class OrbField {
   }
 
   resize() {
-    this.cv.width = window.innerWidth;
-    this.cv.height = window.innerHeight;
+    // The canvas sits behind filter: blur(78px) + scale(1.3), so rendering
+    // it at full viewport resolution burns fill-rate for zero visible
+    // benefit — the blur erases any detail a higher-res backing store
+    // would have preserved. Half resolution is imperceptible here and
+    // cuts pixels drawn (and composited) by 75%.
+    const scale = 0.5;
+    this.cv.width = Math.round(window.innerWidth * scale);
+    this.cv.height = Math.round(window.innerHeight * scale);
   }
 
   spawn() {
@@ -1761,7 +1771,13 @@ const applyI18n = (opts = {}) => {
   pointerFieldDirty = true;
 
   if (preservedTab) {
-    renderCards(document.getElementById('appGrid'), preservedTab);
+    const grid = document.getElementById('appGrid');
+    // Suppress the staggered card-entrance animation for this one
+    // render pass — it's a re-paint of the same content in a new
+    // language, not a real navigation, so it shouldn't fly in again.
+    grid.classList.add('is-relang');
+    renderCards(grid, preservedTab);
+    requestAnimationFrame(() => requestAnimationFrame(() => grid.classList.remove('is-relang')));
     if (!supportsAnchor) {
       requestAnimationFrame(() => moveIndicatorLegacy(document.getElementById(`tab-${preservedTab}`), true));
     }
@@ -2215,7 +2231,12 @@ const renderPaletteDetail = () => {
   let host = '';
   try { host = new URL(app.url).hostname; } catch (e) {}
 
-  const reasonHtml = app.closed ? `<p class="palette-detail-reason">${escapeHtml(t('closedReasonDefault'))}</p>` : '';
+  // Per-app closedReason (if present in the data) is an optional
+  // { ar, en } override for the generic "temporarily closed" message —
+  // e.g. "Migrating to a new server until Sunday" — resolved through
+  // loc() like any other bilingual data field, falling back to the
+  // shared default string when an app doesn't specify one.
+  const reasonHtml = app.closed ? `<p class="palette-detail-reason">${escapeHtml(app.closedReason ? loc(app.closedReason) : t('closedReasonDefault'))}</p>` : '';
 
   detail.innerHTML = `
     <div class="palette-detail-slab">
