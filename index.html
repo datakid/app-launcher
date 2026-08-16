@@ -408,7 +408,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   transition: opacity 0.175s var(--ease-lux);
 }
 
-.badges { display: flex; gap: 0.5rem; flex-direction: row-reverse; transform: translateZ(20px); }
+.badges { display: flex; gap: 0.5rem; transform: translateZ(20px); }
 
 .badge {
   display: inline-flex; align-items: center; gap: 0.35rem;
@@ -1125,6 +1125,7 @@ class AudioEngine {
   }
 
   async hover(idx = 0) {
+    if (!this.enabled) return;
     await this._boot();
     if (!this.ok()) return;
     const f = this.scale[((idx % this.scale.length) + this.scale.length) % this.scale.length];
@@ -1134,6 +1135,7 @@ class AudioEngine {
   }
 
   async switchSweep(fromKey, toKey) {
+    if (!this.enabled) return;
     await this._boot();
     if (!this.ok()) return;
     const root = (k) => this.scale[((k % this.scale.length) + this.scale.length) % this.scale.length];
@@ -1144,6 +1146,7 @@ class AudioEngine {
   }
 
   async click() {
+    if (!this.enabled) return;
     await this._boot();
     if (!this.ok()) return;
     const t = this.ctx.currentTime;
@@ -1153,6 +1156,7 @@ class AudioEngine {
   }
 
   async arpUp() {
+    if (!this.enabled) return;
     await this._boot();
     if (!this.ok()) return;
     const t = this.ctx.currentTime;
@@ -1160,6 +1164,7 @@ class AudioEngine {
   }
 
   async chime(toLight) {
+    if (!this.enabled) return;
     await this._boot();
     if (!this.ok()) return;
     const t = this.ctx.currentTime;
@@ -1794,7 +1799,8 @@ const activateTab = (id, opts = {}) => {
   const { pushHash = true, playSound = true, instant = false } = opts;
   if (!categories.some(c => c.id === id)) return Promise.resolve();
   const prevId = currentTabId;
-  const dir = prevId ? (catIndex(id) > catIndex(prevId) ? 1 : -1) : 1;
+  const rtl = document.documentElement.dir !== 'ltr';
+  const dir = (prevId ? (catIndex(id) > catIndex(prevId) ? 1 : -1) : 1) * (rtl ? 1 : -1);
   currentTabId = id;
 
   setActiveButtonStates(id);
