@@ -1461,6 +1461,10 @@ const renderCards = (grid, categoryId) => {
   pointerFieldDirty = true;
 };
 
+const SPRING_STIFFNESS = 220;
+const SPRING_DAMPING = 28;
+const SPRING_EPSILON = 0.0008;
+
 const initPointerField = () => {
   const grid = document.getElementById('appGrid');
   const container = document.querySelector('.container');
@@ -1474,6 +1478,9 @@ const initPointerField = () => {
   let sx = -9999, sy = -9999;
   let hasPointer = false;
   let lastMove = 0;
+  let running = false;
+  let rafId = null;
+  let lastTs = 0;
 
   const measure = () => {
     cards = Array.from(grid.querySelectorAll('.app-card'));
@@ -1485,13 +1492,30 @@ const initPointerField = () => {
         right: cr.left + c.offsetLeft + c.offsetWidth,
         bottom: cr.top + c.offsetTop + c.offsetHeight
       };
+      if (!c._spring) c._spring = { tx: 0, ty: 0, vtx: 0, vty: 0 };
     });
     pointerFieldDirty = false;
   };
 
-  const frame = () => {
+  const wake = () => {
+    if (running) return;
+    running = true;
+    lastTs = performance.now();
+    rafId = requestAnimationFrame(frame);
+  };
+  const sleep = () => {
+    running = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+  };
+
+  const frame = (ts) => {
+    const dt = Math.min(Math.max((ts - lastTs) / 1000, 0), 0.05);
+    lastTs = ts;
     if (pointerFieldDirty) measure();
     const wantsTilt = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let anyLive = hasPointer;
 
     cards.forEach(c => {
       const r = c._r;
@@ -1501,30 +1525,47 @@ const initPointerField = () => {
       const d = Math.hypot(dx, dy);
       let o = d >= REVEAL_RADIUS ? 0 : 1 - d / REVEAL_RADIUS;
       o *= o;
-      if (o === 0 && (c._o ?? 0) === 0) return;
-      c._o = o;
-      c.style.setProperty('--reveal-o', String(o * 0.9));
-      c.style.setProperty('--rx', `${px - r.left}px`);
-      c.style.setProperty('--ry', `${py - r.top}px`);
+      if (!(o === 0 && (c._o ?? 0) === 0)) {
+        c._o = o;
+        c.style.setProperty('--reveal-o', String(o * 0.9));
+        c.style.setProperty('--rx', `${px - r.left}px`);
+        c.style.setProperty('--ry', `${py - r.top}px`);
+      }
 
       const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
+      let targetTx = 0, targetTy = 0;
       if (inside) {
         c.classList.add('is-tracking');
         const cx = px - r.left, cy = py - r.top;
         c.style.setProperty('--mx', `${cx}px`);
         c.style.setProperty('--my', `${cy}px`);
         if (wantsTilt) {
-          const nx = (cx - (r.right - r.left) / 2) / ((r.right - r.left) / 2);
-          const ny = (cy - (r.bottom - r.top) / 2) / ((r.bottom - r.top) / 2);
-          c.style.setProperty('--tx', String(nx));
-          c.style.setProperty('--ty', String(ny));
+          targetTx = (cx - (r.right - r.left) / 2) / ((r.right - r.left) / 2);
+          targetTy = (cy - (r.bottom - r.top) / 2) / ((r.bottom - r.top) / 2);
         }
       } else if (c.classList.contains('is-tracking')) {
         c.classList.remove('is-tracking');
         c.style.removeProperty('--mx');
         c.style.removeProperty('--my');
-        c.style.removeProperty('--tx');
-        c.style.removeProperty('--ty');
+      }
+
+      if (wantsTilt) {
+        const sp = c._spring;
+        const settled = Math.abs(sp.tx - targetTx) < SPRING_EPSILON && Math.abs(sp.vtx) < SPRING_EPSILON &&
+                         Math.abs(sp.ty - targetTy) < SPRING_EPSILON && Math.abs(sp.vty) < SPRING_EPSILON;
+        if (!settled) {
+          sp.vtx += ((targetTx - sp.tx) * SPRING_STIFFNESS - sp.vtx * SPRING_DAMPING) * dt;
+          sp.tx += sp.vtx * dt;
+          sp.vty += ((targetTy - sp.ty) * SPRING_STIFFNESS - sp.vty * SPRING_DAMPING) * dt;
+          sp.ty += sp.vty * dt;
+          c.style.setProperty('--tx', String(sp.tx));
+          c.style.setProperty('--ty', String(sp.ty));
+          anyLive = true;
+        } else if (sp.tx !== targetTx || sp.ty !== targetTy) {
+          sp.tx = targetTx; sp.ty = targetTy; sp.vtx = 0; sp.vty = 0;
+          c.style.setProperty('--tx', String(sp.tx));
+          c.style.setProperty('--ty', String(sp.ty));
+        }
       }
     });
 
@@ -1532,6 +1573,7 @@ const initPointerField = () => {
       if (hasPointer) {
         sx += (px - sx) * 0.14;
         sy += (py - sy) * 0.14;
+        if (Math.hypot(px - sx, py - sy) > 0.5) anyLive = true;
       } else {
         sx = px; sy = py;
       }
@@ -1541,7 +1583,11 @@ const initPointerField = () => {
       spot.classList.toggle('is-idle', hasPointer && (performance.now() - lastMove > 2200));
     }
 
-    requestAnimationFrame(frame);
+    if (anyLive) {
+      rafId = requestAnimationFrame(frame);
+    } else {
+      sleep();
+    }
   };
 
   document.addEventListener('pointermove', (e) => {
@@ -1550,18 +1596,26 @@ const initPointerField = () => {
     if (!hasPointer) { sx = px; sy = py; }
     hasPointer = true;
     lastMove = performance.now();
+    wake();
   }, { passive: true });
 
   document.addEventListener('pointerleave', () => {
     px = -9999; py = -9999;
     hasPointer = false;
+    wake();
   });
 
-  window.addEventListener('resize', () => { pointerFieldDirty = true; }, { passive: true });
+  window.addEventListener('blur', () => {
+    px = -9999; py = -9999;
+    hasPointer = false;
+    wake();
+  });
+
+  window.addEventListener('resize', () => { pointerFieldDirty = true; wake(); }, { passive: true });
   window.addEventListener('scroll', () => { pointerFieldDirty = true; }, { passive: true, capture: true });
 
   measure();
-  requestAnimationFrame(frame);
+  wake();
 };
 
 let isLightTheme = false;
@@ -1583,8 +1637,9 @@ class OrbField {
   }
 
   resize() {
-    this.cv.width = window.innerWidth;
-    this.cv.height = window.innerHeight;
+    const scale = 0.5;
+    this.cv.width = Math.round(window.innerWidth * scale);
+    this.cv.height = Math.round(window.innerHeight * scale);
   }
 
   spawn() {
