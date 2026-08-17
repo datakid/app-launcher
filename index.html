@@ -90,7 +90,7 @@ a, button { cursor: pointer; }
 
 #gradient-canvas {
   position: fixed; inset: 0; z-index: 0;
-  pointer-events: none; filter: blur(78px);
+  pointer-events: none; filter: blur(32px);
   transform: scale(1.3); opacity: 0;
   animation: fadeIn 2.5s var(--ease-lux) forwards;
 }
@@ -559,8 +559,21 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 .card-hero .app-title { font-size: clamp(2.1rem, 4.4vh, 3rem); font-weight: 700; letter-spacing: 0; }
 .card-hero .open-affordance { width: 32px; height: 32px; font-size: 0.75rem; }
 
-.app-card.status-closed { filter: saturate(.28) opacity(.74); }
-.app-card.status-closed:hover, .app-card.status-closed:focus-within { filter: saturate(.5) opacity(.92); }
+.app-card.status-closed { opacity: .74; }
+.app-card.status-closed:hover, .app-card.status-closed:focus-within { opacity: .92; }
+
+/* Desaturation used to be filter:saturate() stacked on top of the card's
+   own backdrop-filter — two full render passes on the same element.
+   A blend-mode overlay achieves the same look as plain compositing. */
+.closed-tint {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  background: hsl(0, 0%, 50%);
+  mix-blend-mode: saturation;
+  opacity: .74;
+  transition: opacity 0.32s var(--ease-lux);
+}
+.app-card.status-closed:hover .closed-tint,
+.app-card.status-closed:focus-within .closed-tint { opacity: .48; }
 
 .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
   opacity: 0.64;
@@ -971,6 +984,9 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   }
   :root { --surface: light-dark(rgba(255,255,255,0.92), rgba(255,255,255,0.10)); }
   #lx-palette { background-color: light-dark(#f3f1ec, #0c0d10); }
+  /* The additive specular highlight only reads correctly against the
+     translucent glass surface underneath it. */
+  .app-icon-wrapper::before { display: none; }
 }
 
 @media (prefers-contrast: more) {
@@ -985,8 +1001,14 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions {
     animation: none !important;
   }
-  .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; }
-  .app-card, .tab-indicator, .tab-indicator-trail, .tab-indicator-glow, .variant-chip-indicator,
+  .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; --hov: 0 !important; }
+  /* Ambient breathe is a discrete per-frame value change (Motion writes
+     --breathe directly, not through a transition), so it isn't touched
+     by the transition-property restriction below — it needs its own
+     override to actually stop moving under reduced motion. */
+  .app-card { translate: none !important; }
+  .app-card, .app-icon-wrapper, .app-title, .badges, .variant-chips,
+  .tab-indicator, .tab-indicator-trail, .tab-indicator-glow, .variant-chip-indicator,
   .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
     transition-property: opacity, color, background-color, border-color, box-shadow, --mx, --my;
   }
@@ -1389,6 +1411,9 @@ class Spring {
     this.dv += a * dt;
     this.v += this.dv * dt;
   }
+  // Reduced motion bypasses the spring entirely rather than integrating
+  // toward the target — an instant snap, not just a faster/clamped ease.
+  snap() { this.v = this.to; this.dv = 0; }
   get settled() { return Math.abs(this.dv) < 1e-3 && Math.abs(this.v - this.to) < 1e-3; }
 }
 
@@ -1519,6 +1544,7 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   el.innerHTML = `
     <a class="card-link-overlay" ${overlayAttrs}></a>
     <div class="card-glow"></div>
+    ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}
     <div class="bento-header">
       <div class="app-icon-wrapper"><i class="app-icon fas ${iconClass}" aria-hidden="true"></i>${digitHtml}</div>
       ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
@@ -1698,7 +1724,14 @@ const initPointerField = () => {
           s.tx.to = 0; s.ty.to = 0; s.tz.to = 0;
         }
 
-        s.tx.fixed(dt); s.ty.fixed(dt); s.tz.fixed(dt); s.reveal.fixed(dt);
+        if (wantsTilt) {
+          s.tx.fixed(dt); s.ty.fixed(dt); s.tz.fixed(dt); s.reveal.fixed(dt);
+        } else {
+          // Reduced motion: bypass the springs entirely rather than
+          // integrating toward a target that's already pinned to 0/0/0 —
+          // and let reveal-opacity snap too rather than ease in.
+          s.tx.snap(); s.ty.snap(); s.tz.snap(); s.reveal.snap();
+        }
       });
     },
 
@@ -1737,7 +1770,16 @@ const initPointerField = () => {
           c.style.removeProperty('--tz');
         }
 
-        if (!(s.tx.settled && s.ty.settled && s.tz.settled && s.reveal.settled)) alive = true;
+        // will-change promotes the card to its own compositing layer,
+        // which is only worth the memory while something's actually
+        // moving — seven cards permanently promoted (each carrying a
+        // backdrop-filter) is real cost for no benefit once settled.
+        const settled = s.tx.settled && s.ty.settled && s.tz.settled && s.reveal.settled;
+        const active = inside || s.reveal.to > 0 || !settled;
+        if (active && !c._wc) { c.style.willChange = 'transform'; c._wc = true; }
+        else if (!active && c._wc) { c.style.willChange = ''; c._wc = false; }
+
+        if (!settled) alive = true;
       });
 
       if (spot) {
@@ -1809,6 +1851,7 @@ class OrbField {
     this.cx = canvas.getContext('2d');
     this.t = 0;
     this.orbs = [];
+    this.lastActive = performance.now();
     this.resize();
     this.spawn();
     // Matches the original gating: under reduced motion the canvas never
@@ -1817,14 +1860,20 @@ class OrbField {
   }
 
   resize() {
-    // The canvas sits behind filter: blur(78px) + scale(1.3), so rendering
+    // The canvas sits behind a heavy CSS blur + scale(1.3), so rendering
     // it at full viewport resolution burns fill-rate for zero visible
     // benefit — the blur erases any detail a higher-res backing store
-    // would have preserved. Half resolution is imperceptible here and
-    // cuts pixels drawn (and composited) by 75%.
-    const scale = 0.5;
+    // would have preserved. 40% resolution is imperceptible here and
+    // cuts pixels drawn (and composited) by ~84%; the CSS blur radius is
+    // dropped alongside it (see #gradient-canvas) since the upscale from
+    // a coarser bitmap already contributes softness on its own.
+    const scale = 0.4;
     this.cv.width = Math.round(window.innerWidth * scale);
     this.cv.height = Math.round(window.innerHeight * scale);
+    this.cv.style.width = '100%';
+    this.cv.style.height = '100%';
+    this.lastActive = performance.now();
+    Motion.wake();
   }
 
   spawn() {
@@ -1852,6 +1901,7 @@ class OrbField {
   retarget() {
     const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
     this.orbs.forEach((o, i) => { o.hueSpring.to = palette[i % 3]; });
+    this.lastActive = performance.now();
     Motion.wake();
   }
 
@@ -1872,6 +1922,13 @@ class OrbField {
 
   render() {
     if (document.hidden) return true; // stay registered; Motion itself gates the rAF on document.hidden
+    // Ambient drift is deliberately alive right after something actually
+    // happened (load, theme change, a resize) so the page never feels
+    // static — but it isn't meant to be truly eternal: the scheduler is
+    // supposed to be able to reach zero rAF calls once the page has been
+    // sitting untouched for a while, same as every other subscriber.
+    if (performance.now() - this.lastActive > 30000) return false;
+
     this.cx.clearRect(0, 0, this.cv.width, this.cv.height);
     this.cx.globalCompositeOperation = isLightTheme ? 'multiply' : 'screen';
 
