@@ -52,6 +52,8 @@
 @property --ty { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tz { syntax: '<length>'; inherits: false; initial-value: 0px; }
 @property --sc { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
 @property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
@@ -234,18 +236,24 @@ h1 {
   padding: clamp(1.2rem, 2.5vh, 1.8rem);
   overflow: hidden;
   animation: cardEnter 0.7s var(--ease-lux) both;
-  animation-delay: calc(var(--i, 0) * 30ms);
-  --tx-ty-transition: 0.45s var(--ease-lux);
+  --hov: 0;
   transform: perspective(1600px) rotateX(calc(var(--ty) * -2.2deg)) rotateY(calc(var(--tx) * 2.2deg)) translateZ(var(--tz)) scale3d(var(--sc), var(--sc), var(--sc));
   transition:
     box-shadow 0.32s var(--ease-lux), border-color 0.32s var(--ease-lux),
     filter 0.32s var(--ease-lux), opacity 0.32s var(--ease-lux),
     background 0.32s var(--ease-lux),
-    --tz 0.34s var(--ease-lux), --sc 0.34s var(--ease-lux),
-    --tx var(--tx-ty-transition), --ty var(--tx-ty-transition),
+    --hov 0.42s var(--ease-spring),
+    --sc 0.34s var(--ease-lux),
     --mx 0.12s linear, --my 0.12s linear;
 }
-.app-card.is-tracking { --tx-ty-transition: 0.12s linear; }
+.app-card:hover, .app-card:focus-within { --hov: 1; }
+
+/* Ambient life: an almost-imperceptible per-card sway, one shared sine
+   with a random per-card phase offset, so the grid never quite reads as
+   a static screenshot even when nobody's touching it. Composes with the
+   perspective/tilt transform above rather than fighting it — translate
+   is applied before transform, not merged into it. */
+.app-card { translate: 0 calc(sin(var(--phase, 0) + var(--breathe, 0) * 1rad) * 0.6px); }
 
 /* Re-rendering the grid on a language toggle rebuilds every card's DOM
    node, which would otherwise replay the staggered entrance animation
@@ -260,8 +268,8 @@ h1 {
 :root[data-theme="dark"] .app-card { border-color: rgba(255,255,255,.055); }
 
 @keyframes cardEnter {
-  from { opacity: 0; transform: translateY(18px) scale(0.98); filter: blur(4px); }
-  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+  from { opacity: 0; transform: translateY(14px) scale(.985); }
+  to { opacity: 1; transform: none; }
 }
 
 .app-card::before {
@@ -371,14 +379,31 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
     linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   display: flex; align-items: center; justify-content: center;
   box-shadow:
-    0 10px 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
+    0 calc(10px + var(--ty,0) * 4px) 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
     0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.38),
-    inset 0 -1px 0 rgba(0,0,0,.28),
+    inset 0 calc(1px + var(--ty,0) * 1.5px) 0 rgba(255,255,255,.42),
+    inset 0 calc(-1px - var(--ty,0) * 1.5px) 0 rgba(0,0,0,.3),
     inset 0 0 0 1px rgba(255,255,255,.10),
     inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
   transition: transform 0.38s var(--ease-spring), box-shadow 0.6s var(--ease-lux);
   position: relative; flex-shrink: 0;
+  /* Composed with the card's hover scalar and pointer-parallax so it
+     doesn't fight the separate :hover rule below for the same property. */
+  transform:
+    translate3d(calc(var(--tx, 0) * 7px), calc(var(--ty, 0) * 7px), calc(20px * var(--hov, 0)))
+    rotate(calc(var(--hov, 0) * -2deg))
+    scale(calc(1 + .05 * var(--hov, 0)));
+}
+
+/* A second, tighter specular layer with additive blending — the "light
+   source" stays fixed in world space while the tile tilts underneath it. */
+.app-icon-wrapper::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background:
+    radial-gradient(28% 22% at calc(50% - var(--tx,0) * 34%) calc(30% - var(--ty,0) * 26%),
+      rgba(255,255,255,.85), rgba(255,255,255,0) 70%);
+  mix-blend-mode: plus-lighter;
+  opacity: calc(.25 + .45 * var(--hov, 0));
 }
 
 :root[data-theme="light"] .app-icon-wrapper {
@@ -387,10 +412,10 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
       rgba(255,255,255,.28), transparent 68%),
     linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   box-shadow:
-    0 10px 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
+    0 calc(10px + var(--ty,0) * 4px) 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
     0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.38),
-    inset 0 -1px 0 rgba(0,0,0,.28),
+    inset 0 calc(1px + var(--ty,0) * 1.5px) 0 rgba(255,255,255,.42),
+    inset 0 calc(-1px - var(--ty,0) * 1.5px) 0 rgba(0,0,0,.3),
     inset 0 0 0 1px rgba(255,255,255,.22),
     inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
 }
@@ -403,7 +428,6 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 }
 
 .app-card:hover .app-icon-wrapper, .app-card:focus-within .app-icon-wrapper {
-  transform: scale(1.05) rotate(-2deg) translateZ(20px);
   box-shadow: 0 15px 30px -5px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.2);
 }
 
@@ -416,7 +440,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   transition: opacity 0.175s var(--ease-lux);
 }
 
-.badges { display: flex; gap: 0.5rem; flex-direction: row; transform: translateZ(20px); }
+.badges { display: flex; gap: 0.5rem; flex-direction: row; transform: translate3d(calc(var(--tx, 0) * 9px), calc(var(--ty, 0) * 9px), 20px); }
 
 .badge {
   display: inline-flex; align-items: center; gap: 0.35rem;
@@ -450,7 +474,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   line-height: 1.3; margin: 0; padding-bottom: 0.15em;
   letter-spacing: 0;
   text-wrap: balance;
-  transform: translateZ(34px);
+  transform: translate3d(calc(var(--tx, 0) * 3.5px), calc(var(--ty, 0) * 3.5px), calc(34px + 6px * var(--hov, 0)));
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
   transition: transform 0.6s var(--ease-spring), background 0.6s var(--ease-lux);
   background: linear-gradient(135deg, var(--text) 45%, var(--c2) 130%);
@@ -466,7 +490,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   background-clip: text;
 }
 
-.app-card:hover .app-title, .app-card:focus-within .app-title { transform: translateZ(40px); background-position: 100% center; }
+.app-card:hover .app-title, .app-card:focus-within .app-title { background-position: 100% center; }
 
 .title-row { display: flex; align-items: center; gap: 0.6rem; }
 
@@ -487,6 +511,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   border-radius: 999px; flex-shrink: 0;
   background: light-dark(rgba(20,18,15,0.055), rgba(255,255,255,0.06));
   anchor-scope: --active-chip;
+  transform: translate3d(calc(var(--tx, 0) * 5px), calc(var(--ty, 0) * 5px), 14px);
 }
 
 .variant-chip-indicator {
@@ -558,6 +583,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
   animation: slideDown 0.9s var(--ease-lux) 0.05s both;
   --tab-accent: #7c9bff;
+  transition: --tab-accent 0.34s var(--ease-lux);
 }
 
 .tab-goo {
@@ -573,7 +599,10 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 .tab-indicator {
   background: linear-gradient(135deg, light-dark(rgba(20,18,15,0.1), rgba(255,255,255,0.16)), light-dark(rgba(20,18,15,0.03), rgba(255,255,255,0.04)));
   box-shadow: inset 0 1px 1px rgba(255,255,255,0.25);
+  transform: scaleY(1);
+  transition: transform .34s var(--ease-pill);
 }
+.tab-indicator.is-traveling { transform: scaleY(.86); }
 
 .tab-indicator-glow {
   position: absolute; top: 4px; height: calc(100% - 8px);
@@ -618,8 +647,6 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 .tab-btn[aria-selected="true"] i { color: var(--tab-accent); }
 
 
-.app-grid { view-transition-name: grid; }
-
 ::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-lux) both; }
 ::view-transition-new(grid) { animation: lx-grid-in 0.28s var(--ease-lux) both; }
 
@@ -632,6 +659,27 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 }
 
 .app-grid.is-out { animation: lx-grid-out 0.22s var(--ease-lux) both; }
+
+/* Per-tile morph across a tab switch — tile n grows/repositions into
+   tile n rather than the whole grid swapping wholesale. Names are only
+   ever applied for the duration of a transition (see withViewTransition
+   / nameTiles); leaving them on permanently would make every card a
+   containing block and break anchor-name resolution for the variant
+   chips and the fixed controls pill. */
+::view-transition-group(.tile) { animation-duration: .52s; animation-timing-function: var(--ease-lux); }
+::view-transition-old(.tile)   { animation: lx-tile-out .26s var(--ease-lux) both; }
+::view-transition-new(.tile)   { animation: lx-tile-in  .40s var(--ease-lux) .06s both; }
+@keyframes lx-tile-out { to   { opacity: 0; transform: scale(.97); } }
+@keyframes lx-tile-in  { from { opacity: 0; transform: scale(1.02); } }
+
+/* Theme toggle: the reveal is driven entirely by a manual clip-path
+   animation on ::view-transition-new(root) (see the themeToggle click
+   handler) — kill the default cross-fade so it doesn't double up with it. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
 
 
 #lx-palette {
@@ -668,7 +716,9 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   opacity: 0;
-  transition: opacity 0.3s var(--ease-lux), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+  /* Deliberately faster than the panel's own 0.3s entrance — the color
+     glow should arrive before the panel's geometry finishes settling. */
+  transition: opacity 0.12s var(--ease-lux), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
 }
 #lx-palette[open]::backdrop { opacity: 1; }
 @starting-style { #lx-palette[open]::backdrop { opacity: 0; } }
@@ -715,7 +765,11 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   display: flex; align-items: center; gap: 1rem;
   padding: 0.85rem 1.05rem; border-radius: 15px; cursor: pointer;
   transition: background 0.2s var(--ease-lux), box-shadow 0.2s var(--ease-lux);
+  animation: paletteItemIn .3s var(--ease-lux) both;
+  animation-delay: calc(min(var(--n, 0), 8) * 20ms);
 }
+
+@keyframes paletteItemIn { from { opacity: 0; transform: translateY(6px); } }
 
 .palette-item::before {
   content: ''; position: absolute; inset-inline-start: 4px; top: 18%; bottom: 18%;
@@ -1297,6 +1351,62 @@ const applyManifest = () => {
   link.setAttribute('href', 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(m)));
 };
 
+// --- Motion: one scheduler for every physics-driven animation on the
+// page. Fixed-step physics pass (spring integration is dt-sensitive —
+// a variable step produces visibly different damping on a 60Hz vs a
+// 144Hz display) plus a variable render pass, and it parks itself the
+// moment nothing is animating instead of running forever at 60fps.
+const Motion = (() => {
+  const subs = new Set();
+  const STEP = 1 / 120;
+  let raf = null, last = 0, acc = 0;
+
+  const tick = (now) => {
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    acc += dt;
+    let n = 0;
+    while (acc >= STEP && n++ < 8) { for (const s of subs) s.fixed?.(STEP); acc -= STEP; }
+    const alpha = acc / STEP;
+    let alive = false;
+    for (const s of subs) { if (s.render?.(now / 1000, alpha) !== false) alive = true; }
+    raf = alive && !document.hidden ? requestAnimationFrame(tick) : (raf = null);
+  };
+
+  return {
+    add(s) { subs.add(s); this.wake(); },
+    remove(s) { subs.delete(s); },
+    wake() { if (!raf && !document.hidden) { last = performance.now(); acc = 0; raf = requestAnimationFrame(tick); } }
+  };
+})();
+
+document.addEventListener('visibilitychange', () => { if (!document.hidden) Motion.wake(); });
+
+class Spring {
+  constructor(k = 190, c = 24, v = 0) { this.k = k; this.c = c; this.v = v; this.dv = 0; this.to = v; }
+  fixed(dt) {
+    const a = -this.k * (this.v - this.to) - this.c * this.dv;
+    this.dv += a * dt;
+    this.v += this.dv * dt;
+  }
+  get settled() { return Math.abs(this.dv) < 1e-3 && Math.abs(this.v - this.to) < 1e-3; }
+}
+
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+// Ambient life: a shared, extremely low-amplitude breathe so the grid
+// doesn't read as a static screenshot when the pointer's away. This
+// subscriber always returns false — it never keeps Motion awake on its
+// own, it only rides along on whichever frames OrbField's perpetual
+// drift (or an active pointer spring) already has in flight.
+Motion.add({
+  render(t) {
+    const grid = document.getElementById('appGrid');
+    if (grid) grid.style.setProperty('--breathe', String(Math.sin(t * 0.5)));
+    return false;
+  }
+});
+
 const LAYOUTS = {
   3: [['1/3', '1/3'], ['3/5', '1/3'], ['1/5', '3/4']],
   4: [['1/3', '1/2'], ['3/5', '1/2'], ['1/3', '2/4'], ['3/5', '2/4']],
@@ -1381,6 +1491,7 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   el.style.gridRow = rowTrack || '';
   el.setAttribute('style', `${el.getAttribute('style') || ''}${gradVars(app.gradient)}`);
   el.style.setProperty('--i', idx);
+  el.style.setProperty('--phase', (Math.random() * 6.28).toFixed(3));
 
   const variant = variantFor(colTrack);
   if (variant) el.classList.add(variant);
@@ -1422,8 +1533,8 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   `;
 
   el.addEventListener('click', () => sfx.click());
-  el.addEventListener('mouseenter', () => sfx.hover(idx));
-  el.addEventListener('focusin', () => sfx.hover(idx));
+  el.addEventListener('mouseenter', () => { sfx.hover(idx); setInteractionOrigin(el); });
+  el.addEventListener('focusin', () => { sfx.hover(idx); setInteractionOrigin(el); });
 
   if (app.variants) {
     const chipsEl = el.querySelector('.variant-chips');
@@ -1466,6 +1577,19 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   return el;
 };
 
+let lastInteractionPoint = null;
+
+const railCenter = () => {
+  const rail = document.getElementById('tabRail');
+  const r = rail.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+};
+
+const setInteractionOrigin = (el) => {
+  const r = el.getBoundingClientRect();
+  lastInteractionPoint = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+};
+
 const renderCards = (grid, categoryId) => {
   const cat = categories.find(c => c.id === categoryId);
   const layout = LAYOUTS[cat.apps.length];
@@ -1481,6 +1605,24 @@ const renderCards = (grid, categoryId) => {
   grid.innerHTML = '';
   grid.appendChild(frag);
   pointerFieldDirty = true;
+
+  // Radial entrance: cards bloom outward from wherever the user just
+  // interacted (the tab button they clicked, or a previously hovered
+  // card) instead of reading as a flat left-to-right sweep.
+  const origin = lastInteractionPoint ?? railCenter();
+  const cards = [...grid.children];
+  let max = 1;
+  const dists = cards.map(c => {
+    const r = c.getBoundingClientRect();
+    const dist = Math.hypot(r.left + r.width / 2 - origin.x, r.top + r.height / 2 - origin.y);
+    max = Math.max(max, dist);
+    return dist;
+  });
+  cards.forEach((c, i) => {
+    c.style.animationDelay = `${Math.round((dists[i] / max) * 220)}ms`;
+    c.style.willChange = 'transform, opacity';
+    c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
+  });
 };
 
 const initPointerField = () => {
@@ -1496,6 +1638,9 @@ const initPointerField = () => {
   let sx = -9999, sy = -9999;
   let hasPointer = false;
   let lastMove = 0;
+  let vx = 0;
+
+  const reducedMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   const measure = () => {
     cards = Array.from(grid.querySelectorAll('.app-card'));
@@ -1507,95 +1652,153 @@ const initPointerField = () => {
         right: cr.left + c.offsetLeft + c.offsetWidth,
         bottom: cr.top + c.offsetTop + c.offsetHeight
       };
+      if (!c._springs) {
+        // Critically-damped springs, one bundle per card, created lazily.
+        // tilt gets a hair of overshoot (alive, not bouncy); the depth
+        // lift settles a touch slower; the reveal-ring opacity lags
+        // furthest behind so proximity glow reads as light catching up
+        // to the cursor rather than a value snapping to it.
+        c._springs = {
+          tx: new Spring(190, 24, 0),
+          ty: new Spring(190, 24, 0),
+          tz: new Spring(140, 26, 0),
+          reveal: new Spring(90, 19, 0)
+        };
+      }
     });
     pointerFieldDirty = false;
   };
 
-  const frame = () => {
-    if (pointerFieldDirty) measure();
-    const wantsTilt = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const subscriber = {
+    fixed(dt) {
+      if (pointerFieldDirty) measure();
+      const wantsTilt = !reducedMotionMQ.matches;
 
-    cards.forEach(c => {
-      const r = c._r;
-      if (!r) return;
-      const dx = px < r.left ? r.left - px : px > r.right ? px - r.right : 0;
-      const dy = py < r.top ? r.top - py : py > r.bottom ? py - r.bottom : 0;
-      const d = Math.hypot(dx, dy);
-      let o = d >= REVEAL_RADIUS ? 0 : 1 - d / REVEAL_RADIUS;
-      o *= o;
-      if (o === 0 && (c._o ?? 0) === 0) return;
-      c._o = o;
-      c.style.setProperty('--reveal-o', String(o * 0.9));
-      c.style.setProperty('--rx', `${px - r.left}px`);
-      c.style.setProperty('--ry', `${py - r.top}px`);
+      cards.forEach(c => {
+        const r = c._r;
+        const s = c._springs;
+        if (!r || !s) return;
 
-      const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
-      if (inside) {
-        c.classList.add('is-tracking');
-        const cx = px - r.left, cy = py - r.top;
-        c.style.setProperty('--mx', `${cx}px`);
-        c.style.setProperty('--my', `${cy}px`);
-        if (wantsTilt) {
-          const nx = (cx - (r.right - r.left) / 2) / ((r.right - r.left) / 2);
-          const ny = (cy - (r.bottom - r.top) / 2) / ((r.bottom - r.top) / 2);
-          c.style.setProperty('--tx', String(nx));
-          c.style.setProperty('--ty', String(ny));
+        const dx = px < r.left ? r.left - px : px > r.right ? px - r.right : 0;
+        const dy = py < r.top ? r.top - py : py > r.bottom ? py - r.bottom : 0;
+        const d = Math.hypot(dx, dy);
+        let o = d >= REVEAL_RADIUS ? 0 : 1 - d / REVEAL_RADIUS;
+        o *= o;
+        s.reveal.to = o * 0.9;
+
+        const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
+        if (inside && wantsTilt) {
+          const nx = (px - r.left - (r.right - r.left) / 2) / ((r.right - r.left) / 2);
+          const ny = (py - r.top - (r.bottom - r.top) / 2) / ((r.bottom - r.top) / 2);
+          const lean = clamp(vx * 0.0006, -0.25, 0.25);
+          s.tx.to = nx + lean;
+          s.ty.to = ny;
+          s.tz.to = 14;
+        } else {
+          s.tx.to = 0; s.ty.to = 0; s.tz.to = 0;
         }
-      } else if (c.classList.contains('is-tracking')) {
-        c.classList.remove('is-tracking');
-        c.style.removeProperty('--mx');
-        c.style.removeProperty('--my');
-        c.style.removeProperty('--tx');
-        c.style.removeProperty('--ty');
-      }
-    });
 
-    if (spot) {
-      if (hasPointer) {
-        sx += (px - sx) * 0.14;
-        sy += (py - sy) * 0.14;
-      } else {
-        sx = px; sy = py;
+        s.tx.fixed(dt); s.ty.fixed(dt); s.tz.fixed(dt); s.reveal.fixed(dt);
+      });
+    },
+
+    render() {
+      let alive = false;
+
+      cards.forEach(c => {
+        const r = c._r;
+        const s = c._springs;
+        if (!r || !s) return;
+
+        c.style.setProperty('--reveal-o', String(s.reveal.v));
+        c.style.setProperty('--rx', `${px - r.left}px`);
+        c.style.setProperty('--ry', `${py - r.top}px`);
+        c.style.setProperty('--tx', String(s.tx.v));
+        c.style.setProperty('--ty', String(s.ty.v));
+
+        const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
+        if (inside) {
+          c.classList.add('is-tracking');
+          c.style.setProperty('--mx', `${px - r.left}px`);
+          c.style.setProperty('--my', `${py - r.top}px`);
+        } else if (c.classList.contains('is-tracking')) {
+          c.classList.remove('is-tracking');
+          c.style.removeProperty('--mx');
+          c.style.removeProperty('--my');
+        }
+
+        // Only keep an inline --tz override while it's actually doing
+        // something (pointer inside, or still settling back down) — once
+        // it's back at rest and the pointer's elsewhere, remove it so a
+        // keyboard-focused card can fall back to its plain CSS lift.
+        if (inside || !s.tz.settled) {
+          c.style.setProperty('--tz', `${s.tz.v}px`);
+        } else {
+          c.style.removeProperty('--tz');
+        }
+
+        if (!(s.tx.settled && s.ty.settled && s.tz.settled && s.reveal.settled)) alive = true;
+      });
+
+      if (spot) {
+        if (hasPointer) {
+          const now = performance.now();
+          const idle = now - lastMove > 2200;
+          const dxs = px - sx, dys = py - sy;
+          const moving = Math.abs(dxs) > 0.05 || Math.abs(dys) > 0.05;
+          if (moving) { sx += dxs * 0.14; sy += dys * 0.14; }
+          spot.style.setProperty('--sx', `${sx}px`);
+          spot.style.setProperty('--sy', `${sy}px`);
+          spot.classList.add('is-active');
+          spot.classList.toggle('is-idle', idle);
+          if (moving || !idle) alive = true;
+        } else {
+          spot.classList.remove('is-active', 'is-idle');
+        }
       }
-      spot.style.setProperty('--sx', `${sx}px`);
-      spot.style.setProperty('--sy', `${sy}px`);
-      spot.classList.toggle('is-active', hasPointer);
-      spot.classList.toggle('is-idle', hasPointer && (performance.now() - lastMove > 2200));
+
+      return alive;
     }
-
-    requestAnimationFrame(frame);
   };
 
   document.addEventListener('pointermove', (e) => {
     if (e.pointerType === 'touch') return;
+    const now = performance.now();
+    const dt = Math.max((now - lastMove) / 1000, 1 / 240);
+    const rawVx = (e.clientX - px) / dt;
+    vx += (rawVx - vx) * 0.3; // low-pass so a single jittery sample doesn't spike the lean
     px = e.clientX; py = e.clientY;
     if (!hasPointer) { sx = px; sy = py; }
     hasPointer = true;
-    lastMove = performance.now();
+    lastMove = now;
+    Motion.wake();
   }, { passive: true });
 
   document.addEventListener('pointerleave', () => {
     px = -9999; py = -9999;
     hasPointer = false;
+    Motion.wake();
   });
 
   window.addEventListener('blur', () => {
     px = -9999; py = -9999;
     hasPointer = false;
+    Motion.wake();
   });
 
   document.addEventListener('pointerout', (e) => {
     if (e.relatedTarget === null) {
       px = -9999; py = -9999;
       hasPointer = false;
+      Motion.wake();
     }
   });
 
-  window.addEventListener('resize', () => { pointerFieldDirty = true; }, { passive: true });
-  window.addEventListener('scroll', () => { pointerFieldDirty = true; }, { passive: true, capture: true });
+  window.addEventListener('resize', () => { pointerFieldDirty = true; Motion.wake(); }, { passive: true });
+  window.addEventListener('scroll', () => { pointerFieldDirty = true; Motion.wake(); }, { passive: true, capture: true });
 
   measure();
-  requestAnimationFrame(frame);
+  Motion.add(subscriber);
 };
 
 let isLightTheme = false;
@@ -1606,14 +1809,11 @@ class OrbField {
     this.cx = canvas.getContext('2d');
     this.t = 0;
     this.orbs = [];
-    this.running = false;
-    this.rafId = null;
     this.resize();
     this.spawn();
-    this.start();
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) this.stop(); else this.start();
-    });
+    // Matches the original gating: under reduced motion the canvas never
+    // ticks at all rather than drawing a static frame.
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) Motion.add(this);
   }
 
   resize() {
@@ -1629,44 +1829,53 @@ class OrbField {
 
   spawn() {
     const n = window.innerWidth < 768 ? 4 : 6;
-    this.orbs = Array.from({ length: n }, (_, i) => ({
-      x: Math.random() * this.cv.width,
-      y: Math.random() * this.cv.height,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: (Math.random() - 0.5) * 0.2,
-      r: Math.random() * 300 + 200,
-      hue: isLightTheme ? [205, 225, 195][i % 3] : [222, 258, 195][i % 3],
-      phase: Math.random() * Math.PI * 2
-    }));
+    const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
+    this.orbs = Array.from({ length: n }, (_, i) => {
+      const hue = palette[i % 3];
+      return {
+        x: Math.random() * this.cv.width,
+        y: Math.random() * this.cv.height,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        r: Math.random() * 300 + 200,
+        hue,
+        hueSpring: new Spring(40, 14, hue),
+        phase: Math.random() * Math.PI * 2
+      };
+    });
   }
 
-  start() {
-    if (this.running || document.hidden) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    this.running = true;
-    this.tick();
+  // A theme change used to call spawn() and discard/re-randomize every
+  // orb — under the circular-wipe view transition that reads as a pop.
+  // Keep each orb's position and drift and just ease its hue toward the
+  // new palette instead, so the background dissolves rather than jumps.
+  retarget() {
+    const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
+    this.orbs.forEach((o, i) => { o.hueSpring.to = palette[i % 3]; });
+    Motion.wake();
   }
 
-  stop() {
-    this.running = false;
-    if (this.rafId) { cancelAnimationFrame(this.rafId); this.rafId = null; }
-  }
-
-  tick() {
-    if (!this.running) return;
-    this.t += 0.001;
-    this.cx.clearRect(0, 0, this.cv.width, this.cv.height);
-    this.cx.globalCompositeOperation = isLightTheme ? 'multiply' : 'screen';
-
+  fixed(dt) {
+    this.t += dt * 0.06;
+    const speed = dt * 60; // normalizes the original ~60fps-tuned drift constants
     this.orbs.forEach(o => {
-      o.x += o.vx + Math.sin(this.t + o.phase) * 0.2;
-      o.y += o.vy + Math.cos(this.t + o.phase) * 0.2;
-
+      o.hueSpring.fixed(dt);
+      o.hue = o.hueSpring.v;
+      o.x += (o.vx + Math.sin(this.t + o.phase) * 0.2) * speed;
+      o.y += (o.vy + Math.cos(this.t + o.phase) * 0.2) * speed;
       if (o.x < -o.r) o.x = this.cv.width + o.r;
       if (o.x > this.cv.width + o.r) o.x = -o.r;
       if (o.y < -o.r) o.y = this.cv.height + o.r;
       if (o.y > this.cv.height + o.r) o.y = -o.r;
+    });
+  }
 
+  render() {
+    if (document.hidden) return true; // stay registered; Motion itself gates the rAF on document.hidden
+    this.cx.clearRect(0, 0, this.cv.width, this.cv.height);
+    this.cx.globalCompositeOperation = isLightTheme ? 'multiply' : 'screen';
+
+    this.orbs.forEach(o => {
       const g = this.cx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
       const a = isLightTheme ? 0.2 : 0.3;
       g.addColorStop(0, `hsla(${o.hue}, 78%, ${isLightTheme ? 60 : 40}%, ${a})`);
@@ -1679,7 +1888,9 @@ class OrbField {
       this.cx.fill();
     });
 
-    this.rafId = requestAnimationFrame(() => this.tick());
+    // Ambient background drift is deliberately perpetual — it's the one
+    // subscriber that's allowed to keep Motion's loop awake on its own.
+    return true;
   }
 }
 
@@ -1705,7 +1916,7 @@ const applyTheme = (explicit) => {
   btn.setAttribute('aria-label', isLight ? t('themeToDark') : t('themeToLight'));
   btn.querySelector('i').className = `fas ${isLight ? 'fa-moon' : 'fa-sun'}`;
 
-  if (window.bgAnim) window.bgAnim.spawn();
+  if (window.bgAnim) window.bgAnim.retarget();
 };
 
 // Re-applies just the theme button's label text (e.g. after a language
@@ -1802,6 +2013,32 @@ let indicatorTimer;
 let activeViewTransition = null;
 let currentTabId = null;
 
+// Chrome 125+ only; feature-detected once and reused everywhere a view
+// transition is started so tab switches and the theme wipe agree on
+// which code path is live.
+const supportsTileTransitions = typeof CSS !== 'undefined' && CSS.supports('view-transition-class', 'x');
+
+// Both the tab-switch transition and the theme circular wipe start a
+// document.startViewTransition — serialize them through one place so a
+// second call always cleanly skips whatever's still in flight instead
+// of the two callers stepping on each other's activeViewTransition guard.
+const withViewTransition = (fn) => {
+  if (activeViewTransition) { try { activeViewTransition.skipTransition(); } catch (e) {} }
+  activeViewTransition = document.startViewTransition(fn);
+  return activeViewTransition;
+};
+
+// view-transition-name turns an element into a containing block and a
+// paint-containment root, which breaks anchor-name resolution for the
+// variant chips and the fixed controls pill if left in place — these
+// names must exist for the lifetime of a single transition only.
+const nameTiles = (grid, on) => {
+  grid.querySelectorAll('.app-card').forEach((c, i) => {
+    if (on) { c.style.viewTransitionName = `tile-${i}`; c.style.viewTransitionClass = 'tile'; }
+    else { c.style.viewTransitionName = ''; c.style.viewTransitionClass = ''; }
+  });
+};
+
 const catIndex = (id) => categories.findIndex(c => c.id === id);
 
 const applyTabAccent = (cat) => {
@@ -1870,6 +2107,19 @@ const activateTab = (id, opts = {}) => {
   applyTabAccent(cat);
   if (!supportsAnchor) moveIndicatorLegacy(activeBtn, instant);
 
+  if (!instant && prevId && prevId !== id) {
+    // Under anchor positioning the indicator's position is driven purely
+    // by CSS (inset-inline-start/end), so the legacy path's squash-on-
+    // travel never applies there — layer an explicit vertical squash on
+    // top so it still reads as one liquid piece separating and rejoining.
+    const ind = document.getElementById('tabIndicator');
+    if (ind) {
+      ind.classList.add('is-traveling');
+      clearTimeout(ind._travelTimer);
+      ind._travelTimer = setTimeout(() => ind.classList.remove('is-traveling'), 340);
+    }
+  }
+
   const g = document.getElementById('appGrid');
   g.setAttribute('aria-labelledby', `tab-${id}`);
 
@@ -1883,10 +2133,20 @@ const activateTab = (id, opts = {}) => {
   if (instant || reducedMotion) {
     run();
     rendered = Promise.resolve();
+  } else if (document.startViewTransition && supportsTileTransitions) {
+    // The flagship transition: tile n morphs into tile n across the tab
+    // boundary instead of the whole grid sliding out and back in. Tab
+    // counts differ (7/4/3), so surplus tiles have no counterpart and
+    // correctly just fade out via lx-tile-out.
+    nameTiles(g, true);
+    const vt = withViewTransition(() => { run(); nameTiles(g, true); });
+    rendered = vt.finished.catch(() => {}).finally(() => { activeViewTransition = null; nameTiles(g, false); });
   } else if (document.startViewTransition) {
-    if (activeViewTransition) { try { activeViewTransition.skipTransition(); } catch (e) {} }
-    activeViewTransition = document.startViewTransition(run);
-    rendered = activeViewTransition.finished.catch(() => {}).finally(() => { activeViewTransition = null; });
+    // Fallback for browsers without view-transition-class: the whole
+    // grid slides, named only for this one transition's duration.
+    g.style.viewTransitionName = 'grid';
+    const vt = withViewTransition(run);
+    rendered = vt.finished.catch(() => {}).finally(() => { activeViewTransition = null; g.style.viewTransitionName = ''; });
   } else {
     g.classList.add('is-out');
     rendered = new Promise((resolve) => {
@@ -1919,7 +2179,7 @@ const buildTabRail = () => {
     btn.setAttribute('aria-controls', 'appGrid');
     btn.tabIndex = -1;
     btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span>${escapeHtml(loc(cat.label))}</span>`;
-    btn.addEventListener('click', () => activateTab(cat.id));
+    btn.addEventListener('click', () => { setInteractionOrigin(btn); activateTab(cat.id); });
     btn.addEventListener('mouseenter', () => sfx.hover(cat.key + i));
     btn.addEventListener('focus', () => sfx.hover(cat.key + i));
     rail.appendChild(btn);
@@ -2116,7 +2376,7 @@ const scoreEntry = (query, entry) => {
 };
 
 const paletteItemHtml = (e, globalIndex, query) => `
-  <li class="palette-item${globalIndex === 0 ? ' is-active' : ''}" role="option" id="palette-item-${globalIndex}" aria-selected="${globalIndex === 0}" data-index="${globalIndex}" style="${gradVars(e.app.gradient)}">
+  <li class="palette-item${globalIndex === 0 ? ' is-active' : ''}" role="option" id="palette-item-${globalIndex}" aria-selected="${globalIndex === 0}" data-index="${globalIndex}" style="${gradVars(e.app.gradient)}--n:${globalIndex};">
     <div class="app-icon-wrapper">
       <i class="app-icon fas ${e.app.icon}" aria-hidden="true"></i>
     </div>
@@ -2466,9 +2726,38 @@ const setupInteractions = () => {
     applyTheme();
   });
 
-  document.getElementById('themeToggle').addEventListener('click', () => {
+  document.getElementById('themeToggle').addEventListener('click', (e) => {
     const isLight = document.documentElement.dataset.theme !== 'light';
-    applyTheme(isLight ? 'light' : 'dark');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (!document.startViewTransition || reducedMotion) {
+      applyTheme(isLight ? 'light' : 'dark');
+      sfx.chime(isLight);
+      return;
+    }
+
+    // Circular reveal centered on the button that was actually clicked —
+    // grow a clip-path circle over the new theme's snapshot rather than
+    // letting the default view-transition cross-fade play.
+    const btn = e.currentTarget;
+    const r = btn.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const vt = withViewTransition(() => { applyTheme(isLight ? 'light' : 'dark'); });
+
+    vt.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
+        { duration: 620, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' }
+      );
+    }).catch(() => {});
+    vt.finished.catch(() => {}).finally(() => { activeViewTransition = null; });
+
     sfx.chime(isLight);
   });
 
