@@ -2388,7 +2388,7 @@ const renderPaletteResults = (query) => {
   paletteResults.innerHTML = html || `<li class="palette-empty">${escapeHtml(t('noResults'))}</li>`;
 
   paletteResults.querySelectorAll('.palette-item').forEach(li => {
-    li.addEventListener('mouseenter', () => setPaletteActive(Number(li.dataset.index)));
+    li.addEventListener('mouseenter', () => { sfx.hover(Number(li.dataset.index)); setPaletteActive(Number(li.dataset.index)); });
     li.addEventListener('click', () => openPaletteItem(Number(li.dataset.index)));
   });
 
@@ -2619,6 +2619,7 @@ const openPalette = () => {
   document.querySelector('.container').classList.add('is-dollied');
   document.querySelector('.controls-pill').classList.add('is-dollied');
   dialog.showModal();
+  sfx.click();
   requestAnimationFrame(() => input.focus());
 };
 
@@ -2828,7 +2829,9 @@ const setupInteractions = () => {
         paletteActionIndex = (paletteActionIndex + 1) % n;
         updateActionHighlight();
       } else if (paletteItems.length) {
-        setPaletteActive((paletteActiveIndex + 1) % paletteItems.length);
+        const next = (paletteActiveIndex + 1) % paletteItems.length;
+        sfx.hover(next);
+        setPaletteActive(next);
       }
       return;
     }
@@ -2840,7 +2843,9 @@ const setupInteractions = () => {
         paletteActionIndex = (paletteActionIndex - 1 + n) % n;
         updateActionHighlight();
       } else if (paletteItems.length) {
-        setPaletteActive((paletteActiveIndex - 1 + paletteItems.length) % paletteItems.length);
+        const prev = (paletteActiveIndex - 1 + paletteItems.length) % paletteItems.length;
+        sfx.hover(prev);
+        setPaletteActive(prev);
       }
       return;
     }
@@ -2864,7 +2869,7 @@ const setupInteractions = () => {
   document.getElementById('paletteToggle').addEventListener('click', () => togglePalette());
 
   document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    if ((e.metaKey || e.ctrlKey) && (e.code === 'KeyK' || e.key.toLowerCase() === 'k')) {
       e.preventDefault();
       togglePalette();
       return;
@@ -2872,9 +2877,11 @@ const setupInteractions = () => {
     if (paletteDialog.open) return;
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
-    if (/^[1-9]$/.test(e.key)) {
+    const digitMatch = /^Digit([1-9])$/.exec(e.code);
+    const num = digitMatch ? Number(digitMatch[1]) : (/^[1-9]$/.test(e.key) ? Number(e.key) : null);
+    if (num) {
       const cards = document.querySelectorAll('#appGrid .app-card');
-      const card = cards[Number(e.key) - 1];
+      const card = cards[num - 1];
       if (card) card.querySelector('.card-link-overlay')?.click();
     }
   });
