@@ -1114,6 +1114,7 @@ class AudioEngine {
     this.rvbSend = null;
     this.enabled = false;
     this.scale = [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77];
+    this._lastTick = 0;
   }
 
   async _boot() {
@@ -1140,7 +1141,7 @@ class AudioEngine {
       this.rvbSend = this.ctx.createGain();
       this.rvbSend.gain.value = 0.25;
       this.reverb.connect(this.rvbSend);
-      this.rvbSend.connect(this.ctx.destination);
+      this.rvbSend.connect(this.master);
     } catch (e) {}
   }
 
@@ -1193,6 +1194,29 @@ class AudioEngine {
     this._v(900, 'sine', t, 0.02, 0.03, 300);
     this._v(1046.50, 'sine', t, 0.4, 0.025);
     this._v(1318.51, 'sine', t + 0.02, 0.35, 0.015);
+  }
+
+  async tick(idx = 0) {
+    if (!this.enabled) return;
+    await this._boot();
+    if (!this.ok()) return;
+    const now = this.ctx.currentTime;
+    if (now - this._lastTick < 0.045) return;
+    this._lastTick = now;
+    const f = this.scale[((idx % this.scale.length) + this.scale.length) % this.scale.length] * 0.5;
+    this._v(f, 'sine', now, 0.09, 0.012);
+    this._v(f * 3, 'sine', now + 0.004, 0.05, 0.0025);
+  }
+
+  async veil(opening) {
+    if (!this.enabled) return;
+    await this._boot();
+    if (!this.ok()) return;
+    const t = this.ctx.currentTime;
+    const a = opening ? 392 : 587.33;
+    const b = opening ? 587.33 : 392;
+    this._v(a, 'sine', t, 0.42, 0.016, b);
+    this._v(a * 2, 'sine', t + 0.03, 0.3, 0.006, b * 2);
   }
 
   async arpUp() {
@@ -1787,20 +1811,35 @@ class OrbField {
     this.cx = canvas.getContext('2d');
     this.t = 0;
     this.orbs = [];
+    this.idleScale = 1;
+    this.frameCount = 0;
+    this.bloomStart = performance.now();
     this.lastActive = performance.now();
     this.resize();
     this.spawn();
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) Motion.add(this);
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      Motion.add(this);
+    } else {
+      this.bloomStart = 0;
+      this.render();
+    }
   }
 
   resize() {
-
+    const oldW = this.cv.width, oldH = this.cv.height;
     const scale = 0.4;
     this.cv.width = Math.round(window.innerWidth * scale);
     this.cv.height = Math.round(window.innerHeight * scale);
     this.cv.style.width = '100%';
     this.cv.style.height = '100%';
+    if (oldW && oldH && this.orbs.length) {
+      const rx = this.cv.width / oldW, ry = this.cv.height / oldH;
+      this.orbs.forEach(o => {
+        o.ax *= rx; o.ay *= ry;
+        o.orbitR *= (rx + ry) / 2;
+      });
+    }
     this.lastActive = performance.now();
     Motion.wake();
   }
@@ -1808,14 +1847,19 @@ class OrbField {
   spawn() {
     const n = window.innerWidth < 768 ? 4 : 6;
     const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
+    const minSide = Math.min(this.cv.width, this.cv.height);
     this.orbs = Array.from({ length: n }, (_, i) => {
       const hue = palette[i % 3];
+      const ang = i * 2.399;
+      const rad = 0.34 * minSide * Math.sqrt(i / n);
+      const ax = this.cv.width / 2 + Math.cos(ang) * rad;
+      const ay = this.cv.height / 2 + Math.sin(ang) * rad;
       return {
-        x: Math.random() * this.cv.width,
-        y: Math.random() * this.cv.height,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
-        r: Math.random() * 300 + 200,
+        ax, ay,
+        x: ax, y: ay,
+        orbitR: minSide * (0.06 + Math.random() * 0.03),
+        orbitSpeed: 0.15 + Math.random() * 0.1,
+        r: Math.random() * 160 + 120,
         hue,
         hueSpring: new Spring(40, 14, hue),
         phase: Math.random() * Math.PI * 2
@@ -1831,38 +1875,46 @@ class OrbField {
   }
 
   fixed(dt) {
-    this.t += dt * 0.06;
-    const speed = dt * 60; 
+    const idleFor = performance.now() - this.lastActive;
+    const idleTarget = idleFor > 20000 ? 0 : 1;
+    this.idleScale += (idleTarget - this.idleScale) * Math.min(dt * 1.5, 1);
+    if (this.idleScale < 0.0005) this.idleScale = 0;
+    const scaledDt = dt * this.idleScale;
+    this.t += scaledDt * 0.06;
     this.orbs.forEach(o => {
-      o.hueSpring.fixed(dt);
+      o.hueSpring.fixed(scaledDt);
       o.hue = o.hueSpring.v;
-      o.x += (o.vx + Math.sin(this.t + o.phase) * 0.2) * speed;
-      o.y += (o.vy + Math.cos(this.t + o.phase) * 0.2) * speed;
-      if (o.x < -o.r) o.x = this.cv.width + o.r;
-      if (o.x > this.cv.width + o.r) o.x = -o.r;
-      if (o.y < -o.r) o.y = this.cv.height + o.r;
-      if (o.y > this.cv.height + o.r) o.y = -o.r;
+      const ang = this.t * o.orbitSpeed + o.phase;
+      o.x = o.ax + Math.cos(ang) * o.orbitR;
+      o.y = o.ay + Math.sin(ang) * o.orbitR;
     });
   }
 
   render() {
-    if (document.hidden) return true; 
+    if (document.hidden) return true;
 
-    if (performance.now() - this.lastActive > 30000) return false;
+    const idleFor = performance.now() - this.lastActive;
+    if (idleFor > 20000 && this.idleScale === 0) return false;
+    if (idleFor > 20000) {
+      this.frameCount = (this.frameCount + 1) % 3;
+      if (this.frameCount !== 0) return true;
+    }
 
     this.cx.clearRect(0, 0, this.cv.width, this.cv.height);
     this.cx.globalCompositeOperation = isLightTheme ? 'multiply' : 'screen';
+    const bloom = Math.max(0, 1 - (performance.now() - this.bloomStart) / 7000) * 0.15;
 
     this.orbs.forEach(o => {
-      const g = this.cx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
-      const a = isLightTheme ? 0.2 : 0.3;
+      const rr = o.r * (1 + bloom);
+      const g = this.cx.createRadialGradient(o.x, o.y, 0, o.x, o.y, rr);
+      const a = (isLightTheme ? 0.07 : 0.1) * (1 + bloom);
       g.addColorStop(0, `hsla(${o.hue}, 78%, ${isLightTheme ? 60 : 40}%, ${a})`);
       g.addColorStop(0.4, `hsla(${o.hue}, 68%, ${isLightTheme ? 70 : 30}%, ${a * 0.4})`);
       g.addColorStop(1, 'transparent');
 
       this.cx.fillStyle = g;
       this.cx.beginPath();
-      this.cx.arc(o.x, o.y, o.r, 0, Math.PI * 2);
+      this.cx.arc(o.x, o.y, rr, 0, Math.PI * 2);
       this.cx.fill();
     });
 
@@ -2296,6 +2348,7 @@ let paletteTryPicks = null;
 let paletteEntranceArmed = false;
 
 let lastDetailKey = null;
+let paletteSkipCloseChime = false;
 
 const getActionsForEntry = (entry) => {
   const actions = [
@@ -2383,12 +2436,16 @@ const renderPaletteResults = (query) => {
   paletteZone = 'list';
 
   paletteResults.classList.toggle('entrance-armed', paletteEntranceArmed);
-  paletteEntranceArmed = false; // consumed — only the render right after open gets the stagger
+  paletteEntranceArmed = false;
 
   paletteResults.innerHTML = html || `<li class="palette-empty">${escapeHtml(t('noResults'))}</li>`;
 
   paletteResults.querySelectorAll('.palette-item').forEach(li => {
-    li.addEventListener('mouseenter', () => { sfx.hover(Number(li.dataset.index)); setPaletteActive(Number(li.dataset.index)); });
+    li.addEventListener('mouseenter', () => {
+      const idx = Number(li.dataset.index);
+      if (idx !== paletteActiveIndex) sfx.tick(idx);
+      setPaletteActive(idx);
+    });
     li.addEventListener('click', () => openPaletteItem(Number(li.dataset.index)));
   });
 
@@ -2473,7 +2530,9 @@ const renderPaletteDetail = () => {
   detail.querySelectorAll('.palette-action').forEach((btn) => {
     const actionId = btn.dataset.action;
     btn.addEventListener('mouseenter', () => {
-      paletteActionIndex = getActionsForEntry(entry).findIndex(a => a.id === actionId);
+      const idx = getActionsForEntry(entry).findIndex(a => a.id === actionId);
+      if (paletteZone !== 'actions' || idx !== paletteActionIndex) sfx.tick(idx + 4);
+      paletteActionIndex = idx;
       paletteZone = 'actions';
       updateActionHighlight();
     });
@@ -2584,6 +2643,7 @@ const executeAction = async (actionId) => {
   if (actionId === 'new-tab') {
     sfx.click();
     window.open(entry.app.url, '_blank', 'noopener');
+    paletteSkipCloseChime = true;
     closePalette();
   } else if (actionId === 'same-tab') {
     sfx.click();
@@ -2619,7 +2679,7 @@ const openPalette = () => {
   document.querySelector('.container').classList.add('is-dollied');
   document.querySelector('.controls-pill').classList.add('is-dollied');
   dialog.showModal();
-  sfx.click();
+  sfx.veil(true);
   requestAnimationFrame(() => input.focus());
 };
 
@@ -2734,10 +2794,13 @@ const setupInteractions = () => {
   document.addEventListener('keydown', (e) => {
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
-    if (e.key.length !== 1 || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const codeLetter = /^Key([A-Z])$/.exec(e.code || '');
+    const letter = codeLetter ? codeLetter[1].toLowerCase() : ((e.key || '').length === 1 ? e.key.toLowerCase() : '');
+    if (!letter) return;
 
     clearTimeout(secretTimer);
-    secretCode += e.key.toLowerCase();
+    secretCode += letter;
     secretTimer = setTimeout(() => secretCode = '', 4200);
 
     const hit = Object.keys(secretApps).find(k => secretCode.endsWith(k));
@@ -2819,6 +2882,7 @@ const setupInteractions = () => {
       paletteZone = paletteZone === 'list' ? 'actions' : 'list';
       if (paletteZone === 'actions') paletteActionIndex = 0;
       updateActionHighlight();
+      sfx.tick(paletteZone === 'actions' ? paletteActionIndex + 4 : paletteActiveIndex);
       return;
     }
 
@@ -2828,10 +2892,10 @@ const setupInteractions = () => {
         const n = getActionsForEntry(paletteItems[paletteActiveIndex]).length;
         paletteActionIndex = (paletteActionIndex + 1) % n;
         updateActionHighlight();
+        sfx.tick(paletteActionIndex + 4);
       } else if (paletteItems.length) {
-        const next = (paletteActiveIndex + 1) % paletteItems.length;
-        sfx.hover(next);
-        setPaletteActive(next);
+        setPaletteActive((paletteActiveIndex + 1) % paletteItems.length);
+        sfx.tick(paletteActiveIndex);
       }
       return;
     }
@@ -2842,10 +2906,10 @@ const setupInteractions = () => {
         const n = getActionsForEntry(paletteItems[paletteActiveIndex]).length;
         paletteActionIndex = (paletteActionIndex - 1 + n) % n;
         updateActionHighlight();
+        sfx.tick(paletteActionIndex + 4);
       } else if (paletteItems.length) {
-        const prev = (paletteActiveIndex - 1 + paletteItems.length) % paletteItems.length;
-        sfx.hover(prev);
-        setPaletteActive(prev);
+        setPaletteActive((paletteActiveIndex - 1 + paletteItems.length) % paletteItems.length);
+        sfx.tick(paletteActiveIndex);
       }
       return;
     }
@@ -2864,12 +2928,28 @@ const setupInteractions = () => {
   paletteDialog.addEventListener('close', () => {
     document.querySelector('.container').classList.remove('is-dollied');
     document.querySelector('.controls-pill').classList.remove('is-dollied');
+    if (paletteSkipCloseChime) paletteSkipCloseChime = false;
+    else sfx.veil(false);
   });
 
   document.getElementById('paletteToggle').addEventListener('click', () => togglePalette());
 
+  const isPhysical = (e, code, ...chars) =>
+    e.code === code || chars.includes((e.key || '').toLowerCase());
+
+  const eventDigit = (e) => {
+    if (e.shiftKey || e.ctrlKey || e.metaKey) return 0;
+    const m = /^(?:Digit|Numpad)([1-9])$/.exec(e.code || '');
+    if (m) return Number(m[1]);
+    const cp = (e.key || '').length === 1 ? e.key.codePointAt(0) : 0;
+    if (cp >= 0x31 && cp <= 0x39) return cp - 0x30;
+    if (cp >= 0x661 && cp <= 0x669) return cp - 0x660;
+    if (cp >= 0x6f1 && cp <= 0x6f9) return cp - 0x6f0;
+    return 0;
+  };
+
   document.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && (e.code === 'KeyK' || e.key.toLowerCase() === 'k')) {
+    if ((e.metaKey || e.ctrlKey) && isPhysical(e, 'KeyK', 'k', 'ن')) {
       e.preventDefault();
       togglePalette();
       return;
@@ -2877,11 +2957,10 @@ const setupInteractions = () => {
     if (paletteDialog.open) return;
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
-    const digitMatch = /^Digit([1-9])$/.exec(e.code);
-    const num = digitMatch ? Number(digitMatch[1]) : (/^[1-9]$/.test(e.key) ? Number(e.key) : null);
-    if (num) {
+    const digit = eventDigit(e);
+    if (digit) {
       const cards = document.querySelectorAll('#appGrid .app-card');
-      const card = cards[num - 1];
+      const card = cards[digit - 1];
       if (card) card.querySelector('.card-link-overlay')?.click();
     }
   });
