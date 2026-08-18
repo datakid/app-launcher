@@ -248,17 +248,8 @@ h1 {
 }
 .app-card:hover, .app-card:focus-within { --hov: 1; }
 
-/* Ambient life: an almost-imperceptible per-card sway, one shared sine
-   with a random per-card phase offset, so the grid never quite reads as
-   a static screenshot even when nobody's touching it. Composes with the
-   perspective/tilt transform above rather than fighting it — translate
-   is applied before transform, not merged into it. */
 .app-card { translate: 0 calc(sin(var(--phase, 0) + var(--breathe, 0) * 1rad) * 0.6px); }
 
-/* Re-rendering the grid on a language toggle rebuilds every card's DOM
-   node, which would otherwise replay the staggered entrance animation
-   across the whole grid — jarring on something that isn't a real
-   navigation. Suppress it for that one render pass only. */
 .app-grid.is-relang .app-card { animation: none !important; }
 
 :root[data-theme="light"] .app-card {
@@ -387,16 +378,13 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
     inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
   transition: transform 0.38s var(--ease-spring), box-shadow 0.6s var(--ease-lux);
   position: relative; flex-shrink: 0;
-  /* Composed with the card's hover scalar and pointer-parallax so it
-     doesn't fight the separate :hover rule below for the same property. */
+  
   transform:
     translate3d(calc(var(--tx, 0) * 7px), calc(var(--ty, 0) * 7px), calc(20px * var(--hov, 0)))
     rotate(calc(var(--hov, 0) * -2deg))
     scale(calc(1 + .05 * var(--hov, 0)));
 }
 
-/* A second, tighter specular layer with additive blending — the "light
-   source" stays fixed in world space while the tile tilts underneath it. */
 .app-icon-wrapper::before {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background:
@@ -562,9 +550,6 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 .app-card.status-closed { opacity: .74; }
 .app-card.status-closed:hover, .app-card.status-closed:focus-within { opacity: .92; }
 
-/* Desaturation used to be filter:saturate() stacked on top of the card's
-   own backdrop-filter — two full render passes on the same element.
-   A blend-mode overlay achieves the same look as plain compositing. */
 .closed-tint {
   position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
   background: hsl(0, 0%, 50%);
@@ -583,7 +568,6 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card.status-closed:not(:hover, :focus-visible) { opacity: 0.5; }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-
 
 .tab-rail {
   position: relative; align-self: center; flex-shrink: 0;
@@ -659,7 +643,6 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 .tab-btn[aria-selected="true"] { color: var(--text); }
 .tab-btn[aria-selected="true"] i { color: var(--tab-accent); }
 
-
 ::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-lux) both; }
 ::view-transition-new(grid) { animation: lx-grid-in 0.28s var(--ease-lux) both; }
 
@@ -673,27 +656,17 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 
 .app-grid.is-out { animation: lx-grid-out 0.22s var(--ease-lux) both; }
 
-/* Per-tile morph across a tab switch — tile n grows/repositions into
-   tile n rather than the whole grid swapping wholesale. Names are only
-   ever applied for the duration of a transition (see withViewTransition
-   / nameTiles); leaving them on permanently would make every card a
-   containing block and break anchor-name resolution for the variant
-   chips and the fixed controls pill. */
 ::view-transition-group(.tile) { animation-duration: .3s; animation-timing-function: var(--ease-lux); }
 ::view-transition-old(.tile)   { animation: lx-tile-out .14s var(--ease-lux) both; }
 ::view-transition-new(.tile)   { animation: lx-tile-in  .22s var(--ease-lux) .05s both; }
 @keyframes lx-tile-out { to   { opacity: 0; transform: scale(.97); } }
 @keyframes lx-tile-in  { from { opacity: 0; transform: scale(1.02); } }
 
-/* Theme toggle: the reveal is driven entirely by a manual clip-path
-   animation on ::view-transition-new(root) (see the themeToggle click
-   handler) — kill the default cross-fade so it doesn't double up with it. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
-
 
 #lx-palette {
   width: min(880px, 94vw); max-height: 76vh;
@@ -729,8 +702,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   opacity: 0;
-  /* Deliberately faster than the panel's own 0.3s entrance — the color
-     glow should arrive before the panel's geometry finishes settling. */
+  
   transition: opacity 0.12s var(--ease-lux), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
 }
 #lx-palette[open]::backdrop { opacity: 1; }
@@ -782,9 +754,6 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   animation-delay: calc(min(var(--n, 0), 8) * 20ms);
 }
 
-/* The stagger is a nice one-time touch when the palette opens — replaying
-   it on every keystroke (the list re-renders on every debounced input)
-   is what read as flicker. Only armed for the render right after open. */
 #paletteResults:not(.entrance-armed) .palette-item { animation: none; }
 
 @keyframes paletteItemIn { from { opacity: 0; transform: translateY(6px); } }
@@ -989,8 +958,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   }
   :root { --surface: light-dark(rgba(255,255,255,0.92), rgba(255,255,255,0.10)); }
   #lx-palette { background-color: light-dark(#f3f1ec, #0c0d10); }
-  /* The additive specular highlight only reads correctly against the
-     translucent glass surface underneath it. */
+  
   .app-icon-wrapper::before { display: none; }
 }
 
@@ -1007,10 +975,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
     animation: none !important;
   }
   .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; --hov: 0 !important; }
-  /* Ambient breathe is a discrete per-frame value change (Motion writes
-     --breathe directly, not through a transition), so it isn't touched
-     by the transition-property restriction below — it needs its own
-     override to actually stop moving under reduced motion. */
+  
   .app-card { translate: none !important; }
   .app-card, .app-icon-wrapper, .app-title, .badges, .variant-chips,
   .tab-indicator, .tab-indicator-trail, .tab-indicator-glow, .variant-chip-indicator,
@@ -1314,10 +1279,6 @@ const resolveInitialLang = () => {
   return (navigator.language || '').toLowerCase().startsWith('en') ? 'en' : 'ar';
 };
 
-// --- Schema 2 migration: apps used to persist state keyed on the Arabic
-// display string. That breaks the moment a title becomes bilingual, so
-// every app/variant now carries a stable, language-independent id and we
-// migrate any existing stored preferences across once, on first load.
 const SCHEMA = 2;
 const LEGACY_IDS = {
   'خارجي 2': 'ledger-form',
@@ -1355,8 +1316,6 @@ const LEGACY_IDS = {
   } catch (e) {}
 })();
 
-// Manifest is a static data: URI at load time; rebuild it (name/description/
-// dir/lang only — the embedded icon is reused as-is) whenever language changes.
 let baseManifest = null;
 try {
   const href = document.querySelector('link[rel="manifest"]').getAttribute('href');
@@ -1378,11 +1337,6 @@ const applyManifest = () => {
   link.setAttribute('href', 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(m)));
 };
 
-// --- Motion: one scheduler for every physics-driven animation on the
-// page. Fixed-step physics pass (spring integration is dt-sensitive —
-// a variable step produces visibly different damping on a 60Hz vs a
-// 144Hz display) plus a variable render pass, and it parks itself the
-// moment nothing is animating instead of running forever at 60fps.
 const Motion = (() => {
   const subs = new Set();
   const STEP = 1 / 120;
@@ -1416,19 +1370,13 @@ class Spring {
     this.dv += a * dt;
     this.v += this.dv * dt;
   }
-  // Reduced motion bypasses the spring entirely rather than integrating
-  // toward the target — an instant snap, not just a faster/clamped ease.
+
   snap() { this.v = this.to; this.dv = 0; }
   get settled() { return Math.abs(this.dv) < 1e-3 && Math.abs(this.v - this.to) < 1e-3; }
 }
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
-// Ambient life: a shared, extremely low-amplitude breathe so the grid
-// doesn't read as a static screenshot when the pointer's away. This
-// subscriber always returns false — it never keeps Motion awake on its
-// own, it only rides along on whichever frames OrbField's perpetual
-// drift (or an active pointer spring) already has in flight.
 Motion.add({
   render(t) {
     const grid = document.getElementById('appGrid');
@@ -1637,9 +1585,6 @@ const renderCards = (grid, categoryId) => {
   grid.appendChild(frag);
   pointerFieldDirty = true;
 
-  // Radial entrance: cards bloom outward from wherever the user just
-  // interacted (the tab button they clicked, or a previously hovered
-  // card) instead of reading as a flat left-to-right sweep.
   const origin = lastInteractionPoint ?? railCenter();
   const cards = [...grid.children];
   let max = 1;
@@ -1684,11 +1629,7 @@ const initPointerField = () => {
         bottom: cr.top + c.offsetTop + c.offsetHeight
       };
       if (!c._springs) {
-        // Critically-damped springs, one bundle per card, created lazily.
-        // tilt gets a hair of overshoot (alive, not bouncy); the depth
-        // lift settles a touch slower; the reveal-ring opacity lags
-        // furthest behind so proximity glow reads as light catching up
-        // to the cursor rather than a value snapping to it.
+
         c._springs = {
           tx: new Spring(190, 24, 0),
           ty: new Spring(190, 24, 0),
@@ -1732,9 +1673,7 @@ const initPointerField = () => {
         if (wantsTilt) {
           s.tx.fixed(dt); s.ty.fixed(dt); s.tz.fixed(dt); s.reveal.fixed(dt);
         } else {
-          // Reduced motion: bypass the springs entirely rather than
-          // integrating toward a target that's already pinned to 0/0/0 —
-          // and let reveal-opacity snap too rather than ease in.
+
           s.tx.snap(); s.ty.snap(); s.tz.snap(); s.reveal.snap();
         }
       });
@@ -1765,20 +1704,12 @@ const initPointerField = () => {
           c.style.removeProperty('--my');
         }
 
-        // Only keep an inline --tz override while it's actually doing
-        // something (pointer inside, or still settling back down) — once
-        // it's back at rest and the pointer's elsewhere, remove it so a
-        // keyboard-focused card can fall back to its plain CSS lift.
         if (inside || !s.tz.settled) {
           c.style.setProperty('--tz', `${s.tz.v}px`);
         } else {
           c.style.removeProperty('--tz');
         }
 
-        // will-change promotes the card to its own compositing layer,
-        // which is only worth the memory while something's actually
-        // moving — seven cards permanently promoted (each carrying a
-        // backdrop-filter) is real cost for no benefit once settled.
         const settled = s.tx.settled && s.ty.settled && s.tz.settled && s.reveal.settled;
         const active = inside || s.reveal.to > 0 || !settled;
         if (active && !c._wc) { c.style.willChange = 'transform'; c._wc = true; }
@@ -1813,7 +1744,7 @@ const initPointerField = () => {
     const now = performance.now();
     const dt = Math.max((now - lastMove) / 1000, 1 / 240);
     const rawVx = (e.clientX - px) / dt;
-    vx += (rawVx - vx) * 0.3; // low-pass so a single jittery sample doesn't spike the lean
+    vx += (rawVx - vx) * 0.3; 
     px = e.clientX; py = e.clientY;
     if (!hasPointer) { sx = px; sy = py; }
     hasPointer = true;
@@ -1859,19 +1790,12 @@ class OrbField {
     this.lastActive = performance.now();
     this.resize();
     this.spawn();
-    // Matches the original gating: under reduced motion the canvas never
-    // ticks at all rather than drawing a static frame.
+
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) Motion.add(this);
   }
 
   resize() {
-    // The canvas sits behind a heavy CSS blur + scale(1.3), so rendering
-    // it at full viewport resolution burns fill-rate for zero visible
-    // benefit — the blur erases any detail a higher-res backing store
-    // would have preserved. 40% resolution is imperceptible here and
-    // cuts pixels drawn (and composited) by ~84%; the CSS blur radius is
-    // dropped alongside it (see #gradient-canvas) since the upscale from
-    // a coarser bitmap already contributes softness on its own.
+
     const scale = 0.4;
     this.cv.width = Math.round(window.innerWidth * scale);
     this.cv.height = Math.round(window.innerHeight * scale);
@@ -1899,10 +1823,6 @@ class OrbField {
     });
   }
 
-  // A theme change used to call spawn() and discard/re-randomize every
-  // orb — under the circular-wipe view transition that reads as a pop.
-  // Keep each orb's position and drift and just ease its hue toward the
-  // new palette instead, so the background dissolves rather than jumps.
   retarget() {
     const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
     this.orbs.forEach((o, i) => { o.hueSpring.to = palette[i % 3]; });
@@ -1912,7 +1832,7 @@ class OrbField {
 
   fixed(dt) {
     this.t += dt * 0.06;
-    const speed = dt * 60; // normalizes the original ~60fps-tuned drift constants
+    const speed = dt * 60; 
     this.orbs.forEach(o => {
       o.hueSpring.fixed(dt);
       o.hue = o.hueSpring.v;
@@ -1926,12 +1846,8 @@ class OrbField {
   }
 
   render() {
-    if (document.hidden) return true; // stay registered; Motion itself gates the rAF on document.hidden
-    // Ambient drift is deliberately alive right after something actually
-    // happened (load, theme change, a resize) so the page never feels
-    // static — but it isn't meant to be truly eternal: the scheduler is
-    // supposed to be able to reach zero rAF calls once the page has been
-    // sitting untouched for a while, same as every other subscriber.
+    if (document.hidden) return true; 
+
     if (performance.now() - this.lastActive > 30000) return false;
 
     this.cx.clearRect(0, 0, this.cv.width, this.cv.height);
@@ -1950,8 +1866,6 @@ class OrbField {
       this.cx.fill();
     });
 
-    // Ambient background drift is deliberately perpetual — it's the one
-    // subscriber that's allowed to keep Motion's loop awake on its own.
     return true;
   }
 }
@@ -1981,8 +1895,6 @@ const applyTheme = (explicit) => {
   if (window.bgAnim) window.bgAnim.retarget();
 };
 
-// Re-applies just the theme button's label text (e.g. after a language
-// switch) without touching theme state or respawning the background orbs.
 const updateThemeButtonLabel = () => {
   const btn = document.getElementById('themeToggle');
   if (!btn) return;
@@ -2013,10 +1925,6 @@ const sweepStaticStrings = () => {
   if (paletteToggle) paletteToggle.setAttribute('title', `${t('quickSearch')} (Ctrl/Cmd+K)`);
 };
 
-// Full language-switch sweep: html lang/dir, every static string, the
-// manifest, and — unless told not to — every language-dependent DOM
-// region (tab rail, current grid, open palette), while preserving
-// currentTabId, the palette query, and the active palette selection.
 const applyI18n = (opts = {}) => {
   const { rebuild = true } = opts;
 
@@ -2038,16 +1946,12 @@ const applyI18n = (opts = {}) => {
     applyTabAccent(categories.find(c => c.id === preservedTab));
   }
 
-  // Direction just flipped (or is about to render for the first time):
-  // every cached pixel position and card rect is now wrong.
   lastX = 0;
   pointerFieldDirty = true;
 
   if (preservedTab) {
     const grid = document.getElementById('appGrid');
-    // Suppress the staggered card-entrance animation for this one
-    // render pass — it's a re-paint of the same content in a new
-    // language, not a real navigation, so it shouldn't fly in again.
+
     grid.classList.add('is-relang');
     renderCards(grid, preservedTab);
     requestAnimationFrame(() => requestAnimationFrame(() => grid.classList.remove('is-relang')));
@@ -2075,25 +1979,14 @@ let indicatorTimer;
 let activeViewTransition = null;
 let currentTabId = null;
 
-// Chrome 125+ only; feature-detected once and reused everywhere a view
-// transition is started so tab switches and the theme wipe agree on
-// which code path is live.
 const supportsTileTransitions = typeof CSS !== 'undefined' && CSS.supports('view-transition-class', 'x');
 
-// Both the tab-switch transition and the theme circular wipe start a
-// document.startViewTransition — serialize them through one place so a
-// second call always cleanly skips whatever's still in flight instead
-// of the two callers stepping on each other's activeViewTransition guard.
 const withViewTransition = (fn) => {
   if (activeViewTransition) { try { activeViewTransition.skipTransition(); } catch (e) {} }
   activeViewTransition = document.startViewTransition(fn);
   return activeViewTransition;
 };
 
-// view-transition-name turns an element into a containing block and a
-// paint-containment root, which breaks anchor-name resolution for the
-// variant chips and the fixed controls pill if left in place — these
-// names must exist for the lifetime of a single transition only.
 const nameTiles = (grid, on) => {
   grid.querySelectorAll('.app-card').forEach((c, i) => {
     if (on) { c.style.viewTransitionName = `tile-${i}`; c.style.viewTransitionClass = 'tile'; }
@@ -2170,10 +2063,7 @@ const activateTab = (id, opts = {}) => {
   if (!supportsAnchor) moveIndicatorLegacy(activeBtn, instant);
 
   if (!instant && prevId && prevId !== id) {
-    // Under anchor positioning the indicator's position is driven purely
-    // by CSS (inset-inline-start/end), so the legacy path's squash-on-
-    // travel never applies there — layer an explicit vertical squash on
-    // top so it still reads as one liquid piece separating and rejoining.
+
     const ind = document.getElementById('tabIndicator');
     if (ind) {
       ind.classList.add('is-traveling');
@@ -2196,16 +2086,12 @@ const activateTab = (id, opts = {}) => {
     run();
     rendered = Promise.resolve();
   } else if (document.startViewTransition && supportsTileTransitions) {
-    // The flagship transition: tile n morphs into tile n across the tab
-    // boundary instead of the whole grid sliding out and back in. Tab
-    // counts differ (7/4/3), so surplus tiles have no counterpart and
-    // correctly just fade out via lx-tile-out.
+
     nameTiles(g, true);
     const vt = withViewTransition(() => { run(); nameTiles(g, true); });
     rendered = vt.finished.catch(() => {}).finally(() => { activeViewTransition = null; nameTiles(g, false); });
   } else if (document.startViewTransition) {
-    // Fallback for browsers without view-transition-class: the whole
-    // grid slides, named only for this one transition's duration.
+
     g.style.viewTransitionName = 'grid';
     const vt = withViewTransition(run);
     rendered = vt.finished.catch(() => {}).finally(() => { activeViewTransition = null; g.style.viewTransitionName = ''; });
@@ -2406,16 +2292,9 @@ let paletteActiveIndex = -1;
 let paletteActionIndex = 0;
 let paletteZone = 'list';
 let paletteTryPicks = null;
-// Armed for exactly one render — see the entrance-armed class on
-// #paletteResults above.
+
 let paletteEntranceArmed = false;
-// Identity of the entry (+ language) currently painted into the detail
-// pane. Typing re-runs renderPaletteResults on every keystroke, but most
-// keystrokes don't actually change which app is "selected" — without this
-// guard the detail pane's entrance animation (and every child node) was
-// rebuilt from scratch every keystroke, producing a visible flicker while
-// typing. Skip the rebuild entirely when neither the entry nor the
-// language has actually changed.
+
 let lastDetailKey = null;
 
 const getActionsForEntry = (entry) => {
@@ -2559,11 +2438,6 @@ const renderPaletteDetail = () => {
   let host = '';
   try { host = new URL(app.url).hostname; } catch (e) {}
 
-  // Per-app closedReason (if present in the data) is an optional
-  // { ar, en } override for the generic "temporarily closed" message —
-  // e.g. "Migrating to a new server until Sunday" — resolved through
-  // loc() like any other bilingual data field, falling back to the
-  // shared default string when an app doesn't specify one.
   const reasonHtml = app.closed ? `<p class="palette-detail-reason">${escapeHtml(app.closedReason ? loc(app.closedReason) : t('closedReasonDefault'))}</p>` : '';
 
   detail.innerHTML = `
@@ -2805,9 +2679,6 @@ const setupInteractions = () => {
       return;
     }
 
-    // Circular reveal centered on the button that was actually clicked —
-    // grow a clip-path circle over the new theme's snapshot rather than
-    // letting the default view-transition cross-fade play.
     const btn = e.currentTarget;
     const r = btn.getBoundingClientRect();
     const x = r.left + r.width / 2;
@@ -2915,10 +2786,6 @@ const setupInteractions = () => {
   const paletteDialog = document.getElementById('lx-palette');
   const paletteInput = document.getElementById('paletteInput');
 
-  // A short debounce so a fast typing burst coalesces into one render
-  // instead of one per keystroke — comfortably under human perception
-  // (~100ms) so it never reads as lag, but it meaningfully cuts down
-  // how often the results list and detail pane get rebuilt while typing.
   let inputDebounce;
   const scheduleSearch = (raw) => {
     clearTimeout(inputDebounce);
@@ -2937,8 +2804,6 @@ const setupInteractions = () => {
       return;
     }
     if (!raw) {
-      // Clearing the box (backspace-to-empty, Escape-then-retype) should
-      // always feel instant — don't debounce back to the recents view.
       clearTimeout(inputDebounce);
       renderPaletteResults('');
       return;
