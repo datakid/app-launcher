@@ -90,7 +90,7 @@ a, button { cursor: pointer; }
 
 #gradient-canvas {
   position: fixed; inset: 0; z-index: 0;
-  pointer-events: none; filter: blur(32px);
+  pointer-events: none; filter: blur(60px);
   transform: scale(1.3); opacity: 0;
   animation: fadeIn 2.5s var(--ease-lux) forwards;
 }
@@ -679,9 +679,9 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
    / nameTiles); leaving them on permanently would make every card a
    containing block and break anchor-name resolution for the variant
    chips and the fixed controls pill. */
-::view-transition-group(.tile) { animation-duration: .52s; animation-timing-function: var(--ease-lux); }
-::view-transition-old(.tile)   { animation: lx-tile-out .26s var(--ease-lux) both; }
-::view-transition-new(.tile)   { animation: lx-tile-in  .40s var(--ease-lux) .06s both; }
+::view-transition-group(.tile) { animation-duration: .3s; animation-timing-function: var(--ease-lux); }
+::view-transition-old(.tile)   { animation: lx-tile-out .14s var(--ease-lux) both; }
+::view-transition-new(.tile)   { animation: lx-tile-in  .22s var(--ease-lux) .05s both; }
 @keyframes lx-tile-out { to   { opacity: 0; transform: scale(.97); } }
 @keyframes lx-tile-in  { from { opacity: 0; transform: scale(1.02); } }
 
@@ -781,6 +781,11 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   animation: paletteItemIn .3s var(--ease-lux) both;
   animation-delay: calc(min(var(--n, 0), 8) * 20ms);
 }
+
+/* The stagger is a nice one-time touch when the palette opens — replaying
+   it on every keystroke (the list re-renders on every debounced input)
+   is what read as flicker. Only armed for the render right after open. */
+#paletteResults:not(.entrance-armed) .palette-item { animation: none; }
 
 @keyframes paletteItemIn { from { opacity: 0; transform: translateY(6px); } }
 
@@ -2401,6 +2406,9 @@ let paletteActiveIndex = -1;
 let paletteActionIndex = 0;
 let paletteZone = 'list';
 let paletteTryPicks = null;
+// Armed for exactly one render — see the entrance-armed class on
+// #paletteResults above.
+let paletteEntranceArmed = false;
 // Identity of the entry (+ language) currently painted into the detail
 // pane. Typing re-runs renderPaletteResults on every keystroke, but most
 // keystrokes don't actually change which app is "selected" — without this
@@ -2494,6 +2502,9 @@ const renderPaletteResults = (query) => {
   paletteActiveIndex = paletteItems.length ? 0 : -1;
   paletteActionIndex = 0;
   paletteZone = 'list';
+
+  paletteResults.classList.toggle('entrance-armed', paletteEntranceArmed);
+  paletteEntranceArmed = false; // consumed — only the render right after open gets the stagger
 
   paletteResults.innerHTML = html || `<li class="palette-empty">${escapeHtml(t('noResults'))}</li>`;
 
@@ -2729,6 +2740,7 @@ const openPalette = () => {
   input.value = '';
   paletteTryPicks = null;
   lastDetailKey = null;
+  paletteEntranceArmed = true;
   renderPaletteResults('');
   document.querySelector('.container').classList.add('is-dollied');
   document.querySelector('.controls-pill').classList.add('is-dollied');
