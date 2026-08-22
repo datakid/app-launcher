@@ -1061,7 +1061,14 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
     {
       "id": "core", "label": { "ar": "الأساسية", "en": "Core" }, "icon": "fa-layer-group", "accent": "#7c9bff", "key": 0,
       "apps": [
-        { "id": "ledger-form", "title": { "ar": "خارجي 2", "en": "Ledger Form" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true },
+        {
+          "id": "ledger-form", "title": { "ar": "خارجي 2", "en": "Ledger Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
+          "variants": [
+            { "id": "new", "label": { "ar": "الجديد", "en": "New" }, "url": "https://datakid-github-io.vercel.app/", "icon": "fa-bolt" },
+            { "id": "legacy", "label": { "ar": "القديم", "en": "Legacy" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders" }
+          ],
+          "defaultVariant": 0
+        },
         { "id": "parser", "title": { "ar": "خارجي 0", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"] },
         { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"] },
         { "id": "drug-list", "title": { "ar": "لستة الادوية", "en": "Drug List" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-search", "gradient": ["#5e8df0", "#7dd3fc", "#075985"] },
