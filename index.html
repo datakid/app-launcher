@@ -180,7 +180,7 @@ h1 {
 
 .fonts-ready h1 { animation: shimmerText 3.6s var(--ease-lux) .35s 1 both; }
 
-@keyframes shimmerText { to { background-position: 200% center; } }
+@keyframes shimmerText { to { background-position: 100% center; } }
 @keyframes fadeIn { to { opacity: 1; } }
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-16px); filter: blur(5px); }
@@ -342,10 +342,11 @@ h1 {
 
 .card-glow {
   position: absolute; inset: 0;
-  background: radial-gradient(circle var(--glow-r, 600px) at var(--mx, 50%) var(--my, 150%), var(--tint), transparent 60%);
+  background: radial-gradient(circle var(--glow-r, 600px) at var(--mx) var(--glow-y, 118%), var(--tint), transparent 60%);
   opacity: 0; pointer-events: none; z-index: 0;
   transition: opacity 0.8s var(--ease-lux);
 }
+.app-card.is-tracking .card-glow { --glow-y: var(--my); }
 
 .app-card:hover, .app-card:focus-within { --tz: 14px; --sc: 1.006; }
 .app-card:active { --sc: .992; }
@@ -403,8 +404,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   width: clamp(46px, 6.4vh, 56px); height: clamp(46px, 6.4vh, 56px);
   border-radius: 13px;
   background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 28%) calc(28% - var(--ty,0) * 18%),
-      rgba(255,255,255,.42), transparent 68%),
+    radial-gradient(60% 55% at 50% 28%, rgba(255,255,255,.42), transparent 68%),
     linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   display: flex; align-items: center; justify-content: center;
   box-shadow:
@@ -427,16 +427,22 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 .app-icon-wrapper::before {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background:
-    radial-gradient(28% 22% at calc(50% - var(--tx,0) * 34%) calc(30% - var(--ty,0) * 26%),
-      rgba(255,255,255,.85), rgba(255,255,255,0) 70%);
+    radial-gradient(72% 56% at calc(50% - var(--tx,0) * 15%) calc(24% - var(--ty,0) * 11%),
+      rgba(255,255,255,.5) 0%, rgba(255,255,255,.15) 44%, rgba(255,255,255,0) 80%);
   mix-blend-mode: plus-lighter;
-  opacity: calc(.38 * var(--hov, 0));
+  opacity: calc(.24 * var(--hov, 0));
+}
+
+:root[data-theme="light"] .app-icon-wrapper::before {
+  background:
+    radial-gradient(72% 56% at calc(50% - var(--tx,0) * 15%) calc(24% - var(--ty,0) * 11%),
+      rgba(255,255,255,.38) 0%, rgba(255,255,255,.11) 44%, rgba(255,255,255,0) 80%);
+  opacity: calc(.18 * var(--hov, 0));
 }
 
 :root[data-theme="light"] .app-icon-wrapper {
   background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 28%) calc(28% - var(--ty,0) * 18%),
-      rgba(255,255,255,.28), transparent 68%),
+    radial-gradient(60% 55% at 50% 28%, rgba(255,255,255,.28), transparent 68%),
     linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   box-shadow:
     0 calc(10px + var(--ty,0) * 4px) 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
@@ -1046,6 +1052,17 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
     transition-property: opacity, color, background-color, border-color, box-shadow;
   }
   #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
+}
+
+@media (forced-colors: active) {
+  h1, .app-title {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: CanvasText;
+  }
+  .card-glow, .closed-tint, .palette-detail-slab { display: none; }
+  .app-card::after { display: none; }
+  .app-card { border: 1px solid CanvasText; }
 }
 </style>
 </head>
