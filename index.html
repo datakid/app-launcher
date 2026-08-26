@@ -53,6 +53,10 @@
   --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
   --ease-pill: linear(0, 0.42 8.4%, 1.14 24.4%, 0.88 39.6%, 1.03 56.4%, 0.98 73.2%, 1 100%);
+  --dur-micro: 160ms;
+  --dur-fast: 300ms;
+  --dur-base: 380ms;
+  --dur-slow: 620ms;
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
   --ui-font: 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --display-font: 'El Messiri', var(--ui-font);
@@ -70,8 +74,6 @@
 @property --live-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
 @property --mx { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
 @property --my { syntax: '<length-percentage>'; inherits: true; initial-value: -20%; }
-@property --enter-y { syntax: '<length>'; inherits: false; initial-value: 0px; }
-@property --breathe { syntax: '<number>'; inherits: false; initial-value: 0; }
 @property --tx { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --ty { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tz { syntax: '<length>'; inherits: false; initial-value: 0px; }
@@ -231,18 +233,21 @@ h1 {
   --tint: var(--c1, #7c9bff);
   --c2: var(--tint);
   --c3: var(--tint);
+  --tint-ink: var(--c1, #7c9bff);
 }
 @supports (color: oklch(from red l c h)) {
   .app-card, .palette-item, #paletteDetail, #lx-palette {
     --tint: oklch(from var(--c1, #7c9bff) clamp(.62, l, .76) clamp(.07, c, .155) h);
     --c2: oklch(from var(--tint) calc(l + .12) calc(c * .82) h);
     --c3: oklch(from var(--tint) calc(l - .21) c h);
+    --tint-ink: var(--tint);
   }
   :root[data-theme="light"] .app-card,
   :root[data-theme="light"] .palette-item,
   :root[data-theme="light"] #paletteDetail,
   :root[data-theme="light"] #lx-palette {
     --tint: oklch(from var(--c1, #7c9bff) clamp(.52, l, .66) clamp(.08, c, .17) h);
+    --tint-ink: oklch(from var(--c1) clamp(.40, l, .52) clamp(.10, c, .19) h);
   }
 }
 @supports (color: oklch(from red l c h)) and (color: color(display-p3 1 1 1)) {
@@ -269,15 +274,15 @@ h1 {
   --hov: 0;
   --depth: 7px;
   animation: cardEnter 0.7s var(--ease-lux) both, lx-float 9s ease-in-out infinite alternate;
-  animation-delay: 0s, calc(var(--i, 0) * -1.37s);
+  animation-delay: 0s, calc(0.95s + var(--i, 0) * 0.29s);
   transform: perspective(1600px) rotateX(calc(var(--ty) * -2.2deg)) rotateY(calc(var(--tx) * 2.2deg)) translateZ(var(--tz)) scale3d(var(--sc), var(--sc), var(--sc));
-  translate: 0 calc(var(--enter-y, 0px) - var(--breathe, 0) * 0.6px);
   transition:
-    box-shadow 0.32s var(--ease-lux), border-color 0.32s var(--ease-lux),
-    filter 0.32s var(--ease-lux), opacity 0.32s var(--ease-lux),
-    background 0.32s var(--ease-lux),
-    --hov 0.42s var(--ease-spring),
-    --sc 0.34s var(--ease-lux);
+    box-shadow var(--dur-fast) var(--ease-lux),
+    border-color var(--dur-fast) var(--ease-lux),
+    background-color var(--dur-fast) var(--ease-lux),
+    opacity var(--dur-fast) var(--ease-lux),
+    --hov var(--dur-base) var(--ease-spring),
+    --sc var(--dur-base) var(--ease-spring);
 }
 .app-card:hover, .app-card:focus-within { --hov: 1; }
 
@@ -290,23 +295,23 @@ h1 {
 :root[data-theme="dark"] .app-card { border-color: rgba(255,255,255,.055); }
 
 @keyframes cardEnter {
-  from { opacity: 0; scale: .985; --enter-y: 14px; }
-  to { opacity: 1; scale: 1; --enter-y: 0px; }
+  from { opacity: 0; scale: .985; translate: 0 14px; }
+  to   { opacity: 1; scale: 1;    translate: 0 0; }
 }
 
 @keyframes lx-float {
-  from { --breathe: -1; }
-  to { --breathe: 1; }
+  from { translate: 0 -0.6px; }
+  to   { translate: 0 0.6px; }
 }
 
 .app-card::before {
   content: ''; position: absolute; inset: -1px; border-radius: inherit;
   background: radial-gradient(circle 320px at var(--mx, 50%) var(--my, -20%), light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.085)), transparent 58%);
   opacity: 0; pointer-events: none; z-index: 2;
-  transition: opacity 0.6s var(--ease-lux); mix-blend-mode: overlay;
+  transition: opacity var(--dur-base) var(--ease-lux); mix-blend-mode: overlay;
 }
 :root[data-theme="light"] .app-card::before {
-  background: radial-gradient(circle 240px at var(--mx, 50%) var(--my, -20%), rgba(255,255,255,0.14), transparent 62%);
+  background: radial-gradient(circle 240px at var(--mx, 50%) var(--my, -20%), rgba(255,255,255,0.2), transparent 62%);
   mix-blend-mode: soft-light;
 }
 
@@ -344,7 +349,7 @@ h1 {
   position: absolute; inset: 0;
   background: radial-gradient(circle var(--glow-r, 600px) at var(--mx) var(--glow-y, 118%), var(--tint), transparent 60%);
   opacity: 0; pointer-events: none; z-index: 0;
-  transition: opacity 0.8s var(--ease-lux);
+  transition: opacity var(--dur-slow) var(--ease-lux);
 }
 .app-card.is-tracking .card-glow { --glow-y: var(--my); }
 
@@ -359,11 +364,13 @@ h1 {
 }
 
 :root[data-theme="light"] .app-card:hover, :root[data-theme="light"] .app-card:focus-within {
-  box-shadow: var(--shadow-deep), inset 0 2px 10px rgba(255,255,255,0.95);
+  box-shadow: var(--shadow-deep),
+    0 18px 40px -22px color-mix(in oklab, var(--tint) 42%, transparent),
+    inset 0 2px 10px rgba(255,255,255,0.95);
 }
 
 .app-card:hover .card-glow, .app-card:focus-within .card-glow { opacity: 0.09; }
-:root[data-theme="light"] .app-card:hover .card-glow, :root[data-theme="light"] .app-card:focus-within .card-glow { opacity: 0.04; }
+:root[data-theme="light"] .app-card:hover .card-glow, :root[data-theme="light"] .app-card:focus-within .card-glow { opacity: 0.065; }
 .app-card:hover::before, .app-card:focus-within::before { opacity: 1; }
 
 .bento-header, .bento-footer {
@@ -414,7 +421,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
     inset 0 calc(-1px - var(--ty,0) * 1.5px) 0 rgba(0,0,0,.3),
     inset 0 0 0 1px rgba(255,255,255,.10),
     inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
-  transition: transform 0.38s var(--ease-spring), box-shadow 0.6s var(--ease-lux);
+  transition: box-shadow var(--dur-fast) var(--ease-lux);
   position: relative; flex-shrink: 0;
   
   transform:
@@ -481,7 +488,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em;
   background: light-dark(rgba(255,255,255,0.7), rgba(0,0,0,0.3)); backdrop-filter: blur(12px);
   border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
-  transition: all 0.6s var(--ease-lux);
+  transition: color var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux);
 }
 
 .badge-new { color: #d9a83e; border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
@@ -509,10 +516,17 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   text-wrap: balance;
   transform: translate3d(calc(var(--tx, 0) * var(--depth) * 1.6), calc(var(--ty, 0) * var(--depth) * 1.6), 0) scale(calc(1 + .006 * var(--hov, 0)));
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
-  transition: transform 0.6s var(--ease-spring), background 0.6s var(--ease-lux);
-  background: linear-gradient(135deg, var(--text) 55%, color-mix(in oklab, var(--tint) 65%, var(--text)) 130%);
-  background-size: 180% auto; background-position: 0% center;
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  transition: background-position 480ms var(--ease-lux);
+  background-image: linear-gradient(135deg,
+    var(--text) 0%,
+    var(--text) 38%,
+    color-mix(in oklab, var(--tint-ink) 92%, var(--text)) 78%,
+    var(--tint-ink) 100%);
+  background-size: 200% auto;
+  background-position: 0% center;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
@@ -522,13 +536,6 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   font-style: normal;
   font-size: clamp(1.25rem, 2.85vh, 1.6rem);
   letter-spacing: -0.004em;
-}
-
-:root[data-theme="dark"] .app-title {
-  background: linear-gradient(135deg, var(--text) 30%, var(--tint) 150%);
-  background-size: 180% auto; background-position: 0% center;
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .app-card:hover .app-title, .app-card:focus-within .app-title { background-position: 100% center; }
@@ -541,7 +548,7 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   background: light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.08)); border: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.1));
   color: color-mix(in oklab, var(--tint) 80%, var(--text)); font-size: 0.65rem;
   opacity: 0; transform: translateY(4px) scale(0.8);
-  transition: opacity 0.5s var(--ease-lux), transform 0.5s var(--ease-spring);
+  transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring);
 }
 
 .app-card:hover .open-affordance, .app-card:focus-within .open-affordance { opacity: 0.9; transform: translateY(0) scale(1); }
@@ -1655,7 +1662,7 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   el.dataset.appId = app.id;
   el.style.gridColumn = colTrack || '';
   el.style.gridRow = rowTrack || '';
-  el.setAttribute('style', `${el.getAttribute('style') || ''}${gradVars(app.gradient)}`);
+  el.style.setProperty('--c1', app.gradient[0]);
   el.style.setProperty('--i', idx);
 
   const rowStart = rowTrack ? Number(rowTrack.split('/')[0]) : null;
@@ -1710,7 +1717,10 @@ const createCard = (app, idx, colTrack, rowTrack) => {
     const iconEl = el.querySelector('.app-icon');
     const linkEl = el.querySelector('.card-link-overlay');
 
+    let currentVariantIndex = variantIndex;
     const applyVariant = (i) => {
+      if (i === currentVariantIndex) return;
+      currentVariantIndex = i;
       const v = app.variants[i];
       if (!v) return;
       linkEl.href = v.url;
@@ -1721,8 +1731,9 @@ const createCard = (app, idx, colTrack, rowTrack) => {
         chip.setAttribute('aria-checked', String(ci === i));
       });
       if (!supportsAnchor) moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
+      clearTimeout(el._iconTimer);
       iconEl.style.opacity = '0';
-      setTimeout(() => {
+      el._iconTimer = setTimeout(() => {
         iconEl.className = `app-icon fas ${v.icon}`;
         iconEl.style.opacity = '1';
       }, 175);
@@ -1787,8 +1798,8 @@ const renderCards = (grid, categoryId) => {
   cards.forEach((c, i) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
     c.style.animationDelay = scrollDriven
-      ? `0s, calc(var(--i, ${i}) * -1.37s)`
-      : `${Math.round((dists[i] / max) * 220)}ms, calc(var(--i, ${i}) * -1.37s)`;
+      ? `0s, calc(0.95s + var(--i, ${i}) * 0.29s)`
+      : `${Math.round((dists[i] / max) * 220)}ms, calc(0.95s + var(--i, ${i}) * 0.29s)`;
     c.style.willChange = 'transform, opacity';
     c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
   });
@@ -1825,7 +1836,7 @@ const initPointerField = () => {
         c._springs = {
           tx: new Spring(200, 20, 0),
           ty: new Spring(200, 20, 0),
-          tz: new Spring(140, 26, 0),
+          tz: new Spring(180, 21, 0),
           reveal: new Spring(90, 19, 0)
         };
       }
@@ -1843,6 +1854,7 @@ const initPointerField = () => {
 
   const subscriber = {
     fixed(dt) {
+      pointerVX *= Math.exp(-dt / 0.14);
       if (pointerFieldDirty) measure();
       const wantsTilt = !reducedMotionMQ.matches;
 
@@ -1877,6 +1889,14 @@ const initPointerField = () => {
           s.tx.snap(); s.ty.snap(); s.tz.snap(); s.reveal.snap();
         }
       });
+
+      if (hasPointer) {
+        const k = 1 - Math.exp(-dt / 0.09);
+        sx += (px - sx) * k;
+        sy += (py - sy) * k;
+      } else {
+        sx = px; sy = py;
+      }
     },
 
     render() {
@@ -1888,8 +1908,15 @@ const initPointerField = () => {
         if (!r || !s) return;
 
         setIfChanged(c, '--reveal-o', s.reveal.v, 0.001);
-        setIfChanged(c, '--rx', px - r.left, 0.5, 'px');
-        setIfChanged(c, '--ry', py - r.top, 0.5, 'px');
+        if (s.reveal.v > 0.002 || s.reveal.to > 0) {
+          setIfChanged(c, '--rx', px - r.left, 0.5, 'px');
+          setIfChanged(c, '--ry', py - r.top, 0.5, 'px');
+        } else if ('--rx' in c._last) {
+          c.style.removeProperty('--rx');
+          c.style.removeProperty('--ry');
+          delete c._last['--rx'];
+          delete c._last['--ry'];
+        }
         setIfChanged(c, '--tx', s.tx.v, 0.001);
         setIfChanged(c, '--ty', s.ty.v, 0.001);
 
@@ -1922,16 +1949,12 @@ const initPointerField = () => {
 
       if (spot) {
         if (hasPointer) {
-          const now = performance.now();
-          const idle = now - lastMove > 2200;
-          const dxs = px - sx, dys = py - sy;
-          const moving = Math.abs(dxs) > 0.05 || Math.abs(dys) > 0.05;
-          if (moving) { sx += dxs * 0.14; sy += dys * 0.14; }
-          spot.style.setProperty('--sx', `${sx}px`);
-          spot.style.setProperty('--sy', `${sy}px`);
+          const idle = performance.now() - lastMove > 2200;
+          spot.style.setProperty('--sx', `${sx.toFixed(1)}px`);
+          spot.style.setProperty('--sy', `${sy.toFixed(1)}px`);
           spot.classList.add('is-active');
           spot.classList.toggle('is-idle', idle);
-          if (moving || !idle) alive = true;
+          if (!idle || Math.abs(px - sx) > 0.1 || Math.abs(py - sy) > 0.1) alive = true;
         } else {
           spot.classList.remove('is-active', 'is-idle');
         }
@@ -1944,12 +1967,19 @@ const initPointerField = () => {
   document.addEventListener('pointermove', (e) => {
     if (e.pointerType === 'touch') return;
     const now = performance.now();
+    if (!hasPointer) {
+      px = e.clientX; py = e.clientY;
+      sx = px; sy = py;
+      pointerVX = 0;
+      hasPointer = true;
+      lastMove = now;
+      Motion.wake();
+      return;
+    }
     const dt = Math.max((now - lastMove) / 1000, 1 / 240);
-    const rawVx = (e.clientX - px) / dt;
-    pointerVX += (rawVx - pointerVX) * 0.3;
+    const rawVx = clamp((e.clientX - px) / dt, -4000, 4000);
+    pointerVX += (rawVx - pointerVX) * (1 - Math.exp(-dt / 0.05));
     px = e.clientX; py = e.clientY;
-    if (!hasPointer) { sx = px; sy = py; }
-    hasPointer = true;
     lastMove = now;
     Motion.wake();
   }, { passive: true });
@@ -2007,7 +2037,7 @@ class OrbField {
   resize() {
     const oldW = this.cv.width, oldH = this.cv.height;
     const scale = 0.4;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = 1;
     this.cv.width = Math.round(window.innerWidth * scale * dpr);
     this.cv.height = Math.round(window.innerHeight * scale * dpr);
     this.cv.style.width = '100%';
@@ -2069,15 +2099,15 @@ class OrbField {
     });
   }
 
-  render() {
+  render(now) {
     if (document.hidden) return true;
 
     const idleFor = performance.now() - this.lastActive;
     if (idleFor > 20000 && this.idleScale === 0) return false;
-    if (idleFor > 20000) {
-      this.frameCount = (this.frameCount + 1) % 3;
-      if (this.frameCount !== 0) return true;
-    }
+
+    const minInterval = idleFor > 20000 ? 1 / 12 : 1 / 30;
+    if (this._lastDraw && now - this._lastDraw < minInterval) return true;
+    this._lastDraw = now;
 
     this.cx.clearRect(0, 0, this.cv.width, this.cv.height);
     this.cx.globalCompositeOperation = isLightTheme ? 'multiply' : 'screen';
