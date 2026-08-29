@@ -207,7 +207,10 @@ h1 {
   width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem;
-  transition: all 0.4s var(--ease-lux);
+  transition:
+    background-color 0.4s var(--ease-lux),
+    color 0.4s var(--ease-lux),
+    transform 0.4s var(--ease-lux);
 }
 
 .controls-pill button:hover {
@@ -273,7 +276,7 @@ h1 {
   contain: layout paint;
   --hov: 0;
   --depth: 7px;
-  animation: cardEnter 0.7s var(--ease-lux) both, lx-float 9s ease-in-out infinite alternate;
+  animation: cardEnter 0.7s var(--ease-lux) both, lx-float 18s ease-in-out infinite;
   animation-delay: 0s, calc(0.95s + var(--i, 0) * 0.29s);
   transform: perspective(1600px) rotateX(calc(var(--ty) * -2.2deg)) rotateY(calc(var(--tx) * 2.2deg)) translateZ(var(--tz)) scale3d(var(--sc), var(--sc), var(--sc));
   transition:
@@ -300,8 +303,9 @@ h1 {
 }
 
 @keyframes lx-float {
-  from { translate: 0 -0.6px; }
-  to   { translate: 0 0.6px; }
+  from { translate: 0 0; }
+  50%  { translate: 0 1.2px; }
+  to   { translate: 0 0; }
 }
 
 .app-card::before {
