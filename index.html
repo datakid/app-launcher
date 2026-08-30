@@ -1206,9 +1206,15 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
       "apps": [
         { "id": "to-do", "title": { "ar": "تقارير", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
         { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" },
-        { "id": "duckbench", "title": { "ar": "تحليل البيانات", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column", "gradient": ["#6a6dd2", "#c7d2fe", "#312e81"], "isNew": true, "since": "2026-08-11" },
         { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11" },
-        { "id": "draw-bayan", "title": { "ar": "بيان", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-08-30" }
+        {
+          "id": "data-analysis", "title": { "ar": "تحليل بيانات", "en": "Data Analysis" }, "icon": "fa-magnifying-glass-chart", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-08-30",
+          "variants": [
+            { "id": "duckbench", "label": { "ar": "اعداد", "en": "Prep" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column" },
+            { "id": "draw", "label": { "ar": "بيان", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area" }
+          ],
+          "defaultVariant": 0
+        }
       ]
     }
   ]
