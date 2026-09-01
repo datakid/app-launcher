@@ -70,7 +70,6 @@
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] { color-scheme: dark; }
 
-@property --glow-r { syntax: '<length>'; inherits: false; initial-value: 600px; }
 @property --live-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
 @property --mx { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
 @property --my { syntax: '<length-percentage>'; inherits: true; initial-value: -20%; }
@@ -230,7 +229,11 @@ h1 {
   gap: var(--gap);
 }
 
-.app-grid.is-auto-flow { grid-template-rows: none; grid-auto-rows: minmax(160px, 1fr); grid-auto-flow: row; }
+.app-grid.is-auto-flow {
+  grid-template-rows: none; grid-auto-rows: minmax(160px, 1fr); grid-auto-flow: row;
+  overflow-y: auto; overscroll-behavior: contain;
+  mask-image: linear-gradient(to bottom, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+}
 
 .app-card, .palette-item, #paletteDetail, #lx-palette {
   --tint: var(--c1, #7c9bff);
@@ -351,7 +354,7 @@ h1 {
 
 .card-glow {
   position: absolute; inset: 0;
-  background: radial-gradient(circle var(--glow-r, 600px) at var(--mx) var(--glow-y, 118%), var(--tint), transparent 60%);
+  background: radial-gradient(circle 600px at var(--mx) var(--glow-y, 118%), var(--tint), transparent 60%);
   opacity: 0; pointer-events: none; z-index: 0;
   transition: opacity var(--dur-slow) var(--ease-lux);
 }
@@ -409,7 +412,7 @@ h1 {
   pointer-events: none;
 }
 :root[data-theme="light"] .digit-badge { background: rgba(255,255,255,0.85); color: var(--text); }
-body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
+.app-grid:is(:hover, :focus-within) .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
 
 .app-icon-wrapper {
   width: clamp(46px, 6.4vh, 56px); height: clamp(46px, 6.4vh, 56px);
@@ -610,6 +613,11 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
 .card-hero .app-icon { font-size: clamp(2rem, 4vh, 2.4rem); }
 .card-hero .app-title { font-size: clamp(2.1rem, 4.4vh, 3rem); font-weight: 700; letter-spacing: 0; }
 .card-hero .open-affordance { width: 32px; height: 32px; font-size: 0.75rem; }
+
+.card-tall { justify-content: center; gap: clamp(1rem, 3vh, 1.75rem); }
+.card-tall .app-icon-wrapper { width: clamp(64px, 8.4vh, 84px); height: clamp(64px, 8.4vh, 84px); border-radius: 17px; }
+.card-tall .app-icon { font-size: clamp(1.7rem, 3.6vh, 2.2rem); }
+.card-tall .app-title { font-size: clamp(1.5rem, 3.4vh, 2.2rem); font-weight: 700; }
 
 .app-card.status-closed { opacity: .74; }
 .app-card.status-closed:hover, .app-card.status-closed:focus-within { opacity: .92; }
@@ -991,11 +999,11 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   .container { height: auto; min-height: 100dvh; padding-top: 5rem; padding-bottom: 2rem; }
   .app-grid {
     flex: none; display: grid;
-    grid-template-columns: repeat(2, 1fr); grid-template-rows: none;
+    grid-template-columns: repeat(2, 1fr) !important; grid-template-rows: none !important;
     grid-auto-rows: 220px;
   }
   .app-card { grid-column: auto !important; grid-row: auto !important; }
-  .app-card.card-wide, .app-card.card-hero { grid-column: span 2 !important; }
+  .app-card.card-wide, .app-card.card-hero, .app-card.card-tall { grid-column: span 2 !important; }
   .card-hero { flex-direction: column; align-items: flex-start; justify-content: space-between; }
   .card-hero .bento-header { width: 100%; justify-content: space-between; gap: 0; }
   .card-hero .bento-footer { width: 100%; justify-content: flex-end; }
@@ -1014,11 +1022,11 @@ body.is-alt-down .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform:
   html, body { height: auto; min-height: 100dvh; overflow-y: auto; overflow-x: hidden; }
   body { display: block; }
   .container { height: auto; padding-top: 5rem; padding-bottom: 2rem; gap: 1rem; }
-  .app-grid { flex: none; grid-template-columns: 1fr; grid-auto-rows: 180px; gap: 1rem; }
-  .app-card, .app-card.card-wide, .app-card.card-hero { grid-column: 1 / -1 !important; grid-row: auto !important; }
-  .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper { width: 60px; height: 60px; border-radius: 16px; }
-  .card-wide .app-icon, .card-hero .app-icon { font-size: 1.6rem; }
-  .card-wide .app-title, .card-hero .app-title { font-size: 1.6rem; }
+  .app-grid { flex: none; grid-template-columns: 1fr !important; grid-template-rows: none !important; grid-auto-rows: 180px; gap: 1rem; }
+  .app-card, .app-card.card-wide, .app-card.card-hero, .app-card.card-tall { grid-column: 1 / -1 !important; grid-row: auto !important; }
+  .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper, .card-tall .app-icon-wrapper { width: 60px; height: 60px; border-radius: 16px; }
+  .card-wide .app-icon, .card-hero .app-icon, .card-tall .app-icon { font-size: 1.6rem; }
+  .card-wide .app-title, .card-hero .app-title, .card-tall .app-title { font-size: 1.6rem; }
   h1 { font-size: 2.6rem; }
   .tab-rail { max-width: 100%; overflow-x: auto; }
   #lx-palette { margin-top: 8vh; }
@@ -1458,7 +1466,7 @@ const STRINGS = {
   hintClose: { ar: 'إغلاق', en: 'Close' },
   badgeNew: { ar: 'جديد', en: 'New' },
   badgeClosed: { ar: 'مغلق', en: 'Closed' },
-  altShortcutHint: { ar: 'اضغط Alt+{n} للفتح', en: 'Press Alt+{n} to open' },
+  altShortcutHint: { ar: 'اضغط {n} للفتح', en: 'Press {n} to open' },
   closedReasonDefault: { ar: 'هذا الرابط مغلق مؤقتًا وقد لا يعمل عند فتحه.', en: 'This link is temporarily closed and may not work.' },
   chooseVersionOf: { ar: 'اختر نسخة', en: 'Choose a version of' },
   actionNewTab: { ar: 'فتح في تبويب جديد', en: 'Open in new tab' },
@@ -1612,6 +1620,91 @@ const variantFor = (colTrack) => {
   return null;
 };
 
+const BentoSolver = (() => {
+  const COLS = 12;
+  const MAX_ROWS = 4;
+
+  const cadence = (width, k) => {
+    const base = Math.floor(width / k);
+    const rem = width - base * k;
+    const parts = new Array(k).fill(base);
+    for (let i = 0; i < rem; i++) parts[i] += 1;
+    return parts;
+  };
+
+  const maxKForWidth = (width) => Math.max(1, Math.floor(width / 2));
+
+  const distribute = (total, slots) => {
+    const base = Math.floor(total / slots);
+    const rem = total - base * slots;
+    const counts = new Array(slots).fill(base);
+    for (let i = 0; i < rem; i++) counts[i] += 1;
+    return counts;
+  };
+
+  const rowsFor = (n) => {
+    if (n <= 2) return 1;
+    if (n <= 6) return 2;
+    if (n <= 12) return 3;
+    return 4;
+  };
+
+  const tryCompose = (n, rows) => {
+    const useHero = rows >= 2 && n >= 4;
+    const heroRows = useHero ? 2 : 0;
+    const heroCols = useHero ? 6 : 0;
+    const remaining = n - (useHero ? 1 : 0);
+    const slots = rows;
+    const slotWidths = [];
+    for (let i = 0; i < slots; i++) slotWidths.push(i < heroRows ? (COLS - heroCols) : COLS);
+
+    const cap = slotWidths.reduce((s, w) => s + maxKForWidth(w), 0);
+    if (remaining > cap) return null;
+
+    const counts = distribute(remaining, slots).map((c) => Math.max(c, 0));
+    for (let i = 0; i < slots; i++) counts[i] = Math.min(counts[i], maxKForWidth(slotWidths[i]));
+    let assigned = counts.reduce((a, b) => a + b, 0);
+    let deficit = remaining - assigned;
+    let guard = 0;
+    while (deficit > 0 && guard++ < 100) {
+      let moved = false;
+      for (let i = 0; i < slots; i++) {
+        if (deficit <= 0) break;
+        if (counts[i] < maxKForWidth(slotWidths[i])) { counts[i]++; deficit--; moved = true; }
+      }
+      if (!moved) break;
+    }
+    if (deficit > 0) return null;
+
+    const items = [];
+    if (useHero) items.push({ col: heroCols, row: heroRows, rowIndex: 0 });
+    for (let i = 0; i < slots; i++) {
+      const k = counts[i];
+      if (k <= 0) continue;
+      const parts = cadence(slotWidths[i], k);
+      for (const p of parts) items.push({ col: p, row: 1, rowIndex: i });
+    }
+    return { rows, items };
+  };
+
+  const generate = (n) => {
+    if (!Number.isFinite(n) || n <= 0) return null;
+    let rows = rowsFor(n);
+    let result = tryCompose(n, rows);
+    while (!result && rows < MAX_ROWS) { rows++; result = tryCompose(n, rows); }
+    return result;
+  };
+
+  return { generate, COLS };
+})();
+
+const variantForSpan = (col, row) => {
+  if (row >= 2) return 'card-tall';
+  if (col >= 12) return 'card-hero';
+  if (col >= 6) return 'card-wide';
+  return null;
+};
+
 const getSelectedVariantIndex = (app) => {
   if (!app.variants) return -1;
   try {
@@ -1663,7 +1756,7 @@ const isFresh = (app) => {
 let pointerFieldDirty = true;
 let pointerVX = 0;
 
-const createCard = (app, idx, colTrack, rowTrack) => {
+const createCard = (app, idx, placement, cat) => {
   const el = document.createElement('div');
   const variantIndex = getSelectedVariantIndex(app);
   const activeVariant = app.variants ? app.variants[variantIndex] : null;
@@ -1672,15 +1765,30 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   const activeLabel = activeVariant ? `${title} — ${loc(activeVariant.label)}` : title;
   el.classList.add('app-card');
   el.dataset.appId = app.id;
-  el.style.gridColumn = colTrack || '';
-  el.style.gridRow = rowTrack || '';
+
+  let octave = 0;
+  let variant = null;
+  if (placement && placement.type === 'explicit') {
+    el.style.gridColumn = placement.col || '';
+    el.style.gridRow = placement.row || '';
+    const rowStart = placement.row ? Number(placement.row.split('/')[0]) : null;
+    octave = rowStart ? clamp(1 - (rowStart - 1), -1, 1) : 0;
+    variant = variantFor(placement.col);
+  } else if (placement && placement.type === 'span') {
+    el.style.gridColumn = `span ${placement.col}`;
+    el.style.gridRow = placement.row > 1 ? `span ${placement.row}` : '';
+    octave = clamp(1 - placement.rowIndex, -1, 1);
+    variant = variantForSpan(placement.col, placement.row);
+  } else {
+    el.style.gridColumn = '';
+    el.style.gridRow = '';
+  }
+
   el.style.setProperty('--c1', app.gradient[0]);
   el.style.setProperty('--i', idx);
 
-  const rowStart = rowTrack ? Number(rowTrack.split('/')[0]) : null;
-  const octave = rowStart ? clamp(1 - (rowStart - 1), -1, 1) : 0;
+  const soundIndex = cat ? cat.key + idx : idx;
 
-  const variant = variantFor(colTrack);
   if (variant) el.classList.add(variant);
   if (app.closed) el.classList.add('status-closed');
 
@@ -1721,8 +1829,8 @@ const createCard = (app, idx, colTrack, rowTrack) => {
   `;
 
   el.addEventListener('click', () => sfx.click());
-  el.addEventListener('mouseenter', () => { sfx.hover(idx, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
-  el.addEventListener('focusin', () => { sfx.hover(idx, { octave }); setInteractionOrigin(el); });
+  el.addEventListener('mouseenter', () => { sfx.hover(soundIndex, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
+  el.addEventListener('focusin', () => { sfx.hover(soundIndex, { octave }); setInteractionOrigin(el); });
 
   if (app.variants) {
     const chipsEl = el.querySelector('.variant-chips');
@@ -1784,14 +1892,35 @@ const setInteractionOrigin = (el) => {
 
 const renderCards = (grid, categoryId) => {
   const cat = categories.find(c => c.id === categoryId);
-  const layout = LAYOUTS[cat.apps.length];
-  if (!layout) console.warn(`LinkExpress: no curated bento layout for ${cat.apps.length} apps in "${cat.id}" — falling back to auto-flow.`);
-  grid.classList.toggle('is-auto-flow', !layout);
+  const n = cat.apps.length;
+  const curated = LAYOUTS[n];
+  const generated = curated ? null : BentoSolver.generate(n);
+
+  grid.classList.toggle('is-auto-flow', !curated && !generated);
+
+  if (curated) {
+    grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+    grid.style.gridTemplateRows = 'repeat(3, 1fr)';
+  } else if (generated) {
+    grid.style.gridTemplateColumns = `repeat(${BentoSolver.COLS}, 1fr)`;
+    grid.style.gridTemplateRows = `repeat(${generated.rows}, 1fr)`;
+  } else {
+    grid.style.gridTemplateColumns = '';
+    grid.style.gridTemplateRows = '';
+  }
+
   const frag = document.createDocumentFragment();
   cat.apps.forEach((app, i) => {
-    const track = layout ? layout[i] : null;
-    const card = createCard(app, i, track ? track[0] : null, track ? track[1] : null);
-    if (!layout && i === 0) card.classList.add('card-wide');
+    let placement = null;
+    if (curated) {
+      const track = curated[i];
+      placement = { type: 'explicit', col: track[0], row: track[1] };
+    } else if (generated) {
+      const item = generated.items[i];
+      placement = { type: 'span', col: item.col, row: item.row, rowIndex: item.rowIndex };
+    }
+    const card = createCard(app, i, placement, cat);
+    if (!curated && !generated && i === 0) card.classList.add('card-wide');
     frag.appendChild(card);
   });
   grid.innerHTML = '';
@@ -1835,14 +1964,9 @@ const initPointerField = () => {
 
   const measure = () => {
     cards = Array.from(grid.querySelectorAll('.app-card'));
-    const cr = container.getBoundingClientRect();
     cards.forEach(c => {
-      c._r = {
-        left: cr.left + c.offsetLeft,
-        top: cr.top + c.offsetTop,
-        right: cr.left + c.offsetLeft + c.offsetWidth,
-        bottom: cr.top + c.offsetTop + c.offsetHeight
-      };
+      const r = c.getBoundingClientRect();
+      c._r = { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
       if (!c._springs) {
 
         c._springs = {
@@ -2025,6 +2149,15 @@ const initPointerField = () => {
 
 let isLightTheme = false;
 
+const hueFromHex = (hex) => {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  if (!d) return 220;
+  const h = mx === r ? ((g - b) / d + (g < b ? 6 : 0)) : mx === g ? ((b - r) / d + 2) : ((r - g) / d + 4);
+  return h * 60;
+};
+
 class OrbField {
   constructor(canvas) {
     this.cv = canvas;
@@ -2091,6 +2224,15 @@ class OrbField {
   retarget() {
     const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
     this.orbs.forEach((o, i) => { o.hueSpring.to = palette[i % 3]; });
+    this.lastActive = performance.now();
+    Motion.wake();
+  }
+
+  retargetCategory(hex) {
+    const hue = hueFromHex(hex);
+    this.orbs.forEach((o, i) => {
+      o.hueSpring.to = (hue + (i - (this.orbs.length - 1) / 2) * 22 + 360) % 360;
+    });
     this.lastActive = performance.now();
     Motion.wake();
   }
@@ -2182,7 +2324,11 @@ const applyTheme = (explicit) => {
   btn.setAttribute('aria-label', isLight ? t('themeToDark') : t('themeToLight'));
   btn.querySelector('i').className = `fas ${isLight ? 'fa-moon' : 'fa-sun'}`;
 
-  if (window.bgAnim) window.bgAnim.retarget();
+  if (window.bgAnim) {
+    window.bgAnim.retarget();
+    const activeCat = categories.find(c => c.id === currentTabId);
+    if (activeCat) window.bgAnim.retargetCategory(activeCat.accent);
+  }
 };
 
 const updateThemeButtonLabel = () => {
@@ -2313,6 +2459,7 @@ const catIndex = (id) => categories.findIndex(c => c.id === id);
 const applyTabAccent = (cat) => {
   const rail = document.getElementById('tabRail');
   if (rail && cat) rail.style.setProperty('--tab-accent', cat.accent);
+  if (cat) window.bgAnim?.retargetCategory(cat.accent);
 };
 
 const moveIndicatorLegacy = (btn, instant) => {
@@ -2599,6 +2746,7 @@ const allPaletteEntries = () => {
 
 const RECENTS_KEY = 'lx-recents';
 const RECENTS_CAP = 8;
+const FREQ_KEY = 'lx-freq';
 
 const getRecentIds = () => {
   try {
@@ -2615,12 +2763,31 @@ const pushRecent = (id) => {
   } catch (e) {}
 };
 
+const getFreqMap = () => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(FREQ_KEY) || '{}');
+    return stored && typeof stored === 'object' ? stored : {};
+  } catch (e) { return {}; }
+};
+
+const bumpFreq = (id) => {
+  try {
+    const map = getFreqMap();
+    map[id] = (map[id] || 0) + 1;
+    localStorage.setItem(FREQ_KEY, JSON.stringify(map));
+  } catch (e) {}
+};
+
 const getRecentEntries = (allEntries, limit) => {
   const ids = getRecentIds();
+  const freq = getFreqMap();
   const byId = new Map();
   allEntries.forEach(e => { if (!byId.has(e.app.id)) byId.set(e.app.id, e); });
+  const ranked = ids
+    .map((id, rank) => ({ id, score: (freq[id] || 0) + (ids.length - rank) * 0.5 }))
+    .sort((a, b) => b.score - a.score);
   const out = [];
-  for (const id of ids) {
+  for (const { id } of ranked) {
     const e = byId.get(id);
     if (e) out.push(e);
     if (out.length >= limit) break;
@@ -2930,6 +3097,7 @@ const executeAction = async (actionId) => {
   }
   if (actionId === 'new-tab' || actionId === 'same-tab') {
     pushRecent(entry.app.id);
+    bumpFreq(entry.app.id);
   }
   if (actionId === 'new-tab') {
     sfx.click();
@@ -3077,13 +3245,6 @@ const setupInteractions = () => {
     applyI18n();
   });
 
-  document.body.addEventListener('keydown', (e) => {
-    if (e.key === 'Alt') document.body.classList.add('is-alt-down');
-  });
-  document.body.addEventListener('keyup', (e) => {
-    if (e.key === 'Alt') document.body.classList.remove('is-alt-down');
-  });
-  window.addEventListener('blur', () => document.body.classList.remove('is-alt-down'));
 
   window.addEventListener('popstate', handleHashNav);
   window.addEventListener('hashchange', handleHashNav);
@@ -3218,7 +3379,7 @@ const setupInteractions = () => {
     e.code === code || chars.includes((e.key || '').toLowerCase());
 
   const eventDigit = (e) => {
-    if (!e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return 0;
+    if (e.altKey || e.shiftKey || e.ctrlKey || e.metaKey) return 0;
     const m = /^(?:Digit|Numpad)([1-9])$/.exec(e.code || '');
     if (m) return Number(m[1]);
     const cp = (e.key || '').length === 1 ? e.key.codePointAt(0) : 0;
