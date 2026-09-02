@@ -79,6 +79,7 @@
 @property --sc { syntax: '<number>'; inherits: false; initial-value: 1; }
 @property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
+:root { transition: --tab-accent 0.6s var(--ease-lux); }
 @property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
@@ -112,6 +113,7 @@ a, button { cursor: pointer; }
 }
 
 ::selection { background: color-mix(in oklab, var(--text) 22%, transparent); }
+.app-grid ::selection { background: color-mix(in oklab, var(--tab-accent) 35%, var(--text) 18%); }
 
 #gradient-canvas {
   position: fixed; inset: 0; z-index: 0;
@@ -122,7 +124,7 @@ a, button { cursor: pointer; }
 
 .scrim {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background: radial-gradient(circle at center, transparent 22%, var(--bg) 118%);
+  background: radial-gradient(circle at center, transparent 22%, color-mix(in oklab, var(--tab-accent) 3%, var(--bg)) 118%);
   transition: background 1s var(--ease-smooth);
 }
 
@@ -137,8 +139,8 @@ a, button { cursor: pointer; }
 .spotlight {
   position: fixed; inset: 0; z-index: 2; pointer-events: none;
   background:
-    radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03)), transparent 70%),
-    radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022)), transparent 70%);
+    radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--tab-accent) 5%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%),
+    radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--tab-accent) 5%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
   opacity: 0;
   transition: opacity 0.6s var(--ease-lux);
 }
@@ -212,12 +214,36 @@ h1 {
     transform 0.4s var(--ease-lux);
 }
 
-.controls-pill button:hover {
+.controls-pill:not(.is-magnetic) button:hover {
   background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)); color: var(--text);
   transform: scale(1.06);
 }
 
+.controls-pill.is-magnetic button { transition: background-color 0.4s var(--ease-lux), color 0.4s var(--ease-lux); }
+.controls-pill.is-magnetic button:hover { background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)); color: var(--text); }
+
 .controls-pill button[aria-pressed="true"] { color: var(--text); background: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.1)); }
+
+.lx-context-menu {
+  position: fixed; z-index: 300; min-width: 180px;
+  background: light-dark(rgba(255,255,255,0.92), rgba(28,26,24,0.92));
+  backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--border); border-radius: 14px; padding: 0.35rem;
+  box-shadow: var(--shadow-deep);
+  opacity: 0; transform: scale(0.92); transform-origin: top left; pointer-events: none;
+  transition: opacity 0.18s var(--ease-lux), transform 0.18s var(--ease-lux);
+}
+:root[dir="rtl"] .lx-context-menu { transform-origin: top right; }
+.lx-context-menu.is-open { opacity: 1; transform: scale(1); pointer-events: auto; }
+.lx-context-menu button {
+  display: flex; align-items: center; gap: 0.65rem; width: 100%;
+  padding: 0.55rem 0.7rem; border-radius: 9px; background: transparent; border: none;
+  color: var(--text); font-size: 0.85rem; text-align: start;
+}
+.lx-context-menu button:hover, .lx-context-menu button:focus-visible { background: var(--surface-hover); outline: none; }
+.lx-context-menu button i { width: 16px; text-align: center; color: var(--text-muted); font-size: 0.82rem; flex-shrink: 0; }
+.lx-context-menu button.is-active i { color: var(--tab-accent); }
+.lx-context-menu-sep { height: 1px; background: var(--border); margin: 0.3rem 0.2rem; }
 
 .controls-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.2rem; }
 
@@ -232,7 +258,10 @@ h1 {
 .app-grid.is-auto-flow {
   grid-template-rows: none; grid-auto-rows: minmax(160px, 1fr); grid-auto-flow: row;
   overflow-y: auto; overscroll-behavior: contain;
-  mask-image: linear-gradient(to bottom, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+}
+.app-grid.is-auto-flow.has-overflow:not(.at-bottom) {
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent 100%);
 }
 
 .app-card, .palette-item, #paletteDetail, #lx-palette {
@@ -793,6 +822,15 @@ h1 {
 #paletteInput { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--ui-font); font-size: 1.2rem; caret-color: var(--live-accent); }
 #paletteInput::placeholder { color: var(--text-muted); }
 
+.palette-input-wrap { position: relative; flex: 1; display: flex; align-items: center; }
+.palette-input-wrap #paletteInput { position: relative; z-index: 1; }
+.palette-ghost {
+  position: absolute; inset: 0; display: flex; align-items: center;
+  font-family: var(--ui-font); font-size: 1.2rem; white-space: pre; pointer-events: none;
+}
+.palette-ghost .ghost-typed { color: transparent; }
+.palette-ghost .ghost-tail { color: var(--text-muted); opacity: 0.55; }
+
 .palette-live-dot {
   width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
   background: var(--live-accent);
@@ -985,6 +1023,7 @@ h1 {
 .palette-action.is-active .palette-action-icon { background: var(--border-highlight); color: var(--text); }
 
 .palette-hints {
+  position: relative;
   display: flex; align-items: center; justify-content: center; gap: 1.4rem; flex-wrap: wrap;
   padding: 0.7rem 1.5rem; border-top: 1px solid var(--border);
   font-size: 0.72rem; color: var(--text-muted); flex-shrink: 0;
@@ -992,6 +1031,19 @@ h1 {
 }
 .palette-hints span { display: inline-flex; align-items: center; gap: 0.35rem; }
 .palette-hints kbd { font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.12rem 0.45rem; box-shadow: 0 1px 0 var(--border); }
+.palette-status {
+  position: absolute; inset-inline-start: 1.5rem; top: 50%; transform: translateY(-50%);
+  font-size: 0.72rem; color: var(--text-muted); opacity: 0.85; font-variant-numeric: tabular-nums;
+}
+.palette-status:empty { display: none; }
+
+.grid-empty {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.9rem; color: var(--text-muted); opacity: 0.7;
+  animation: cardEnter 0.7s var(--ease-lux) both;
+}
+.grid-empty i { font-size: 2.4rem; }
+.grid-empty span { font-size: 0.95rem; }
 
 @media (max-width: 1024px) {
   html, body { height: auto; min-height: 100dvh; overflow-y: auto; overflow-x: hidden; }
@@ -1138,8 +1190,11 @@ h1 {
 <dialog id="lx-palette" closedby="any" aria-label="لوحة الأوامر" data-i18n-aria="commandPaletteLabel">
   <div class="palette-input-row">
     <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-    <input id="paletteInput" type="text" role="combobox" aria-expanded="true" aria-controls="paletteResults"
-      aria-autocomplete="list" placeholder="ابحث عن تطبيق أو أداة…" autocomplete="off" spellcheck="false" data-i18n-placeholder="searchPlaceholder">
+    <div class="palette-input-wrap">
+      <span class="palette-ghost" id="paletteGhost" aria-hidden="true"></span>
+      <input id="paletteInput" type="text" role="combobox" aria-expanded="true" aria-controls="paletteResults"
+        aria-autocomplete="list" placeholder="ابحث عن تطبيق أو أداة…" autocomplete="off" spellcheck="false" data-i18n-placeholder="searchPlaceholder">
+    </div>
     <span class="palette-live-dot" aria-hidden="true"></span>
     <kbd>Esc</kbd>
   </div>
@@ -1148,6 +1203,7 @@ h1 {
     <div class="palette-detail" id="paletteDetail"></div>
   </div>
   <div class="palette-hints">
+    <span id="paletteStatus" class="palette-status" aria-hidden="true"></span>
     <span><kbd>↑↓</kbd> <span data-i18n="hintNavigate">تنقل</span></span>
     <span><kbd>⇥</kbd> <span data-i18n="hintSwitchPanel">تبديل اللوحة</span></span>
     <span><kbd>↵</kbd> <span data-i18n="hintOpen">فتح</span></span>
@@ -1478,6 +1534,10 @@ const STRINGS = {
   copyFailed: { ar: 'تعذر النسخ', en: "Couldn't copy" },
   nameCopied: { ar: 'تم نسخ الاسم', en: 'Name copied' },
   noResults: { ar: 'لا توجد نتائج', en: 'No results' },
+  ctxOpen: { ar: 'فتح', en: 'Open' },
+  ctxCopyLink: { ar: 'نسخ الرابط', en: 'Copy link' },
+  emptyCategory: { ar: 'لا توجد عناصر هنا بعد', en: 'Nothing here yet' },
+  resultsCountLabel: { ar: 'نتيجة', en: 'results' },
   noResultsMatch: { ar: 'لا توجد نتائج مطابقة', en: 'No matching results' },
   recentGroup: { ar: 'الأخيرة', en: 'Recent' },
   allGroup: { ar: 'الكل', en: 'All' },
@@ -1831,6 +1891,10 @@ const createCard = (app, idx, placement, cat) => {
   el.addEventListener('click', () => sfx.click());
   el.addEventListener('mouseenter', () => { sfx.hover(soundIndex, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
   el.addEventListener('focusin', () => { sfx.hover(soundIndex, { octave }); setInteractionOrigin(el); });
+  el.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    openCardContextMenu(el, e.clientX, e.clientY);
+  });
 
   if (app.variants) {
     const chipsEl = el.querySelector('.variant-chips');
@@ -1890,8 +1954,93 @@ const setInteractionOrigin = (el) => {
   lastInteractionPoint = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
 };
 
+let contextMenuEl = null;
+
+const closeContextMenu = () => {
+  if (contextMenuEl) contextMenuEl.classList.remove('is-open');
+};
+
+const buildContextMenu = () => {
+  if (contextMenuEl) return contextMenuEl;
+  contextMenuEl = document.createElement('div');
+  contextMenuEl.className = 'lx-context-menu';
+  contextMenuEl.setAttribute('role', 'menu');
+  document.body.appendChild(contextMenuEl);
+  document.addEventListener('pointerdown', (e) => {
+    if (contextMenuEl.classList.contains('is-open') && !contextMenuEl.contains(e.target)) closeContextMenu();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && contextMenuEl.classList.contains('is-open')) closeContextMenu();
+  });
+  window.addEventListener('resize', closeContextMenu, { passive: true });
+  window.addEventListener('scroll', closeContextMenu, { passive: true, capture: true });
+  return contextMenuEl;
+};
+
+const openCardContextMenu = (card, clientX, clientY) => {
+  const menu = buildContextMenu();
+  const linkEl = card.querySelector('.card-link-overlay');
+  const activeUrl = linkEl ? linkEl.href : '';
+  const variantChips = Array.from(card.querySelectorAll('.variant-chip'));
+
+  let itemsHtml = `
+    <button type="button" data-action="open" role="menuitem"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>${escapeHtml(t('ctxOpen'))}</button>
+    <button type="button" data-action="copy" role="menuitem"><i class="fas fa-copy" aria-hidden="true"></i>${escapeHtml(t('ctxCopyLink'))}</button>
+  `;
+  if (variantChips.length) {
+    itemsHtml += `<div class="lx-context-menu-sep" role="separator"></div>`;
+    variantChips.forEach((chip, i) => {
+      const active = chip.classList.contains('is-active');
+      itemsHtml += `<button type="button" data-variant="${i}" role="menuitemradio" aria-checked="${active}" class="${active ? 'is-active' : ''}"><i class="fas ${active ? 'fa-circle-dot' : 'fa-circle'}" aria-hidden="true"></i>${escapeHtml(chip.textContent)}</button>`;
+    });
+  }
+  menu.innerHTML = itemsHtml;
+
+  menu.querySelector('[data-action="open"]').addEventListener('click', () => {
+    sfx.click();
+    if (activeUrl) window.open(activeUrl, '_blank', 'noopener');
+    closeContextMenu();
+  });
+  menu.querySelector('[data-action="copy"]').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const ok = activeUrl ? await copyToClipboard(activeUrl) : false;
+    sfx.click();
+    btn.innerHTML = `<i class="fas ${ok ? 'fa-check' : 'fa-triangle-exclamation'}" aria-hidden="true"></i>${escapeHtml(ok ? t('linkCopied') : t('copyFailed'))}`;
+    setTimeout(closeContextMenu, 650);
+  });
+  menu.querySelectorAll('[data-variant]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const i = Number(btn.dataset.variant);
+      variantChips[i]?.click();
+      closeContextMenu();
+    });
+  });
+
+  menu.classList.add('is-open');
+  menu.style.left = '0px';
+  menu.style.top = '0px';
+  const rect = menu.getBoundingClientRect();
+  const pad = 8;
+  let x = clientX, y = clientY;
+  if (x + rect.width + pad > window.innerWidth) x = window.innerWidth - rect.width - pad;
+  if (y + rect.height + pad > window.innerHeight) y = window.innerHeight - rect.height - pad;
+  menu.style.left = `${Math.max(pad, x)}px`;
+  menu.style.top = `${Math.max(pad, y)}px`;
+};
+
 const renderCards = (grid, categoryId) => {
   const cat = categories.find(c => c.id === categoryId);
+  grid.classList.remove('has-overflow', 'at-bottom');
+
+  if (!cat.apps.length) {
+    grid.classList.remove('is-auto-flow');
+    grid.style.gridTemplateColumns = '';
+    grid.style.gridTemplateRows = '';
+    grid.innerHTML = `<div class="grid-empty"><i class="fas fa-box-open" aria-hidden="true"></i><span>${escapeHtml(t('emptyCategory'))}</span></div>`;
+    pointerFieldDirty = true;
+    return;
+  }
+
   const n = cat.apps.length;
   const curated = LAYOUTS[n];
   const generated = curated ? null : BentoSolver.generate(n);
@@ -1926,6 +2075,9 @@ const renderCards = (grid, categoryId) => {
   grid.innerHTML = '';
   grid.appendChild(frag);
   pointerFieldDirty = true;
+  if (grid.classList.contains('is-auto-flow')) {
+    grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
+  }
 
   const origin = lastInteractionPoint ?? railCenter();
   const cards = [...grid.children];
@@ -2147,6 +2299,66 @@ const initPointerField = () => {
   Motion.add(subscriber);
 };
 
+const initMagneticControls = () => {
+  const pill = document.querySelector('.controls-pill');
+  if (!pill) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const FIELD = 40, MAX_PULL = 6;
+  let buttons = [];
+  let px = -9999, py = -9999;
+  let dirty = true;
+
+  const measure = () => {
+    buttons = Array.from(pill.querySelectorAll('button')).map(btn => {
+      if (!btn._mag) {
+        btn._mag = { x: new Spring(260, 22, 0), y: new Spring(260, 22, 0), s: new Spring(260, 22, 1) };
+        btn.addEventListener('pointerenter', () => { btn._mag.s.to = 1.06; Motion.wake(); });
+        btn.addEventListener('pointerleave', () => { btn._mag.s.to = 1; Motion.wake(); });
+      }
+      const r = btn.getBoundingClientRect();
+      return { btn, cx: r.left + r.width / 2, cy: r.top + r.height / 2, m: btn._mag };
+    });
+    dirty = false;
+  };
+
+  const subscriber = {
+    fixed(dt) {
+      if (dirty) measure();
+      buttons.forEach(({ cx, cy, m }) => {
+        const d = Math.hypot(px - cx, py - cy);
+        if (d < FIELD) {
+          const pull = (1 - d / FIELD) * MAX_PULL;
+          const ang = Math.atan2(py - cy, px - cx);
+          m.x.to = Math.cos(ang) * pull;
+          m.y.to = Math.sin(ang) * pull;
+        } else {
+          m.x.to = 0; m.y.to = 0;
+        }
+        m.x.fixed(dt); m.y.fixed(dt); m.s.fixed(dt);
+      });
+    },
+    render() {
+      let alive = false;
+      buttons.forEach(({ btn, m }) => {
+        btn.style.transform = `translate(${m.x.v.toFixed(2)}px, ${m.y.v.toFixed(2)}px) scale(${m.s.v.toFixed(3)})`;
+        if (!m.x.settled || !m.y.settled || !m.s.settled) alive = true;
+      });
+      return alive;
+    }
+  };
+
+  window.addEventListener('resize', () => { dirty = true; Motion.wake(); }, { passive: true });
+  window.addEventListener('scroll', () => { dirty = true; }, { passive: true, capture: true });
+  pill.addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; Motion.wake(); });
+  pill.addEventListener('pointerleave', () => { px = -9999; py = -9999; Motion.wake(); });
+
+  pill.classList.add('is-magnetic');
+  measure();
+  Motion.add(subscriber);
+};
+
 let isLightTheme = false;
 
 const hueFromHex = (hex) => {
@@ -2156,6 +2368,25 @@ const hueFromHex = (hex) => {
   if (!d) return 220;
   const h = mx === r ? ((g - b) / d + (g < b ? 6 : 0)) : mx === g ? ((b - r) / d + 2) : ((r - g) / d + 4);
   return h * 60;
+};
+
+const hexBlend = (hex, mix, ratio) => {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+  if (!m) return hex;
+  const n = parseInt(m[1], 16);
+  const r = Math.round(((n >> 16) & 255) + (mix[0] - ((n >> 16) & 255)) * ratio);
+  const g = Math.round(((n >> 8) & 255) + (mix[1] - ((n >> 8) & 255)) * ratio);
+  const b = Math.round((n & 255) + (mix[2] - (n & 255)) * ratio);
+  return `#${[r, g, b].map(v => v.toString(16).padStart(2, '0')).join('')}`;
+};
+
+const updateFavicon = (cat) => {
+  const accent = (cat && cat.accent) || '#7c9bff';
+  const light = hexBlend(accent, [255, 255, 255], 0.45);
+  const dark = hexBlend(accent, [0, 0, 0], 0.55);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${light}"/><stop offset="0.55" stop-color="${accent}"/><stop offset="1" stop-color="${dark}"/></linearGradient></defs><rect x="1" y="1" width="62" height="62" rx="16" fill="url(#g)"/><rect x="20" y="30" width="18" height="18" rx="3" fill="none" stroke="#fff" stroke-width="4"/><path d="M27 37 L44 20 M44 20 L34 20 M44 20 L44 30" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  const link = document.querySelector('link[rel="icon"]');
+  if (link) link.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
 };
 
 class OrbField {
@@ -2223,18 +2454,27 @@ class OrbField {
 
   retarget() {
     const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
-    this.orbs.forEach((o, i) => { o.hueSpring.to = palette[i % 3]; });
-    this.lastActive = performance.now();
-    Motion.wake();
-  }
-
-  retargetCategory(hex) {
-    const hue = hueFromHex(hex);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.orbs.forEach((o, i) => {
-      o.hueSpring.to = (hue + (i - (this.orbs.length - 1) / 2) * 22 + 360) % 360;
+      o.hueSpring.to = palette[i % 3];
+      if (reduced) { o.hueSpring.snap(); o.hue = o.hueSpring.v; }
     });
     this.lastActive = performance.now();
-    Motion.wake();
+    if (reduced) this.render(performance.now());
+    else Motion.wake();
+  }
+
+  retargetCategory(hex, impulseDir = 0) {
+    const hue = hueFromHex(hex);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.orbs.forEach((o, i) => {
+      o.hueSpring.to = (hue + (i - (this.orbs.length - 1) / 2) * 22 + 360) % 360;
+      if (reduced) { o.hueSpring.snap(); o.hue = o.hueSpring.v; }
+      else if (impulseDir) o.hueSpring.dv += impulseDir * (i % 2 ? 26 : -26);
+    });
+    this.lastActive = performance.now();
+    if (reduced) this.render(performance.now());
+    else Motion.wake();
   }
 
   fixed(dt) {
@@ -2456,10 +2696,12 @@ const clearTileStagger = () => {
 
 const catIndex = (id) => categories.findIndex(c => c.id === id);
 
-const applyTabAccent = (cat) => {
+const applyTabAccent = (cat, impulseDir = 0) => {
   const rail = document.getElementById('tabRail');
   if (rail && cat) rail.style.setProperty('--tab-accent', cat.accent);
-  if (cat) window.bgAnim?.retargetCategory(cat.accent);
+  if (cat) document.documentElement.style.setProperty('--tab-accent', cat.accent);
+  if (cat) updateFavicon(cat);
+  if (cat) window.bgAnim?.retargetCategory(cat.accent, impulseDir);
 };
 
 const moveIndicatorLegacy = (btn, instant) => {
@@ -2531,7 +2773,7 @@ const activateTab = (id, opts = {}) => {
 
   setActiveButtonStates(id);
   const activeBtn = document.getElementById(`tab-${id}`);
-  applyTabAccent(cat);
+  applyTabAccent(cat, prevId && prevId !== id ? dir : 0);
   if (!supportsAnchor) moveIndicatorLegacy(activeBtn, instant);
 
   if (!instant && prevId && prevId !== id) {
@@ -2747,6 +2989,7 @@ const allPaletteEntries = () => {
 const RECENTS_KEY = 'lx-recents';
 const RECENTS_CAP = 8;
 const FREQ_KEY = 'lx-freq';
+const FREQ_CAP = 10;
 
 const getRecentIds = () => {
   try {
@@ -2783,16 +3026,19 @@ const getRecentEntries = (allEntries, limit) => {
   const freq = getFreqMap();
   const byId = new Map();
   allEntries.forEach(e => { if (!byId.has(e.app.id)) byId.set(e.app.id, e); });
-  const ranked = ids
-    .map((id, rank) => ({ id, score: (freq[id] || 0) + (ids.length - rank) * 0.5 }))
-    .sort((a, b) => b.score - a.score);
-  const out = [];
-  for (const { id } of ranked) {
+
+  const candidateIds = new Set([...ids, ...Object.keys(freq)]);
+  const scored = [];
+  candidateIds.forEach(id => {
     const e = byId.get(id);
-    if (e) out.push(e);
-    if (out.length >= limit) break;
-  }
-  return out;
+    if (!e) return;
+    const pos = ids.indexOf(id);
+    const recencyScore = pos === -1 ? 0 : (RECENTS_CAP - pos) / RECENTS_CAP;
+    const freqScore = Math.min(freq[id] || 0, FREQ_CAP) / FREQ_CAP;
+    scored.push({ entry: e, score: recencyScore * 0.6 + freqScore * 0.4 });
+  });
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, limit).map(s => s.entry);
 };
 
 let paletteItems = [];
@@ -2908,6 +3154,36 @@ const renderPaletteResults = (query) => {
   updateActiveDescendant();
   updateLiveAccent();
   renderPaletteDetail();
+  updatePaletteGhost(query);
+  updatePaletteStatus(query, scored.length);
+};
+
+let paletteGhostTail = '';
+
+const updatePaletteGhost = (query) => {
+  const ghostEl = document.getElementById('paletteGhost');
+  if (!ghostEl) return;
+  const top = paletteItems[0];
+  paletteGhostTail = '';
+  if (query && top) {
+    const title = loc(top.app.title);
+    if (title.toLowerCase().startsWith(query.toLowerCase())) {
+      paletteGhostTail = title.slice(query.length);
+    }
+  }
+  ghostEl.innerHTML = paletteGhostTail
+    ? `<span class="ghost-typed">${escapeHtml(query)}</span><span class="ghost-tail">${escapeHtml(paletteGhostTail)}</span>`
+    : '';
+};
+
+const updatePaletteStatus = (query, resultCount) => {
+  const statusEl = document.getElementById('paletteStatus');
+  if (!statusEl) return;
+  const activeCat = categories.find(c => c.id === currentTabId);
+  const scopeLabel = activeCat ? loc(activeCat.label) : '';
+  statusEl.textContent = query
+    ? (resultCount ? `${resultCount} ${t('resultsCountLabel')} · ${scopeLabel}` : '')
+    : scopeLabel;
 };
 
 const setPaletteActive = (i) => {
@@ -3167,6 +3443,7 @@ const setupInteractions = () => {
   const initialTab = getInitialTab();
   activateTab(initialTab, { pushHash: false, playSound: false, instant: true });
   initPointerField();
+  initMagneticControls();
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
@@ -3267,6 +3544,11 @@ const setupInteractions = () => {
 
   let touchStartX = 0, touchStartY = 0;
   const appGrid = document.getElementById('appGrid');
+  appGrid.addEventListener('scroll', () => {
+    if (!appGrid.classList.contains('is-auto-flow')) return;
+    const atBottom = appGrid.scrollHeight - appGrid.scrollTop - appGrid.clientHeight < 4;
+    appGrid.classList.toggle('at-bottom', atBottom);
+  }, { passive: true });
   appGrid.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
@@ -3310,6 +3592,20 @@ const setupInteractions = () => {
   });
 
   paletteInput.addEventListener('keydown', (e) => {
+    const forwardKey = document.documentElement.dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
+    if (
+      e.key === forwardKey && paletteZone === 'list' && paletteGhostTail &&
+      paletteInput.selectionStart === paletteInput.value.length &&
+      paletteInput.selectionEnd === paletteInput.value.length
+    ) {
+      e.preventDefault();
+      const completed = paletteInput.value + paletteGhostTail;
+      paletteInput.value = completed;
+      clearTimeout(inputDebounce);
+      renderPaletteResults(completed);
+      return;
+    }
+
     if (e.key === 'Tab') {
       if (paletteActiveIndex === -1) return;
       e.preventDefault();
