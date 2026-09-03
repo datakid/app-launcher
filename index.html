@@ -111,6 +111,7 @@ a, button { cursor: pointer; }
 #lx-palette :focus-visible {
   outline-color: color-mix(in oklab, var(--live-accent) 70%, var(--text));
 }
+:root[data-theme="light"] :focus-visible { outline-color: color-mix(in oklab, var(--tint, #7c9bff) 45%, #15130f); }
 
 ::selection { background: color-mix(in oklab, var(--text) 22%, transparent); }
 .app-grid ::selection { background: color-mix(in oklab, var(--tab-accent) 35%, var(--text) 18%); }
@@ -1111,7 +1112,7 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   h1, .site-header, .tab-rail, .card-glow,
   .app-card:not(.is-revealed), .palette-item, .badge-new .badge-dot,
-  .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions {
+  .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions, .grid-empty {
     animation: none !important;
   }
   .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; --hov: 0 !important; }
@@ -1123,6 +1124,7 @@ h1 {
     transition-property: opacity, color, background-color, border-color, box-shadow;
   }
   #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
+  .lx-context-menu { transition: opacity 0.01ms; transform: none !important; }
 }
 
 @media (forced-colors: active) {
@@ -2105,7 +2107,7 @@ const initPointerField = () => {
   if (!grid || !container) return;
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-  const REVEAL_RADIUS = 260;
+  let REVEAL_RADIUS = Math.max(150, Math.min(260, window.innerWidth * 0.22));
   let cards = [];
   let px = -9999, py = -9999;
   let sx = -9999, sy = -9999;
@@ -2292,7 +2294,7 @@ const initPointerField = () => {
     }
   });
 
-  window.addEventListener('resize', () => { pointerFieldDirty = true; Motion.wake(); }, { passive: true });
+  window.addEventListener('resize', () => { REVEAL_RADIUS = Math.max(150, Math.min(260, window.innerWidth * 0.22)); pointerFieldDirty = true; Motion.wake(); }, { passive: true });
   window.addEventListener('scroll', () => { pointerFieldDirty = true; Motion.wake(); }, { passive: true, capture: true });
 
   measure();
@@ -3421,6 +3423,9 @@ const openPalette = () => {
 const closePalette = () => {
   const dialog = document.getElementById('lx-palette');
   if (dialog.open) dialog.close();
+  document.querySelector('.container')?.classList.remove('is-dollied');
+  document.querySelector('.controls-pill')?.classList.remove('is-dollied');
+  const g = document.getElementById('paletteGhost'); if (g) g.innerHTML = '';
 };
 
 const togglePalette = () => {
@@ -3689,6 +3694,11 @@ const setupInteractions = () => {
     if ((e.metaKey || e.ctrlKey) && isPhysical(e, 'KeyK', 'k', 'ن')) {
       e.preventDefault();
       togglePalette();
+      return;
+    }
+    if (e.key === 'Escape' && paletteDialog.open) {
+      e.preventDefault();
+      closePalette();
       return;
     }
     if (paletteDialog.open) return;
