@@ -79,7 +79,7 @@
 @property --sc { syntax: '<number>'; inherits: false; initial-value: 1; }
 @property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
-:root { transition: --tab-accent 0.6s var(--ease-lux); }
+:root { transition-property: --tab-accent; transition-duration: 0.34s; transition-timing-function: var(--ease-lux); }
 @property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
@@ -139,6 +139,9 @@ a, button { cursor: pointer; }
 
 .spotlight {
   position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03)), transparent 70%),
+    radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022)), transparent 70%);
   background:
     radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--tab-accent) 5%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%),
     radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--tab-accent) 5%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
@@ -791,6 +794,7 @@ h1 {
   opacity: 0; transform: translateY(-10px) scale(0.97);
   transition: opacity 0.3s var(--ease-spring), transform 0.3s var(--ease-spring), --live-accent 0.45s var(--ease-lux), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
 }
+#lx-palette:not([open]) { pointer-events: none; }
 
 #lx-palette::before {
   content: ''; position: absolute; inset: 0 0 auto; height: 120px; z-index: -1;
@@ -1083,6 +1087,7 @@ h1 {
   h1 { font-size: 2.6rem; }
   .tab-rail { max-width: 100%; overflow-x: auto; }
   #lx-palette { margin-top: 8vh; }
+  .palette-status { display: none; }
 }
 
 @media (max-width: 720px) {
@@ -1544,7 +1549,6 @@ const STRINGS = {
   recentGroup: { ar: 'الأخيرة', en: 'Recent' },
   allGroup: { ar: 'الكل', en: 'All' },
   tryGroup: { ar: 'جرّب', en: 'Try' },
-  hiddenCategory: { ar: 'مخفي', en: 'Hidden' },
   langSwitchToEn: { ar: 'التبديل إلى الإنجليزية', en: 'Switch to English' },
   langSwitchToAr: { ar: 'التبديل إلى العربية', en: 'Switch to Arabic' }
 };
@@ -2083,6 +2087,7 @@ const renderCards = (grid, categoryId) => {
 
   const origin = lastInteractionPoint ?? railCenter();
   const cards = [...grid.children];
+  const skipEntryAnim = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let max = 1;
   const dists = cards.map(c => {
     const r = c.getBoundingClientRect();
@@ -2095,8 +2100,10 @@ const renderCards = (grid, categoryId) => {
     c.style.animationDelay = scrollDriven
       ? `0s, calc(0.95s + var(--i, ${i}) * 0.29s)`
       : `${Math.round((dists[i] / max) * 220)}ms, calc(0.95s + var(--i, ${i}) * 0.29s)`;
-    c.style.willChange = 'transform, opacity';
-    c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
+    if (!skipEntryAnim) {
+      c.style.willChange = 'transform, opacity';
+      c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
+    }
   });
 };
 
@@ -2353,8 +2360,13 @@ const initMagneticControls = () => {
 
   window.addEventListener('resize', () => { dirty = true; Motion.wake(); }, { passive: true });
   window.addEventListener('scroll', () => { dirty = true; }, { passive: true, capture: true });
-  pill.addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; Motion.wake(); });
-  pill.addEventListener('pointerleave', () => { px = -9999; py = -9999; Motion.wake(); });
+  document.addEventListener('pointermove', (e) => {
+    const r = pill.getBoundingClientRect();
+    const inField = e.clientX >= r.left - FIELD && e.clientX <= r.right + FIELD &&
+                    e.clientY >= r.top - FIELD && e.clientY <= r.bottom + FIELD;
+    if (inField) { px = e.clientX; py = e.clientY; Motion.wake(); }
+    else if (px !== -9999) { px = -9999; py = -9999; Motion.wake(); }
+  }, { passive: true });
 
   pill.classList.add('is-magnetic');
   measure();
@@ -2816,12 +2828,12 @@ const activateTab = (id, opts = {}) => {
     setTileStagger(dir * (rtl ? 1 : -1));
     nameTiles(g, true);
     const vt = withViewTransition(() => { run(); nameTiles(g, true); });
-    rendered = vt.finished.catch(() => {}).finally(() => { activeViewTransition = null; nameTiles(g, false); clearTileStagger(); });
+    rendered = vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) { activeViewTransition = null; nameTiles(g, false); clearTileStagger(); } });
   } else if (document.startViewTransition) {
 
     g.style.viewTransitionName = 'grid';
     const vt = withViewTransition(run);
-    rendered = vt.finished.catch(() => {}).finally(() => { activeViewTransition = null; g.style.viewTransitionName = ''; });
+    rendered = vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) { activeViewTransition = null; g.style.viewTransitionName = ''; } });
   } else {
     g.classList.add('is-out');
     rendered = new Promise((resolve) => {
@@ -3169,7 +3181,7 @@ const updatePaletteGhost = (query) => {
   paletteGhostTail = '';
   if (query && top) {
     const title = loc(top.app.title);
-    if (title.toLowerCase().startsWith(query.toLowerCase())) {
+    if (normalizeAr(title).startsWith(normalizeAr(query))) {
       paletteGhostTail = title.slice(query.length);
     }
   }
@@ -3178,14 +3190,18 @@ const updatePaletteGhost = (query) => {
     : '';
 };
 
+let paletteStatusAnnounceTimer;
 const updatePaletteStatus = (query, resultCount) => {
   const statusEl = document.getElementById('paletteStatus');
   if (!statusEl) return;
   const activeCat = categories.find(c => c.id === currentTabId);
   const scopeLabel = activeCat ? loc(activeCat.label) : '';
-  statusEl.textContent = query
-    ? (resultCount ? `${resultCount} ${t('resultsCountLabel')} · ${scopeLabel}` : '')
+  const text = query
+    ? (resultCount ? `${resultCount} ${t('resultsCountLabel')}` : '')
     : scopeLabel;
+  statusEl.textContent = text;
+  clearTimeout(paletteStatusAnnounceTimer);
+  if (query) paletteStatusAnnounceTimer = setTimeout(() => announcePalette(text), 600);
 };
 
 const setPaletteActive = (i) => {
@@ -3468,6 +3484,10 @@ const setupInteractions = () => {
     debTimer = setTimeout(() => {
       window.bgAnim.resize();
       if (!supportsAnchor) moveIndicatorLegacy(document.getElementById(`tab-${currentTabId}`), true);
+      const g = document.getElementById('appGrid');
+      if (g && g.classList.contains('is-auto-flow')) {
+        g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
+      }
     }, 180);
   });
 
@@ -3503,7 +3523,7 @@ const setupInteractions = () => {
         { duration: 620, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' }
       );
     }).catch(() => {});
-    vt.finished.catch(() => {}).finally(() => { activeViewTransition = null; });
+    vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) activeViewTransition = null; });
 
     sfx.chime(isLight);
   });
