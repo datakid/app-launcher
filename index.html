@@ -2004,7 +2004,7 @@ const openCardContextMenu = (card, clientX, clientY) => {
 
   menu.querySelector('[data-action="open"]').addEventListener('click', () => {
     sfx.click();
-    if (activeUrl) window.open(activeUrl, '_blank', 'noopener');
+    if (activeUrl) openUrlInNewTab(activeUrl);
     closeContextMenu();
   });
   menu.querySelector('[data-action="copy"]').addEventListener('click', async (e) => {
@@ -3320,6 +3320,16 @@ const updateLiveAccent = () => {
   palette.style.setProperty('--c1', entry ? entry.app.gradient[0] : '#7c9bff');
 };
 
+const openUrlInNewTab = (url) => {
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+};
+
 const copyToClipboard = async (text) => {
   try {
     await navigator.clipboard.writeText(text);
@@ -3395,7 +3405,7 @@ const executeAction = async (actionId) => {
   }
   if (actionId === 'new-tab') {
     sfx.click();
-    window.open(entry.app.url, '_blank', 'noopener');
+    openUrlInNewTab(entry.app.url);
     paletteSkipCloseChime = true;
     closePalette();
   } else if (actionId === 'same-tab') {
