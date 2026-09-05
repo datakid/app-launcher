@@ -195,7 +195,7 @@ h1 {
 }
 
 .controls-pill {
-  position: fixed; top: 1.5rem; left: 1.5rem;
+  position: fixed; top: 1.5rem; inset-inline-start: 1.5rem;
   display: flex; align-items: center;
   background: light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.025));
   backdrop-filter: blur(32px) saturate(180%);
@@ -1226,7 +1226,7 @@ h1 {
       "id": "core", "label": { "ar": "الأساسية", "en": "Core" }, "icon": "fa-layer-group", "accent": "#7c9bff", "key": 0,
       "apps": [
         {
-          "id": "ledger-form", "title": { "ar": "خارجي 2", "en": "Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
+          "id": "ledger-form", "title": { "ar": "خارجي 2", "en": "Ledger Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
           "variants": [
             { "id": "new", "label": { "ar": "الجديد", "en": "New" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-bolt" },
             { "id": "legacy", "label": { "ar": "القديم", "en": "Legacy" }, "url": "https://datakid-github-io.vercel.app/", "icon": "fa-sliders" }
@@ -1578,7 +1578,7 @@ const LEGACY_IDS = {
   'فهرس الادوية': 'index-builder',
   'الرقم القومي والتاريخ': 'id-dates',
   'عائد الاستثمار': 'roi',
-  'تحليل البيانات': 'duckbench',
+  'تحليل البيانات': 'data-analysis',
   'بيان جهات متعاقدة': 'entity-tracker',
   'تقارير': 'to-do',
   'دفتر الحركة': 'dafter',
@@ -2004,7 +2004,7 @@ const openCardContextMenu = (card, clientX, clientY) => {
 
   menu.querySelector('[data-action="open"]').addEventListener('click', () => {
     sfx.click();
-    if (activeUrl) openUrlInNewTab(activeUrl);
+    if (activeUrl) window.open(activeUrl, '_blank', 'noopener');
     closeContextMenu();
   });
   menu.querySelector('[data-action="copy"]').addEventListener('click', async (e) => {
@@ -2900,7 +2900,7 @@ const normMap = (s) => {
   let out = '', map = [];
   for (let i = 0; i < s.length; i++) {
     let c = s[i].toLowerCase();
-    if (/[\u064B-\u0652\u0670\u0640]/.test(c)) continue;
+    if (/[\u200c\u200f\u202b\u202c\u064B-\u0652\u0670\u0640]/.test(c)) continue;
     c = c.replace(/[أإآٱ]/, 'ا').replace(/ى/, 'ي').replace(/[ةه]/, 'ه').replace(/[ؤئ]/, 'ء');
     out += c; map.push(i);
   }
@@ -3181,8 +3181,10 @@ const updatePaletteGhost = (query) => {
   paletteGhostTail = '';
   if (query && top) {
     const title = loc(top.app.title);
-    if (normalizeAr(title).startsWith(normalizeAr(query))) {
-      paletteGhostTail = title.slice(query.length);
+    const nq = normalizeAr(query);
+    const { out, map } = normMap(title);
+    if (nq && out.startsWith(nq)) {
+      paletteGhostTail = title.slice(nq.length < map.length ? map[nq.length] : title.length);
     }
   }
   ghostEl.innerHTML = paletteGhostTail
@@ -3320,16 +3322,6 @@ const updateLiveAccent = () => {
   palette.style.setProperty('--c1', entry ? entry.app.gradient[0] : '#7c9bff');
 };
 
-const openUrlInNewTab = (url) => {
-  const a = document.createElement('a');
-  a.href = url;
-  a.target = '_blank';
-  a.rel = 'noopener';
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-};
-
 const copyToClipboard = async (text) => {
   try {
     await navigator.clipboard.writeText(text);
@@ -3405,7 +3397,7 @@ const executeAction = async (actionId) => {
   }
   if (actionId === 'new-tab') {
     sfx.click();
-    openUrlInNewTab(entry.app.url);
+    window.open(entry.app.url, '_blank', 'noopener');
     paletteSkipCloseChime = true;
     closePalette();
   } else if (actionId === 'same-tab') {
@@ -3565,9 +3557,12 @@ const setupInteractions = () => {
     const tabs = Array.from(document.querySelectorAll('.tab-btn'));
     const i = tabs.findIndex(t => t.dataset.id === currentTabId);
     if (i === -1) return;
+    const rtl = document.documentElement.dir === 'rtl';
+    const forwardKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+    const backwardKey = rtl ? 'ArrowRight' : 'ArrowLeft';
     let next = null;
-    if (e.key === 'ArrowRight') next = tabs[(i + 1) % tabs.length];
-    else if (e.key === 'ArrowLeft') next = tabs[(i - 1 + tabs.length) % tabs.length];
+    if (e.key === forwardKey) next = tabs[(i + 1) % tabs.length];
+    else if (e.key === backwardKey) next = tabs[(i - 1 + tabs.length) % tabs.length];
     else if (e.key === 'Home') next = tabs[0];
     else if (e.key === 'End') next = tabs[tabs.length - 1];
     if (next) {
