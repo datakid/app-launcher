@@ -48,7 +48,8 @@
   --shadow-soft: light-dark(0 1px 2px rgba(28,25,20,.05), 0 1px 2px rgba(0,0,0,.3)), light-dark(0 10px 28px -14px rgba(28,25,20,.14), 0 10px 30px -14px rgba(0,0,0,.6));
   --shadow-deep: light-dark(0 2px 8px rgba(28,25,20,.07), 0 2px 6px rgba(0,0,0,.34)), light-dark(0 30px 60px -22px rgba(28,25,20,.18), 0 30px 64px -22px rgba(0,0,0,.72));
   --radius: 22px;
-  --gap: clamp(0.75rem, 1.8vh, 1.3rem);
+  --gap: clamp(0.7rem, 1.6vh, 1.15rem);
+  --lx-panel-w: min(880px, 94vw);
   --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
@@ -155,14 +156,14 @@ body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
 
 .container {
   width: 100%; max-width: 1400px; height: 100dvh;
-  padding: clamp(3rem, 5vh, 4.5rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3vh, 2.5rem);
+  padding: clamp(2.25rem, 3.6vh, 3.25rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3vh, 2.5rem);
   position: relative; z-index: 3;
-  display: flex; flex-direction: column; gap: clamp(1.5rem, 3vh, 2.5rem);
+  display: flex; flex-direction: column; gap: clamp(1rem, 2.2vh, 1.6rem);
   transition: transform 0.45s var(--ease-lux), filter 0.45s var(--ease-lux);
 }
 
 .container.is-dollied, .controls-pill.is-dollied {
-  transform: scale(0.96); filter: blur(9px) brightness(0.75);
+  transform: scale(0.97); filter: brightness(0.72);
 }
 
 .site-header {
@@ -250,6 +251,72 @@ h1 {
 .lx-context-menu-sep { height: 1px; background: var(--border); margin: 0.3rem 0.2rem; }
 
 .controls-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.2rem; }
+
+.lx-bar {
+  width: var(--lx-panel-w); height: 64px;
+  align-self: center; position: relative; z-index: 3; flex-shrink: 0;
+  display: flex; align-items: center;
+  border-radius: 999px;
+  background: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.025));
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
+  animation: slideDown 0.9s var(--ease-lux) 0.05s both;
+  --tab-accent: #7c9bff;
+  --c1: var(--tab-accent);
+  transition: --tab-accent 0.34s var(--ease-lux), border-color 0.34s var(--ease-lux), box-shadow 0.34s var(--ease-lux), opacity 120ms var(--ease-lux), transform 200ms var(--ease-lux);
+  font-family: var(--ui-font); color: var(--text);
+}
+body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: none; }
+.lx-bar.is-focused { border-color: var(--border-highlight); box-shadow: var(--shadow-deep), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
+.lx-bar.is-focused .tab-rail { filter: saturate(.85); transition: filter 0.4s var(--ease-lux); }
+
+.lx-bar-search {
+  flex: 1; min-width: 22ch; min-height: 0;
+  display: flex; align-items: center; gap: 1rem;
+  height: 100%; padding-inline: 1.6rem;
+  position: relative; z-index: 1;
+  font-family: var(--ui-font); color: var(--text);
+}
+.lx-bar-search i.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; }
+#lxInlineInput {
+  flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+  font-family: var(--ui-font); font-size: 1.2rem; color: var(--text); caret-color: var(--tab-accent);
+}
+#lxInlineInput::placeholder { color: var(--text-muted); }
+.lx-bar-hint {
+  flex-shrink: 0; display: flex; align-items: center;
+  font-size: 0.78rem; color: var(--text-muted); white-space: nowrap;
+}
+.lx-bar-more {
+  background: transparent; border: none; padding: 0; font: inherit;
+  color: color-mix(in oklab, var(--tab-accent) 80%, var(--text)); cursor: pointer;
+}
+.lx-bar-kbd { margin-inline-start: auto; font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 0.2rem 0.6rem; flex-shrink: 0; }
+
+.lx-bar-divider { width: 1px; height: 26px; background: var(--border); margin-inline: 6px; flex-shrink: 0; }
+
+.lx-bar::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  padding: 1px; z-index: 2; pointer-events: none;
+  background: radial-gradient(var(--reveal-r, 260px) circle at var(--rx) var(--ry),
+    rgba(255,255,255,.95), rgba(255,255,255,.34) 26%, rgba(255,255,255,.12) 48%, transparent 74%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  opacity: var(--reveal-o);
+  transition: opacity 0.25s var(--ease-lux);
+}
+:root[data-theme="light"] .lx-bar::after {
+  background: radial-gradient(var(--reveal-r, 260px) circle at var(--rx) var(--ry),
+    rgba(20,18,15,.55), rgba(20,18,15,.2) 26%, rgba(20,18,15,.07) 48%, transparent 74%);
+}
+@supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
+  .lx-bar::after { background: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
+  :root[data-theme="light"] .lx-bar::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
+}
 
 .app-grid {
   flex: 1 1 0; min-height: 0;
@@ -665,27 +732,36 @@ h1 {
 .app-card.status-closed:hover .closed-tint,
 .app-card.status-closed:focus-within .closed-tint { opacity: .48; }
 
-.app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
+body:not(.is-filtering) .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
   opacity: 0.64;
   border-color: transparent;
 }
 
-.app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card.status-closed:not(:hover, :focus-visible) { opacity: 0.5; }
+body:not(.is-filtering) .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card.status-closed:not(:hover, :focus-visible) { opacity: 0.5; }
+
+body.is-filtering .app-card {
+  transition: opacity .32s var(--ease-lux), filter .32s var(--ease-lux), box-shadow .32s var(--ease-lux), border-color .32s var(--ease-lux), --tz var(--dur-base, .3s) var(--ease-spring);
+}
+body.is-filtering .app-card.is-dimmed {
+  opacity: .26; filter: saturate(.45); border-color: transparent; transition-delay: 0s;
+}
+body.is-filtering .app-card.is-match {
+  --tz: 6px;
+  box-shadow: var(--shadow-soft), 0 0 0 1px var(--tab-accent);
+  transition-delay: calc(var(--match-rank, 0) * 14ms);
+}
+body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform: translateY(0) scale(1); }
+.app-card.is-primary-match .open-affordance { opacity: .95 !important; transform: translateY(0) scale(1) !important; }
+.app-card.is-primary-match .open-affordance i { display: none; }
+.app-card.is-primary-match .open-affordance::after { content: '↵'; font-size: .8em; }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
 .tab-rail {
   position: relative; align-self: center; flex-shrink: 0;
   display: flex; align-items: center; gap: 0.15rem;
-  padding: 0.35rem; border-radius: 999px;
-  background: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.025));
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-  animation: slideDown 0.9s var(--ease-lux) 0.05s both;
-  --tab-accent: #7c9bff;
-  transition: --tab-accent 0.34s var(--ease-lux);
+  padding: 0.35rem;
+  anchor-scope: --active-tab;
 }
 
 .tab-goo {
@@ -743,7 +819,7 @@ h1 {
 
 .tab-btn {
   position: relative; z-index: 1;
-  display: flex; align-items: center; gap: 0.55rem;
+  display: flex; align-items: center;
   background: transparent; border: none; color: var(--text-muted);
   padding: 0.65rem 1.35rem; border-radius: 999px;
   font-family: var(--ui-font);
@@ -754,6 +830,12 @@ h1 {
 .tab-btn i { font-size: 0.85rem; transition: color 0.5s var(--ease-lux); }
 .tab-btn[aria-selected="true"] { color: var(--text); }
 .tab-btn[aria-selected="true"] i { color: var(--tab-accent); }
+
+.tab-btn span {
+  display: inline-block; max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap;
+  transition: max-width .42s var(--ease-pill), opacity .26s var(--ease-lux), margin-inline-start .42s var(--ease-pill);
+}
+.tab-btn[aria-selected="true"] span { max-width: 14ch; opacity: 1; margin-inline-start: .5rem; }
 
 ::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-lux) both; }
 ::view-transition-new(grid) { animation: lx-grid-in 0.28s var(--ease-lux) both; }
@@ -781,7 +863,7 @@ h1 {
 }
 
 #lx-palette {
-  width: min(880px, 94vw); max-height: 76vh;
+  width: var(--lx-panel-w); max-height: 76vh;
   margin: min(16vh, 150px) auto auto;
   display: flex; flex-direction: column;
   background-color: light-dark(rgba(255,255,255,0.82), rgba(10,11,15,0.82));
@@ -816,10 +898,16 @@ h1 {
   -webkit-backdrop-filter: blur(22px);
   opacity: 0;
   
-  transition: opacity 0.12s var(--ease-lux), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+  transition: opacity 220ms var(--ease-lux), display 220ms allow-discrete, overlay 220ms allow-discrete;
 }
 #lx-palette[open]::backdrop { opacity: 1; }
 @starting-style { #lx-palette[open]::backdrop { opacity: 0; } }
+
+#lx-palette.is-morphing { transition: none !important; contain: layout paint; }
+#lx-palette.is-morphing .palette-body,
+#lx-palette.is-morphing .palette-results,
+#lx-palette.is-morphing .palette-detail { overflow: hidden; }
+#lx-palette.is-morphing .palette-results { mask-image: none; -webkit-mask-image: none; }
 
 .palette-input-row { display: flex; align-items: center; gap: 1rem; padding: 1.35rem 1.6rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .palette-input-row i { color: var(--text-muted); font-size: 1.05rem; }
@@ -873,7 +961,7 @@ h1 {
   padding: 0.85rem 1.05rem; border-radius: 15px; cursor: pointer;
   transition: background 0.2s var(--ease-lux), box-shadow 0.2s var(--ease-lux);
   animation: paletteItemIn .3s var(--ease-lux) both;
-  animation-delay: calc(min(var(--n, 0), 8) * 20ms);
+  animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 20ms);
 }
 
 #paletteResults:not(.entrance-armed) .palette-item { animation: none; }
@@ -1054,6 +1142,7 @@ h1 {
   html, body { height: auto; min-height: 100dvh; overflow-y: auto; overflow-x: hidden; }
   body { display: block; }
   .container { height: auto; min-height: 100dvh; padding-top: 5rem; padding-bottom: 2rem; }
+  .lx-bar { position: sticky; top: 0; z-index: 20; }
   .app-grid {
     flex: none; display: grid;
     grid-template-columns: repeat(2, 1fr) !important; grid-template-rows: none !important;
@@ -1064,6 +1153,15 @@ h1 {
   .card-hero { flex-direction: column; align-items: flex-start; justify-content: space-between; }
   .card-hero .bento-header { width: 100%; justify-content: space-between; gap: 0; }
   .card-hero .bento-footer { width: 100%; justify-content: flex-end; }
+}
+
+@media (max-height: 860px) {
+  .lx-bar { height: 56px; }
+}
+
+@media (max-height: 820px) {
+  h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); }
+  .lx-bar-kbd { display: none; }
 }
 
 @media (max-width: 1024px) {
@@ -1085,9 +1183,10 @@ h1 {
   .card-wide .app-icon, .card-hero .app-icon, .card-tall .app-icon { font-size: 1.6rem; }
   .card-wide .app-title, .card-hero .app-title, .card-tall .app-title { font-size: 1.6rem; }
   h1 { font-size: 2.6rem; }
-  .tab-rail { max-width: 100%; overflow-x: auto; }
+  .tab-rail { overflow-x: auto; }
   #lx-palette { margin-top: 8vh; }
   .palette-status { display: none; }
+  #lxInlineInput { font-size: 1.05rem; }
 }
 
 @media (max-width: 720px) {
@@ -1098,7 +1197,7 @@ h1 {
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .app-card, .controls-pill, .tab-rail, #lx-palette {
+  .app-card, .controls-pill, .tab-rail, #lx-palette, .lx-bar {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -1112,10 +1211,12 @@ h1 {
   :root { --border: light-dark(rgba(20,18,15,.2), rgba(255,255,255,.16)); }
   .app-card::after { opacity: max(var(--reveal-o), .35); }
   .app-card { border-color: var(--border); }
+  .app-card.is-match { box-shadow: var(--shadow-soft), 0 0 0 2px var(--tab-accent); }
+  .lx-bar-hint, .lx-bar-more { color: var(--text); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  h1, .site-header, .tab-rail, .card-glow,
+  h1, .site-header, .tab-rail, .card-glow, .lx-bar,
   .app-card:not(.is-revealed), .palette-item, .badge-new .badge-dot,
   .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions, .grid-empty {
     animation: none !important;
@@ -1129,6 +1230,9 @@ h1 {
     transition-property: opacity, color, background-color, border-color, box-shadow;
   }
   #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
+  .lx-bar { transition-property: opacity; }
+  .tab-btn span { transition: none !important; }
+  .app-card.is-match, .app-card.is-dimmed { transition-delay: 0s !important; }
   .lx-context-menu { transition: opacity 0.01ms; transform: none !important; }
 }
 
@@ -1141,6 +1245,8 @@ h1 {
   .card-glow, .closed-tint, .palette-detail-slab { display: none; }
   .app-card::after { display: none; }
   .app-card { border: 1px solid CanvasText; }
+  .app-card.is-dimmed { display: none; }
+  .app-card.is-match { border: 2px solid Highlight; }
 }
 </style>
 </head>
@@ -1159,10 +1265,6 @@ h1 {
 </svg>
 
 <div class="controls-pill">
-  <button type="button" id="paletteToggle" aria-label="بحث سريع" title="بحث سريع (Ctrl/Cmd+K)" data-i18n-aria="quickSearch">
-    <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-  </button>
-  <div class="controls-divider"></div>
   <button type="button" id="soundToggle" aria-pressed="false" aria-label="تفعيل الصوت" title="تفعيل الصوت">
     <i class="fas fa-volume-mute" aria-hidden="true"></i>
   </button>
@@ -1181,20 +1283,31 @@ h1 {
     <h1>LinkExpress</h1>
   </header>
 
-  <nav class="tab-rail" id="tabRail" role="tablist" aria-label="التصنيفات" data-i18n-aria="categoriesLabel">
-    <div class="tab-goo">
-      <div class="tab-indicator" id="tabIndicator"></div>
-      <div class="tab-indicator-trail" id="tabIndicatorTrail"></div>
+  <div class="lx-bar" id="lxBar">
+    <div class="lx-bar-search" id="lxBarSearch">
+      <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+      <input id="lxInlineInput" type="text" role="combobox"
+             aria-expanded="false" aria-controls="appGrid"
+             aria-describedby="lxBarHint" autocomplete="off" spellcheck="false">
+      <span id="lxBarHint" class="lx-bar-hint" hidden></span>
+      <kbd class="lx-bar-kbd" id="lxBarKbd">⌘K</kbd>
     </div>
-    <div class="tab-indicator-glow" id="tabIndicatorGlow"></div>
-    <div class="tab-indicator-sheen" id="tabIndicatorSheen" aria-hidden="true"></div>
-  </nav>
+    <div class="lx-bar-divider" aria-hidden="true"></div>
+    <nav class="tab-rail" id="tabRail" role="tablist" aria-label="التصنيفات" data-i18n-aria="categoriesLabel">
+      <div class="tab-goo">
+        <div class="tab-indicator" id="tabIndicator"></div>
+        <div class="tab-indicator-trail" id="tabIndicatorTrail"></div>
+      </div>
+      <div class="tab-indicator-glow" id="tabIndicatorGlow"></div>
+      <div class="tab-indicator-sheen" id="tabIndicatorSheen" aria-hidden="true"></div>
+    </nav>
+  </div>
 
   <main class="app-grid" id="appGrid" role="tabpanel"></main>
   <div id="tabLive" class="visually-hidden" aria-live="polite"></div>
 </div>
 
-<dialog id="lx-palette" closedby="any" aria-label="لوحة الأوامر" data-i18n-aria="commandPaletteLabel">
+<dialog id="lx-palette" aria-label="لوحة الأوامر" data-i18n-aria="commandPaletteLabel">
   <div class="palette-input-row">
     <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
     <div class="palette-input-wrap">
@@ -1518,7 +1631,12 @@ const STRINGS = {
   resultsLabel: { ar: 'النتائج', en: 'Results' },
   actionsLabel: { ar: 'الإجراءات', en: 'Actions' },
   searchPlaceholder: { ar: 'ابحث عن تطبيق أو أداة…', en: 'Search for an app or tool…' },
+  searchInScope: { ar: 'ابحث في {tab}…', en: 'Search in {tab}…' },
+  searchEverywhere: { ar: '↵ للبحث في الكل', en: '↵ to search everywhere' },
+  noMatchesInScope: { ar: 'لا نتائج في {tab}', en: 'No matches in {tab}' },
+  moreElsewhere: { ar: '+{n} في تصنيفات أخرى', en: '+{n} in other categories' },
   quickSearch: { ar: 'بحث سريع', en: 'Quick search' },
+  quickLaunch: { ar: 'وصول سريع', en: 'Quick launch' },
   soundEnable: { ar: 'تفعيل الصوت', en: 'Enable sound' },
   soundMute: { ar: 'كتم الصوت', en: 'Mute sound' },
   themeToDark: { ar: 'التبديل إلى المظهر الداكن', en: 'Switch to dark mode' },
@@ -2611,8 +2729,22 @@ const sweepStaticStrings = () => {
   document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
   document.querySelectorAll('[data-i18n-title]').forEach(el => { el.setAttribute('title', t(el.dataset.i18nTitle)); });
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder)); });
-  const paletteToggle = document.getElementById('paletteToggle');
-  if (paletteToggle) paletteToggle.setAttribute('title', `${t('quickSearch')} (Ctrl/Cmd+K)`);
+  updateBarKbd();
+};
+
+const isMacPlatform = () => {
+  const p = navigator.userAgentData?.platform || navigator.platform || navigator.userAgent || '';
+  return /mac|iphone|ipad|ipod/i.test(p);
+};
+
+const updateBarKbd = () => {
+  const input = document.getElementById('lxInlineInput');
+  if (!input) return;
+  const kbd = document.getElementById('lxBarKbd');
+  const shortcut = isMacPlatform() ? '⌘K' : 'Ctrl K';
+  if (kbd) kbd.textContent = shortcut;
+  input.setAttribute('aria-label', t('quickSearch'));
+  input.title = `${t('quickSearch')} (${shortcut})`;
 };
 
 const applyI18n = (opts = {}) => {
@@ -2662,6 +2794,8 @@ const applyI18n = (opts = {}) => {
       if (idx >= 0) setPaletteActive(idx);
     }
   }
+
+  updateInlinePlaceholder();
 };
 
 let lastX = 0;
@@ -2711,8 +2845,8 @@ const clearTileStagger = () => {
 const catIndex = (id) => categories.findIndex(c => c.id === id);
 
 const applyTabAccent = (cat, impulseDir = 0) => {
-  const rail = document.getElementById('tabRail');
-  if (rail && cat) rail.style.setProperty('--tab-accent', cat.accent);
+  const bar = document.getElementById('lxBar');
+  if (bar && cat) bar.style.setProperty('--tab-accent', cat.accent);
   if (cat) document.documentElement.style.setProperty('--tab-accent', cat.accent);
   if (cat) updateFavicon(cat);
   if (cat) window.bgAnim?.retargetCategory(cat.accent, impulseDir);
@@ -2779,6 +2913,7 @@ const setActiveButtonStates = (id) => {
 const activateTab = (id, opts = {}) => {
   const { pushHash = true, playSound = true, instant = false } = opts;
   if (!categories.some(c => c.id === id)) return Promise.resolve();
+  clearInlineFilter();
   const prevId = currentTabId;
   const dir = prevId ? (catIndex(id) > catIndex(prevId) ? 1 : -1) : 1;
   currentTabId = id;
@@ -2788,7 +2923,18 @@ const activateTab = (id, opts = {}) => {
   setActiveButtonStates(id);
   const activeBtn = document.getElementById(`tab-${id}`);
   applyTabAccent(cat, prevId && prevId !== id ? dir : 0);
-  if (!supportsAnchor) moveIndicatorLegacy(activeBtn, instant);
+  if (!supportsAnchor) {
+    moveIndicatorLegacy(activeBtn, instant);
+    const activeSpan = activeBtn ? activeBtn.querySelector('span') : null;
+    if (activeSpan && !instant) {
+      const onSpanGrown = (e) => {
+        if (e.propertyName !== 'max-width') return;
+        activeSpan.removeEventListener('transitionend', onSpanGrown);
+        moveIndicatorLegacy(activeBtn, false);
+      };
+      activeSpan.addEventListener('transitionend', onSpanGrown);
+    }
+  }
 
   if (!instant && prevId && prevId !== id) {
     const tabLive = document.getElementById('tabLive');
@@ -2849,6 +2995,8 @@ const activateTab = (id, opts = {}) => {
     if (prevCat) sfx.switchSweep(prevCat.key, cat.key);
   }
 
+  updateInlinePlaceholder();
+
   return rendered;
 };
 
@@ -2864,6 +3012,8 @@ const buildTabRail = () => {
     btn.setAttribute('role', 'tab');
     btn.setAttribute('aria-selected', 'false');
     btn.setAttribute('aria-controls', 'appGrid');
+    btn.setAttribute('aria-label', loc(cat.label));
+    btn.title = loc(cat.label);
     btn.tabIndex = -1;
     btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span>${escapeHtml(loc(cat.label))}</span>`;
     btn.addEventListener('click', () => { setInteractionOrigin(btn); activateTab(cat.id); });
@@ -3055,6 +3205,136 @@ const getRecentEntries = (allEntries, limit) => {
   return scored.slice(0, limit).map(s => s.entry);
 };
 
+let inlineHintMode = 'none';
+let inlineLastMatchCount = -1;
+let inlineAnnounceTimer;
+
+const computeLocalMatches = (query) => {
+  const entries = allPaletteEntries().filter(e => e.cat.id === currentTabId);
+  const bestByCard = new Map();
+  entries.forEach(e => {
+    const score = scoreEntry(query, e);
+    if (score < 0) return;
+    const cardId = e.app.parentId || e.app.id;
+    const existing = bestByCard.get(cardId);
+    if (!existing || score > existing.score) bestByCard.set(cardId, { cardId, score });
+  });
+  return [...bestByCard.values()].sort((a, b) => b.score - a.score);
+};
+
+const computeElsewhereCount = (query) => {
+  const entries = allPaletteEntries().filter(e => e.cat.id !== currentTabId && e.cat.id !== '_secret');
+  const seen = new Set();
+  let count = 0;
+  entries.forEach(e => {
+    if (scoreEntry(query, e) < 0) return;
+    const key = e.app.parentId || e.app.id;
+    if (seen.has(key)) return;
+    seen.add(key);
+    count += 1;
+  });
+  return count;
+};
+
+const setBarHint = (mode, text, onClick) => {
+  const hint = document.getElementById('lxBarHint');
+  if (!hint) return;
+  inlineHintMode = mode;
+  if (mode === 'none') { hint.hidden = true; hint.innerHTML = ''; return; }
+  hint.hidden = false;
+  if (mode === 'counter') {
+    hint.innerHTML = '<button type="button" class="lx-bar-more"></button>';
+    const btn = hint.querySelector('button');
+    btn.textContent = text;
+    btn.addEventListener('click', () => { sfx.click(); onClick(); });
+  } else {
+    hint.textContent = text;
+  }
+};
+
+const updateInlinePlaceholder = () => {
+  const input = document.getElementById('lxInlineInput');
+  if (!input) return;
+  const cat = categories.find(c => c.id === currentTabId);
+  input.placeholder = t('searchInScope').replace('{tab}', cat ? loc(cat.label) : '');
+};
+
+const clearInlineFilter = () => {
+  const input = document.getElementById('lxInlineInput');
+  const grid = document.getElementById('appGrid');
+  if (input && input.value) input.value = '';
+  document.body.classList.remove('is-filtering');
+  if (grid) {
+    grid.querySelectorAll('.app-card').forEach(card => {
+      card.classList.remove('is-match', 'is-dimmed', 'is-primary-match');
+      card.style.removeProperty('--match-rank');
+      if (card.inert) card.inert = false;
+    });
+  }
+  setBarHint('none');
+  if (input) input.setAttribute('aria-expanded', 'false');
+  inlineLastMatchCount = -1;
+  updateInlinePlaceholder();
+};
+
+const escalateSearch = (query) => {
+  clearInlineFilter();
+  document.getElementById('lxInlineInput')?.blur();
+  heroReturnFocus = true;
+  openPalette(query);
+};
+
+const applyInlineFilter = (query) => {
+  const grid = document.getElementById('appGrid');
+  const input = document.getElementById('lxInlineInput');
+  if (!grid || !input) return;
+  if (!query) { clearInlineFilter(); return; }
+
+  document.body.classList.add('is-filtering');
+  input.setAttribute('aria-expanded', 'true');
+
+  const matches = computeLocalMatches(query);
+  const rankById = new Map(matches.map((m, i) => [m.cardId, i]));
+
+  grid.querySelectorAll('.app-card').forEach(card => {
+    const rank = rankById.get(card.dataset.appId);
+    if (rank === undefined) {
+      if (card.contains(document.activeElement)) input.focus();
+      card.classList.remove('is-match', 'is-primary-match');
+      card.classList.add('is-dimmed');
+      card.style.removeProperty('--match-rank');
+      card.inert = true;
+    } else {
+      card.classList.remove('is-dimmed');
+      card.inert = false;
+      card.classList.add('is-match');
+      card.classList.toggle('is-primary-match', rank === 0);
+      card.style.setProperty('--match-rank', String(rank));
+    }
+  });
+
+  const cat = categories.find(c => c.id === currentTabId);
+  const tabName = cat ? loc(cat.label) : '';
+
+  if (!matches.length) {
+    setBarHint('empty', `${t('noMatchesInScope').replace('{tab}', tabName)} — ${t('searchEverywhere')}`);
+  } else {
+    const elsewhere = computeElsewhereCount(query);
+    if (elsewhere > 0) setBarHint('counter', t('moreElsewhere').replace('{n}', String(elsewhere)), () => escalateSearch(input.value));
+    else setBarHint('none');
+  }
+
+  if (matches.length !== inlineLastMatchCount) {
+    inlineLastMatchCount = matches.length;
+    sfx.tick();
+    clearTimeout(inlineAnnounceTimer);
+    inlineAnnounceTimer = setTimeout(() => {
+      const tabLive = document.getElementById('tabLive');
+      if (tabLive) tabLive.textContent = String(matches.length);
+    }, 500);
+  }
+};
+
 let paletteItems = [];
 let paletteActiveIndex = -1;
 let paletteActionIndex = 0;
@@ -3065,6 +3345,8 @@ let paletteEntranceArmed = false;
 
 let lastDetailKey = null;
 let paletteSkipCloseChime = false;
+let paletteBusy = false;
+let heroReturnFocus = false;
 
 const getActionsForEntry = (entry) => {
   const actions = [
@@ -3372,7 +3654,7 @@ const revealInGrid = async (entry) => {
   if (entry.cat.id === '_secret') return;
   const targetId = entry.app.parentId || entry.app.id;
   const targetCatId = entry.cat.id;
-  closePalette();
+  closePaletteImmediate();
   if (currentTabId !== targetCatId) await activateTab(targetCatId);
   requestAnimationFrame(() => {
     const card = document.querySelector(`#appGrid .app-card[data-app-id="${targetId}"]`);
@@ -3399,7 +3681,7 @@ const executeAction = async (actionId) => {
     sfx.click();
     window.open(entry.app.url, '_blank', 'noopener');
     paletteSkipCloseChime = true;
-    closePalette();
+    requestClosePalette();
   } else if (actionId === 'same-tab') {
     sfx.click();
     window.location.href = entry.app.url;
@@ -3422,33 +3704,201 @@ const openPaletteItem = (i) => {
   executeAction('new-tab');
 };
 
-const openPalette = () => {
+const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
+const MORPH_OPEN_MS = 420;
+const MORPH_CLOSE_MS = 250;
+
+const openPalette = (seed = '') => {
   const dialog = document.getElementById('lx-palette');
-  if (dialog.open) return;
+  if (dialog.open || paletteBusy) return;
+  paletteBusy = true;
+
+  if (activeViewTransition) {
+    try { activeViewTransition.skipTransition(); } catch (e) {}
+    activeViewTransition = null;
+  }
+
+  const hero = document.getElementById('lxBarSearch');
+  const inlineInput = document.getElementById('lxInlineInput');
   const input = document.getElementById('paletteInput');
-  input.value = '';
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const skipMorph = !hero || reducedMotion || typeof dialog.animate !== 'function' ||
+    window.innerWidth < 1024 || !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  input.value = seed;
   paletteTryPicks = null;
   lastDetailKey = null;
   paletteEntranceArmed = true;
-  renderPaletteResults('');
+
+  const results = document.getElementById('paletteResults');
+  if (results) results.style.setProperty('--stagger-base', skipMorph ? '0ms' : '160ms');
+  renderPaletteResults(seed);
+
   document.querySelector('.container').classList.add('is-dollied');
   document.querySelector('.controls-pill').classList.add('is-dollied');
+  inlineInput?.setAttribute('aria-expanded', 'true');
+
+  if (skipMorph) {
+    dialog.showModal();
+    document.body.classList.add('palette-open');
+    sfx.veil(true);
+    requestAnimationFrame(() => input.focus({ preventScroll: true }));
+    paletteBusy = false;
+    return;
+  }
+
+  const heroBox = hero.getBoundingClientRect();
+
+  dialog.classList.remove('did-morph');
+  dialog.classList.add('is-morphing');
   dialog.showModal();
   sfx.veil(true);
-  requestAnimationFrame(() => input.focus());
+
+  requestAnimationFrame(() => {
+    document.body.classList.add('palette-open');
+
+    const row = dialog.querySelector('.palette-input-row');
+    const rowBox = row.getBoundingClientRect();
+    const dlgBox = dialog.getBoundingClientRect();
+    const dy = (heroBox.top + heroBox.height / 2) - (rowBox.top + rowBox.height / 2);
+
+    const chrome = [dialog.querySelector('.palette-live-dot'), row.querySelector('kbd')].filter(Boolean);
+    chrome.forEach(el => { el.style.opacity = '0'; });
+
+    dialog.style.willChange = 'height, transform';
+    const panel = dialog.animate([
+      { height: `${rowBox.height}px`, transform: `translateY(${dy}px)`, borderRadius: '999px' },
+      { height: `${dlgBox.height}px`, transform: 'translateY(0)', borderRadius: '28px' }
+    ], { duration: MORPH_OPEN_MS, easing: EASE_LUX, fill: 'both' });
+
+    const bodyAnim = dialog.querySelector('.palette-body').animate(
+      [{ opacity: 0 }, { opacity: 1 }],
+      { duration: 200, delay: 140, easing: EASE_LUX, fill: 'both' }
+    );
+    const chromeAnim = chrome.map(el => el.animate(
+      [{ opacity: 0 }, { opacity: 1 }],
+      { duration: 200, delay: 140, easing: EASE_LUX, fill: 'both' }
+    ));
+
+    requestAnimationFrame(() => input.focus({ preventScroll: true }));
+
+    panel.finished.catch(() => {}).finally(() => {
+      dialog.style.willChange = '';
+      dialog.classList.remove('is-morphing');
+      dialog.classList.add('did-morph');
+      results?.style.removeProperty('--stagger-base');
+      try { panel.cancel(); } catch (e) {}
+      try { bodyAnim.cancel(); } catch (e) {}
+      chromeAnim.forEach(a => { try { a.cancel(); } catch (e) {} });
+      chrome.forEach(el => { el.style.opacity = ''; });
+      paletteBusy = false;
+    });
+  });
 };
 
-const closePalette = () => {
+const closePaletteImmediate = () => {
   const dialog = document.getElementById('lx-palette');
-  if (dialog.open) dialog.close();
-  document.querySelector('.container')?.classList.remove('is-dollied');
-  document.querySelector('.controls-pill')?.classList.remove('is-dollied');
+  if (!dialog.open) return;
+  const inlineInput = document.getElementById('lxInlineInput');
+  inlineInput?.setAttribute('aria-expanded', 'false');
+  if (!paletteSkipCloseChime) sfx.veil(false);
+  paletteSkipCloseChime = true;
+  document.getElementById('paletteGhost')?.replaceChildren();
+  dialog.classList.remove('is-morphing', 'did-morph');
+  dialog.style.willChange = '';
+  dialog.close();
+  document.body.classList.remove('palette-open');
+  if (heroReturnFocus) {
+    heroReturnFocus = false;
+    inlineInput?.focus({ preventScroll: true });
+  }
+  paletteBusy = false;
+};
+
+const requestClosePalette = () => {
+  const dialog = document.getElementById('lx-palette');
+  if (!dialog.open || paletteBusy) return;
+  paletteBusy = true;
+
+  const hero = document.getElementById('lxBarSearch');
+  const inlineInput = document.getElementById('lxInlineInput');
+  inlineInput?.setAttribute('aria-expanded', 'false');
+
+  const skipChime = paletteSkipCloseChime;
+  if (!skipChime) sfx.veil(false);
+  paletteSkipCloseChime = true;
+
   const g = document.getElementById('paletteGhost'); if (g) g.innerHTML = '';
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canMorph = !!hero && dialog.classList.contains('did-morph') && !reducedMotion && typeof dialog.animate === 'function';
+
+  const finish = () => {
+    dialog.close();
+    dialog.style.willChange = '';
+    dialog.classList.remove('is-morphing', 'did-morph');
+    document.body.classList.remove('palette-open');
+    if (heroReturnFocus) {
+      heroReturnFocus = false;
+      inlineInput?.focus({ preventScroll: true });
+    }
+    paletteBusy = false;
+  };
+
+  if (!canMorph) {
+    finish();
+    return;
+  }
+
+  const row = dialog.querySelector('.palette-input-row').getBoundingClientRect();
+  const heroBox = hero.getBoundingClientRect();
+  const dlgBox = dialog.getBoundingClientRect();
+  const dy = (heroBox.top + heroBox.height / 2) - (row.top + row.height / 2);
+
+  dialog.classList.add('is-morphing');
+  dialog.style.willChange = 'height, transform';
+
+  const hideHeroTimer = setTimeout(() => { document.body.classList.remove('palette-open'); }, Math.max(0, MORPH_CLOSE_MS - 80));
+
+  const panel = dialog.animate([
+    { height: `${dlgBox.height}px`, transform: 'translateY(0)', borderRadius: '28px' },
+    { height: `${row.height}px`, transform: `translateY(${dy}px)`, borderRadius: '999px' }
+  ], { duration: MORPH_CLOSE_MS, easing: EASE_ACCEL, fill: 'both' });
+
+  const bodyAnim = dialog.querySelector('.palette-body').animate(
+    [{ opacity: 1 }, { opacity: 0 }],
+    { duration: Math.round(MORPH_CLOSE_MS * 0.6), easing: EASE_LUX, fill: 'both' }
+  );
+
+  panel.finished.catch(() => {}).finally(() => {
+    clearTimeout(hideHeroTimer);
+    try { panel.cancel(); } catch (e) {}
+    try { bodyAnim.cancel(); } catch (e) {}
+    finish();
+  });
 };
 
 const togglePalette = () => {
+  if (paletteBusy) return;
   const dialog = document.getElementById('lx-palette');
-  if (dialog.open) closePalette(); else openPalette();
+  if (dialog.open) requestClosePalette(); else openPalette();
+};
+
+const initBarGlow = () => {
+  const bar = document.getElementById('lxBar');
+  if (!bar) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  bar.addEventListener('pointermove', (e) => {
+    const r = bar.getBoundingClientRect();
+    bar.style.setProperty('--rx', `${e.clientX - r.left}px`);
+    bar.style.setProperty('--ry', `${e.clientY - r.top}px`);
+    bar.style.setProperty('--reveal-o', '0.9');
+  });
+  bar.addEventListener('pointerleave', () => {
+    bar.style.setProperty('--reveal-o', '0');
+  });
 };
 
 const setupInteractions = () => {
@@ -3467,6 +3917,7 @@ const setupInteractions = () => {
   activateTab(initialTab, { pushHash: false, playSound: false, instant: true });
   initPointerField();
   initMagneticControls();
+  initBarGlow();
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
@@ -3688,18 +4139,84 @@ const setupInteractions = () => {
   paletteDialog.addEventListener('close', () => {
     document.querySelector('.container').classList.remove('is-dollied');
     document.querySelector('.controls-pill').classList.remove('is-dollied');
+    document.body.classList.remove('palette-open');
     if (paletteSkipCloseChime) paletteSkipCloseChime = false;
     else sfx.veil(false);
+  });
+
+  paletteDialog.addEventListener('cancel', (e) => {
+    e.preventDefault();
+    requestClosePalette();
   });
 
   paletteDialog.addEventListener('click', (e) => {
     if (!paletteDialog.open) return;
     const r = paletteDialog.getBoundingClientRect();
     const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-    if (!inside) closePalette();
+    if (!inside) requestClosePalette();
   });
 
-  document.getElementById('paletteToggle').addEventListener('click', () => togglePalette());
+  const inlineInput = document.getElementById('lxInlineInput');
+  if (inlineInput) {
+    let inlineDebounce;
+    const syncBarFocusState = () => {
+      const bar = document.getElementById('lxBar');
+      if (bar) bar.classList.toggle('is-focused', document.activeElement === inlineInput || !!inlineInput.value);
+    };
+
+    inlineInput.addEventListener('input', () => {
+      clearTimeout(inlineDebounce);
+      const value = inlineInput.value.trim();
+      inlineDebounce = setTimeout(() => applyInlineFilter(value), 45);
+      syncBarFocusState();
+    });
+    inlineInput.addEventListener('focus', syncBarFocusState);
+    inlineInput.addEventListener('blur', syncBarFocusState);
+
+    inlineInput.addEventListener('keydown', (e) => {
+      if (e.isComposing || e.key === 'Process' || e.key === 'Dead') return;
+
+      if (e.key === 'Escape') {
+        if (inlineInput.value) { e.preventDefault(); clearInlineFilter(); }
+        inlineInput.blur();
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        const first = document.querySelector('#appGrid .app-card.is-match');
+        if (first) { e.preventDefault(); first.querySelector('.card-link-overlay')?.focus(); }
+        return;
+      }
+      if (e.key === 'Tab' && !e.shiftKey && inlineHintMode === 'counter') {
+        e.preventDefault();
+        escalateSearch(inlineInput.value);
+        return;
+      }
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        const primary = document.querySelector('#appGrid .app-card.is-primary-match');
+        if (!primary) {
+          if (inlineInput.value.trim()) escalateSearch(inlineInput.value);
+          return;
+        }
+        const link = primary.querySelector('.card-link-overlay');
+        const url = link?.getAttribute('href');
+        if (!url) return;
+        const appId = primary.dataset.appId;
+        if (e.metaKey || e.ctrlKey) {
+          copyToClipboard(url).then(ok => {
+            const tabLive = document.getElementById('tabLive');
+            if (tabLive) tabLive.textContent = ok ? t('linkCopied') : t('copyFailed');
+          });
+        } else if (e.shiftKey) {
+          pushRecent(appId); bumpFreq(appId);
+          window.location.href = url;
+        } else {
+          pushRecent(appId); bumpFreq(appId);
+          window.open(url, '_blank', 'noopener');
+        }
+      }
+    });
+  }
 
   const isPhysical = (e, code, ...chars) =>
     e.code === code || chars.includes((e.key || '').toLowerCase());
@@ -3718,19 +4235,27 @@ const setupInteractions = () => {
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && isPhysical(e, 'KeyK', 'k', 'ن')) {
       e.preventDefault();
-      togglePalette();
+      if (paletteDialog.open) { requestClosePalette(); return; }
+      const inlineInput = document.getElementById('lxInlineInput');
+      if (document.activeElement === inlineInput) heroReturnFocus = true;
+      openPalette(document.activeElement === inlineInput ? inlineInput.value : '');
       return;
     }
     if (e.key === 'Escape' && paletteDialog.open) {
       e.preventDefault();
-      closePalette();
+      requestClosePalette();
       return;
     }
     if (paletteDialog.open) return;
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea') return;
+    if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      e.preventDefault();
+      document.getElementById('lxInlineInput')?.focus();
+      return;
+    }
     const digit = eventDigit(e);
-    if (digit) {
+    if (digit && !document.body.classList.contains('is-filtering')) {
       const cards = document.querySelectorAll('#appGrid .app-card');
       const card = cards[digit - 1];
       if (card) card.querySelector('.card-link-overlay')?.click();
