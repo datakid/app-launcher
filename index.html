@@ -53,11 +53,14 @@
   --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
-  --ease-pill: linear(0, 0.42 8.4%, 1.14 24.4%, 0.88 39.6%, 1.03 56.4%, 0.98 73.2%, 1 100%);
+  --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.88 39.6%, 1.03 56.4%, 0.98 73.2%, 1 100%);
   --dur-micro: 160ms;
   --dur-fast: 300ms;
   --dur-base: 380ms;
   --dur-slow: 620ms;
+  --dur-story: 700ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
   --ui-font: 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --display-font: 'El Messiri', var(--ui-font);
@@ -80,7 +83,8 @@
 @property --sc { syntax: '<number>'; inherits: false; initial-value: 1; }
 @property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
-:root { transition-property: --tab-accent; transition-duration: 0.34s; transition-timing-function: var(--ease-lux); }
+@property --hover-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
+:root { transition-property: --tab-accent; transition-duration: 0.34s; transition-timing-function: var(--ease-io); }
 @property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
@@ -98,7 +102,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: background 1s var(--ease-smooth), color 1s var(--ease-smooth);
+  transition: background 1s var(--ease-out), color 1s var(--ease-out);
 }
 
 a, button { cursor: pointer; }
@@ -119,15 +123,15 @@ a, button { cursor: pointer; }
 
 #gradient-canvas {
   position: fixed; inset: 0; z-index: 0;
-  pointer-events: none; filter: blur(60px);
-  transform: scale(1.3); opacity: 0;
-  animation: fadeIn 2.5s var(--ease-lux) forwards;
+  pointer-events: none; filter: blur(18px);
+  transform: scale(1.06); opacity: 0;
+  animation: fadeIn 2.5s var(--ease-out) forwards;
 }
 
 .scrim {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background: radial-gradient(circle at center, transparent 22%, color-mix(in oklab, var(--tab-accent) 3%, var(--bg)) 118%);
-  transition: background 1s var(--ease-smooth);
+  transition: background 1s var(--ease-out);
 }
 
 .scrim::after {
@@ -144,22 +148,26 @@ a, button { cursor: pointer; }
     radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03)), transparent 70%),
     radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022)), transparent 70%);
   background:
-    radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--tab-accent) 5%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%),
-    radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--tab-accent) 5%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
+    radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 5%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%),
+    radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 5%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
   opacity: 0;
-  transition: opacity 0.6s var(--ease-lux);
+  transition: --hover-accent 0.5s var(--ease-out), opacity 0.6s var(--ease-out);
 }
 
 .spotlight.is-active { opacity: 1; }
 .spotlight.is-active.is-idle { opacity: 0.45; }
 body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
 
+body.is-cinema .spotlight { opacity: .55; }
+body.is-cinema h1 { animation: shimmerText 5s var(--ease-out) .8s 1 both; }
+body.is-cinema .controls-pill { opacity: .45; transition: opacity 1.2s var(--ease-out); }
+
 .container {
   width: 100%; max-width: 1400px; height: 100dvh;
   padding: clamp(2.25rem, 3.6vh, 3.25rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3vh, 2.5rem);
   position: relative; z-index: 3;
   display: flex; flex-direction: column; gap: clamp(1rem, 2.2vh, 1.6rem);
-  transition: transform 0.45s var(--ease-lux), filter 0.45s var(--ease-lux);
+  transition: transform 0.45s var(--ease-io), filter 0.45s var(--ease-io);
 }
 
 .container.is-dollied, .controls-pill.is-dollied {
@@ -169,7 +177,7 @@ body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
 .site-header {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  animation: slideDown 0.9s var(--ease-lux) both;
+  animation: slideDown 0.9s var(--ease-out) both;
 }
 
 h1 {
@@ -186,7 +194,8 @@ h1 {
   padding: 0.15em 0;
 }
 
-.fonts-ready h1 { animation: shimmerText 3.6s var(--ease-lux) .35s 1 both; }
+.fonts-ready h1 { animation: shimmerText 3.6s var(--ease-out) .35s 1 both; }
+:root:lang(en) h1 { font-style: italic; letter-spacing: -0.02em; }
 
 @keyframes shimmerText { to { background-position: 100% center; } }
 @keyframes fadeIn { to { opacity: 1; } }
@@ -199,13 +208,13 @@ h1 {
   position: fixed; top: 1.5rem; inset-inline-start: 1.5rem;
   display: flex; align-items: center;
   background: light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.025));
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid var(--border);
   border-radius: 50px; padding: 0.35rem; gap: 0.2rem;
   z-index: 100;
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-  transition: transform 0.45s var(--ease-lux), filter 0.45s var(--ease-lux), background 0.6s var(--ease-smooth);
+  transition: transform 0.45s var(--ease-io), filter 0.45s var(--ease-io), background 0.6s var(--ease-io), opacity 0.4s var(--ease-out);
 }
 
 .controls-pill button {
@@ -214,9 +223,9 @@ h1 {
   display: flex; align-items: center; justify-content: center;
   font-size: 1rem;
   transition:
-    background-color 0.4s var(--ease-lux),
-    color 0.4s var(--ease-lux),
-    transform 0.4s var(--ease-lux);
+    background-color 0.4s var(--ease-out),
+    color 0.4s var(--ease-out),
+    transform 0.4s var(--ease-out);
 }
 
 .controls-pill:not(.is-magnetic) button:hover {
@@ -224,7 +233,7 @@ h1 {
   transform: scale(1.06);
 }
 
-.controls-pill.is-magnetic button { transition: background-color 0.4s var(--ease-lux), color 0.4s var(--ease-lux); }
+.controls-pill.is-magnetic button { transition: background-color 0.4s var(--ease-out), color 0.4s var(--ease-out); }
 .controls-pill.is-magnetic button:hover { background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)); color: var(--text); }
 
 .controls-pill button[aria-pressed="true"] { color: var(--text); background: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.1)); }
@@ -236,7 +245,7 @@ h1 {
   border: 1px solid var(--border); border-radius: 14px; padding: 0.35rem;
   box-shadow: var(--shadow-deep);
   opacity: 0; transform: scale(0.92); transform-origin: top left; pointer-events: none;
-  transition: opacity 0.18s var(--ease-lux), transform 0.18s var(--ease-lux);
+  transition: opacity 0.18s var(--ease-out), transform 0.18s var(--ease-out);
 }
 :root[dir="rtl"] .lx-context-menu { transform-origin: top right; }
 .lx-context-menu.is-open { opacity: 1; transform: scale(1); pointer-events: auto; }
@@ -258,41 +267,30 @@ h1 {
   display: flex; align-items: center;
   border-radius: 999px;
   background: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.025));
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-  animation: slideDown 0.9s var(--ease-lux) 0.05s both;
+  animation: slideDown 0.8s var(--ease-out) 0.15s both;
   --tab-accent: #7c9bff;
   --c1: var(--tab-accent);
-  transition: --tab-accent 0.34s var(--ease-lux), border-color 0.34s var(--ease-lux), box-shadow 0.34s var(--ease-lux), opacity 120ms var(--ease-lux), transform 200ms var(--ease-lux);
+  transition: --tab-accent 0.34s var(--ease-out), border-color 0.34s var(--ease-out), box-shadow 0.34s var(--ease-out), opacity 120ms var(--ease-out), transform 200ms var(--ease-out);
   font-family: var(--ui-font); color: var(--text);
 }
 body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: none; }
 .lx-bar.is-focused { border-color: var(--border-highlight); box-shadow: var(--shadow-deep), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
-.lx-bar.is-focused .tab-rail { filter: saturate(.85); transition: filter 0.4s var(--ease-lux); }
+.lx-bar.is-focused .tab-rail { filter: saturate(.85); transition: filter 0.4s var(--ease-out); }
 
 .lx-bar-search {
   flex: 1; min-width: 22ch; min-height: 0;
   display: flex; align-items: center; gap: 1rem;
   height: 100%; padding-inline: 1.6rem;
   position: relative; z-index: 1;
-  font-family: var(--ui-font); color: var(--text);
+  background: none; border: 0; text-align: start;
+  font: inherit; font-family: var(--ui-font); color: var(--text);
 }
 .lx-bar-search i.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; }
-#lxInlineInput {
-  flex: 1; min-width: 0; background: transparent; border: none; outline: none;
-  font-family: var(--ui-font); font-size: 1.2rem; color: var(--text); caret-color: var(--tab-accent);
-}
-#lxInlineInput::placeholder { color: var(--text-muted); }
-.lx-bar-hint {
-  flex-shrink: 0; display: flex; align-items: center;
-  font-size: 0.78rem; color: var(--text-muted); white-space: nowrap;
-}
-.lx-bar-more {
-  background: transparent; border: none; padding: 0; font: inherit;
-  color: color-mix(in oklab, var(--tab-accent) 80%, var(--text)); cursor: pointer;
-}
+.lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.2rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lx-bar-kbd { margin-inline-start: auto; font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 0.2rem 0.6rem; flex-shrink: 0; }
 
 .lx-bar-divider { width: 1px; height: 26px; background: var(--border); margin-inline: 6px; flex-shrink: 0; }
@@ -307,7 +305,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
           mask-composite: exclude;
   opacity: var(--reveal-o);
-  transition: opacity 0.25s var(--ease-lux);
+  transition: opacity 0.25s var(--ease-out);
 }
 :root[data-theme="light"] .lx-bar::after {
   background: radial-gradient(var(--reveal-r, 260px) circle at var(--rx) var(--ry),
@@ -370,8 +368,8 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   text-decoration: none; border-radius: var(--radius);
   background-color: var(--surface);
   background-image: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0) 44%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045);
   padding: clamp(1.2rem, 2.5vh, 1.8rem);
@@ -379,14 +377,14 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   contain: layout paint;
   --hov: 0;
   --depth: 7px;
-  animation: cardEnter 0.7s var(--ease-lux) both, lx-float 18s ease-in-out infinite;
+  animation: cardEnter 0.7s var(--ease-out) both, lx-float 18s ease-in-out infinite;
   animation-delay: 0s, calc(0.95s + var(--i, 0) * 0.29s);
   transform: perspective(1600px) rotateX(calc(var(--ty) * -2.2deg)) rotateY(calc(var(--tx) * 2.2deg)) translateZ(var(--tz)) scale3d(var(--sc), var(--sc), var(--sc));
   transition:
-    box-shadow var(--dur-fast) var(--ease-lux),
-    border-color var(--dur-fast) var(--ease-lux),
-    background-color var(--dur-fast) var(--ease-lux),
-    opacity var(--dur-fast) var(--ease-lux),
+    box-shadow var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out),
     --hov var(--dur-base) var(--ease-spring),
     --sc var(--dur-base) var(--ease-spring);
 }
@@ -405,17 +403,29 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   to   { opacity: 1; scale: 1;    translate: 0 0; }
 }
 
+@keyframes cardBoot {
+  from { opacity: 0; clip-path: inset(10% 8% 10% 8% round var(--radius)); translate: 0 10px; }
+  to   { opacity: 1; clip-path: inset(0 0 0 0 round var(--radius));       translate: 0 0; }
+}
+body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
+
 @keyframes lx-float {
   from { translate: 0 0; }
   50%  { translate: 0 1.2px; }
   to   { translate: 0 0; }
 }
 
+@keyframes returnPulse {
+  0%   { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 0 color-mix(in oklab, var(--tint) 55%, transparent); }
+  100% { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 18px transparent; }
+}
+.app-card.is-returned { animation: returnPulse 1.4s var(--ease-out); }
+
 .app-card::before {
   content: ''; position: absolute; inset: -1px; border-radius: inherit;
   background: radial-gradient(circle 320px at var(--mx, 50%) var(--my, -20%), light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.085)), transparent 58%);
   opacity: 0; pointer-events: none; z-index: 2;
-  transition: opacity var(--dur-base) var(--ease-lux); mix-blend-mode: overlay;
+  transition: opacity var(--dur-base) var(--ease-out); mix-blend-mode: overlay;
 }
 :root[data-theme="light"] .app-card::before {
   background: radial-gradient(circle 240px at var(--mx, 50%) var(--my, -20%), rgba(255,255,255,0.2), transparent 62%);
@@ -456,9 +466,27 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   position: absolute; inset: 0;
   background: radial-gradient(circle 600px at var(--mx) var(--glow-y, 118%), var(--tint), transparent 60%);
   opacity: 0; pointer-events: none; z-index: 0;
-  transition: opacity var(--dur-slow) var(--ease-lux);
+  transition: opacity var(--dur-slow) var(--ease-out);
 }
 .app-card.is-tracking .card-glow { --glow-y: var(--my); }
+
+.card-sheen {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(115deg,
+    transparent 32%,
+    rgba(255,255,255,.16) 47%,
+    rgba(255,255,255,.05) 53%,
+    transparent 68%);
+  background-size: 260% 100%;
+  background-position: calc(130% - var(--hov, 0) * 260%) 0;
+  opacity: var(--hov, 0);
+  mix-blend-mode: overlay;
+}
+:root[data-theme="light"] .card-sheen { mix-blend-mode: soft-light; opacity: calc(var(--hov, 0) * .6); }
+
+.palette-item .card-sheen { opacity: 0; transition: opacity var(--dur-micro) var(--ease-out); }
+.palette-item:hover .card-sheen { opacity: 1; }
+:root[data-theme="light"] .palette-item:hover .card-sheen { opacity: .6; }
 
 .app-card:hover, .app-card:focus-within { --tz: 14px; --sc: 1.006; }
 .app-card:active { --sc: .992; }
@@ -508,11 +536,14 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   font-family: var(--ui-font); font-size: 0.72rem; font-weight: 700;
   font-variant-numeric: tabular-nums;
   opacity: 0; transform: translateY(-4px) scale(0.85);
-  transition: opacity 0.25s var(--ease-lux), transform 0.25s var(--ease-spring);
+  transition: opacity 0.25s var(--ease-out), transform 0.25s var(--ease-spring);
   pointer-events: none;
 }
 :root[data-theme="light"] .digit-badge { background: rgba(255,255,255,0.85); color: var(--text); }
 .app-grid:is(:hover, :focus-within) .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
+.app-card.is-keylaunched .digit-badge {
+  opacity: 1; transform: scale(1.35); background: var(--tab-accent); color: #fff;
+}
 
 .app-icon-wrapper {
   width: clamp(46px, 6.4vh, 56px); height: clamp(46px, 6.4vh, 56px);
@@ -528,7 +559,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
     inset 0 calc(-1px - var(--ty,0) * 1.5px) 0 rgba(0,0,0,.3),
     inset 0 0 0 1px rgba(255,255,255,.10),
     inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
-  transition: box-shadow var(--dur-fast) var(--ease-lux);
+  transition: box-shadow var(--dur-fast) var(--ease-out);
   position: relative; flex-shrink: 0;
   
   transform:
@@ -571,7 +602,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   content: ''; position: absolute; inset: -14px; border-radius: inherit;
   background: radial-gradient(circle, var(--tint), transparent 70%);
   opacity: 0; z-index: -1; filter: blur(14px);
-  transition: opacity 0.6s var(--ease-lux);
+  transition: opacity 0.6s var(--ease-out);
 }
 
 .app-card:hover .app-icon-wrapper, .app-card:focus-within .app-icon-wrapper {
@@ -584,7 +615,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   font-size: clamp(1.1rem, 2.5vh, 1.4rem);
   color: rgba(255,255,255,.96); text-shadow: 0 1px 2px rgba(0,0,0,.35);
   position: relative; z-index: 1;
-  transition: opacity 0.175s var(--ease-lux);
+  transition: opacity 0.175s var(--ease-out);
 }
 
 .badges { display: flex; gap: 0.5rem; flex-direction: row; transform: translate3d(calc(var(--tx, 0) * var(--depth) * 1.3), calc(var(--ty, 0) * var(--depth) * 1.3), 0); }
@@ -595,7 +626,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em;
   background: light-dark(rgba(255,255,255,0.7), rgba(0,0,0,0.3)); backdrop-filter: blur(12px);
   border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
-  transition: color var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux);
+  transition: color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);
 }
 
 .badge-new { color: #d9a83e; border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
@@ -607,7 +638,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   box-shadow: 0 0 6px currentColor;
 }
 
-.app-card.is-revealed { animation: revealPulse 1.1s var(--ease-lux); }
+.app-card.is-revealed { animation: revealPulse 1.1s var(--ease-out); }
 
 @keyframes revealPulse {
   0% { box-shadow: 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
@@ -621,9 +652,10 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   line-height: 1.3; margin: 0; padding-bottom: 0.15em;
   letter-spacing: 0;
   text-wrap: balance;
+  text-rendering: optimizeLegibility;
   transform: translate3d(calc(var(--tx, 0) * var(--depth) * 1.6), calc(var(--ty, 0) * var(--depth) * 1.6), 0) scale(calc(1 + .006 * var(--hov, 0)));
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
-  transition: background-position 480ms var(--ease-lux);
+  transition: background-position 480ms var(--ease-out);
   background-image: linear-gradient(135deg,
     var(--text) 0%,
     var(--text) 38%,
@@ -643,6 +675,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   font-style: normal;
   font-size: clamp(1.25rem, 2.85vh, 1.6rem);
   letter-spacing: -0.004em;
+  font-feature-settings: "liga", "calt";
 }
 
 .app-card:hover .app-title, .app-card:focus-within .app-title { background-position: 100% center; }
@@ -655,7 +688,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   background: light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.08)); border: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.1));
   color: color-mix(in oklab, var(--tint) 80%, var(--text)); font-size: 0.65rem;
   opacity: 0; transform: translateY(4px) scale(0.8);
-  transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring);
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--ease-spring);
 }
 
 .app-card:hover .open-affordance, .app-card:focus-within .open-affordance { opacity: 0.9; transform: translateY(0) scale(1); }
@@ -670,25 +703,11 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
 }
 
 .variant-chip-indicator {
-  position: absolute; top: 3px; height: calc(100% - 6px);
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
   border-radius: 999px;
   background: light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.16));
   box-shadow: inset 0 1px 1px rgba(255,255,255,0.2);
-  pointer-events: none;
-}
-
-@supports (anchor-name: --a) {
-  .variant-chip[aria-checked="true"] { anchor-name: --active-chip; }
-  .variant-chip-indicator {
-    left: auto; width: auto;
-    position-anchor: --active-chip;
-    inset-inline-start: calc(anchor(--active-chip start) - 3px);
-    inset-inline-end: calc(anchor(--active-chip end) - 3px);
-    transition: inset-inline-start 0.32s var(--ease-pill), inset-inline-end 0.44s var(--ease-pill);
-  }
-}
-@supports not (anchor-name: --a) {
-  .variant-chip-indicator { left: 0; width: 0; transform: translateX(0); }
+  clip-path: inset(0 100% 0 0 round 999px);
 }
 
 .variant-chip {
@@ -697,7 +716,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   border: none; background: transparent; cursor: pointer;
   color: var(--text-muted);
   font-family: var(--ui-font); font-size: 0.68rem; font-weight: 600;
-  transition: color 0.25s var(--ease-lux);
+  transition: color 0.25s var(--ease-out);
 }
 .variant-chip.is-active { color: var(--text); }
 .variant-chip:focus-visible { outline: 2px solid var(--c1, #7c9bff); outline-offset: 1px; }
@@ -727,94 +746,41 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   background: hsl(0, 0%, 50%);
   mix-blend-mode: saturation;
   opacity: .74;
-  transition: opacity 0.32s var(--ease-lux);
+  transition: opacity 0.32s var(--ease-out);
 }
 .app-card.status-closed:hover .closed-tint,
 .app-card.status-closed:focus-within .closed-tint { opacity: .48; }
 
-body:not(.is-filtering) .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
+.app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
   opacity: 0.64;
   border-color: transparent;
 }
 
-body:not(.is-filtering) .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card.status-closed:not(:hover, :focus-visible) { opacity: 0.5; }
-
-body.is-filtering .app-card {
-  transition: opacity .32s var(--ease-lux), filter .32s var(--ease-lux), box-shadow .32s var(--ease-lux), border-color .32s var(--ease-lux), --tz var(--dur-base, .3s) var(--ease-spring);
-}
-body.is-filtering .app-card.is-dimmed {
-  opacity: .26; filter: saturate(.45); border-color: transparent; transition-delay: 0s;
-}
-body.is-filtering .app-card.is-match {
-  --tz: 6px;
-  box-shadow: var(--shadow-soft), 0 0 0 1px var(--tab-accent);
-  transition-delay: calc(var(--match-rank, 0) * 14ms);
-}
-body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform: translateY(0) scale(1); }
-.app-card.is-primary-match .open-affordance { opacity: .95 !important; transform: translateY(0) scale(1) !important; }
-.app-card.is-primary-match .open-affordance i { display: none; }
-.app-card.is-primary-match .open-affordance::after { content: '↵'; font-size: .8em; }
+.app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card.status-closed:not(:hover, :focus-visible) { opacity: 0.5; }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
 .tab-rail {
   position: relative; align-self: center; flex-shrink: 0;
-  display: flex; align-items: center; gap: 0.15rem;
-  padding: 0.35rem;
-  anchor-scope: --active-tab;
+  display: flex; justify-content: center; align-items: center;
+  gap: 0.15rem; padding: 0.35rem;
 }
-
-.tab-goo {
-  position: absolute; inset: 0; z-index: 0;
-  filter: url(#lx-goo); isolation: isolate; pointer-events: none;
-  opacity: light-dark(.10, .16);
-}
-
-.tab-indicator, .tab-indicator-trail, .tab-indicator-sheen {
-  position: absolute; top: 4px; height: calc(100% - 8px);
-  border-radius: 999px; width: 60px;
-}
+.tab-rail.is-measuring, .tab-rail.is-measuring * { transition: none !important; }
 
 .tab-indicator {
-  background: light-dark(#141210, #ffffff);
-  transform: scaleY(1);
-  transition: transform .34s var(--ease-pill);
-}
-.tab-indicator.is-traveling { transform: scaleY(.86); }
-.tab-indicator-sheen.is-traveling { transform: scaleY(.86); }
-
-.tab-indicator-sheen {
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.25);
-  pointer-events: none; z-index: 1;
+  position: absolute; inset: 4px 0; z-index: 0; pointer-events: none;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--text) 9%, transparent);
+  clip-path: inset(0 100% 0 0 round 999px);
 }
 
-.tab-indicator-glow {
-  position: absolute; top: 4px; height: calc(100% - 8px);
-  border-radius: 999px; width: 60px;
-  box-shadow: 0 6px 20px -8px color-mix(in oklab, var(--tab-accent) 45%, transparent);
-  transition: box-shadow 0.6s var(--ease-lux);
-  pointer-events: none; z-index: -1;
-}
-
-.tab-indicator-trail {
-  background: light-dark(#141210, #ffffff);
-}
-
-@supports (anchor-name: --a) {
-  .tab-btn[aria-selected="true"] { anchor-name: --active-tab; }
-  .tab-indicator, .tab-indicator-trail, .tab-indicator-glow, .tab-indicator-sheen {
-    left: auto; width: auto; transform: none; transform-origin: unset;
-    position-anchor: --active-tab;
-    inset-inline-start: anchor(--active-tab start);
-    inset-inline-end: anchor(--active-tab end);
-  }
-  .tab-indicator { transition: inset-inline-start 0.34s var(--ease-pill), inset-inline-end 0.46s var(--ease-pill); }
-  .tab-indicator-trail { transition: inset-inline-start 0.34s var(--ease-pill) 0.06s, inset-inline-end 0.46s var(--ease-pill) 0.06s; }
-  .tab-indicator-glow { transition: inset-inline-start 0.34s var(--ease-pill), inset-inline-end 0.46s var(--ease-pill); }
-  .tab-indicator-sheen { transition: inset-inline-start 0.34s var(--ease-pill), inset-inline-end 0.46s var(--ease-pill); }
-}
-@supports not (anchor-name: --a) {
-  .tab-indicator, .tab-indicator-trail, .tab-indicator-glow, .tab-indicator-sheen { left: 0; transform: translateX(0); }
+.tab-ghost {
+  position: absolute; inset: 4px 0; z-index: 0; pointer-events: none;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--text) 5%, transparent);
+  clip-path: inset(0 100% 0 0 round 999px);
+  opacity: 0;
+  transition: clip-path var(--dur-base) var(--ease-io), opacity var(--dur-micro) var(--ease-out);
 }
 
 .tab-btn {
@@ -824,21 +790,24 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   padding: 0.65rem 1.35rem; border-radius: 999px;
   font-family: var(--ui-font);
   font-size: 0.92rem; font-weight: 600; white-space: nowrap;
-  transition: color 0.5s var(--ease-lux);
+  transition: color var(--dur-base) var(--ease-out);
 }
 
-.tab-btn i { font-size: 0.85rem; transition: color 0.5s var(--ease-lux); }
+.tab-btn i { font-size: 0.85rem; transition: color var(--dur-base) var(--ease-out); }
 .tab-btn[aria-selected="true"] { color: var(--text); }
 .tab-btn[aria-selected="true"] i { color: var(--tab-accent); }
 
-.tab-btn span {
-  display: inline-block; max-width: 0; opacity: 0; overflow: hidden; white-space: nowrap;
-  transition: max-width .42s var(--ease-pill), opacity .26s var(--ease-lux), margin-inline-start .42s var(--ease-pill);
+.tab-btn .label {
+  display: grid; grid-template-columns: 0fr; margin-inline-start: 0;
+  transition: grid-template-columns var(--dur-base) var(--ease-out),
+              margin-inline-start var(--dur-base) var(--ease-out);
 }
-.tab-btn[aria-selected="true"] span { max-width: 14ch; opacity: 1; margin-inline-start: .5rem; }
+.tab-btn .label > span { overflow: hidden; opacity: 0; white-space: nowrap; transition: opacity .2s var(--ease-out); }
+.tab-btn[aria-selected="true"] .label { grid-template-columns: 1fr; margin-inline-start: .5rem; }
+.tab-btn[aria-selected="true"] .label > span { opacity: 1; transition-delay: .12s; }
 
-::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-lux) both; }
-::view-transition-new(grid) { animation: lx-grid-in 0.28s var(--ease-lux) both; }
+::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-io) both; }
+::view-transition-new(grid) { animation: lx-grid-in 0.28s var(--ease-out) both; }
 
 @keyframes lx-grid-out {
   to { transform: translateX(calc(var(--dir, 1) * -18px)); filter: blur(6px); opacity: 0; }
@@ -848,11 +817,11 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   to { transform: none; filter: blur(0); opacity: 1; }
 }
 
-.app-grid.is-out { animation: lx-grid-out 0.22s var(--ease-lux) both; }
+.app-grid.is-out { animation: lx-grid-out 0.22s var(--ease-io) both; }
 
-::view-transition-group(.tile) { animation-duration: .3s; animation-timing-function: var(--ease-lux); }
-::view-transition-old(.tile)   { animation: lx-tile-out .14s var(--ease-lux) both; }
-::view-transition-new(.tile)   { animation: lx-tile-in  .22s var(--ease-lux) .05s both; }
+::view-transition-group(.tile) { animation-duration: .3s; animation-timing-function: var(--ease-io); }
+::view-transition-old(.tile)   { animation: lx-tile-out .14s var(--ease-io) both; }
+::view-transition-new(.tile)   { animation: lx-tile-in  .22s var(--ease-out) .05s both; }
 @keyframes lx-tile-out { to   { opacity: 0; transform: scale(.97); } }
 @keyframes lx-tile-in  { from { opacity: 0; transform: scale(1.02); } }
 
@@ -874,7 +843,7 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   border-radius: 28px; box-shadow: var(--shadow-deep), inset 0 1px 1px rgba(255,255,255,0.1), inset 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.12));
   padding: 0; overflow: hidden; color: var(--text);
   opacity: 0; transform: translateY(-10px) scale(0.97);
-  transition: opacity 0.3s var(--ease-spring), transform 0.3s var(--ease-spring), --live-accent 0.45s var(--ease-lux), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+  transition: opacity 0.3s var(--ease-spring), transform 0.3s var(--ease-spring), --live-accent 0.45s var(--ease-io), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
 }
 #lx-palette:not([open]) { pointer-events: none; }
 
@@ -898,7 +867,7 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   -webkit-backdrop-filter: blur(22px);
   opacity: 0;
   
-  transition: opacity 220ms var(--ease-lux), display 220ms allow-discrete, overlay 220ms allow-discrete;
+  transition: opacity 220ms var(--ease-out), display 220ms allow-discrete, overlay 220ms allow-discrete;
 }
 #lx-palette[open]::backdrop { opacity: 1; }
 @starting-style { #lx-palette[open]::backdrop { opacity: 0; } }
@@ -908,6 +877,9 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
 #lx-palette.is-morphing .palette-results,
 #lx-palette.is-morphing .palette-detail { overflow: hidden; }
 #lx-palette.is-morphing .palette-results { mask-image: none; -webkit-mask-image: none; }
+
+kbd { transition: transform 0.12s var(--ease-spring), background-color 0.2s var(--ease-out); }
+kbd.is-pressed { transform: translateY(1px) scale(.94); background: var(--surface-hover); }
 
 .palette-input-row { display: flex; align-items: center; gap: 1rem; padding: 1.35rem 1.6rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
 .palette-input-row i { color: var(--text-muted); font-size: 1.05rem; }
@@ -928,7 +900,7 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
   background: var(--live-accent);
   box-shadow: 0 0 10px color-mix(in oklab, var(--live-accent) 70%, transparent);
-  animation: paletteLiveDotBreathe 3s var(--ease-lux) infinite;
+  animation: paletteLiveDotBreathe 3s var(--ease-out) infinite;
 }
 
 @keyframes paletteLiveDotBreathe {
@@ -959,8 +931,8 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   position: relative;
   display: flex; align-items: center; gap: 1rem;
   padding: 0.85rem 1.05rem; border-radius: 15px; cursor: pointer;
-  transition: background 0.2s var(--ease-lux), box-shadow 0.2s var(--ease-lux);
-  animation: paletteItemIn .3s var(--ease-lux) both;
+  transition: background 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+  animation: paletteItemIn .3s var(--ease-out) both;
   animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 20ms);
 }
 
@@ -971,7 +943,7 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
 .palette-item::before {
   content: ''; position: absolute; inset-inline-start: 4px; top: 18%; bottom: 18%;
   width: 4px; border-radius: 999px; background: var(--live-accent);
-  transform: scaleY(0.4); opacity: 0; transition: transform 0.3s var(--ease-spring), opacity 0.3s var(--ease-lux);
+  transform: scaleY(0.4); opacity: 0; transition: transform 0.3s var(--ease-spring), opacity 0.3s var(--ease-io);
 }
 .palette-item.is-active::before { transform: scaleY(1); opacity: 1; }
 
@@ -1018,7 +990,7 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   color: color-mix(in oklab, var(--tint) 16%, transparent);
 }
 
-.palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; animation: detailIn .32s var(--ease-lux) both; }
+.palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; animation: detailIn .32s var(--ease-out) both; }
 .palette-detail .app-icon-wrapper {
   width: 64px; height: 64px; border-radius: 18px;
   background:
@@ -1072,7 +1044,7 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   font-size: 0.88rem; color: var(--text-muted);
   background: color-mix(in oklab, #d06868 8%, transparent); border: 1px solid color-mix(in oklab, #d06868 22%, transparent);
   border-radius: 14px; padding: 0.7rem 0.95rem;
-  animation: detailIn .32s var(--ease-lux) .05s both;
+  animation: detailIn .32s var(--ease-out) .05s both;
 }
 @keyframes detailIn { from { opacity: 0; translate: 0 8px; } }
 .palette-detail-badge {
@@ -1085,20 +1057,20 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
 .palette-detail-badge.badge-variant { color: #7ea4e8; border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
 .palette-detail-badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-.palette-actions { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.5rem; animation: detailIn .32s var(--ease-lux) .09s both; }
+.palette-actions { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.5rem; animation: detailIn .32s var(--ease-out) .09s both; }
 .palette-action {
   display: flex; align-items: center; gap: 0.9rem; width: 100%; text-align: start;
   background: var(--surface); border: 1px solid var(--border); color: var(--text);
   padding: 0.75rem 1rem; border-radius: 14px;
   font-family: var(--ui-font); font-size: 0.95rem; font-weight: 600;
-  transition: background 0.25s var(--ease-lux), border-color 0.25s var(--ease-lux);
+  transition: background 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
 }
 .palette-action-icon {
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   width: 34px; height: 34px; border-radius: 11px;
   background: light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05));
   color: var(--text-muted);
-  transition: background 0.25s var(--ease-lux), color 0.25s var(--ease-lux);
+  transition: background 0.25s var(--ease-out), color 0.25s var(--ease-out);
 }
 .palette-action-label { flex: 1; }
 .palette-action kbd { font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.18rem 0.55rem; flex-shrink: 0; }
@@ -1129,11 +1101,18 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   font-size: 0.72rem; color: var(--text-muted); opacity: 0.85; font-variant-numeric: tabular-nums;
 }
 .palette-status:empty { display: none; }
+.palette-ghost-hint {
+  position: absolute; inset-inline-end: 1.5rem; top: 50%; transform: translateY(-50%) scale(.7);
+  color: var(--live-accent); opacity: 0;
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+.palette-ghost-hint.is-flash { opacity: 1; transform: translateY(-50%) scale(1); }
+:root[dir="rtl"] .palette-ghost-hint i { transform: scaleX(-1); }
 
 .grid-empty {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 0.9rem; color: var(--text-muted); opacity: 0.7;
-  animation: cardEnter 0.7s var(--ease-lux) both;
+  animation: cardEnter 0.7s var(--ease-out) both;
 }
 .grid-empty i { font-size: 2.4rem; }
 .grid-empty span { font-size: 0.95rem; }
@@ -1186,7 +1165,7 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   .tab-rail { overflow-x: auto; }
   #lx-palette { margin-top: 8vh; }
   .palette-status { display: none; }
-  #lxInlineInput { font-size: 1.05rem; }
+  .lx-bar-label { font-size: 1.05rem; }
 }
 
 @media (max-width: 720px) {
@@ -1211,8 +1190,6 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   :root { --border: light-dark(rgba(20,18,15,.2), rgba(255,255,255,.16)); }
   .app-card::after { opacity: max(var(--reveal-o), .35); }
   .app-card { border-color: var(--border); }
-  .app-card.is-match { box-shadow: var(--shadow-soft), 0 0 0 2px var(--tab-accent); }
-  .lx-bar-hint, .lx-bar-more { color: var(--text); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1225,14 +1202,13 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   
   .app-card { translate: none !important; }
   .app-card, .app-icon-wrapper, .app-title, .badges, .variant-chips,
-  .tab-indicator, .tab-indicator-trail, .tab-indicator-glow, .tab-indicator-sheen, .variant-chip-indicator,
+  .tab-indicator, .tab-ghost, .variant-chip-indicator,
   .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
     transition-property: opacity, color, background-color, border-color, box-shadow;
   }
   #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
   .lx-bar { transition-property: opacity; }
-  .tab-btn span { transition: none !important; }
-  .app-card.is-match, .app-card.is-dimmed { transition-delay: 0s !important; }
+  .tab-btn .label, .tab-btn .label > span { transition: none !important; }
   .lx-context-menu { transition: opacity 0.01ms; transform: none !important; }
 }
 
@@ -1245,8 +1221,6 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   .card-glow, .closed-tint, .palette-detail-slab { display: none; }
   .app-card::after { display: none; }
   .app-card { border: 1px solid CanvasText; }
-  .app-card.is-dimmed { display: none; }
-  .app-card.is-match { border: 2px solid Highlight; }
 }
 </style>
 </head>
@@ -1254,15 +1228,6 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
 <canvas id="gradient-canvas" aria-hidden="true"></canvas>
 <div class="scrim" aria-hidden="true"></div>
 <div class="spotlight" id="spotlight" aria-hidden="true"></div>
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs>
-    <filter id="lx-goo">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
-      <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -11" result="goo" />
-    </filter>
-  </defs>
-</svg>
 
 <div class="controls-pill">
   <button type="button" id="soundToggle" aria-pressed="false" aria-label="تفعيل الصوت" title="تفعيل الصوت">
@@ -1284,22 +1249,16 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   </header>
 
   <div class="lx-bar" id="lxBar">
-    <div class="lx-bar-search" id="lxBarSearch">
+    <button type="button" class="lx-bar-search" id="lxBarSearch"
+            aria-haspopup="dialog" aria-expanded="false" aria-controls="lx-palette">
       <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-      <input id="lxInlineInput" type="text" role="combobox"
-             aria-expanded="false" aria-controls="appGrid"
-             aria-describedby="lxBarHint" autocomplete="off" spellcheck="false">
-      <span id="lxBarHint" class="lx-bar-hint" hidden></span>
+      <span class="lx-bar-label" id="lxBarLabel" data-i18n="barSearchLabel">ابحث في كل الأدوات…</span>
       <kbd class="lx-bar-kbd" id="lxBarKbd">⌘K</kbd>
-    </div>
+    </button>
     <div class="lx-bar-divider" aria-hidden="true"></div>
     <nav class="tab-rail" id="tabRail" role="tablist" aria-label="التصنيفات" data-i18n-aria="categoriesLabel">
-      <div class="tab-goo">
-        <div class="tab-indicator" id="tabIndicator"></div>
-        <div class="tab-indicator-trail" id="tabIndicatorTrail"></div>
-      </div>
-      <div class="tab-indicator-glow" id="tabIndicatorGlow"></div>
-      <div class="tab-indicator-sheen" id="tabIndicatorSheen" aria-hidden="true"></div>
+      <div class="tab-indicator" id="tabIndicator" aria-hidden="true"></div>
+      <div class="tab-ghost" id="tabGhost" aria-hidden="true"></div>
     </nav>
   </div>
 
@@ -1324,6 +1283,7 @@ body.is-filtering .app-card.is-match .open-affordance { opacity: .55; transform:
   </div>
   <div class="palette-hints">
     <span id="paletteStatus" class="palette-status" aria-hidden="true"></span>
+    <span id="paletteGhostHint" class="palette-ghost-hint" aria-hidden="true"><i class="fas fa-arrow-right"></i></span>
     <span><kbd>↑↓</kbd> <span data-i18n="hintNavigate">تنقل</span></span>
     <span><kbd>⇥</kbd> <span data-i18n="hintSwitchPanel">تبديل اللوحة</span></span>
     <span><kbd>↵</kbd> <span data-i18n="hintOpen">فتح</span></span>
@@ -1631,10 +1591,7 @@ const STRINGS = {
   resultsLabel: { ar: 'النتائج', en: 'Results' },
   actionsLabel: { ar: 'الإجراءات', en: 'Actions' },
   searchPlaceholder: { ar: 'ابحث عن تطبيق أو أداة…', en: 'Search for an app or tool…' },
-  searchInScope: { ar: 'ابحث في {tab}…', en: 'Search in {tab}…' },
-  searchEverywhere: { ar: '↵ للبحث في الكل', en: '↵ to search everywhere' },
-  noMatchesInScope: { ar: 'لا نتائج في {tab}', en: 'No matches in {tab}' },
-  moreElsewhere: { ar: '+{n} في تصنيفات أخرى', en: '+{n} in other categories' },
+  barSearchLabel: { ar: 'ابحث في كل الأدوات…', en: 'Search all tools…' },
   quickSearch: { ar: 'بحث سريع', en: 'Quick search' },
   quickLaunch: { ar: 'وصول سريع', en: 'Quick launch' },
   soundEnable: { ar: 'تفعيل الصوت', en: 'Enable sound' },
@@ -1898,33 +1855,51 @@ const getSelectedVariantIndex = (app) => {
   return typeof app.defaultVariant === 'number' ? app.defaultVariant : 0;
 };
 
-const supportsAnchor = typeof CSS !== 'undefined' && CSS.supports('anchor-name', '--a');
+const chipClip = (g) => `inset(0px ${g.r}px 0px ${g.l}px round 999px)`;
 
-const moveVariantIndicatorLegacy = (chipsEl, btn, instant) => {
+const measureChips = (chipsEl) => {
+  const btns = [...chipsEl.querySelectorAll('.variant-chip')];
+  if (!btns.length) return [];
+  const rr = chipsEl.getBoundingClientRect();
+  return btns.map(b => {
+    const br = b.getBoundingClientRect();
+    const l = br.left - rr.left;
+    return { l, r: rr.width - l - br.width };
+  });
+};
+
+const moveVariantIndicator = (chipsEl, toIndex, fromIndex, instant) => {
   const indicator = chipsEl.querySelector('.variant-chip-indicator');
-  if (!indicator || !btn) return;
-  const p = chipsEl.getBoundingClientRect(), b = btn.getBoundingClientRect();
-  const x = b.left - p.left, w = b.width;
-  const prevX = chipsEl._lastX ?? x;
-  const dx = x - prevX;
-  const stretch = Math.min(Math.abs(dx) / Math.max(w, 1), 0.3);
+  if (!indicator) return;
+  const geom = chipsEl._chipGeom || (chipsEl._chipGeom = measureChips(chipsEl));
+  const to = geom[toIndex];
+  if (!to) return;
+  const from = geom[fromIndex] || to;
 
-  indicator.style.width = `${w}px`;
-  indicator.style.transformOrigin = dx >= 0 ? 'left center' : 'right center';
+  chipsEl._chipAnim?.cancel(); chipsEl._chipAnim = null;
 
-  if (instant) {
-    indicator.style.transition = 'none';
-    indicator.style.transform = `translateX(${x}px)`;
-  } else {
-    indicator.style.transition = 'transform 0.3s var(--ease-lux)';
-    indicator.style.transform = `translateX(${x}px) scaleX(${1 + stretch})`;
-    clearTimeout(chipsEl._settleTimer);
-    chipsEl._settleTimer = setTimeout(() => {
-      indicator.style.transition = 'transform 0.25s var(--ease-spring)';
-      indicator.style.transform = `translateX(${x}px) scaleX(1)`;
-    }, 140);
+  if (instant || fromIndex === toIndex || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    indicator.style.clipPath = chipClip(to);
+    return;
   }
-  chipsEl._lastX = x;
+
+  const mid = { l: Math.min(from.l, to.l), r: Math.min(from.r, to.r) };
+  chipsEl._chipAnim = indicator.animate(
+    [{ clipPath: chipClip(from) }, { clipPath: chipClip(mid), offset: .42 }, { clipPath: chipClip(to) }],
+    { duration: 380, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'both' }
+  );
+  chipsEl._chipAnim.finished.then(() => {
+    indicator.style.clipPath = chipClip(to);
+    chipsEl._chipAnim?.cancel(); chipsEl._chipAnim = null;
+  }).catch(() => {});
+};
+
+const remeasureAllChips = () => {
+  document.querySelectorAll('.variant-chips').forEach(chipsEl => {
+    chipsEl._chipGeom = measureChips(chipsEl);
+    const activeIdx = [...chipsEl.querySelectorAll('.variant-chip')].findIndex(c => c.classList.contains('is-active'));
+    if (activeIdx >= 0) moveVariantIndicator(chipsEl, activeIdx, activeIdx, true);
+  });
 };
 
 const gradVars = (g) => `--c1:${g[0]};`;
@@ -1998,6 +1973,7 @@ const createCard = (app, idx, placement, cat) => {
   el.innerHTML = `
     <a class="card-link-overlay" ${overlayAttrs}></a>
     <div class="card-glow"></div>
+    <div class="card-sheen" aria-hidden="true"></div>
     ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}
     <div class="bento-header">
       <div class="app-icon-wrapper"><i class="app-icon fas ${iconClass}" aria-hidden="true"></i>${digitHtml}</div>
@@ -2012,7 +1988,10 @@ const createCard = (app, idx, placement, cat) => {
     </div>
   `;
 
-  el.addEventListener('click', () => sfx.click());
+  el.addEventListener('click', () => {
+    sfx.click();
+    try { localStorage.setItem('lx-last-open', app.id); } catch (e) {}
+  });
   el.addEventListener('mouseenter', () => { sfx.hover(soundIndex, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
   el.addEventListener('focusin', () => { sfx.hover(soundIndex, { octave }); setInteractionOrigin(el); });
   el.addEventListener('contextmenu', (e) => {
@@ -2028,6 +2007,7 @@ const createCard = (app, idx, placement, cat) => {
     let currentVariantIndex = variantIndex;
     const applyVariant = (i) => {
       if (i === currentVariantIndex) return;
+      const fromIndex = currentVariantIndex;
       currentVariantIndex = i;
       const v = app.variants[i];
       if (!v) return;
@@ -2038,7 +2018,7 @@ const createCard = (app, idx, placement, cat) => {
         chip.classList.toggle('is-active', ci === i);
         chip.setAttribute('aria-checked', String(ci === i));
       });
-      if (!supportsAnchor) moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
+      moveVariantIndicator(chipsEl, i, fromIndex, false);
       clearTimeout(el._iconTimer);
       iconEl.style.opacity = '0';
       el._iconTimer = setTimeout(() => {
@@ -2057,9 +2037,7 @@ const createCard = (app, idx, placement, cat) => {
       });
     });
 
-    if (!supportsAnchor) {
-      requestAnimationFrame(() => moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), true));
-    }
+    requestAnimationFrame(() => moveVariantIndicator(chipsEl, currentVariantIndex, currentVariantIndex, true));
   }
 
   return el;
@@ -2183,6 +2161,7 @@ const renderCards = (grid, categoryId) => {
   }
 
   const frag = document.createDocumentFragment();
+  const isBootBatch = !firstCardBatchDone;
   cat.apps.forEach((app, i) => {
     let placement = null;
     if (curated) {
@@ -2193,11 +2172,13 @@ const renderCards = (grid, categoryId) => {
       placement = { type: 'span', col: item.col, row: item.row, rowIndex: item.rowIndex };
     }
     const card = createCard(app, i, placement, cat);
+    if (isBootBatch) card.classList.add('is-boot-card');
     if (!curated && !generated && i === 0) card.classList.add('card-wide');
     frag.appendChild(card);
   });
   grid.innerHTML = '';
   grid.appendChild(frag);
+  firstCardBatchDone = true;
   pointerFieldDirty = true;
   if (grid.classList.contains('is-auto-flow')) {
     grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
@@ -2206,6 +2187,7 @@ const renderCards = (grid, categoryId) => {
   const origin = lastInteractionPoint ?? railCenter();
   const cards = [...grid.children];
   const skipEntryAnim = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bootOffset = isBootBatch ? 260 : 0;
   let max = 1;
   const dists = cards.map(c => {
     const r = c.getBoundingClientRect();
@@ -2217,7 +2199,7 @@ const renderCards = (grid, categoryId) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
     c.style.animationDelay = scrollDriven
       ? `0s, calc(0.95s + var(--i, ${i}) * 0.29s)`
-      : `${Math.round((dists[i] / max) * 220)}ms, calc(0.95s + var(--i, ${i}) * 0.29s)`;
+      : `${bootOffset + Math.round((dists[i] / max) * 220)}ms, calc(0.95s + var(--i, ${i}) * 0.29s)`;
     if (!skipEntryAnim) {
       c.style.willChange = 'transform, opacity';
       c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
@@ -2238,6 +2220,7 @@ const initPointerField = () => {
   let sx = -9999, sy = -9999;
   let hasPointer = false;
   let lastMove = 0;
+  let hoveredAccentCard = null;
 
   const reducedMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -2340,11 +2323,19 @@ const initPointerField = () => {
           c.classList.add('is-tracking');
           setIfChanged(c, '--mx', px - r.left, 0.5, 'px');
           setIfChanged(c, '--my', py - r.top, 0.5, 'px');
+          if (hoveredAccentCard !== c) {
+            hoveredAccentCard = c;
+            document.documentElement.style.setProperty('--hover-accent', getComputedStyle(c).getPropertyValue('--c1'));
+          }
         } else if (c.classList.contains('is-tracking')) {
           c.classList.remove('is-tracking');
           c.style.removeProperty('--mx');
           c.style.removeProperty('--my');
           delete c._last['--mx']; delete c._last['--my'];
+          if (hoveredAccentCard === c) {
+            hoveredAccentCard = null;
+            document.documentElement.style.removeProperty('--hover-accent');
+          }
         }
 
         if (inside || !s.tz.settled) {
@@ -2544,7 +2535,7 @@ class OrbField {
 
   resize() {
     const oldW = this.cv.width, oldH = this.cv.height;
-    const scale = 0.4;
+    const scale = 0.55;
     const dpr = 1;
     this.cv.width = Math.round(window.innerWidth * scale * dpr);
     this.cv.height = Math.round(window.innerHeight * scale * dpr);
@@ -2738,13 +2729,12 @@ const isMacPlatform = () => {
 };
 
 const updateBarKbd = () => {
-  const input = document.getElementById('lxInlineInput');
-  if (!input) return;
+  const btn = document.getElementById('lxBarSearch');
+  if (!btn) return;
   const kbd = document.getElementById('lxBarKbd');
   const shortcut = isMacPlatform() ? '⌘K' : 'Ctrl K';
   if (kbd) kbd.textContent = shortcut;
-  input.setAttribute('aria-label', t('quickSearch'));
-  input.title = `${t('quickSearch')} (${shortcut})`;
+  btn.title = `${t('quickSearch')} (${shortcut})`;
 };
 
 const applyI18n = (opts = {}) => {
@@ -2767,8 +2757,8 @@ const applyI18n = (opts = {}) => {
     setActiveButtonStates(preservedTab);
     applyTabAccent(categories.find(c => c.id === preservedTab));
   }
+  measureRail();
 
-  lastX = 0;
   pointerFieldDirty = true;
 
   if (preservedTab) {
@@ -2777,9 +2767,6 @@ const applyI18n = (opts = {}) => {
     grid.classList.add('is-relang');
     renderCards(grid, preservedTab);
     requestAnimationFrame(() => requestAnimationFrame(() => grid.classList.remove('is-relang')));
-    if (!supportsAnchor) {
-      requestAnimationFrame(() => moveIndicatorLegacy(document.getElementById(`tab-${preservedTab}`), true));
-    }
   }
 
   const paletteDialog = document.getElementById('lx-palette');
@@ -2794,14 +2781,12 @@ const applyI18n = (opts = {}) => {
       if (idx >= 0) setPaletteActive(idx);
     }
   }
-
-  updateInlinePlaceholder();
 };
 
-let lastX = 0;
-let indicatorTimer;
+let railGeom = new Map(), railAnim = null;
 let activeViewTransition = null;
 let currentTabId = null;
+let firstCardBatchDone = false;
 
 const supportsTileTransitions = typeof CSS !== 'undefined' && CSS.supports('view-transition-class', 'x');
 const supportsViewTimeline = typeof CSS !== 'undefined' && CSS.supports('animation-timeline', 'view()');
@@ -2852,54 +2837,68 @@ const applyTabAccent = (cat, impulseDir = 0) => {
   if (cat) window.bgAnim?.retargetCategory(cat.accent, impulseDir);
 };
 
-const moveIndicatorLegacy = (btn, instant) => {
+const railClip = (g) => `inset(0px ${g.r}px 0px ${g.l}px round 999px)`;
+
+const measureRail = () => {
   const rail = document.getElementById('tabRail');
-  const ind = document.getElementById('tabIndicator');
-  const trail = document.getElementById('tabIndicatorTrail');
-  const glow = document.getElementById('tabIndicatorGlow');
-  const sheen = document.getElementById('tabIndicatorSheen');
-  if (!rail || !ind || !trail || !btn) return;
+  if (!rail) return;
+  const btns = [...rail.querySelectorAll('.tab-btn')];
+  if (!btns.length) return;
 
-  const p = rail.getBoundingClientRect(), b = btn.getBoundingClientRect();
-  const x = b.left - p.left, w = b.width;
-  const dx = x - lastX;
-  const stretch = Math.min(Math.abs(dx) / Math.max(w, 1), 0.55);
+  rail.classList.add('is-measuring');
+  rail.style.width = 'auto';
 
-  clearTimeout(indicatorTimer);
+  let maxW = 0;
+  btns.forEach(b => {
+    btns.forEach(x => x.setAttribute('aria-selected', String(x === b)));
+    void rail.offsetWidth;
+    maxW = Math.max(maxW, rail.getBoundingClientRect().width);
+  });
+  rail.style.width = `${Math.ceil(maxW)}px`;
 
-  ind.style.width = `${w}px`;
-  trail.style.width = `${w}px`;
-  ind.style.transformOrigin = dx >= 0 ? 'left center' : 'right center';
-  if (glow) glow.style.width = `${w}px`;
-  if (sheen) { sheen.style.width = `${w}px`; sheen.style.transformOrigin = ind.style.transformOrigin; }
+  railGeom = new Map();
+  btns.forEach(b => {
+    btns.forEach(x => x.setAttribute('aria-selected', String(x === b)));
+    void rail.offsetWidth;
+    const rr = rail.getBoundingClientRect(), br = b.getBoundingClientRect();
+    const l = br.left - rr.left;
+    railGeom.set(b.dataset.id, { l, r: rr.width - l - br.width });
+  });
 
-  if (instant) {
-    ind.style.transition = 'none';
-    ind.style.transform = `translateX(${x}px)`;
-    trail.style.transition = 'none';
-    trail.style.transform = `translateX(${x}px)`;
-    if (glow) { glow.style.transition = 'none'; glow.style.transform = `translateX(${x}px)`; }
-    if (sheen) { sheen.style.transition = 'none'; sheen.style.transform = `translateX(${x}px)`; }
-  } else {
-    ind.style.transition = 'transform 0.42s var(--ease-lux)';
-    ind.style.transform = `translateX(${x}px) scaleX(${1 + stretch}) scaleY(${1 - stretch * 0.35})`;
-    trail.style.transition = 'transform 0.5s var(--ease-spring) 0.06s, width 0.5s var(--ease-spring) 0.06s';
-    trail.style.transform = `translateX(${x}px)`;
-    if (glow) { glow.style.transition = 'transform 0.42s var(--ease-lux)'; glow.style.transform = `translateX(${x}px)`; }
-    if (sheen) {
-      sheen.style.transition = 'transform 0.42s var(--ease-lux)';
-      sheen.style.transform = `translateX(${x}px) scaleX(${1 + stretch}) scaleY(${1 - stretch * 0.35})`;
-    }
-    indicatorTimer = setTimeout(() => {
-      ind.style.transition = 'transform 0.5s var(--ease-spring)';
-      ind.style.transform = `translateX(${x}px) scaleX(1) scaleY(1)`;
-      if (sheen) {
-        sheen.style.transition = 'transform 0.5s var(--ease-spring)';
-        sheen.style.transform = `translateX(${x}px) scaleX(1) scaleY(1)`;
-      }
-    }, 190);
+  btns.forEach(x => x.setAttribute('aria-selected', String(x.dataset.id === currentTabId)));
+  void rail.offsetWidth;
+  rail.classList.remove('is-measuring');
+
+  const g = railGeom.get(currentTabId);
+  if (g) {
+    railAnim?.cancel(); railAnim = null;
+    document.getElementById('tabIndicator').style.clipPath = railClip(g);
   }
-  lastX = x;
+};
+
+const moveIndicator = (toId, fromId, instant) => {
+  const ind = document.getElementById('tabIndicator');
+  const to = railGeom.get(toId);
+  if (!ind || !to) return;
+  const from = railGeom.get(fromId) || to;
+
+  railAnim?.cancel(); railAnim = null;
+
+  if (instant || fromId === toId || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    ind.style.clipPath = railClip(to);
+    return;
+  }
+
+  const mid = { l: Math.min(from.l, to.l), r: Math.min(from.r, to.r) };
+
+  railAnim = ind.animate(
+    [{ clipPath: railClip(from) }, { clipPath: railClip(mid), offset: .42 }, { clipPath: railClip(to) }],
+    { duration: 380, easing: 'cubic-bezier(.22, 1, .36, 1)', fill: 'both' }
+  );
+  railAnim.finished.then(() => {
+    ind.style.clipPath = railClip(to);
+    railAnim?.cancel(); railAnim = null;
+  }).catch(() => {});
 };
 
 const setActiveButtonStates = (id) => {
@@ -2913,7 +2912,6 @@ const setActiveButtonStates = (id) => {
 const activateTab = (id, opts = {}) => {
   const { pushHash = true, playSound = true, instant = false } = opts;
   if (!categories.some(c => c.id === id)) return Promise.resolve();
-  clearInlineFilter();
   const prevId = currentTabId;
   const dir = prevId ? (catIndex(id) > catIndex(prevId) ? 1 : -1) : 1;
   currentTabId = id;
@@ -2921,39 +2919,12 @@ const activateTab = (id, opts = {}) => {
   const cat = categories.find(c => c.id === id);
 
   setActiveButtonStates(id);
-  const activeBtn = document.getElementById(`tab-${id}`);
   applyTabAccent(cat, prevId && prevId !== id ? dir : 0);
-  if (!supportsAnchor) {
-    moveIndicatorLegacy(activeBtn, instant);
-    const activeSpan = activeBtn ? activeBtn.querySelector('span') : null;
-    if (activeSpan && !instant) {
-      const onSpanGrown = (e) => {
-        if (e.propertyName !== 'max-width') return;
-        activeSpan.removeEventListener('transitionend', onSpanGrown);
-        moveIndicatorLegacy(activeBtn, false);
-      };
-      activeSpan.addEventListener('transitionend', onSpanGrown);
-    }
-  }
+  moveIndicator(id, prevId, instant);
 
   if (!instant && prevId && prevId !== id) {
     const tabLive = document.getElementById('tabLive');
     if (tabLive) tabLive.textContent = loc(cat.label);
-  }
-  if (!instant && prevId && prevId !== id) {
-
-    const ind = document.getElementById('tabIndicator');
-    const sheen = document.getElementById('tabIndicatorSheen');
-    if (ind) {
-      ind.classList.add('is-traveling');
-      clearTimeout(ind._travelTimer);
-      ind._travelTimer = setTimeout(() => ind.classList.remove('is-traveling'), 340);
-    }
-    if (sheen) {
-      sheen.classList.add('is-traveling');
-      clearTimeout(sheen._travelTimer);
-      sheen._travelTimer = setTimeout(() => sheen.classList.remove('is-traveling'), 340);
-    }
   }
 
   const g = document.getElementById('appGrid');
@@ -2995,8 +2966,6 @@ const activateTab = (id, opts = {}) => {
     if (prevCat) sfx.switchSweep(prevCat.key, cat.key);
   }
 
-  updateInlinePlaceholder();
-
   return rendered;
 };
 
@@ -3015,7 +2984,7 @@ const buildTabRail = () => {
     btn.setAttribute('aria-label', loc(cat.label));
     btn.title = loc(cat.label);
     btn.tabIndex = -1;
-    btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span>${escapeHtml(loc(cat.label))}</span>`;
+    btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span class="label"><span>${escapeHtml(loc(cat.label))}</span></span>`;
     btn.addEventListener('click', () => { setInteractionOrigin(btn); activateTab(cat.id); });
     btn.addEventListener('mouseenter', () => sfx.hover(cat.key + i, { throttle: false }));
     btn.addEventListener('focus', () => sfx.hover(cat.key + i, { throttle: false }));
@@ -3205,136 +3174,6 @@ const getRecentEntries = (allEntries, limit) => {
   return scored.slice(0, limit).map(s => s.entry);
 };
 
-let inlineHintMode = 'none';
-let inlineLastMatchCount = -1;
-let inlineAnnounceTimer;
-
-const computeLocalMatches = (query) => {
-  const entries = allPaletteEntries().filter(e => e.cat.id === currentTabId);
-  const bestByCard = new Map();
-  entries.forEach(e => {
-    const score = scoreEntry(query, e);
-    if (score < 0) return;
-    const cardId = e.app.parentId || e.app.id;
-    const existing = bestByCard.get(cardId);
-    if (!existing || score > existing.score) bestByCard.set(cardId, { cardId, score });
-  });
-  return [...bestByCard.values()].sort((a, b) => b.score - a.score);
-};
-
-const computeElsewhereCount = (query) => {
-  const entries = allPaletteEntries().filter(e => e.cat.id !== currentTabId && e.cat.id !== '_secret');
-  const seen = new Set();
-  let count = 0;
-  entries.forEach(e => {
-    if (scoreEntry(query, e) < 0) return;
-    const key = e.app.parentId || e.app.id;
-    if (seen.has(key)) return;
-    seen.add(key);
-    count += 1;
-  });
-  return count;
-};
-
-const setBarHint = (mode, text, onClick) => {
-  const hint = document.getElementById('lxBarHint');
-  if (!hint) return;
-  inlineHintMode = mode;
-  if (mode === 'none') { hint.hidden = true; hint.innerHTML = ''; return; }
-  hint.hidden = false;
-  if (mode === 'counter') {
-    hint.innerHTML = '<button type="button" class="lx-bar-more"></button>';
-    const btn = hint.querySelector('button');
-    btn.textContent = text;
-    btn.addEventListener('click', () => { sfx.click(); onClick(); });
-  } else {
-    hint.textContent = text;
-  }
-};
-
-const updateInlinePlaceholder = () => {
-  const input = document.getElementById('lxInlineInput');
-  if (!input) return;
-  const cat = categories.find(c => c.id === currentTabId);
-  input.placeholder = t('searchInScope').replace('{tab}', cat ? loc(cat.label) : '');
-};
-
-const clearInlineFilter = () => {
-  const input = document.getElementById('lxInlineInput');
-  const grid = document.getElementById('appGrid');
-  if (input && input.value) input.value = '';
-  document.body.classList.remove('is-filtering');
-  if (grid) {
-    grid.querySelectorAll('.app-card').forEach(card => {
-      card.classList.remove('is-match', 'is-dimmed', 'is-primary-match');
-      card.style.removeProperty('--match-rank');
-      if (card.inert) card.inert = false;
-    });
-  }
-  setBarHint('none');
-  if (input) input.setAttribute('aria-expanded', 'false');
-  inlineLastMatchCount = -1;
-  updateInlinePlaceholder();
-};
-
-const escalateSearch = (query) => {
-  clearInlineFilter();
-  document.getElementById('lxInlineInput')?.blur();
-  heroReturnFocus = true;
-  openPalette(query);
-};
-
-const applyInlineFilter = (query) => {
-  const grid = document.getElementById('appGrid');
-  const input = document.getElementById('lxInlineInput');
-  if (!grid || !input) return;
-  if (!query) { clearInlineFilter(); return; }
-
-  document.body.classList.add('is-filtering');
-  input.setAttribute('aria-expanded', 'true');
-
-  const matches = computeLocalMatches(query);
-  const rankById = new Map(matches.map((m, i) => [m.cardId, i]));
-
-  grid.querySelectorAll('.app-card').forEach(card => {
-    const rank = rankById.get(card.dataset.appId);
-    if (rank === undefined) {
-      if (card.contains(document.activeElement)) input.focus();
-      card.classList.remove('is-match', 'is-primary-match');
-      card.classList.add('is-dimmed');
-      card.style.removeProperty('--match-rank');
-      card.inert = true;
-    } else {
-      card.classList.remove('is-dimmed');
-      card.inert = false;
-      card.classList.add('is-match');
-      card.classList.toggle('is-primary-match', rank === 0);
-      card.style.setProperty('--match-rank', String(rank));
-    }
-  });
-
-  const cat = categories.find(c => c.id === currentTabId);
-  const tabName = cat ? loc(cat.label) : '';
-
-  if (!matches.length) {
-    setBarHint('empty', `${t('noMatchesInScope').replace('{tab}', tabName)} — ${t('searchEverywhere')}`);
-  } else {
-    const elsewhere = computeElsewhereCount(query);
-    if (elsewhere > 0) setBarHint('counter', t('moreElsewhere').replace('{n}', String(elsewhere)), () => escalateSearch(input.value));
-    else setBarHint('none');
-  }
-
-  if (matches.length !== inlineLastMatchCount) {
-    inlineLastMatchCount = matches.length;
-    sfx.tick();
-    clearTimeout(inlineAnnounceTimer);
-    inlineAnnounceTimer = setTimeout(() => {
-      const tabLive = document.getElementById('tabLive');
-      if (tabLive) tabLive.textContent = String(matches.length);
-    }, 500);
-  }
-};
-
 let paletteItems = [];
 let paletteActiveIndex = -1;
 let paletteActionIndex = 0;
@@ -3367,11 +3206,14 @@ const scoreEntry = (query, entry) => {
   const catScore = fuzzyScore(query, loc(entry.cat.label));
   let hostScore = -1;
   try { hostScore = fuzzyScore(query, new URL(entry.app.url).hostname) * 0.4; } catch (e) {}
-  return Math.max(titleArScore, titleEnScore, catScore, hostScore);
+  let s = Math.max(titleArScore, titleEnScore, catScore, hostScore);
+  if (s >= 0 && entry.cat.id === currentTabId) s += 40;
+  return s;
 };
 
 const paletteItemHtml = (e, globalIndex, query) => `
   <li class="palette-item${globalIndex === 0 ? ' is-active' : ''}" role="option" id="palette-item-${globalIndex}" aria-selected="${globalIndex === 0}" data-index="${globalIndex}" style="${gradVars(e.app.gradient)}--n:${globalIndex};">
+    <div class="card-sheen" aria-hidden="true"></div>
     <div class="app-icon-wrapper">
       <i class="app-icon fas ${e.app.icon}" aria-hidden="true"></i>
     </div>
@@ -3455,11 +3297,23 @@ const renderPaletteResults = (query) => {
 };
 
 let paletteGhostTail = '';
+let ghostHintTimer;
+
+const flashGhostHint = () => {
+  const hint = document.getElementById('paletteGhostHint');
+  if (!hint) return;
+  clearTimeout(ghostHintTimer);
+  hint.classList.remove('is-flash');
+  void hint.offsetWidth;
+  hint.classList.add('is-flash');
+  ghostHintTimer = setTimeout(() => hint.classList.remove('is-flash'), 900);
+};
 
 const updatePaletteGhost = (query) => {
   const ghostEl = document.getElementById('paletteGhost');
   if (!ghostEl) return;
   const top = paletteItems[0];
+  const hadTail = !!paletteGhostTail;
   paletteGhostTail = '';
   if (query && top) {
     const title = loc(top.app.title);
@@ -3472,6 +3326,7 @@ const updatePaletteGhost = (query) => {
   ghostEl.innerHTML = paletteGhostTail
     ? `<span class="ghost-typed">${escapeHtml(query)}</span><span class="ghost-tail">${escapeHtml(paletteGhostTail)}</span>`
     : '';
+  if (paletteGhostTail && !hadTail) flashGhostHint();
 };
 
 let paletteStatusAnnounceTimer;
@@ -3676,6 +3531,7 @@ const executeAction = async (actionId) => {
   if (actionId === 'new-tab' || actionId === 'same-tab') {
     pushRecent(entry.app.id);
     bumpFreq(entry.app.id);
+    try { localStorage.setItem('lx-last-open', entry.app.id); } catch (e) {}
   }
   if (actionId === 'new-tab') {
     sfx.click();
@@ -3720,7 +3576,6 @@ const openPalette = (seed = '') => {
   }
 
   const hero = document.getElementById('lxBarSearch');
-  const inlineInput = document.getElementById('lxInlineInput');
   const input = document.getElementById('paletteInput');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const skipMorph = !hero || reducedMotion || typeof dialog.animate !== 'function' ||
@@ -3737,7 +3592,7 @@ const openPalette = (seed = '') => {
 
   document.querySelector('.container').classList.add('is-dollied');
   document.querySelector('.controls-pill').classList.add('is-dollied');
-  inlineInput?.setAttribute('aria-expanded', 'true');
+  hero?.setAttribute('aria-expanded', 'true');
 
   if (skipMorph) {
     dialog.showModal();
@@ -3800,8 +3655,8 @@ const openPalette = (seed = '') => {
 const closePaletteImmediate = () => {
   const dialog = document.getElementById('lx-palette');
   if (!dialog.open) return;
-  const inlineInput = document.getElementById('lxInlineInput');
-  inlineInput?.setAttribute('aria-expanded', 'false');
+  const hero = document.getElementById('lxBarSearch');
+  hero?.setAttribute('aria-expanded', 'false');
   if (!paletteSkipCloseChime) sfx.veil(false);
   paletteSkipCloseChime = true;
   document.getElementById('paletteGhost')?.replaceChildren();
@@ -3811,7 +3666,7 @@ const closePaletteImmediate = () => {
   document.body.classList.remove('palette-open');
   if (heroReturnFocus) {
     heroReturnFocus = false;
-    inlineInput?.focus({ preventScroll: true });
+    hero?.focus({ preventScroll: true });
   }
   paletteBusy = false;
 };
@@ -3822,8 +3677,7 @@ const requestClosePalette = () => {
   paletteBusy = true;
 
   const hero = document.getElementById('lxBarSearch');
-  const inlineInput = document.getElementById('lxInlineInput');
-  inlineInput?.setAttribute('aria-expanded', 'false');
+  hero?.setAttribute('aria-expanded', 'false');
 
   const skipChime = paletteSkipCloseChime;
   if (!skipChime) sfx.veil(false);
@@ -3841,7 +3695,7 @@ const requestClosePalette = () => {
     document.body.classList.remove('palette-open');
     if (heroReturnFocus) {
       heroReturnFocus = false;
-      inlineInput?.focus({ preventScroll: true });
+      hero?.focus({ preventScroll: true });
     }
     paletteBusy = false;
   };
@@ -3901,6 +3755,31 @@ const initBarGlow = () => {
   });
 };
 
+let idleTimer, idleRaf;
+const runIdle = (start) => {
+  const spot = document.getElementById('spotlight');
+  const loop = (now) => {
+    const t = (now - start) / 1000;
+    const W = window.innerWidth, H = window.innerHeight;
+    if (spot) {
+      spot.style.setProperty('--sx', `${W / 2 + 0.32 * W * Math.sin(0.11 * t + 1.3)}px`);
+      spot.style.setProperty('--sy', `${0.28 * H + 0.16 * H * Math.sin(0.07 * t)}px`);
+    }
+    idleRaf = requestAnimationFrame(loop);
+  };
+  idleRaf = requestAnimationFrame(loop);
+};
+const armIdle = () => {
+  clearTimeout(idleTimer);
+  cancelAnimationFrame(idleRaf);
+  document.body.classList.remove('is-cinema');
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  idleTimer = setTimeout(() => {
+    document.body.classList.add('is-cinema');
+    runIdle(performance.now());
+  }, 25000);
+};
+
 const setupInteractions = () => {
   lang = resolveInitialLang();
   applyI18n({ rebuild: false });
@@ -3912,8 +3791,24 @@ const setupInteractions = () => {
     ['pointerdown', 'keydown'].forEach(evt => document.addEventListener(evt, resumeOnGesture, { once: true, capture: true }));
   }
   buildTabRail();
+  measureRail();
+
+  const rail = document.getElementById('tabRail');
+  const tabGhost = document.getElementById('tabGhost');
+  if (rail && tabGhost) {
+    rail.addEventListener('pointerover', (e) => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn || btn.dataset.id === currentTabId) { tabGhost.style.opacity = '0'; return; }
+      const g = railGeom.get(btn.dataset.id);
+      if (!g) return;
+      tabGhost.style.clipPath = railClip(g);
+      tabGhost.style.opacity = '1';
+    });
+    rail.addEventListener('pointerleave', () => { tabGhost.style.opacity = '0'; });
+  }
 
   const initialTab = getInitialTab();
+  document.body.classList.add('is-booted');
   activateTab(initialTab, { pushHash: false, playSound: false, instant: true });
   initPointerField();
   initMagneticControls();
@@ -3921,7 +3816,8 @@ const setupInteractions = () => {
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
-      if (!supportsAnchor) moveIndicatorLegacy(document.getElementById(`tab-${currentTabId}`), true);
+      measureRail();
+      remeasureAllChips();
       document.documentElement.classList.add('fonts-ready');
     });
   } else {
@@ -3936,7 +3832,8 @@ const setupInteractions = () => {
     clearTimeout(debTimer);
     debTimer = setTimeout(() => {
       window.bgAnim.resize();
-      if (!supportsAnchor) moveIndicatorLegacy(document.getElementById(`tab-${currentTabId}`), true);
+      measureRail();
+      remeasureAllChips();
       const g = document.getElementById('appGrid');
       if (g && g.classList.contains('is-auto-flow')) {
         g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
@@ -3947,6 +3844,16 @@ const setupInteractions = () => {
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
     if (getStoredTheme()) return;
     applyTheme();
+  });
+
+  window.addEventListener('pageshow', (e) => {
+    let id = null;
+    try { id = localStorage.getItem('lx-last-open'); } catch (err) {}
+    if (!id) return;
+    const card = document.querySelector(`.app-card[data-app-id="${CSS.escape(id.split('::')[0])}"]`);
+    if (!card) return;
+    card.classList.add('is-returned');
+    card.addEventListener('animationend', () => card.classList.remove('is-returned'), { once: true });
   });
 
   document.getElementById('themeToggle').addEventListener('click', (e) => {
@@ -4156,65 +4063,17 @@ const setupInteractions = () => {
     if (!inside) requestClosePalette();
   });
 
-  const inlineInput = document.getElementById('lxInlineInput');
-  if (inlineInput) {
-    let inlineDebounce;
-    const syncBarFocusState = () => {
-      const bar = document.getElementById('lxBar');
-      if (bar) bar.classList.toggle('is-focused', document.activeElement === inlineInput || !!inlineInput.value);
-    };
-
-    inlineInput.addEventListener('input', () => {
-      clearTimeout(inlineDebounce);
-      const value = inlineInput.value.trim();
-      inlineDebounce = setTimeout(() => applyInlineFilter(value), 45);
-      syncBarFocusState();
+  const heroSearch = document.getElementById('lxBarSearch');
+  if (heroSearch) {
+    heroSearch.addEventListener('click', () => {
+      heroReturnFocus = true;
+      openPalette('');
     });
-    inlineInput.addEventListener('focus', syncBarFocusState);
-    inlineInput.addEventListener('blur', syncBarFocusState);
-
-    inlineInput.addEventListener('keydown', (e) => {
-      if (e.isComposing || e.key === 'Process' || e.key === 'Dead') return;
-
-      if (e.key === 'Escape') {
-        if (inlineInput.value) { e.preventDefault(); clearInlineFilter(); }
-        inlineInput.blur();
-        return;
-      }
-      if (e.key === 'ArrowDown') {
-        const first = document.querySelector('#appGrid .app-card.is-match');
-        if (first) { e.preventDefault(); first.querySelector('.card-link-overlay')?.focus(); }
-        return;
-      }
-      if (e.key === 'Tab' && !e.shiftKey && inlineHintMode === 'counter') {
-        e.preventDefault();
-        escalateSearch(inlineInput.value);
-        return;
-      }
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        const primary = document.querySelector('#appGrid .app-card.is-primary-match');
-        if (!primary) {
-          if (inlineInput.value.trim()) escalateSearch(inlineInput.value);
-          return;
-        }
-        const link = primary.querySelector('.card-link-overlay');
-        const url = link?.getAttribute('href');
-        if (!url) return;
-        const appId = primary.dataset.appId;
-        if (e.metaKey || e.ctrlKey) {
-          copyToClipboard(url).then(ok => {
-            const tabLive = document.getElementById('tabLive');
-            if (tabLive) tabLive.textContent = ok ? t('linkCopied') : t('copyFailed');
-          });
-        } else if (e.shiftKey) {
-          pushRecent(appId); bumpFreq(appId);
-          window.location.href = url;
-        } else {
-          pushRecent(appId); bumpFreq(appId);
-          window.open(url, '_blank', 'noopener');
-        }
-      }
+    heroSearch.addEventListener('focus', () => {
+      document.getElementById('lxBar')?.classList.add('is-focused');
+    });
+    heroSearch.addEventListener('blur', () => {
+      document.getElementById('lxBar')?.classList.remove('is-focused');
     });
   }
 
@@ -4232,13 +4091,17 @@ const setupInteractions = () => {
     return 0;
   };
 
+  const isTypeAhead = (e) =>
+    !e.metaKey && !e.ctrlKey && !e.altKey &&
+    [...(e.key || '')].length === 1 &&
+    !/[0-9\u0660-\u0669\u06f0-\u06f9]/.test(e.key);
+
   document.addEventListener('keydown', (e) => {
     if ((e.metaKey || e.ctrlKey) && isPhysical(e, 'KeyK', 'k', 'ن')) {
       e.preventDefault();
       if (paletteDialog.open) { requestClosePalette(); return; }
-      const inlineInput = document.getElementById('lxInlineInput');
-      if (document.activeElement === inlineInput) heroReturnFocus = true;
-      openPalette(document.activeElement === inlineInput ? inlineInput.value : '');
+      heroReturnFocus = true;
+      openPalette('');
       return;
     }
     if (e.key === 'Escape' && paletteDialog.open) {
@@ -4251,16 +4114,39 @@ const setupInteractions = () => {
     if (tag === 'input' || tag === 'textarea') return;
     if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
       e.preventDefault();
-      document.getElementById('lxInlineInput')?.focus();
+      heroReturnFocus = true;
+      openPalette('');
+      return;
+    }
+    if (isTypeAhead(e)) {
+      e.preventDefault();
+      heroReturnFocus = true;
+      openPalette(e.key);
       return;
     }
     const digit = eventDigit(e);
-    if (digit && !document.body.classList.contains('is-filtering')) {
+    if (digit) {
       const cards = document.querySelectorAll('#appGrid .app-card');
       const card = cards[digit - 1];
-      if (card) card.querySelector('.card-link-overlay')?.click();
+      if (card) {
+        card.classList.add('is-keylaunched');
+        setTimeout(() => card.classList.remove('is-keylaunched'), 260);
+        card.querySelector('.card-link-overlay')?.click();
+      }
     }
   });
+
+  document.addEventListener('keydown', (e) => {
+    const kbd = [...document.querySelectorAll('.palette-hints kbd')]
+      .find(k => k.textContent === e.key);
+    if (!kbd) return;
+    kbd.classList.add('is-pressed');
+    setTimeout(() => kbd.classList.remove('is-pressed'), 140);
+  });
+
+  ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart'].forEach(evt =>
+    document.addEventListener(evt, armIdle, { passive: true }));
+  armIdle();
 };
 
 if (document.readyState === 'loading') {
