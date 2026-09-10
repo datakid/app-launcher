@@ -639,14 +639,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .app-card.is-revealed { animation: revealPulse 1.1s var(--ease-lux); }
 
 @keyframes revealPulse {
-  0% { box-shadow: 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
-  100% { box-shadow: 0 0 0 14px transparent; }
+  0%   { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
+  100% { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 14px transparent; }
 }
 
 .app-card.is-returned { animation: returnPulse 1.4s var(--ease-out); }
 @keyframes returnPulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--tint) 55%, transparent); }
-  100% { box-shadow: 0 0 0 18px transparent; }
+  0%   { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 0 color-mix(in oklab, var(--tint) 55%, transparent); }
+  100% { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 18px transparent; }
 }
 
 .app-title {
@@ -1238,7 +1238,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   
   .app-card { translate: none !important; }
   .app-card, .app-icon-wrapper, .app-title, .badges, .variant-chips,
-  .tab-indicator, .variant-chip-indicator,
+  .tab-indicator, .tab-ghost, .variant-chip-indicator,
   .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
     transition-property: opacity, color, background-color, border-color, box-shadow;
   }
@@ -1290,7 +1290,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
     <button type="button" class="lx-bar-search" id="lxBarSearch"
             aria-haspopup="dialog" aria-expanded="false" aria-controls="lx-palette">
       <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-      <span class="lx-bar-label" id="lxBarLabel" data-i18n="searchPlaceholder">ابحث عن تطبيق أو أداة…</span>
+      <span class="lx-bar-label" id="lxBarLabel" data-i18n="barSearchLabel">ابحث في كل الأدوات…</span>
       <kbd class="lx-bar-kbd" id="lxBarKbd">⌘K</kbd>
     </button>
     <div class="lx-bar-divider" aria-hidden="true"></div>
@@ -1628,6 +1628,7 @@ const STRINGS = {
   resultsLabel: { ar: 'النتائج', en: 'Results' },
   actionsLabel: { ar: 'الإجراءات', en: 'Actions' },
   searchPlaceholder: { ar: 'ابحث عن تطبيق أو أداة…', en: 'Search for an app or tool…' },
+  barSearchLabel: { ar: 'ابحث في كل الأدوات…', en: 'Search all tools…' },
   quickSearch: { ar: 'بحث سريع', en: 'Quick search' },
   quickLaunch: { ar: 'وصول سريع', en: 'Quick launch' },
   soundEnable: { ar: 'تفعيل الصوت', en: 'Enable sound' },
@@ -3840,7 +3841,6 @@ const setupInteractions = () => {
   document.body.classList.add('is-booted');
   const initialTab = getInitialTab();
   activateTab(initialTab, { pushHash: false, playSound: false, instant: true });
-  setTimeout(() => document.body.classList.remove('is-booted'), 1300);
   initPointerField();
   initMagneticControls();
   initBarGlow();
@@ -4112,7 +4112,6 @@ const setupInteractions = () => {
     });
   }
 
-  // type-ahead from anywhere: letters open the palette pre-seeded, digits still launch cards
   const isTypeAhead = (e) =>
     !e.metaKey && !e.ctrlKey && !e.altKey &&
     [...(e.key || '')].length === 1 &&
