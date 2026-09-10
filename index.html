@@ -49,19 +49,19 @@
   --shadow-deep: light-dark(0 2px 8px rgba(28,25,20,.07), 0 2px 6px rgba(0,0,0,.34)), light-dark(0 30px 60px -22px rgba(28,25,20,.18), 0 30px 64px -22px rgba(0,0,0,.72));
   --radius: 22px;
   --gap: clamp(0.7rem, 1.6vh, 1.15rem);
-  --lx-panel-w: min(880px, 94vw);
+  --lx-panel-w: min(640px, 60vw);
+  --lx-palette-w: min(880px, 94vw);
   --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
-  --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.92 39.6%, 1.015 56.4%, 0.99 73.2%, 1 100%);
-  --tab-dur: 460ms;
+  --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.96 39.6%, 1.01 56.4%, 0.99 73.2%, 1 100%);
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-io: cubic-bezier(.65, 0, .35, 1);
   --dur-micro: 160ms;
   --dur-fast: 300ms;
   --dur-base: 380ms;
   --dur-slow: 620ms;
   --dur-story: 700ms;
-  --ease-out: cubic-bezier(.22, 1, .36, 1);
-  --ease-io: cubic-bezier(.65, 0, .35, 1);
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
   --ui-font: 'IBM Plex Sans Arabic', system-ui, sans-serif;
   --display-font: 'El Messiri', var(--ui-font);
@@ -71,7 +71,7 @@
   --ui-font: 'Inter', system-ui, sans-serif;
   --display-font: 'Cormorant Garamond', Georgia, serif;
 }
-:root:lang(en) .app-title { font-feature-settings: "liga", "calt"; }
+:root:lang(en) h1 { letter-spacing: -0.02em; }
 
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] { color-scheme: dark; }
@@ -86,7 +86,7 @@
 @property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
 @property --hover-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
-:root { transition-property: --tab-accent, --hover-accent; transition-duration: 0.34s, 0.5s; transition-timing-function: var(--ease-lux), var(--ease-out); }
+:root { transition-property: --tab-accent; transition-duration: 0.34s; transition-timing-function: var(--ease-lux); }
 @property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
@@ -108,6 +108,8 @@ body {
 }
 
 a, button { cursor: pointer; }
+kbd { transition: transform .12s var(--ease-spring), background-color .2s var(--ease-out); }
+kbd.is-pressed { transform: translateY(1px) scale(.94); background: var(--surface-hover); }
 
 :focus-visible {
   outline: 2px solid color-mix(in oklab, var(--tint, #7c9bff) 70%, var(--text));
@@ -153,15 +155,11 @@ a, button { cursor: pointer; }
     radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 5%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%),
     radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 5%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
   opacity: 0;
-  transition: opacity 0.6s var(--ease-lux);
+  transition: --hover-accent 0.5s var(--ease-out), opacity 0.6s var(--ease-lux);
 }
 
 .spotlight.is-active { opacity: 1; }
 .spotlight.is-active.is-idle { opacity: 0.45; }
-
-body.is-cinema .spotlight { opacity: .55; transition: opacity 2.5s var(--ease-io); }
-body.is-cinema h1 { animation: shimmerText 6s var(--ease-io) infinite alternate; }
-body.is-cinema .controls-pill { opacity: .5; }
 body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
 
 .container {
@@ -197,7 +195,10 @@ h1 {
 }
 
 .fonts-ready h1 { animation: shimmerText 3.6s var(--ease-lux) .35s 1 both; }
-:root:lang(en) h1 { font-style: italic; letter-spacing: -0.02em; }
+
+body.is-cinema .spotlight { opacity: .55; }
+body.is-cinema h1 { animation: shimmerText 5s var(--ease-out) .8s 1 both; }
+body.is-cinema .controls-pill { opacity: .45; transition: opacity 1.2s var(--ease-out); }
 
 @keyframes shimmerText { to { background-position: 100% center; } }
 @keyframes fadeIn { to { opacity: 1; } }
@@ -264,43 +265,26 @@ h1 {
 .controls-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.2rem; }
 
 .lx-bar {
-  width: var(--lx-panel-w); height: 64px;
   align-self: center; position: relative; z-index: 3; flex-shrink: 0;
-  display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
   border-radius: 999px;
   background: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.025));
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-  animation: slideDown 0.8s var(--ease-out) 0.15s both;
-  --tab-accent: #7c9bff;
+  animation: slideDown .8s var(--ease-out) .15s both;
   --c1: var(--tab-accent);
-  transition: --tab-accent 0.34s var(--ease-lux), border-color 0.34s var(--ease-lux), box-shadow 0.34s var(--ease-lux), opacity 120ms var(--ease-lux), transform 200ms var(--ease-lux);
-  font-family: var(--ui-font); color: var(--text);
+  transition: opacity 120ms var(--ease-lux), transform 200ms var(--ease-lux),
+    border-color 0.3s var(--ease-lux), box-shadow 0.3s var(--ease-lux);
 }
 body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: none; }
-.lx-bar.is-focused { border-color: var(--border-highlight); box-shadow: var(--shadow-deep), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
-.lx-bar.is-focused .tab-rail { filter: saturate(.85); transition: filter 0.4s var(--ease-lux); }
-
-.lx-bar-search {
-  flex: 1; min-width: 22ch; min-height: 0;
-  display: flex; align-items: center; gap: 1rem;
-  height: 100%; padding-inline: 1.6rem;
-  position: relative; z-index: 1;
-  font-family: var(--ui-font); color: var(--text); font: inherit;
-  background: none; border: 0; text-align: start; cursor: pointer;
-}
-.lx-bar-search:hover .lx-bar-label, .lx-bar-search:focus-visible .lx-bar-label { color: var(--text); }
-.lx-bar-search i.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; }
-.lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.2rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color 0.2s var(--ease-lux); }
-.lx-bar-kbd { margin-inline-start: auto; font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 0.2rem 0.6rem; flex-shrink: 0; }
-
-.lx-bar-divider { width: 1px; height: 26px; background: var(--border); margin-inline: 6px; flex-shrink: 0; }
+.lx-bar:focus-within { border-color: var(--border-highlight); box-shadow: var(--shadow-soft), 0 0 0 1px color-mix(in oklab, var(--tab-accent) 35%, transparent); }
+.lx-bar:focus-within .tab-rail { opacity: 0.72; }
 
 .lx-bar::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
-  padding: 1px; z-index: 2; pointer-events: none;
+  padding: 1px; z-index: 1; pointer-events: none;
   background: radial-gradient(var(--reveal-r, 260px) circle at var(--rx) var(--ry),
     rgba(255,255,255,.95), rgba(255,255,255,.34) 26%, rgba(255,255,255,.12) 48%, transparent 74%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -318,6 +302,27 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   .lx-bar::after { background: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
   :root[data-theme="light"] .lx-bar::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
 }
+
+.lx-bar-search {
+  flex: 0 0 var(--lx-panel-w); width: var(--lx-panel-w);
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.35rem 1.6rem;
+  position: relative; text-align: start;
+  font-family: var(--ui-font); color: var(--text);
+}
+.lx-bar-search i.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; transition: color 0.3s var(--ease-lux); }
+.lx-bar-search:focus-within i.fa-magnifying-glass { color: var(--tab-accent); }
+#lxInlineInput {
+  flex: 1; min-width: 0; font-size: 1.2rem; font-family: var(--ui-font); color: var(--text);
+  background: transparent; border: none; outline: none; padding: 0;
+  caret-color: var(--tab-accent);
+}
+#lxInlineInput::placeholder { color: var(--text-muted); }
+.lx-bar-hint { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
+.lx-bar-hint button { color: var(--tab-accent); font-weight: 600; background: none; border: none; padding: 0; font: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.lx-bar-kbd { margin-inline-start: auto; font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 0.2rem 0.6rem; flex-shrink: 0; }
+
+.lx-bar-divider { width: 1px; height: 26px; margin-inline: 6px; background: var(--border); flex-shrink: 0; }
 
 .app-grid {
   flex: 1 1 0; min-height: 0;
@@ -371,8 +376,6 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   text-decoration: none; border-radius: var(--radius);
   background-color: var(--surface);
   background-image: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0) 44%);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045);
   padding: clamp(1.2rem, 2.5vh, 1.8rem);
@@ -406,17 +409,17 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   to   { opacity: 1; scale: 1;    translate: 0 0; }
 }
 
-@keyframes cardBoot {
-  from { opacity: 0; clip-path: inset(10% 8% 10% 8% round var(--radius)); translate: 0 10px; }
-  to   { opacity: 1; clip-path: inset(0 0 0 0 round var(--radius));       translate: 0 0; }
-}
-body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
-
 @keyframes lx-float {
   from { translate: 0 0; }
   50%  { translate: 0 1.2px; }
   to   { translate: 0 0; }
 }
+
+@keyframes cardBoot {
+  from { opacity: 0; clip-path: inset(10% 8% 10% 8% round var(--radius)); translate: 0 10px; }
+  to   { opacity: 1; clip-path: inset(0 0 0 0 round var(--radius));       translate: 0 0; }
+}
+body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 .app-card::before {
   content: ''; position: absolute; inset: -1px; border-radius: inherit;
@@ -512,12 +515,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   position: absolute; inset: 0; z-index: 1;
   border-radius: inherit;
 }
-.card-link-overlay:focus-visible {
-  outline-offset: -3px;
-  transition: outline-offset .15s var(--ease-out);
-}
-.card-link-overlay:focus-visible:not(:hover) { animation: focusSettle .3s var(--ease-out); }
-@keyframes focusSettle { from { outline-offset: -8px; } }
+.card-link-overlay:focus-visible { outline-offset: -3px; }
 
 .variant-chips, .variant-chip { pointer-events: auto; }
 
@@ -539,9 +537,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 }
 :root[data-theme="light"] .digit-badge { background: rgba(255,255,255,0.85); color: var(--text); }
 .app-grid:is(:hover, :focus-within) .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
-.app-card.is-keylaunched .digit-badge {
-  opacity: 1; transform: scale(1.35); background: var(--tab-accent); color: #fff;
-}
+.app-card.is-keylaunched .digit-badge { opacity: 1; transform: scale(1.35); background: var(--tab-accent); color: #fff; }
 
 .app-icon-wrapper {
   width: clamp(46px, 6.4vh, 56px); height: clamp(46px, 6.4vh, 56px);
@@ -639,14 +635,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .app-card.is-revealed { animation: revealPulse 1.1s var(--ease-lux); }
 
 @keyframes revealPulse {
-  0%   { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
-  100% { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 14px transparent; }
+  0% { box-shadow: 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
+  100% { box-shadow: 0 0 0 14px transparent; }
 }
 
 .app-card.is-returned { animation: returnPulse 1.4s var(--ease-out); }
 @keyframes returnPulse {
-  0%   { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 0 color-mix(in oklab, var(--tint) 55%, transparent); }
-  100% { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 18px transparent; }
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--tint) 55%, transparent); }
+  100% { box-shadow: 0 0 0 18px transparent; }
 }
 
 .app-title {
@@ -656,7 +652,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   line-height: 1.3; margin: 0; padding-bottom: 0.15em;
   letter-spacing: 0;
   text-wrap: balance;
-  text-rendering: optimizeLegibility;
   transform: translate3d(calc(var(--tx, 0) * var(--depth) * 1.6), calc(var(--ty, 0) * var(--depth) * 1.6), 0) scale(calc(1 + .006 * var(--hov, 0)));
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
   transition: background-position 480ms var(--ease-lux);
@@ -671,6 +666,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-rendering: optimizeLegibility;
 }
 
 :lang(ar) .app-title { line-height: 1.5; }
@@ -679,6 +675,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   font-style: normal;
   font-size: clamp(1.25rem, 2.85vh, 1.6rem);
   letter-spacing: -0.004em;
+  font-feature-settings: "liga", "calt";
 }
 
 .app-card:hover .app-title, .app-card:focus-within .app-title { background-position: 100% center; }
@@ -779,15 +776,20 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 .tab-rail {
   position: relative; align-self: center; flex-shrink: 0;
-  display: flex; justify-content: center; align-items: center;
-  gap: 0.15rem; padding: 0.35rem;
+  display: flex; justify-content: center; align-items: center; gap: 0.15rem;
+  padding-inline: 0.3rem;
+  --tab-accent: #7c9bff;
+  transition: --tab-accent 0.34s var(--ease-lux), opacity 0.3s var(--ease-lux);
 }
 .tab-rail.is-measuring, .tab-rail.is-measuring * { transition: none !important; }
 
 .tab-indicator {
   position: absolute; inset: 4px 0; z-index: 0; pointer-events: none;
   border-radius: 999px;
-  background: color-mix(in oklab, var(--text) 9%, transparent);
+  background: light-dark(rgba(20, 18, 16, 0.10), rgba(255, 255, 255, 0.16));
+  box-shadow: 0 6px 20px -8px color-mix(in oklab, var(--tab-accent) 45%, transparent),
+              inset 0 1px 1px rgba(255,255,255,0.25);
+  transition: box-shadow 0.6s var(--ease-lux);
   clip-path: inset(0 100% 0 0 round 999px);
 }
 
@@ -802,22 +804,19 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 .tab-btn {
   position: relative; z-index: 1;
-  display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: center;
   background: transparent; border: none; color: var(--text-muted);
-  padding: 0.65rem 1.15rem; border-radius: 999px;
-  font-family: var(--ui-font);
-  font-size: 0.92rem; font-weight: 600; white-space: nowrap;
-  transition: color var(--tab-dur) var(--ease-out);
+  height: 42px; padding-inline: 0.85rem; border-radius: 999px;
+  font-family: var(--ui-font); font-size: 0.88rem; font-weight: 600;
+  transition: color var(--dur-base) var(--ease-io);
 }
 
-.tab-btn i { font-size: 0.85rem; transition: color var(--tab-dur) var(--ease-out); }
+.tab-btn i { font-size: 0.95rem; transition: color var(--dur-base) var(--ease-io); flex-shrink: 0; }
 .tab-btn[aria-selected="true"] { color: var(--text); }
 .tab-btn[aria-selected="true"] i { color: var(--tab-accent); }
-
 .tab-btn .label {
   display: grid; grid-template-columns: 0fr; margin-inline-start: 0;
-  transition: grid-template-columns var(--tab-dur) var(--ease-out),
-              margin-inline-start var(--tab-dur) var(--ease-out);
+  transition: grid-template-columns var(--dur-base) var(--ease-io), margin-inline-start var(--dur-base) var(--ease-io);
 }
 .tab-btn .label > span { overflow: hidden; opacity: 0; white-space: nowrap; transition: opacity 0.2s var(--ease-lux); }
 .tab-btn[aria-selected="true"] .label { grid-template-columns: 1fr; margin-inline-start: 0.5rem; }
@@ -849,7 +848,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 }
 
 #lx-palette {
-  width: var(--lx-panel-w); max-height: 76vh;
+  width: var(--lx-palette-w); max-height: 76vh;
   margin: min(16vh, 150px) auto auto;
   display: flex; flex-direction: column;
   background-color: light-dark(rgba(255,255,255,0.82), rgba(10,11,15,0.82));
@@ -910,6 +909,21 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .palette-ghost .ghost-typed { color: transparent; }
 .palette-ghost .ghost-tail { color: var(--text-muted); opacity: 0.55; }
 
+.palette-ghost-hint {
+  font-size: 0.72rem; color: var(--tab-accent); opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+}
+.palette-ghost-hint.is-flash { opacity: 1; animation: ghostHintFlash 0.6s var(--ease-out); }
+@keyframes ghostHintFlash {
+  0%, 100% { opacity: .5; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(3px); }
+}
+:root[dir="rtl"] .palette-ghost-hint.is-flash { animation-name: ghostHintFlashRtl; }
+@keyframes ghostHintFlashRtl {
+  0%, 100% { opacity: .5; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(-3px); }
+}
+
 .palette-live-dot {
   width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
   background: var(--live-accent);
@@ -922,8 +936,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   50% { scale: 1.15; opacity: 1; }
 }
 
-.palette-body { display: flex; flex: 1; min-height: 0; transition: opacity 0.16s var(--ease-out); }
-.palette-body.is-collapsing { opacity: 0; }
+.palette-body { display: flex; flex: 1; min-height: 0; }
 
 .palette-results {
   list-style: none; overflow-y: auto; padding: 0.5rem; width: 44%; flex-shrink: 0; border-inline-start: 1px solid var(--border);
@@ -943,7 +956,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .palette-group-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
 .palette-item {
-  position: relative; isolation: isolate; overflow: hidden;
+  position: relative; overflow: hidden;
   display: flex; align-items: center; gap: 1rem;
   padding: 0.85rem 1.05rem; border-radius: 15px; cursor: pointer;
   transition: background 0.2s var(--ease-lux), box-shadow 0.2s var(--ease-lux);
@@ -951,22 +964,26 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 20ms);
 }
 
-.palette-item::after {
-  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
-  background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,.16) 47%, rgba(255,255,255,.05) 53%, transparent 68%);
-  background-size: 260% 100%; background-position: 150% 0;
-  opacity: 0; mix-blend-mode: overlay;
-  transition: opacity 0.3s var(--ease-out);
-}
-.palette-item:hover::after {
-  opacity: 1; background-position: -50% 0;
-  transition: background-position 0.7s var(--ease-io), opacity 0.3s var(--ease-out);
-}
-:root[data-theme="light"] .palette-item::after { mix-blend-mode: soft-light; }
-
 #paletteResults:not(.entrance-armed) .palette-item { animation: none; }
 
 @keyframes paletteItemIn { from { opacity: 0; transform: translateY(6px); } }
+
+.palette-item::after {
+  content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(115deg,
+    transparent 32%,
+    rgba(255,255,255,.16) 47%,
+    rgba(255,255,255,.05) 53%,
+    transparent 68%);
+  background-size: 260% 100%;
+  background-position: 130% 0;
+  opacity: 0;
+  mix-blend-mode: overlay;
+  transition: opacity 0.2s var(--ease-out), background-position 0.5s var(--ease-out);
+}
+.palette-item:hover::after { opacity: 1; background-position: -130% 0; }
+:root[data-theme="light"] .palette-item::after { mix-blend-mode: soft-light; }
+:root[data-theme="light"] .palette-item:hover::after { opacity: .6; }
 
 .palette-item::before {
   content: ''; position: absolute; inset-inline-start: 4px; top: 18%; bottom: 18%;
@@ -1123,23 +1140,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   opacity: .8;
 }
 .palette-hints span { display: inline-flex; align-items: center; gap: 0.35rem; }
-.palette-hints kbd { font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.12rem 0.45rem; box-shadow: 0 1px 0 var(--border); transition: transform 0.12s var(--ease-spring), background-color 0.2s var(--ease-out); }
-.palette-hints kbd.is-pressed { transform: translateY(1px) scale(.94); background: var(--surface-hover); }
+.palette-hints kbd { font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.12rem 0.45rem; box-shadow: 0 1px 0 var(--border); }
 .palette-status {
   position: absolute; inset-inline-start: 1.5rem; top: 50%; transform: translateY(-50%);
   font-size: 0.72rem; color: var(--text-muted); opacity: 0.85; font-variant-numeric: tabular-nums;
 }
 .palette-status:empty { display: none; }
-.palette-ghost-hint {
-  display: inline-block; margin-inline-start: 0.3em;
-  color: var(--live-accent, var(--tab-accent));
-  animation: ghostHintFlash .9s var(--ease-out);
-}
-@keyframes ghostHintFlash {
-  0% { opacity: 0; scale: .6; }
-  40% { opacity: 1; scale: 1.15; }
-  100% { opacity: .75; scale: 1; }
-}
 
 .grid-empty {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -1166,12 +1172,9 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   .card-hero .bento-footer { width: 100%; justify-content: flex-end; }
 }
 
-@media (max-height: 860px) {
-  .lx-bar { height: 56px; }
-}
-
 @media (max-height: 820px) {
   h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); }
+  .lx-bar-search { padding-block: 1rem; }
   .lx-bar-kbd { display: none; }
 }
 
@@ -1194,14 +1197,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   .card-wide .app-icon, .card-hero .app-icon, .card-tall .app-icon { font-size: 1.6rem; }
   .card-wide .app-title, .card-hero .app-title, .card-tall .app-title { font-size: 1.6rem; }
   h1 { font-size: 2.6rem; }
-  .tab-rail { overflow-x: auto; }
-  .lx-bar-search { min-width: 0; padding-inline: 1rem; gap: 0.6rem; }
-  .lx-bar-kbd { display: none; }
-  .tab-btn { padding: 0.55rem 0.95rem; }
-  .tab-btn[aria-selected="true"] .label > span { max-width: 9ch; text-overflow: ellipsis; overflow: hidden; display: inline-block; }
+  .tab-rail { max-width: 100%; overflow-x: auto; }
   #lx-palette { margin-top: 8vh; }
   .palette-status { display: none; }
-  .lx-bar-label { font-size: 1.05rem; }
+  .lx-bar { border-radius: 28px; }
+  .lx-bar-search { flex-basis: 100%; width: 100%; padding: 1rem 1.15rem; }
+  #lxInlineInput { font-size: 1.05rem; }
 }
 
 @media (max-width: 720px) {
@@ -1231,7 +1232,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 @media (prefers-reduced-motion: reduce) {
   h1, .site-header, .tab-rail, .card-glow, .lx-bar,
   .app-card:not(.is-revealed), .palette-item, .badge-new .badge-dot,
-  .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions, .grid-empty {
+  .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions, .grid-empty,
+  .palette-ghost-hint {
     animation: none !important;
   }
   .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; --hov: 0 !important; }
@@ -1239,14 +1241,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   .app-card { translate: none !important; }
   .app-card, .app-icon-wrapper, .app-title, .badges, .variant-chips,
   .tab-indicator, .tab-ghost, .variant-chip-indicator,
+  .tab-btn span, .card-sheen, .palette-item::after,
   .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
     transition-property: opacity, color, background-color, border-color, box-shadow;
   }
   #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
   .lx-bar { transition-property: opacity; }
-  .tab-btn .label, .tab-btn .label > span { transition: none !important; }
-  .tab-indicator { transition: none !important; }
-  .palette-item::after { transition: opacity 0.3s var(--ease-out) !important; background-position: 50% 0 !important; }
   .lx-context-menu { transition: opacity 0.01ms; transform: none !important; }
 }
 
@@ -1256,7 +1256,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
     -webkit-text-fill-color: currentColor;
     color: CanvasText;
   }
-  .card-glow, .card-sheen, .closed-tint, .palette-detail-slab { display: none; }
+  .card-glow, .closed-tint, .palette-detail-slab { display: none; }
   .app-card::after { display: none; }
   .app-card { border: 1px solid CanvasText; }
 }
@@ -1287,13 +1287,18 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   </header>
 
   <div class="lx-bar" id="lxBar">
-    <button type="button" class="lx-bar-search" id="lxBarSearch"
-            aria-haspopup="dialog" aria-expanded="false" aria-controls="lx-palette">
+    <div class="lx-bar-search" id="lxBarSearch">
       <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-      <span class="lx-bar-label" id="lxBarLabel" data-i18n="barSearchLabel">ابحث في كل الأدوات…</span>
+      <input id="lxInlineInput" type="text" role="combobox"
+             aria-expanded="false" aria-controls="appGrid"
+             aria-describedby="lxBarHint" aria-haspopup="false" autocomplete="off" spellcheck="false"
+             data-i18n-aria="quickSearch" data-i18n-placeholder="searchPlaceholder" placeholder="ابحث عن تطبيق أو أداة…">
+      <span id="lxBarHint" class="lx-bar-hint" hidden></span>
       <kbd class="lx-bar-kbd" id="lxBarKbd">⌘K</kbd>
-    </button>
+    </div>
+
     <div class="lx-bar-divider" aria-hidden="true"></div>
+
     <nav class="tab-rail" id="tabRail" role="tablist" aria-label="التصنيفات" data-i18n-aria="categoriesLabel">
       <div class="tab-indicator" id="tabIndicator" aria-hidden="true"></div>
       <div class="tab-ghost" id="tabGhost" aria-hidden="true"></div>
@@ -1321,6 +1326,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   </div>
   <div class="palette-hints">
     <span id="paletteStatus" class="palette-status" aria-hidden="true"></span>
+    <span id="paletteGhostHint" class="palette-ghost-hint" aria-hidden="true"></span>
     <span><kbd>↑↓</kbd> <span data-i18n="hintNavigate">تنقل</span></span>
     <span><kbd>⇥</kbd> <span data-i18n="hintSwitchPanel">تبديل اللوحة</span></span>
     <span><kbd>↵</kbd> <span data-i18n="hintOpen">فتح</span></span>
@@ -1628,9 +1634,7 @@ const STRINGS = {
   resultsLabel: { ar: 'النتائج', en: 'Results' },
   actionsLabel: { ar: 'الإجراءات', en: 'Actions' },
   searchPlaceholder: { ar: 'ابحث عن تطبيق أو أداة…', en: 'Search for an app or tool…' },
-  barSearchLabel: { ar: 'ابحث في كل الأدوات…', en: 'Search all tools…' },
   quickSearch: { ar: 'بحث سريع', en: 'Quick search' },
-  quickLaunch: { ar: 'وصول سريع', en: 'Quick launch' },
   soundEnable: { ar: 'تفعيل الصوت', en: 'Enable sound' },
   soundMute: { ar: 'كتم الصوت', en: 'Mute sound' },
   themeToDark: { ar: 'التبديل إلى المظهر الداكن', en: 'Switch to dark mode' },
@@ -2007,10 +2011,7 @@ const createCard = (app, idx, placement, cat) => {
     </div>
   `;
 
-  el.addEventListener('click', () => {
-    sfx.click();
-    try { localStorage.setItem('lx-last-open', app.id); } catch (e) {}
-  });
+  el.addEventListener('click', () => sfx.click());
   el.addEventListener('mouseenter', () => { sfx.hover(soundIndex, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
   el.addEventListener('focusin', () => { sfx.hover(soundIndex, { octave }); setInteractionOrigin(el); });
   el.addEventListener('contextmenu', (e) => {
@@ -2240,8 +2241,6 @@ const initPointerField = () => {
   let sx = -9999, sy = -9999;
   let hasPointer = false;
   let lastMove = 0;
-  let hoveredAccentCard = null;
-  let lastHoverAccent = '';
 
   const reducedMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -2276,7 +2275,6 @@ const initPointerField = () => {
       pointerVX *= Math.exp(-dt / 0.14);
       if (pointerFieldDirty) measure();
       const wantsTilt = !reducedMotionMQ.matches;
-      hoveredAccentCard = null;
 
       cards.forEach(c => {
         const r = c._r;
@@ -2291,7 +2289,6 @@ const initPointerField = () => {
         s.reveal.to = o * 0.9;
 
         const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
-        if (inside) hoveredAccentCard = c;
         if (inside && wantsTilt) {
           const nx = (px - r.left - (r.right - r.left) / 2) / ((r.right - r.left) / 2);
           const ny = (py - r.top - (r.bottom - r.top) / 2) / ((r.bottom - r.top) / 2);
@@ -2310,13 +2307,6 @@ const initPointerField = () => {
           s.tx.snap(); s.ty.snap(); s.tz.snap(); s.reveal.snap();
         }
       });
-
-      const nextAccent = hoveredAccentCard ? hoveredAccentCard.style.getPropertyValue('--c1') : '';
-      if (nextAccent !== lastHoverAccent) {
-        lastHoverAccent = nextAccent;
-        if (nextAccent) document.documentElement.style.setProperty('--hover-accent', nextAccent);
-        else document.documentElement.style.removeProperty('--hover-accent');
-      }
 
       if (hasPointer) {
         const k = 1 - Math.exp(-dt / 0.09);
@@ -2375,7 +2365,7 @@ const initPointerField = () => {
         if (!settled) alive = true;
       });
 
-      if (spot && !document.body.classList.contains('is-cinema')) {
+      if (spot) {
         if (hasPointer) {
           const idle = performance.now() - lastMove > 2200;
           spot.style.setProperty('--sx', `${sx.toFixed(1)}px`);
@@ -2751,13 +2741,12 @@ const isMacPlatform = () => {
 };
 
 const updateBarKbd = () => {
-  const btn = document.getElementById('lxBarSearch');
-  if (!btn) return;
+  const input = document.getElementById('lxInlineInput');
+  if (!input) return;
   const kbd = document.getElementById('lxBarKbd');
   const shortcut = isMacPlatform() ? '⌘K' : 'Ctrl K';
   if (kbd) kbd.textContent = shortcut;
-  btn.setAttribute('aria-label', t('quickSearch'));
-  btn.title = `${t('quickSearch')} (${shortcut})`;
+  input.title = `${t('quickSearch')} (${shortcut})`;
 };
 
 const applyI18n = (opts = {}) => {
@@ -2789,7 +2778,6 @@ const applyI18n = (opts = {}) => {
     grid.classList.add('is-relang');
     renderCards(grid, preservedTab);
     requestAnimationFrame(() => requestAnimationFrame(() => grid.classList.remove('is-relang')));
-    requestAnimationFrame(() => measureRail());
   }
 
   const paletteDialog = document.getElementById('lx-palette');
@@ -2852,9 +2840,10 @@ const clearTileStagger = () => {
 const catIndex = (id) => categories.findIndex(c => c.id === id);
 
 const applyTabAccent = (cat, impulseDir = 0) => {
-  const bar = document.getElementById('lxBar');
-  if (bar && cat) bar.style.setProperty('--tab-accent', cat.accent);
+  const rail = document.getElementById('tabRail');
+  if (rail && cat) rail.style.setProperty('--tab-accent', cat.accent);
   if (cat) document.documentElement.style.setProperty('--tab-accent', cat.accent);
+  if (cat) document.documentElement.style.setProperty('--hover-accent', cat.accent);
   if (cat) updateFavicon(cat);
   if (cat) window.bgAnim?.retargetCategory(cat.accent, impulseDir);
 };
@@ -2865,7 +2854,7 @@ let railAnim = null;
 
 const measureRail = () => {
   const rail = document.getElementById('tabRail');
-  const btns = [...rail.querySelectorAll('.tab-btn')];
+  const btns = Array.from(rail.querySelectorAll('.tab-btn'));
   if (!btns.length) return;
 
   rail.classList.add('is-measuring');
@@ -2908,7 +2897,7 @@ const moveIndicator = (toId, fromId) => {
 
   railAnim?.cancel(); railAnim = null;
 
-  if (fromId === toId || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (fromId === toId || matchMedia('(prefers-reduced-motion: reduce)').matches) {
     ind.style.clipPath = ins(to);
     return;
   }
@@ -2917,29 +2906,12 @@ const moveIndicator = (toId, fromId) => {
 
   railAnim = ind.animate(
     [{ clipPath: ins(from) }, { clipPath: ins(mid), offset: 0.42 }, { clipPath: ins(to) }],
-    { duration: 460, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }
+    { duration: 380, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both' }
   );
   railAnim.finished.then(() => {
     ind.style.clipPath = ins(to);
     railAnim?.cancel(); railAnim = null;
   }).catch(() => {});
-};
-
-const initTabGhost = () => {
-  const rail = document.getElementById('tabRail');
-  const ghost = document.getElementById('tabGhost');
-  if (!rail || !ghost) return;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
-  rail.addEventListener('pointerover', (e) => {
-    const btn = e.target.closest('.tab-btn');
-    if (!btn || btn.dataset.id === currentTabId) { ghost.style.opacity = '0'; return; }
-    const g = railGeom.get(btn.dataset.id);
-    if (!g) return;
-    ghost.style.clipPath = ins(g);
-    ghost.style.opacity = '1';
-  });
-  rail.addEventListener('pointerleave', () => { ghost.style.opacity = '0'; });
 };
 
 const setActiveButtonStates = (id) => {
@@ -3023,9 +2995,9 @@ const buildTabRail = () => {
     btn.setAttribute('aria-selected', 'false');
     btn.setAttribute('aria-controls', 'appGrid');
     btn.setAttribute('aria-label', loc(cat.label));
-    btn.title = loc(cat.label);
     btn.tabIndex = -1;
-    btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span class="label"><span>${escapeHtml(loc(cat.label))}</span></span>`;
+    btn.title = loc(cat.label);
+    btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span class="label" aria-hidden="true"><span>${escapeHtml(loc(cat.label))}</span></span>`;
     btn.addEventListener('click', () => { setInteractionOrigin(btn); activateTab(cat.id); });
     btn.addEventListener('mouseenter', () => sfx.hover(cat.key + i, { throttle: false }));
     btn.addEventListener('focus', () => sfx.hover(cat.key + i, { throttle: false }));
@@ -3201,7 +3173,6 @@ const getRecentEntries = (allEntries, limit) => {
   const freq = getFreqMap();
   const byId = new Map();
   allEntries.forEach(e => { if (!byId.has(e.app.id)) byId.set(e.app.id, e); });
-  allEntries.forEach(e => { if (e.app.parentId && !byId.has(e.app.parentId)) byId.set(e.app.parentId, e); });
 
   const candidateIds = new Set([...ids, ...Object.keys(freq)]);
   const scored = [];
@@ -3229,7 +3200,7 @@ let lastDetailKey = null;
 let paletteSkipCloseChime = false;
 let paletteBusy = false;
 let heroReturnFocus = false;
-let heroRestBox = null;
+let paletteRenderGen = 0;
 
 const getActionsForEntry = (entry) => {
   const actions = [
@@ -3267,6 +3238,7 @@ const paletteItemHtml = (e, globalIndex, query) => `
   </li>`;
 
 const renderPaletteResults = (query) => {
+  paletteRenderGen++;
   const paletteResults = document.getElementById('paletteResults');
   const allEntries = allPaletteEntries();
   const scored = allEntries
@@ -3345,6 +3317,7 @@ const updatePaletteGhost = (query) => {
   const ghostEl = document.getElementById('paletteGhost');
   if (!ghostEl) return;
   const top = paletteItems[0];
+  const hadTail = !!paletteGhostTail;
   paletteGhostTail = '';
   if (query && top) {
     const title = loc(top.app.title);
@@ -3357,6 +3330,18 @@ const updatePaletteGhost = (query) => {
   ghostEl.innerHTML = paletteGhostTail
     ? `<span class="ghost-typed">${escapeHtml(query)}</span><span class="ghost-tail">${escapeHtml(paletteGhostTail)}</span>`
     : '';
+
+  const hintEl = document.getElementById('paletteGhostHint');
+  if (hintEl) {
+    if (paletteGhostTail && !hadTail) {
+      hintEl.textContent = document.documentElement.dir === 'rtl' ? '←' : '→';
+      hintEl.classList.remove('is-flash');
+      void hintEl.offsetWidth;
+      hintEl.classList.add('is-flash');
+    } else if (!paletteGhostTail) {
+      hintEl.classList.remove('is-flash');
+    }
+  }
 };
 
 let paletteStatusAnnounceTimer;
@@ -3368,12 +3353,7 @@ const updatePaletteStatus = (query, resultCount) => {
   const text = query
     ? (resultCount ? `${resultCount} ${t('resultsCountLabel')}` : '')
     : scopeLabel;
-  if (query && paletteGhostTail) {
-    const arrow = document.documentElement.dir === 'rtl' ? '←' : '→';
-    statusEl.innerHTML = `${escapeHtml(text)} <span class="palette-ghost-hint">${arrow}</span>`;
-  } else {
-    statusEl.textContent = text;
-  }
+  statusEl.textContent = text;
   clearTimeout(paletteStatusAnnounceTimer);
   if (query) paletteStatusAnnounceTimer = setTimeout(() => announcePalette(text), 600);
 };
@@ -3544,7 +3524,7 @@ const revealInGrid = async (entry) => {
   if (entry.cat.id === '_secret') return;
   const targetId = entry.app.parentId || entry.app.id;
   const targetCatId = entry.cat.id;
-  closePaletteImmediate();
+  requestClosePalette();
   if (currentTabId !== targetCatId) await activateTab(targetCatId);
   requestAnimationFrame(() => {
     const card = document.querySelector(`#appGrid .app-card[data-app-id="${targetId}"]`);
@@ -3566,13 +3546,12 @@ const executeAction = async (actionId) => {
   if (actionId === 'new-tab' || actionId === 'same-tab') {
     pushRecent(entry.app.id);
     bumpFreq(entry.app.id);
-    try { localStorage.setItem('lx-last-open', entry.app.id); } catch (e) {}
+    try { localStorage.setItem('lx-last-open', entry.app.parentId || entry.app.id); } catch (e) {}
   }
   if (actionId === 'new-tab') {
     sfx.click();
     window.open(entry.app.url, '_blank', 'noopener');
     paletteSkipCloseChime = true;
-    document.querySelector('.palette-body')?.classList.add('is-collapsing');
     requestClosePalette();
   } else if (actionId === 'same-tab') {
     sfx.click();
@@ -3596,16 +3575,53 @@ const openPaletteItem = (i) => {
   executeAction('new-tab');
 };
 
-const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
-const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
-const MORPH_OPEN_MS = 420;
-const MORPH_CLOSE_MS = 250;
+const deferExcessPaletteRows = (keep) => {
+  const list = document.getElementById('paletteResults');
+  const children = Array.from(list.children);
+  let itemCount = 0;
+  let cutIndex = -1;
+  for (let i = 0; i < children.length; i++) {
+    if (children[i].classList.contains('palette-item')) {
+      itemCount++;
+      if (itemCount === keep) { cutIndex = i; break; }
+    }
+  }
+  if (cutIndex === -1 || cutIndex >= children.length - 1) return null;
+  const frag = document.createDocumentFragment();
+  for (let i = cutIndex + 1; i < children.length; i++) frag.appendChild(children[i]);
+  return frag;
+};
+
+const awaitAnimationSettled = (anim, maxMs) => new Promise((resolve) => {
+  let done = false;
+  const finishNow = () => {
+    if (done) return;
+    done = true;
+    try { anim.finish(); } catch (e) {}
+    resolve();
+  };
+  const t = setTimeout(finishNow, maxMs);
+  anim.finished.catch(() => {}).finally(() => {
+    if (done) return;
+    done = true;
+    clearTimeout(t);
+    resolve();
+  });
+});
+
+const canMorphPalette = (hero) => {
+  if (!hero) return false;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  if (window.innerWidth < 1024) return false;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return false;
+  const dialog = document.getElementById('lx-palette');
+  return typeof dialog.animate === 'function';
+};
 
 const openPalette = (seed = '') => {
   const dialog = document.getElementById('lx-palette');
   if (dialog.open || paletteBusy) return;
   paletteBusy = true;
-  document.querySelector('.palette-body')?.classList.remove('is-collapsing');
 
   if (activeViewTransition) {
     try { activeViewTransition.skipTransition(); } catch (e) {}
@@ -3613,27 +3629,25 @@ const openPalette = (seed = '') => {
   }
 
   const hero = document.getElementById('lxBarSearch');
+  const bar = document.getElementById('lxBar');
+  const inlineInput = document.getElementById('lxInlineInput');
   const input = document.getElementById('paletteInput');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const skipMorph = !hero || reducedMotion || typeof dialog.animate !== 'function' ||
-    window.innerWidth < 1024 || !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const canMorph = canMorphPalette(hero);
 
   input.value = seed;
   paletteTryPicks = null;
   lastDetailKey = null;
   paletteEntranceArmed = true;
 
-  if (hero) heroRestBox = hero.getBoundingClientRect();
-
   const results = document.getElementById('paletteResults');
-  if (results) results.style.setProperty('--stagger-base', skipMorph ? '0ms' : '160ms');
+  if (results) results.style.setProperty('--stagger-base', canMorph ? '160ms' : '0ms');
   renderPaletteResults(seed);
 
   document.querySelector('.container').classList.add('is-dollied');
   document.querySelector('.controls-pill').classList.add('is-dollied');
-  hero?.setAttribute('aria-expanded', 'true');
+  inlineInput?.setAttribute('aria-expanded', 'true');
 
-  if (skipMorph) {
+  if (!canMorph) {
     dialog.showModal();
     document.body.classList.add('palette-open');
     sfx.veil(true);
@@ -3642,72 +3656,59 @@ const openPalette = (seed = '') => {
     return;
   }
 
-  const heroBox = heroRestBox;
+  const heroBox = hero.getBoundingClientRect();
 
-  dialog.classList.remove('did-morph');
   dialog.classList.add('is-morphing');
   dialog.showModal();
   sfx.veil(true);
 
   requestAnimationFrame(() => {
+    if (bar) bar.style.transition = 'none';
     document.body.classList.add('palette-open');
+    if (bar) requestAnimationFrame(() => { bar.style.transition = ''; });
 
     const row = dialog.querySelector('.palette-input-row');
     const rowBox = row.getBoundingClientRect();
     const dlgBox = dialog.getBoundingClientRect();
+    const dx = (heroBox.left + heroBox.width / 2) - (dlgBox.left + dlgBox.width / 2);
     const dy = (heroBox.top + heroBox.height / 2) - (rowBox.top + rowBox.height / 2);
+    const deferGen = paletteRenderGen;
+    const deferred = deferExcessPaletteRows(8);
 
     const chrome = [dialog.querySelector('.palette-live-dot'), row.querySelector('kbd')].filter(Boolean);
     chrome.forEach(el => { el.style.opacity = '0'; });
 
-    dialog.style.willChange = 'height, transform';
+    dialog.style.willChange = 'width, height, transform';
     const panel = dialog.animate([
-      { height: `${rowBox.height}px`, transform: `translateY(${dy}px)`, borderRadius: '999px' },
-      { height: `${dlgBox.height}px`, transform: 'translateY(0)', borderRadius: '28px' }
-    ], { duration: MORPH_OPEN_MS, easing: EASE_LUX, fill: 'both' });
+      { width: `${heroBox.width}px`, height: `${rowBox.height}px`, transform: `translate(${dx}px, ${dy}px)`, borderRadius: '999px' },
+      { width: `${dlgBox.width}px`, height: `${dlgBox.height}px`, transform: 'translate(0, 0)', borderRadius: '28px' }
+    ], { duration: 420, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' });
 
     const bodyAnim = dialog.querySelector('.palette-body').animate(
       [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 200, delay: 140, easing: EASE_LUX, fill: 'both' }
+      { duration: 200, delay: 140, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' }
     );
     const chromeAnim = chrome.map(el => el.animate(
       [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 200, delay: 140, easing: EASE_LUX, fill: 'both' }
+      { duration: 200, delay: 140, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' }
     ));
 
     requestAnimationFrame(() => input.focus({ preventScroll: true }));
 
-    panel.finished.catch(() => {}).finally(() => {
+    awaitAnimationSettled(panel, 900).then(() => {
       dialog.style.willChange = '';
       dialog.classList.remove('is-morphing');
-      dialog.classList.add('did-morph');
-      results?.style.removeProperty('--stagger-base');
       try { panel.cancel(); } catch (e) {}
       try { bodyAnim.cancel(); } catch (e) {}
       chromeAnim.forEach(a => { try { a.cancel(); } catch (e) {} });
       chrome.forEach(el => { el.style.opacity = ''; });
+      if (deferred && deferGen === paletteRenderGen) {
+        const list = document.getElementById('paletteResults');
+        if (list) list.appendChild(deferred);
+      }
       paletteBusy = false;
     });
   });
-};
-
-const closePaletteImmediate = () => {
-  const dialog = document.getElementById('lx-palette');
-  if (!dialog.open) return;
-  const hero = document.getElementById('lxBarSearch');
-  hero?.setAttribute('aria-expanded', 'false');
-  if (!paletteSkipCloseChime) sfx.veil(false);
-  paletteSkipCloseChime = true;
-  document.getElementById('paletteGhost')?.replaceChildren();
-  dialog.classList.remove('is-morphing', 'did-morph');
-  dialog.style.willChange = '';
-  dialog.close();
-  document.body.classList.remove('palette-open');
-  if (heroReturnFocus) {
-    heroReturnFocus = false;
-    hero?.focus({ preventScroll: true });
-  }
-  paletteBusy = false;
 };
 
 const requestClosePalette = () => {
@@ -3716,7 +3717,8 @@ const requestClosePalette = () => {
   paletteBusy = true;
 
   const hero = document.getElementById('lxBarSearch');
-  hero?.setAttribute('aria-expanded', 'false');
+  const inlineInput = document.getElementById('lxInlineInput');
+  inlineInput?.setAttribute('aria-expanded', 'false');
 
   const skipChime = paletteSkipCloseChime;
   if (!skipChime) sfx.veil(false);
@@ -3724,47 +3726,46 @@ const requestClosePalette = () => {
 
   const g = document.getElementById('paletteGhost'); if (g) g.innerHTML = '';
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const canMorph = !!hero && dialog.classList.contains('did-morph') && !reducedMotion && typeof dialog.animate === 'function';
-
   const finish = () => {
     dialog.close();
     dialog.style.willChange = '';
-    dialog.classList.remove('is-morphing', 'did-morph');
+    dialog.classList.remove('is-morphing');
     document.body.classList.remove('palette-open');
     if (heroReturnFocus) {
       heroReturnFocus = false;
-      hero?.focus({ preventScroll: true });
+      inlineInput?.focus({ preventScroll: true });
     }
     paletteBusy = false;
   };
 
-  if (!canMorph) {
+  if (!canMorphPalette(hero)) {
     finish();
     return;
   }
 
   const row = dialog.querySelector('.palette-input-row').getBoundingClientRect();
-  const heroBox = heroRestBox || hero.getBoundingClientRect();
+  const heroBox = hero.getBoundingClientRect();
   const dlgBox = dialog.getBoundingClientRect();
+  const dx = (heroBox.left + heroBox.width / 2) - (dlgBox.left + dlgBox.width / 2);
   const dy = (heroBox.top + heroBox.height / 2) - (row.top + row.height / 2);
+  const EXIT_MS = 250;
 
   dialog.classList.add('is-morphing');
-  dialog.style.willChange = 'height, transform';
+  dialog.style.willChange = 'width, height, transform';
 
-  const hideHeroTimer = setTimeout(() => { document.body.classList.remove('palette-open'); }, Math.max(0, MORPH_CLOSE_MS - 80));
+  const hideHeroTimer = setTimeout(() => { document.body.classList.remove('palette-open'); }, Math.max(0, EXIT_MS - 80));
 
   const panel = dialog.animate([
-    { height: `${dlgBox.height}px`, transform: 'translateY(0)', borderRadius: '28px' },
-    { height: `${row.height}px`, transform: `translateY(${dy}px)`, borderRadius: '999px' }
-  ], { duration: MORPH_CLOSE_MS, easing: EASE_ACCEL, fill: 'both' });
+    { width: `${dlgBox.width}px`, height: `${dlgBox.height}px`, transform: 'translate(0, 0)', borderRadius: '28px' },
+    { width: `${heroBox.width}px`, height: `${row.height}px`, transform: `translate(${dx}px, ${dy}px)`, borderRadius: '999px' }
+  ], { duration: EXIT_MS, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'both' });
 
   const bodyAnim = dialog.querySelector('.palette-body').animate(
     [{ opacity: 1 }, { opacity: 0 }],
-    { duration: Math.round(MORPH_CLOSE_MS * 0.6), easing: EASE_LUX, fill: 'both' }
+    { duration: Math.round(EXIT_MS * 0.6), easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' }
   );
 
-  panel.finished.catch(() => {}).finally(() => {
+  awaitAnimationSettled(panel, 600).then(() => {
     clearTimeout(hideHeroTimer);
     try { panel.cancel(); } catch (e) {}
     try { bodyAnim.cancel(); } catch (e) {}
@@ -3772,42 +3773,12 @@ const requestClosePalette = () => {
   });
 };
 
-let idleTimer, idleRaf, idleStart;
-const IDLE_MS = 25000;
-
-const stopIdle = () => {
-  document.body.classList.remove('is-cinema');
-  cancelAnimationFrame(idleRaf);
-};
-
-const startIdle = () => {
-  const spot = document.getElementById('spotlight');
-  if (!spot) return;
-  spot.classList.remove('is-active', 'is-idle');
-  document.body.classList.add('is-cinema');
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  idleStart = performance.now();
-  const tick = (t) => {
-    const e = (t - idleStart) / 1000;
-    const x = 50 + Math.sin(e * 0.08) * 22;
-    const y = 15 + Math.cos(e * 0.05) * 8;
-    spot.style.setProperty('--sx', `${x}%`);
-    spot.style.setProperty('--sy', `${y}%`);
-    idleRaf = requestAnimationFrame(tick);
-  };
-  idleRaf = requestAnimationFrame(tick);
-};
-
-const armIdle = () => {
-  clearTimeout(idleTimer);
-  stopIdle();
-  idleTimer = setTimeout(startIdle, IDLE_MS);
-};
-
 const togglePalette = () => {
   if (paletteBusy) return;
   const dialog = document.getElementById('lx-palette');
-  if (dialog.open) requestClosePalette(); else openPalette();
+  if (dialog.open) { requestClosePalette(); return; }
+  const inlineInput = document.getElementById('lxInlineInput');
+  openPalette(inlineInput ? inlineInput.value : '');
 };
 
 const initBarGlow = () => {
@@ -3826,9 +3797,86 @@ const initBarGlow = () => {
   });
 };
 
+const initAmbientAccent = () => {
+  const grid = document.getElementById('appGrid');
+  if (!grid) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+  grid.addEventListener('pointerover', (e) => {
+    const card = e.target.closest('.app-card');
+    if (!card) return;
+    const c1 = getComputedStyle(card).getPropertyValue('--c1').trim();
+    if (c1) document.documentElement.style.setProperty('--hover-accent', c1);
+  });
+  grid.addEventListener('pointerleave', () => {
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--tab-accent').trim();
+    document.documentElement.style.setProperty('--hover-accent', accent || '#7c9bff');
+  });
+};
+
+const initReturnMemory = () => {
+  const grid = document.getElementById('appGrid');
+  if (grid) {
+    grid.addEventListener('click', (e) => {
+      const overlay = e.target.closest('.card-link-overlay');
+      if (!overlay) return;
+      const card = overlay.closest('.app-card');
+      const id = card?.dataset.appId;
+      if (id) { try { localStorage.setItem('lx-last-open', id); } catch (err) {} }
+    });
+  }
+
+  window.addEventListener('pageshow', () => {
+    let id = null;
+    try { id = localStorage.getItem('lx-last-open'); } catch (err) {}
+    if (!id) return;
+    const card = document.querySelector(`.app-card[data-app-id="${CSS.escape(id)}"]`);
+    if (!card) return;
+    card.classList.add('is-returned');
+    card.addEventListener('animationend', () => card.classList.remove('is-returned'), { once: true });
+  });
+};
+
+const initIdleCinema = () => {
+  let idleTimer = null, idleRaf = null;
+
+  const stopIdle = () => {
+    cancelAnimationFrame(idleRaf); idleRaf = null;
+    document.body.classList.remove('is-cinema');
+  };
+
+  const runIdle = (t0) => (now) => {
+    const t = (now - t0) / 1000;
+    const W = window.innerWidth, H = window.innerHeight;
+    const spot = document.getElementById('spotlight');
+    if (!spot) return;
+    spot.style.setProperty('--sx', `${W / 2 + 0.32 * W * Math.sin(0.11 * t + 1.3)}px`);
+    spot.style.setProperty('--sy', `${0.28 * H + 0.16 * H * Math.sin(0.07 * t)}px`);
+    idleRaf = requestAnimationFrame(runIdle(t0));
+  };
+
+  const armIdle = () => {
+    clearTimeout(idleTimer); stopIdle();
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    idleTimer = setTimeout(() => {
+      document.body.classList.add('is-cinema');
+      idleRaf = requestAnimationFrame(runIdle(performance.now()));
+    }, 25000);
+  };
+
+  ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart']
+    .forEach(evt => window.addEventListener(evt, armIdle, { passive: true }));
+  armIdle();
+};
+
 const setupInteractions = () => {
   lang = resolveInitialLang();
   applyI18n({ rebuild: false });
+
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.body.classList.add('is-booted');
+    setTimeout(() => document.body.classList.remove('is-booted'), 1400);
+  }
 
   applyTheme();
   applyStoredSoundPref();
@@ -3838,13 +3886,28 @@ const setupInteractions = () => {
   }
   buildTabRail();
 
-  document.body.classList.add('is-booted');
+  const tabRailEl = document.getElementById('tabRail');
+  const tabGhostEl = document.getElementById('tabGhost');
+  if (tabRailEl && tabGhostEl) {
+    tabRailEl.addEventListener('pointerover', (e) => {
+      const btn = e.target.closest('.tab-btn');
+      if (!btn || btn.dataset.id === currentTabId) { tabGhostEl.style.opacity = '0'; return; }
+      const g = railGeom.get(btn.dataset.id);
+      if (!g) return;
+      tabGhostEl.style.clipPath = ins(g);
+      tabGhostEl.style.opacity = '1';
+    });
+    tabRailEl.addEventListener('pointerleave', () => { tabGhostEl.style.opacity = '0'; });
+  }
+
   const initialTab = getInitialTab();
   activateTab(initialTab, { pushHash: false, playSound: false, instant: true });
   initPointerField();
   initMagneticControls();
   initBarGlow();
-  initTabGhost();
+  initAmbientAccent();
+  initReturnMemory();
+  initIdleCinema();
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
@@ -3870,21 +3933,6 @@ const setupInteractions = () => {
       }
     }, 180);
   });
-
-  window.addEventListener('pageshow', () => {
-    let id = null;
-    try { id = localStorage.getItem('lx-last-open'); } catch (err) {}
-    if (!id) return;
-    const card = document.querySelector(`.app-card[data-app-id="${CSS.escape(id.split('::')[0])}"]`);
-    if (!card) return;
-    card.classList.add('is-returned');
-    card.addEventListener('animationend', () => card.classList.remove('is-returned'), { once: true });
-  });
-
-  ['pointermove', 'keydown', 'wheel', 'touchstart'].forEach(evt =>
-    document.addEventListener(evt, armIdle, { passive: true })
-  );
-  armIdle();
 
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
     if (getStoredTheme()) return;
@@ -3915,7 +3963,7 @@ const setupInteractions = () => {
     vt.ready.then(() => {
       document.documentElement.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
-        { duration: 620, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' }
+        { duration: 700, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' }
       );
     }).catch(() => {});
     vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) activeViewTransition = null; });
@@ -4098,17 +4146,19 @@ const setupInteractions = () => {
     if (!inside) requestClosePalette();
   });
 
-  const searchBtn = document.getElementById('lxBarSearch');
-  if (searchBtn) {
-    const syncBarFocusState = () => {
-      const bar = document.getElementById('lxBar');
-      if (bar) bar.classList.toggle('is-focused', document.activeElement === searchBtn);
-    };
-    searchBtn.addEventListener('focus', syncBarFocusState);
-    searchBtn.addEventListener('blur', syncBarFocusState);
-    searchBtn.addEventListener('click', () => {
-      heroReturnFocus = true;
-      openPalette('');
+  const inlineInput = document.getElementById('lxInlineInput');
+  if (inlineInput) {
+    inlineInput.addEventListener('focus', () => { heroReturnFocus = true; });
+    inlineInput.addEventListener('input', (e) => {
+      if (e.isComposing) return;
+      if (!paletteDialog.open) openPalette(inlineInput.value);
+    });
+    inlineInput.addEventListener('keydown', (e) => {
+      if (paletteDialog.open || e.isComposing) return;
+      if (e.key === 'Enter' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        openPalette(inlineInput.value);
+      }
     });
   }
 
@@ -4132,11 +4182,20 @@ const setupInteractions = () => {
   };
 
   document.addEventListener('keydown', (e) => {
+    if (paletteDialog.open) {
+      const kbdMap = { ArrowUp: '↑↓', ArrowDown: '↑↓', Tab: '⇥', Enter: '↵', Escape: 'Esc' };
+      const label = kbdMap[e.key];
+      if (label) {
+        const hintKbd = [...document.querySelectorAll('.palette-hints kbd')].find(k => k.textContent === label);
+        if (hintKbd) {
+          hintKbd.classList.add('is-pressed');
+          setTimeout(() => hintKbd.classList.remove('is-pressed'), 140);
+        }
+      }
+    }
     if ((e.metaKey || e.ctrlKey) && isPhysical(e, 'KeyK', 'k', 'ن')) {
       e.preventDefault();
-      if (paletteDialog.open) { requestClosePalette(); return; }
-      if (document.activeElement === searchBtn) heroReturnFocus = true;
-      openPalette('');
+      togglePalette();
       return;
     }
     if (e.key === 'Escape' && paletteDialog.open) {
@@ -4149,13 +4208,13 @@ const setupInteractions = () => {
     if (tag === 'input' || tag === 'textarea') return;
     if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
       e.preventDefault();
-      heroReturnFocus = true;
-      openPalette('');
+      document.getElementById('lxInlineInput')?.focus();
       return;
     }
     if (isTypeAhead(e)) {
       e.preventDefault();
-      heroReturnFocus = true;
+      const input = document.getElementById('lxInlineInput');
+      if (input) { input.value = e.key; input.focus(); }
       openPalette(e.key);
       return;
     }
@@ -4164,20 +4223,11 @@ const setupInteractions = () => {
       const cards = document.querySelectorAll('#appGrid .app-card');
       const card = cards[digit - 1];
       if (card) {
-        try { localStorage.setItem('lx-last-open', card.dataset.appId); } catch (err) {}
         card.classList.add('is-keylaunched');
         setTimeout(() => card.classList.remove('is-keylaunched'), 260);
         card.querySelector('.card-link-overlay')?.click();
       }
     }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    const kbd = [...document.querySelectorAll('.palette-hints kbd')]
-      .find(k => k.textContent === e.key);
-    if (!kbd) return;
-    kbd.classList.add('is-pressed');
-    setTimeout(() => kbd.classList.remove('is-pressed'), 140);
   });
 };
 
