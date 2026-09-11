@@ -385,6 +385,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   --depth: 7px;
   animation: cardEnter 0.7s var(--ease-lux) both, lx-float 18s ease-in-out infinite;
   animation-delay: 0s, calc(0.95s + var(--i, 0) * 0.29s);
+  animation-iteration-count: 1, 3;
   transform: perspective(1600px) rotateX(calc(var(--ty) * -2.2deg)) rotateY(calc(var(--tx) * 2.2deg)) translateZ(var(--tz)) scale3d(var(--sc), var(--sc), var(--sc));
   transition:
     box-shadow var(--dur-fast) var(--ease-lux),
@@ -480,9 +481,10 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   background-size: 260% 100%;
   background-position: calc(130% - var(--hov, 0) * 260%) 0;
   opacity: var(--hov, 0);
-  mix-blend-mode: overlay;
 }
-:root[data-theme="light"] .card-sheen { mix-blend-mode: soft-light; opacity: calc(var(--hov, 0) * .6); }
+.app-card:hover .card-sheen, .app-card:focus-within .card-sheen { mix-blend-mode: overlay; }
+:root[data-theme="light"] .app-card:hover .card-sheen, :root[data-theme="light"] .app-card:focus-within .card-sheen { mix-blend-mode: soft-light; }
+:root[data-theme="light"] .card-sheen { opacity: calc(var(--hov, 0) * .6); }
 
 .app-card:hover, .app-card:focus-within { --tz: 14px; --sc: 1.006; }
 .app-card:active { --sc: .992; }
@@ -1426,23 +1428,23 @@ class AudioEngine {
   async _boot() {
     if (this.ctx) return;
     try {
-      this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-      this.master = this.ctx.createGain();
-      this.master.gain.value = 0.5;
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const master = ctx.createGain();
+      master.gain.value = 0.5;
 
-      this.compressor = this.ctx.createDynamicsCompressor();
-      this.compressor.threshold.value = -14;
-      this.compressor.knee.value = 6;
-      this.compressor.ratio.value = 12;
-      this.compressor.attack.value = 0.003;
-      this.compressor.release.value = 0.18;
+      const compressor = ctx.createDynamicsCompressor();
+      compressor.threshold.value = -14;
+      compressor.knee.value = 6;
+      compressor.ratio.value = 12;
+      compressor.attack.value = 0.003;
+      compressor.release.value = 0.18;
 
-      this.master.connect(this.compressor);
-      this.compressor.connect(this.ctx.destination);
+      master.connect(compressor);
+      compressor.connect(ctx.destination);
 
-      const sr = this.ctx.sampleRate;
+      const sr = ctx.sampleRate;
       const len = sr * 2.5;
-      const buf = this.ctx.createBuffer(2, len, sr);
+      const buf = ctx.createBuffer(2, len, sr);
 
       for (let c = 0; c < 2; c++) {
         const d = buf.getChannelData(c);
@@ -1451,16 +1453,23 @@ class AudioEngine {
         }
       }
 
-      this.reverb = this.ctx.createConvolver();
-      this.reverb.buffer = buf;
-      this.reverbHP = this.ctx.createBiquadFilter();
-      this.reverbHP.type = 'highpass';
-      this.reverbHP.frequency.value = 300;
-      this.rvbSend = this.ctx.createGain();
-      this.rvbSend.gain.value = 0.25;
-      this.reverb.connect(this.reverbHP);
-      this.reverbHP.connect(this.rvbSend);
-      this.rvbSend.connect(this.master);
+      const reverb = ctx.createConvolver();
+      reverb.buffer = buf;
+      const reverbHP = ctx.createBiquadFilter();
+      reverbHP.type = 'highpass';
+      reverbHP.frequency.value = 300;
+      const rvbSend = ctx.createGain();
+      rvbSend.gain.value = 0.25;
+      reverb.connect(reverbHP);
+      reverbHP.connect(rvbSend);
+      rvbSend.connect(master);
+
+      this.ctx = ctx;
+      this.master = master;
+      this.compressor = compressor;
+      this.reverb = reverb;
+      this.reverbHP = reverbHP;
+      this.rvbSend = rvbSend;
 
       document.addEventListener('visibilitychange', () => {
         if (!this.ctx) return;
@@ -1611,7 +1620,7 @@ class AudioEngine {
     ns.forEach((f, i) => this._v(f, 'sine', t + i * 0.06, 0.25, 0.03));
   }
 
-  ok() { return this.enabled && this.ctx && this.ctx.state === 'running'; }
+  ok() { return this.enabled && this.ctx && this.master && this.ctx.state === 'running'; }
 
   async resume() {
     await this._boot();
@@ -1768,7 +1777,7 @@ const Motion = (() => {
 document.addEventListener('visibilitychange', () => { if (!document.hidden) Motion.wake(); });
 
 class Spring {
-  constructor(k = 190, c = 24, v = 0) { this.k = k; this.c = c; this.v = v; this.dv = 0; this.to = v; }
+  constructor(k = 190, c = 24, v = 0, scale = 1) { this.k = k; this.c = c; this.v = v; this.dv = 0; this.to = v; this.scale = scale; }
   fixed(dt) {
     const a = -this.k * (this.v - this.to) - this.c * this.dv;
     this.dv += a * dt;
@@ -1776,8 +1785,16 @@ class Spring {
   }
 
   snap() { this.v = this.to; this.dv = 0; }
-  get settled() { return Math.abs(this.dv) < 1e-3 && Math.abs(this.v - this.to) < 1e-3; }
+  get settled() {
+    const eps = 1e-2 * this.scale;
+    return Math.abs(this.dv) < eps && Math.abs(this.v - this.to) < eps;
+  }
 }
+
+const criticalSpring = (responseSec, damping = 1, v = 0, scale = 1) => {
+  const w = (2 * Math.PI) / responseSec;
+  return new Spring(w * w, 2 * damping * w, v, scale);
+};
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
@@ -2079,8 +2096,12 @@ const setInteractionOrigin = (el) => {
 
 let contextMenuEl = null;
 
+let contextMenuAbort = null;
+
 const closeContextMenu = () => {
   if (contextMenuEl) contextMenuEl.classList.remove('is-open');
+  contextMenuAbort?.abort();
+  contextMenuAbort = null;
 };
 
 const buildContextMenu = () => {
@@ -2089,14 +2110,6 @@ const buildContextMenu = () => {
   contextMenuEl.className = 'lx-context-menu';
   contextMenuEl.setAttribute('role', 'menu');
   document.body.appendChild(contextMenuEl);
-  document.addEventListener('pointerdown', (e) => {
-    if (contextMenuEl.classList.contains('is-open') && !contextMenuEl.contains(e.target)) closeContextMenu();
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && contextMenuEl.classList.contains('is-open')) closeContextMenu();
-  });
-  window.addEventListener('resize', closeContextMenu, { passive: true });
-  window.addEventListener('scroll', closeContextMenu, { passive: true, capture: true });
   return contextMenuEl;
 };
 
@@ -2140,6 +2153,17 @@ const openCardContextMenu = (card, clientX, clientY) => {
   });
 
   menu.classList.add('is-open');
+  contextMenuAbort?.abort();
+  contextMenuAbort = new AbortController();
+  const { signal } = contextMenuAbort;
+  document.addEventListener('pointerdown', (e) => {
+    if (!menu.contains(e.target)) closeContextMenu();
+  }, { signal });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeContextMenu();
+  }, { signal });
+  window.addEventListener('resize', closeContextMenu, { passive: true, signal });
+  window.addEventListener('scroll', closeContextMenu, { passive: true, capture: true, signal });
   menu.style.left = '0px';
   menu.style.top = '0px';
   const rect = menu.getBoundingClientRect();
@@ -2252,10 +2276,10 @@ const initPointerField = () => {
       if (!c._springs) {
 
         c._springs = {
-          tx: new Spring(200, 20, 0),
-          ty: new Spring(200, 20, 0),
-          tz: new Spring(180, 21, 0),
-          reveal: new Spring(90, 19, 0)
+          tx: criticalSpring(0.22, 1, 0, 1),
+          ty: criticalSpring(0.22, 1, 0, 1),
+          tz: criticalSpring(0.24, 1, 0, 14),
+          reveal: criticalSpring(0.36, 1, 0, 1)
         };
       }
       if (!c._last) c._last = {};
@@ -2443,7 +2467,7 @@ const initMagneticControls = () => {
   const measure = () => {
     buttons = Array.from(pill.querySelectorAll('button')).map(btn => {
       if (!btn._mag) {
-        btn._mag = { x: new Spring(260, 22, 0), y: new Spring(260, 22, 0), s: new Spring(260, 22, 1) };
+        btn._mag = { x: criticalSpring(0.2, 1, 0, 6), y: criticalSpring(0.2, 1, 0, 6), s: criticalSpring(0.2, 1, 1, 1) };
         btn.addEventListener('pointerenter', () => { btn._mag.s.to = 1.06; Motion.wake(); });
         btn.addEventListener('pointerleave', () => { btn._mag.s.to = 1; Motion.wake(); });
       }
@@ -2480,7 +2504,7 @@ const initMagneticControls = () => {
   };
 
   window.addEventListener('resize', () => { dirty = true; Motion.wake(); }, { passive: true });
-  window.addEventListener('scroll', () => { dirty = true; }, { passive: true, capture: true });
+  window.addEventListener('scroll', () => { dirty = true; Motion.wake(); }, { passive: true, capture: true });
   document.addEventListener('pointermove', (e) => {
     const r = pill.getBoundingClientRect();
     const inField = e.clientX >= r.left - FIELD && e.clientX <= r.right + FIELD &&
@@ -2581,7 +2605,7 @@ class OrbField {
         orbitSpeed: 0.15 + Math.random() * 0.1,
         r: Math.random() * 160 + 120,
         hue,
-        hueSpring: new Spring(40, 14, hue),
+        hueSpring: new Spring(40, 14, hue, 360),
         phase: Math.random() * Math.PI * 2
       };
     });
@@ -2857,29 +2881,35 @@ const measureRail = () => {
   const btns = Array.from(rail.querySelectorAll('.tab-btn'));
   if (!btns.length) return;
 
-  rail.classList.add('is-measuring');
-  rail.style.width = 'auto';
+  const clone = rail.cloneNode(true);
+  clone.id = '';
+  clone.setAttribute('aria-hidden', 'true');
+  clone.setAttribute('inert', '');
+  clone.classList.add('is-measuring');
+  clone.style.cssText = 'position:absolute; visibility:hidden; top:0; left:0; width:auto; pointer-events:none;';
+  clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+  const cloneBtns = Array.from(clone.querySelectorAll('.tab-btn'));
+  rail.parentNode.appendChild(clone);
 
   let maxW = 0;
-  btns.forEach(b => {
-    btns.forEach(x => x.setAttribute('aria-selected', String(x === b)));
-    void rail.offsetWidth;
-    maxW = Math.max(maxW, rail.getBoundingClientRect().width);
+  cloneBtns.forEach(b => {
+    cloneBtns.forEach(x => x.setAttribute('aria-selected', String(x === b)));
+    void clone.offsetWidth;
+    maxW = Math.max(maxW, clone.getBoundingClientRect().width);
   });
-  rail.style.width = `${Math.ceil(maxW)}px`;
+  clone.style.width = `${Math.ceil(maxW)}px`;
 
   railGeom = new Map();
-  btns.forEach(b => {
-    btns.forEach(x => x.setAttribute('aria-selected', String(x === b)));
-    void rail.offsetWidth;
-    const rr = rail.getBoundingClientRect(), br = b.getBoundingClientRect();
+  cloneBtns.forEach((b, i) => {
+    cloneBtns.forEach(x => x.setAttribute('aria-selected', String(x === b)));
+    void clone.offsetWidth;
+    const rr = clone.getBoundingClientRect(), br = b.getBoundingClientRect();
     const l = br.left - rr.left;
-    railGeom.set(b.dataset.id, { l, r: rr.width - l - br.width });
+    railGeom.set(btns[i].dataset.id, { l, r: rr.width - l - br.width });
   });
 
-  btns.forEach(x => x.setAttribute('aria-selected', String(x.dataset.id === currentTabId)));
-  void rail.offsetWidth;
-  rail.classList.remove('is-measuring');
+  clone.remove();
+  rail.style.width = `${Math.ceil(maxW)}px`;
 
   const g = railGeom.get(currentTabId);
   if (g) {
@@ -2947,7 +2977,11 @@ const activateTab = (id, opts = {}) => {
   const rtl = document.documentElement.dir === 'rtl';
   document.documentElement.style.setProperty('--dir', String(dir * (rtl ? 1 : -1)));
 
-  const run = () => renderCards(g, id);
+  const run = () => {
+    const hadFocus = g.contains(document.activeElement);
+    renderCards(g, id);
+    if (hadFocus) g.querySelector('.card-link-overlay')?.focus({ preventScroll: true });
+  };
 
   let rendered;
   if (instant || reducedMotion) {
@@ -2967,7 +3001,15 @@ const activateTab = (id, opts = {}) => {
   } else {
     g.classList.add('is-out');
     rendered = new Promise((resolve) => {
-      setTimeout(() => { run(); g.classList.remove('is-out'); resolve(); }, 220);
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        g.removeEventListener('animationend', finish);
+        run(); g.classList.remove('is-out'); resolve();
+      };
+      g.addEventListener('animationend', finish, { once: true });
+      setTimeout(finish, 320);
     });
   }
 
@@ -3663,10 +3705,6 @@ const openPalette = (seed = '') => {
   sfx.veil(true);
 
   requestAnimationFrame(() => {
-    if (bar) bar.style.transition = 'none';
-    document.body.classList.add('palette-open');
-    if (bar) requestAnimationFrame(() => { bar.style.transition = ''; });
-
     const row = dialog.querySelector('.palette-input-row');
     const rowBox = row.getBoundingClientRect();
     const dlgBox = dialog.getBoundingClientRect();
@@ -3674,6 +3712,10 @@ const openPalette = (seed = '') => {
     const dy = (heroBox.top + heroBox.height / 2) - (rowBox.top + rowBox.height / 2);
     const deferGen = paletteRenderGen;
     const deferred = deferExcessPaletteRows(8);
+
+    if (bar) bar.style.transition = 'none';
+    document.body.classList.add('palette-open');
+    if (bar) requestAnimationFrame(() => { bar.style.transition = ''; });
 
     const chrome = [dialog.querySelector('.palette-live-dot'), row.querySelector('kbd')].filter(Boolean);
     chrome.forEach(el => { el.style.opacity = '0'; });
@@ -3838,29 +3880,40 @@ const initReturnMemory = () => {
 };
 
 const initIdleCinema = () => {
-  let idleTimer = null, idleRaf = null;
+  let idleTimer = null;
+  let cinemaStartS = 0;
+
+  const cinemaSubscriber = {
+    render(now) {
+      if (!document.body.classList.contains('is-cinema')) return false;
+      const t = now - cinemaStartS;
+      const W = window.innerWidth, H = window.innerHeight;
+      const spot = document.getElementById('spotlight');
+      if (!spot) return false;
+      spot.style.setProperty('--sx', `${W / 2 + 0.32 * W * Math.sin(0.11 * t + 1.3)}px`);
+      spot.style.setProperty('--sy', `${0.28 * H + 0.16 * H * Math.sin(0.07 * t)}px`);
+      return true;
+    }
+  };
+  Motion.add(cinemaSubscriber);
 
   const stopIdle = () => {
-    cancelAnimationFrame(idleRaf); idleRaf = null;
-    document.body.classList.remove('is-cinema');
+    if (document.body.classList.contains('is-cinema')) document.body.classList.remove('is-cinema');
   };
 
-  const runIdle = (t0) => (now) => {
-    const t = (now - t0) / 1000;
-    const W = window.innerWidth, H = window.innerHeight;
-    const spot = document.getElementById('spotlight');
-    if (!spot) return;
-    spot.style.setProperty('--sx', `${W / 2 + 0.32 * W * Math.sin(0.11 * t + 1.3)}px`);
-    spot.style.setProperty('--sy', `${0.28 * H + 0.16 * H * Math.sin(0.07 * t)}px`);
-    idleRaf = requestAnimationFrame(runIdle(t0));
-  };
-
+  let lastArm = 0;
   const armIdle = () => {
-    clearTimeout(idleTimer); stopIdle();
+    const now = performance.now();
+    const isCinema = document.body.classList.contains('is-cinema');
+    if (!isCinema && now - lastArm < 150) return;
+    lastArm = now;
+    clearTimeout(idleTimer);
+    stopIdle();
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     idleTimer = setTimeout(() => {
+      cinemaStartS = performance.now() / 1000;
       document.body.classList.add('is-cinema');
-      idleRaf = requestAnimationFrame(runIdle(performance.now()));
+      Motion.wake();
     }, 25000);
   };
 
