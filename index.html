@@ -33,9 +33,39 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=El+Messiri:wght@600;700&family=Inter:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=El+Messiri:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" media="print" onload="this.media='all'">
-<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"></noscript>
 <style>
+@font-face {
+  font-family: 'IBM Plex Sans Arabic Fallback';
+  src: local('Arial');
+  ascent-override: 107.25%;
+  descent-override: 41.02%;
+  line-gap-override: 0%;
+  size-adjust: 101.17%;
+}
+@font-face {
+  font-family: 'El Messiri Fallback';
+  src: local('Arial');
+  ascent-override: 106.39%;
+  descent-override: 56.8%;
+  line-gap-override: 0%;
+  size-adjust: 95.78%;
+}
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+  size-adjust: 107.12%;
+}
+@font-face {
+  font-family: 'Cormorant Garamond Fallback';
+  src: local('Georgia');
+  ascent-override: 104.55%;
+  descent-override: 32.47%;
+  line-gap-override: 0%;
+  size-adjust: 88.38%;
+}
 :root {
   color-scheme: dark;
   --bg: light-dark(#f3f1ec, #050608);
@@ -49,29 +79,29 @@
   --shadow-deep: light-dark(0 2px 8px rgba(28,25,20,.07), 0 2px 6px rgba(0,0,0,.34)), light-dark(0 30px 60px -22px rgba(28,25,20,.18), 0 30px 64px -22px rgba(0,0,0,.72));
   --radius: 22px;
   --gap: clamp(0.7rem, 1.6vh, 1.15rem);
-  --lx-panel-w: min(640px, 60vw);
-  --lx-palette-w: min(880px, 94vw);
+  --lx-panel-w: min(880px, 94vw);
   --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
-  --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.96 39.6%, 1.01 56.4%, 0.99 73.2%, 1 100%);
-  --ease-out: cubic-bezier(.22, 1, .36, 1);
-  --ease-io: cubic-bezier(.65, 0, .35, 1);
+  --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.92 39.6%, 1.015 56.4%, 0.99 73.2%, 1 100%);
+  --tab-dur: 460ms;
   --dur-micro: 160ms;
   --dur-fast: 300ms;
   --dur-base: 380ms;
   --dur-slow: 620ms;
   --dur-story: 700ms;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-io: cubic-bezier(.65, 0, .35, 1);
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
-  --ui-font: 'IBM Plex Sans Arabic', system-ui, sans-serif;
-  --display-font: 'El Messiri', var(--ui-font);
+  --ui-font: 'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
+  --display-font: 'El Messiri', 'El Messiri Fallback', var(--ui-font);
 }
 
 :root:lang(en) {
-  --ui-font: 'Inter', system-ui, sans-serif;
-  --display-font: 'Cormorant Garamond', Georgia, serif;
+  --ui-font: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+  --display-font: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
 }
-:root:lang(en) h1 { letter-spacing: -0.02em; }
+:root:lang(en) .app-title { font-feature-settings: "liga", "calt"; }
 
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] { color-scheme: dark; }
@@ -86,7 +116,7 @@
 @property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
 @property --hover-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
-:root { transition-property: --tab-accent; transition-duration: 0.34s; transition-timing-function: var(--ease-lux); }
+:root { transition-property: --tab-accent, --hover-accent; transition-duration: 0.34s, 0.5s; transition-timing-function: var(--ease-lux), var(--ease-out); }
 @property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
@@ -108,8 +138,6 @@ body {
 }
 
 a, button { cursor: pointer; }
-kbd { transition: transform .12s var(--ease-spring), background-color .2s var(--ease-out); }
-kbd.is-pressed { transform: translateY(1px) scale(.94); background: var(--surface-hover); }
 
 :focus-visible {
   outline: 2px solid color-mix(in oklab, var(--tint, #7c9bff) 70%, var(--text));
@@ -127,7 +155,7 @@ kbd.is-pressed { transform: translateY(1px) scale(.94); background: var(--surfac
 
 #gradient-canvas {
   position: fixed; inset: 0; z-index: 0;
-  pointer-events: none; filter: blur(18px);
+  pointer-events: none;
   transform: scale(1.06); opacity: 0;
   animation: fadeIn 2.5s var(--ease-lux) forwards;
 }
@@ -155,11 +183,15 @@ kbd.is-pressed { transform: translateY(1px) scale(.94); background: var(--surfac
     radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 5%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%),
     radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 5%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
   opacity: 0;
-  transition: --hover-accent 0.5s var(--ease-out), opacity 0.6s var(--ease-lux);
+  transition: opacity 0.6s var(--ease-lux);
 }
 
 .spotlight.is-active { opacity: 1; }
 .spotlight.is-active.is-idle { opacity: 0.45; }
+
+body.is-cinema .spotlight { opacity: .55; transition: opacity 2.5s var(--ease-io); }
+body.is-cinema h1 { animation: shimmerText 6s var(--ease-io) infinite alternate; }
+body.is-cinema .controls-pill { opacity: .5; }
 body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
 
 .container {
@@ -167,21 +199,28 @@ body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
   padding: clamp(2.25rem, 3.6vh, 3.25rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3vh, 2.5rem);
   position: relative; z-index: 3;
   display: flex; flex-direction: column; gap: clamp(1rem, 2.2vh, 1.6rem);
-  transition: transform 0.45s var(--ease-lux), filter 0.45s var(--ease-lux);
+  transition: transform 0.45s var(--ease-lux);
 }
 
 .container.is-dollied, .controls-pill.is-dollied {
-  transform: scale(0.97); filter: brightness(0.72);
+  transform: scale(0.97);
 }
+
+.dolly-scrim {
+  position: fixed; inset: 0; z-index: 150; pointer-events: none;
+  background: #000; opacity: 0;
+  transition: opacity 0.45s var(--ease-lux);
+}
+.dolly-scrim.is-dollied { opacity: 0.28; }
 
 .site-header {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  animation: slideDown 0.9s var(--ease-lux) both;
+  animation: slideDown 0.9s var(--ease-lux) 0.06s both;
 }
 
 h1 {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
   font-weight: 400; font-style: italic;
   font-size: clamp(2.6rem, 5.4vw, 5.6rem);
   letter-spacing: -0.008em; line-height: 1.1;
@@ -195,16 +234,13 @@ h1 {
 }
 
 .fonts-ready h1 { animation: shimmerText 3.6s var(--ease-lux) .35s 1 both; }
-
-body.is-cinema .spotlight { opacity: .55; }
-body.is-cinema h1 { animation: shimmerText 5s var(--ease-out) .8s 1 both; }
-body.is-cinema .controls-pill { opacity: .45; transition: opacity 1.2s var(--ease-out); }
+:root:lang(en) h1 { font-style: italic; letter-spacing: -0.02em; }
 
 @keyframes shimmerText { to { background-position: 100% center; } }
 @keyframes fadeIn { to { opacity: 1; } }
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-16px); filter: blur(5px); }
-  to { opacity: 1; transform: translateY(0); filter: blur(0); }
+  from { opacity: 0; transform: translateY(-16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .controls-pill {
@@ -217,7 +253,7 @@ body.is-cinema .controls-pill { opacity: .45; transition: opacity 1.2s var(--eas
   border-radius: 50px; padding: 0.35rem; gap: 0.2rem;
   z-index: 100;
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-  transition: transform 0.45s var(--ease-lux), filter 0.45s var(--ease-lux), background 0.6s var(--ease-smooth), opacity 0.4s var(--ease-out);
+  transition: transform 0.45s var(--ease-lux), background 0.6s var(--ease-smooth), opacity 0.4s var(--ease-out);
 }
 
 .controls-pill button {
@@ -265,26 +301,44 @@ body.is-cinema .controls-pill { opacity: .45; transition: opacity 1.2s var(--eas
 .controls-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.2rem; }
 
 .lx-bar {
+  width: var(--lx-panel-w); height: 64px;
   align-self: center; position: relative; z-index: 3; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
+  display: flex; align-items: center;
   border-radius: 999px;
   background: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.025));
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-  animation: slideDown .8s var(--ease-out) .15s both;
+  animation: slideDown 0.8s var(--ease-out) 0.06s both;
+  --tab-accent: #7c9bff;
   --c1: var(--tab-accent);
-  transition: opacity 120ms var(--ease-lux), transform 200ms var(--ease-lux),
-    border-color 0.3s var(--ease-lux), box-shadow 0.3s var(--ease-lux);
+  transition: --tab-accent 0.34s var(--ease-lux), border-color 0.34s var(--ease-lux), box-shadow 0.34s var(--ease-lux), opacity 120ms var(--ease-lux), transform 200ms var(--ease-lux);
+  font-family: var(--ui-font); color: var(--text);
 }
 body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: none; }
-.lx-bar:focus-within { border-color: var(--border-highlight); box-shadow: var(--shadow-soft), 0 0 0 1px color-mix(in oklab, var(--tab-accent) 35%, transparent); }
-.lx-bar:focus-within .tab-rail { opacity: 0.72; }
+.lx-bar.is-focused { border-color: var(--border-highlight); box-shadow: var(--shadow-deep), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
+.lx-bar.is-focused .tab-rail { filter: saturate(.85); transition: filter 0.4s var(--ease-lux); }
+
+.lx-bar-search {
+  flex: 1; min-width: 22ch; min-height: 0;
+  display: flex; align-items: center; gap: 1rem;
+  height: 100%; padding-inline: 1.6rem;
+  position: relative; z-index: 1;
+  font-family: var(--ui-font); color: var(--text); font: inherit;
+  background: none; border: 0; text-align: start; cursor: pointer;
+  outline: none;
+}
+.lx-bar-search:hover .lx-bar-label, .lx-bar-search:focus-visible .lx-bar-label { color: var(--text); }
+.lx-bar-search i.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; }
+.lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.2rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color 0.2s var(--ease-lux); }
+.lx-bar-kbd { margin-inline-start: auto; font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 0.2rem 0.6rem; flex-shrink: 0; }
+
+.lx-bar-divider { width: 1px; height: 26px; background: var(--border); margin-inline: 6px; flex-shrink: 0; }
 
 .lx-bar::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
-  padding: 1px; z-index: 1; pointer-events: none;
+  padding: 1px; z-index: 2; pointer-events: none;
   background: radial-gradient(var(--reveal-r, 260px) circle at var(--rx) var(--ry),
     rgba(255,255,255,.95), rgba(255,255,255,.34) 26%, rgba(255,255,255,.12) 48%, transparent 74%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -302,27 +356,6 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   .lx-bar::after { background: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
   :root[data-theme="light"] .lx-bar::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
 }
-
-.lx-bar-search {
-  flex: 0 0 var(--lx-panel-w); width: var(--lx-panel-w);
-  display: flex; align-items: center; gap: 1rem;
-  padding: 1.35rem 1.6rem;
-  position: relative; text-align: start;
-  font-family: var(--ui-font); color: var(--text);
-}
-.lx-bar-search i.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; transition: color 0.3s var(--ease-lux); }
-.lx-bar-search:focus-within i.fa-magnifying-glass { color: var(--tab-accent); }
-#lxInlineInput {
-  flex: 1; min-width: 0; font-size: 1.2rem; font-family: var(--ui-font); color: var(--text);
-  background: transparent; border: none; outline: none; padding: 0;
-  caret-color: var(--tab-accent);
-}
-#lxInlineInput::placeholder { color: var(--text-muted); }
-.lx-bar-hint { font-size: 0.78rem; color: var(--text-muted); white-space: nowrap; flex-shrink: 0; }
-.lx-bar-hint button { color: var(--tab-accent); font-weight: 600; background: none; border: none; padding: 0; font: inherit; text-decoration: underline; text-underline-offset: 2px; }
-.lx-bar-kbd { margin-inline-start: auto; font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 0.2rem 0.6rem; flex-shrink: 0; }
-
-.lx-bar-divider { width: 1px; height: 26px; margin-inline: 6px; background: var(--border); flex-shrink: 0; }
 
 .app-grid {
   flex: 1 1 0; min-height: 0;
@@ -372,68 +405,86 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
 #lx-palette { --live-accent: var(--tint); }
 
 .app-card {
-  position: relative; display: flex; flex-direction: column; justify-content: space-between;
-  text-decoration: none; border-radius: var(--radius);
-  background-color: var(--surface);
-  background-image: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0) 44%);
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045);
-  padding: clamp(1.2rem, 2.5vh, 1.8rem);
-  overflow: hidden;
-  contain: layout paint;
+  position: relative;
+  border-radius: var(--radius);
   --hov: 0;
   --depth: 7px;
-  animation: cardEnter 0.7s var(--ease-lux) both, lx-float 18s ease-in-out infinite;
-  animation-delay: 0s, calc(0.95s + var(--i, 0) * 0.29s);
-  animation-iteration-count: 1, 3;
+  animation: cardEnter 0.7s var(--ease-lux) both;
+  animation-delay: 0s;
   transform: perspective(1600px) rotateX(calc(var(--ty) * -2.2deg)) rotateY(calc(var(--tx) * 2.2deg)) translateZ(var(--tz)) scale3d(var(--sc), var(--sc), var(--sc));
-  transition:
-    box-shadow var(--dur-fast) var(--ease-lux),
-    border-color var(--dur-fast) var(--ease-lux),
-    background-color var(--dur-fast) var(--ease-lux),
-    opacity var(--dur-fast) var(--ease-lux),
-    --hov var(--dur-base) var(--ease-spring),
-    --sc var(--dur-base) var(--ease-spring);
+  transition: opacity var(--dur-fast) var(--ease-lux);
 }
-.app-card:hover, .app-card:focus-within { --hov: 1; }
+.app-card:hover, .app-card:focus-within { --hov: 1; z-index: 10; }
 
 .app-grid.is-relang .app-card { animation: none !important; }
 
-:root[data-theme="light"] .app-card {
+.card-shadow {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045);
+}
+.card-shadow::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  opacity: 0;
+  box-shadow: var(--shadow-deep), 0 18px 44px -18px color-mix(in oklab, var(--tint) 55%, transparent), inset 0 1px 2px rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 0 20px rgba(255,255,255,0.05);
+  transition: opacity var(--dur-fast) var(--ease-lux);
+}
+.app-card:hover .card-shadow::after, .app-card:focus-within .card-shadow::after { opacity: 1; }
+:root[data-theme="light"] .card-shadow::after {
+  box-shadow: var(--shadow-deep),
+    0 18px 40px -22px color-mix(in oklab, var(--tint) 42%, transparent),
+    inset 0 2px 10px rgba(255,255,255,0.95);
+}
+
+.card-clip {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: space-between;
+  text-decoration: none; border-radius: var(--radius);
+  background-color: var(--surface);
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0) 44%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--border);
+  padding: clamp(1.2rem, 2.5vh, 1.8rem);
+  overflow: hidden;
+  contain: layout paint;
+  transition:
+    border-color var(--dur-fast) var(--ease-lux),
+    background-color var(--dur-fast) var(--ease-lux);
+}
+.app-card:hover .card-clip, .app-card:focus-within .card-clip {
+  background-color: var(--surface-hover);
+  border-color: var(--border-highlight);
+}
+
+:root[data-theme="light"] .card-clip {
   background-image: linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0) 44%);
 }
 
-:root[data-theme="dark"] .app-card { border-color: rgba(255,255,255,.055); }
+:root[data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.055); }
 
 @keyframes cardEnter {
   from { opacity: 0; scale: .985; translate: 0 14px; }
   to   { opacity: 1; scale: 1;    translate: 0 0; }
 }
 
-@keyframes lx-float {
-  from { translate: 0 0; }
-  50%  { translate: 0 1.2px; }
-  to   { translate: 0 0; }
-}
-
 @keyframes cardBoot {
   from { opacity: 0; clip-path: inset(10% 8% 10% 8% round var(--radius)); translate: 0 10px; }
   to   { opacity: 1; clip-path: inset(0 0 0 0 round var(--radius));       translate: 0 0; }
 }
-body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
+body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 
-.app-card::before {
+.card-clip::before {
   content: ''; position: absolute; inset: -1px; border-radius: inherit;
   background: radial-gradient(circle 320px at var(--mx, 50%) var(--my, -20%), light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.085)), transparent 58%);
   opacity: 0; pointer-events: none; z-index: 2;
   transition: opacity var(--dur-base) var(--ease-lux); mix-blend-mode: overlay;
 }
-:root[data-theme="light"] .app-card::before {
+:root[data-theme="light"] .card-clip::before {
   background: radial-gradient(circle 240px at var(--mx, 50%) var(--my, -20%), rgba(255,255,255,0.2), transparent 62%);
   mix-blend-mode: soft-light;
 }
 
-.app-card::after {
+.card-clip::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
   padding: 1px; z-index: 4; pointer-events: none;
   background: radial-gradient(var(--reveal-r) circle at var(--rx) var(--ry),
@@ -445,7 +496,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   opacity: var(--reveal-o);
   transition: none;
 }
-:root[data-theme="light"] .app-card::after {
+:root[data-theme="light"] .card-clip::after {
   background: radial-gradient(var(--reveal-r) circle at var(--rx) var(--ry),
     rgba(20,18,15,.55), rgba(20,18,15,.2) 26%, rgba(20,18,15,.07) 48%, transparent 74%);
 }
@@ -453,8 +504,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 :root[data-theme="light"] .app-card { --reveal-r: 180px; }
 :root[data-theme="light"] .card-hero { --reveal-r: 320px; }
 @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
-  .app-card::after { background: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
-  :root[data-theme="light"] .app-card::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
+  .card-clip::after { background: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
+  :root[data-theme="light"] .card-clip::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
 }
 
 .app-card:has(.card-link-overlay:focus-visible) {
@@ -482,29 +533,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   background-position: calc(130% - var(--hov, 0) * 260%) 0;
   opacity: var(--hov, 0);
 }
-.app-card:hover .card-sheen, .app-card:focus-within .card-sheen { mix-blend-mode: overlay; }
-:root[data-theme="light"] .app-card:hover .card-sheen, :root[data-theme="light"] .app-card:focus-within .card-sheen { mix-blend-mode: soft-light; }
-:root[data-theme="light"] .card-sheen { opacity: calc(var(--hov, 0) * .6); }
+:root[data-theme="light"] .card-sheen { mix-blend-mode: soft-light; opacity: calc(var(--hov, 0) * .6); }
 
 .app-card:hover, .app-card:focus-within { --tz: 14px; --sc: 1.006; }
 .app-card:active { --sc: .992; }
 
-.app-card:hover, .app-card:focus-within {
-  background-color: var(--surface-hover);
-  box-shadow: var(--shadow-deep), 0 18px 44px -18px color-mix(in oklab, var(--tint) 55%, transparent), inset 0 1px 2px rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 0 20px rgba(255,255,255,0.05);
-  border-color: var(--border-highlight);
-  z-index: 10;
-}
-
-:root[data-theme="light"] .app-card:hover, :root[data-theme="light"] .app-card:focus-within {
-  box-shadow: var(--shadow-deep),
-    0 18px 40px -22px color-mix(in oklab, var(--tint) 42%, transparent),
-    inset 0 2px 10px rgba(255,255,255,0.95);
-}
-
 .app-card:hover .card-glow, .app-card:focus-within .card-glow { opacity: 0.09; }
 :root[data-theme="light"] .app-card:hover .card-glow, :root[data-theme="light"] .app-card:focus-within .card-glow { opacity: 0.065; }
-.app-card:hover::before, .app-card:focus-within::before { opacity: 1; }
+.app-card:hover .card-clip::before, .app-card:focus-within .card-clip::before { opacity: 1; }
 
 .bento-header, .bento-footer {
   position: relative; z-index: 5;
@@ -517,7 +553,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   position: absolute; inset: 0; z-index: 1;
   border-radius: inherit;
 }
-.card-link-overlay:focus-visible { outline-offset: -3px; }
+.card-link-overlay:focus-visible {
+  outline-offset: -3px;
+  transition: outline-offset .15s var(--ease-out);
+}
+.card-link-overlay:focus-visible:not(:hover) { animation: focusSettle .3s var(--ease-out); }
+@keyframes focusSettle { from { outline-offset: -8px; } }
 
 .variant-chips, .variant-chip { pointer-events: auto; }
 
@@ -539,7 +580,9 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 }
 :root[data-theme="light"] .digit-badge { background: rgba(255,255,255,0.85); color: var(--text); }
 .app-grid:is(:hover, :focus-within) .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
-.app-card.is-keylaunched .digit-badge { opacity: 1; transform: scale(1.35); background: var(--tab-accent); color: #fff; }
+.app-card.is-keylaunched .digit-badge {
+  opacity: 1; transform: scale(1.35); background: var(--tab-accent); color: #fff;
+}
 
 .app-icon-wrapper {
   width: clamp(46px, 6.4vh, 56px); height: clamp(46px, 6.4vh, 56px);
@@ -607,9 +650,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 .app-card:hover .app-icon-wrapper::after, .app-card:focus-within .app-icon-wrapper::after { opacity: 0.32; }
 
+.fa-svg { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; flex-shrink: 0; }
+
 .app-icon {
   font-size: clamp(1.1rem, 2.5vh, 1.4rem);
   color: rgba(255,255,255,.96); text-shadow: 0 1px 2px rgba(0,0,0,.35);
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
   position: relative; z-index: 1;
   transition: opacity 0.175s var(--ease-lux);
 }
@@ -637,14 +683,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .app-card.is-revealed { animation: revealPulse 1.1s var(--ease-lux); }
 
 @keyframes revealPulse {
-  0% { box-shadow: 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
-  100% { box-shadow: 0 0 0 14px transparent; }
+  0%   { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
+  100% { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 14px transparent; }
 }
 
 .app-card.is-returned { animation: returnPulse 1.4s var(--ease-out); }
 @keyframes returnPulse {
-  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--tint) 55%, transparent); }
-  100% { box-shadow: 0 0 0 18px transparent; }
+  0%   { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 0 color-mix(in oklab, var(--tint) 55%, transparent); }
+  100% { box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045), 0 0 0 18px transparent; }
 }
 
 .app-title {
@@ -654,6 +700,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   line-height: 1.3; margin: 0; padding-bottom: 0.15em;
   letter-spacing: 0;
   text-wrap: balance;
+  text-rendering: optimizeLegibility;
   transform: translate3d(calc(var(--tx, 0) * var(--depth) * 1.6), calc(var(--ty, 0) * var(--depth) * 1.6), 0) scale(calc(1 + .006 * var(--hov, 0)));
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
   transition: background-position 480ms var(--ease-lux);
@@ -668,7 +715,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-rendering: optimizeLegibility;
 }
 
 :lang(ar) .app-title { line-height: 1.5; }
@@ -677,7 +723,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   font-style: normal;
   font-size: clamp(1.25rem, 2.85vh, 1.6rem);
   letter-spacing: -0.004em;
-  font-feature-settings: "liga", "calt";
 }
 
 .app-card:hover .app-title, .app-card:focus-within .app-title { background-position: 100% center; }
@@ -741,7 +786,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .card-wide .app-icon { font-size: clamp(1.3rem, 3vh, 1.6rem); }
 .card-wide .app-title { font-size: clamp(1.3rem, 3vh, 1.6rem); }
 
-.card-hero { flex-direction: row; align-items: center; padding: clamp(1.5rem, 3.5vh, 2.5rem); }
+.card-hero .card-clip { flex-direction: row; align-items: center; padding: clamp(1.5rem, 3.5vh, 2.5rem); }
 .card-hero .bento-header { width: auto; align-items: center; gap: clamp(1rem, 2.5vh, 2rem); }
 .card-hero .bento-footer { width: auto; flex: 1; justify-content: flex-end; }
 .card-hero .app-icon-wrapper { width: clamp(72px, 9.5vh, 88px); height: clamp(72px, 9.5vh, 88px); border-radius: 18px; }
@@ -749,7 +794,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .card-hero .app-title { font-size: clamp(2.1rem, 4.4vh, 3rem); font-weight: 700; letter-spacing: 0; }
 .card-hero .open-affordance { width: 32px; height: 32px; font-size: 0.75rem; }
 
-.card-tall { justify-content: center; gap: clamp(1rem, 3vh, 1.75rem); }
+.card-tall .card-clip { justify-content: center; gap: clamp(1rem, 3vh, 1.75rem); }
 .card-tall .app-icon-wrapper { width: clamp(64px, 8.4vh, 84px); height: clamp(64px, 8.4vh, 84px); border-radius: 17px; }
 .card-tall .app-icon { font-size: clamp(1.7rem, 3.6vh, 2.2rem); }
 .card-tall .app-title { font-size: clamp(1.5rem, 3.4vh, 2.2rem); font-weight: 700; }
@@ -769,6 +814,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
   opacity: 0.64;
+}
+.app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) .card-clip {
   border-color: transparent;
 }
 
@@ -778,20 +825,15 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 .tab-rail {
   position: relative; align-self: center; flex-shrink: 0;
-  display: flex; justify-content: center; align-items: center; gap: 0.15rem;
-  padding-inline: 0.3rem;
-  --tab-accent: #7c9bff;
-  transition: --tab-accent 0.34s var(--ease-lux), opacity 0.3s var(--ease-lux);
+  display: flex; justify-content: center; align-items: center;
+  gap: 0.15rem; padding: 0.35rem;
 }
 .tab-rail.is-measuring, .tab-rail.is-measuring * { transition: none !important; }
 
 .tab-indicator {
   position: absolute; inset: 4px 0; z-index: 0; pointer-events: none;
   border-radius: 999px;
-  background: light-dark(rgba(20, 18, 16, 0.10), rgba(255, 255, 255, 0.16));
-  box-shadow: 0 6px 20px -8px color-mix(in oklab, var(--tab-accent) 45%, transparent),
-              inset 0 1px 1px rgba(255,255,255,0.25);
-  transition: box-shadow 0.6s var(--ease-lux);
+  background: color-mix(in oklab, var(--text) 9%, transparent);
   clip-path: inset(0 100% 0 0 round 999px);
 }
 
@@ -806,33 +848,39 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 .tab-btn {
   position: relative; z-index: 1;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center;
   background: transparent; border: none; color: var(--text-muted);
-  height: 42px; padding-inline: 0.85rem; border-radius: 999px;
-  font-family: var(--ui-font); font-size: 0.88rem; font-weight: 600;
-  transition: color var(--dur-base) var(--ease-io);
+  padding: 0.65rem 1.15rem; border-radius: 999px;
+  font-family: var(--ui-font);
+  font-size: 0.92rem; font-weight: 600; white-space: nowrap;
+  transition: color var(--tab-dur) var(--ease-out);
 }
 
-.tab-btn i { font-size: 0.95rem; transition: color var(--dur-base) var(--ease-io); flex-shrink: 0; }
+.tab-btn i { font-size: 0.85rem; transition: color var(--tab-dur) var(--ease-out); }
 .tab-btn[aria-selected="true"] { color: var(--text); }
 .tab-btn[aria-selected="true"] i { color: var(--tab-accent); }
+
 .tab-btn .label {
-  display: grid; grid-template-columns: 0fr; margin-inline-start: 0;
-  transition: grid-template-columns var(--dur-base) var(--ease-io), margin-inline-start var(--dur-base) var(--ease-io);
+  display: inline-block; overflow: hidden; white-space: nowrap;
+  max-width: 0; margin-inline-start: 0; vertical-align: top;
 }
-.tab-btn .label > span { overflow: hidden; opacity: 0; white-space: nowrap; transition: opacity 0.2s var(--ease-lux); }
-.tab-btn[aria-selected="true"] .label { grid-template-columns: 1fr; margin-inline-start: 0.5rem; }
-.tab-btn[aria-selected="true"] .label > span { opacity: 1; transition-delay: 0.12s; }
+.tab-btn .label > span {
+  display: inline-block; opacity: 0; transform: translateX(6px);
+  transition: opacity 0.2s var(--ease-lux), transform var(--tab-dur) var(--ease-out);
+}
+:root[dir="rtl"] .tab-btn .label > span { transform: translateX(-6px); }
+.tab-btn[aria-selected="true"] .label { max-width: 220px; margin-inline-start: 0.5rem; }
+.tab-btn[aria-selected="true"] .label > span { opacity: 1; transform: translateX(0); transition-delay: 0.12s; }
 
 ::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-lux) both; }
 ::view-transition-new(grid) { animation: lx-grid-in 0.28s var(--ease-lux) both; }
 
 @keyframes lx-grid-out {
-  to { transform: translateX(calc(var(--dir, 1) * -18px)); filter: blur(6px); opacity: 0; }
+  to { transform: translateX(calc(var(--dir, 1) * -18px)) scale(0.98); opacity: 0; }
 }
 @keyframes lx-grid-in {
-  from { transform: translateX(calc(var(--dir, 1) * 18px)) scale(0.98); filter: blur(6px); opacity: 0; }
-  to { transform: none; filter: blur(0); opacity: 1; }
+  from { transform: translateX(calc(var(--dir, 1) * 18px)) scale(0.98); opacity: 0; }
+  to { transform: none; opacity: 1; }
 }
 
 .app-grid.is-out { animation: lx-grid-out 0.22s var(--ease-lux) both; }
@@ -850,7 +898,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 }
 
 #lx-palette {
-  width: var(--lx-palette-w); max-height: 76vh;
+  width: var(--lx-panel-w); max-height: 76vh;
   margin: min(16vh, 150px) auto auto;
   display: flex; flex-direction: column;
   background-color: light-dark(rgba(255,255,255,0.82), rgba(10,11,15,0.82));
@@ -911,21 +959,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .palette-ghost .ghost-typed { color: transparent; }
 .palette-ghost .ghost-tail { color: var(--text-muted); opacity: 0.55; }
 
-.palette-ghost-hint {
-  font-size: 0.72rem; color: var(--tab-accent); opacity: 0;
-  transition: opacity 0.3s var(--ease-out);
-}
-.palette-ghost-hint.is-flash { opacity: 1; animation: ghostHintFlash 0.6s var(--ease-out); }
-@keyframes ghostHintFlash {
-  0%, 100% { opacity: .5; transform: translateX(0); }
-  50% { opacity: 1; transform: translateX(3px); }
-}
-:root[dir="rtl"] .palette-ghost-hint.is-flash { animation-name: ghostHintFlashRtl; }
-@keyframes ghostHintFlashRtl {
-  0%, 100% { opacity: .5; transform: translateX(0); }
-  50% { opacity: 1; transform: translateX(-3px); }
-}
-
 .palette-live-dot {
   width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
   background: var(--live-accent);
@@ -938,7 +971,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   50% { scale: 1.15; opacity: 1; }
 }
 
-.palette-body { display: flex; flex: 1; min-height: 0; }
+.palette-body { display: flex; flex: 1; min-height: 0; transition: opacity 0.16s var(--ease-out); }
+.palette-body.is-collapsing { opacity: 0; }
 
 .palette-results {
   list-style: none; overflow-y: auto; padding: 0.5rem; width: 44%; flex-shrink: 0; border-inline-start: 1px solid var(--border);
@@ -958,7 +992,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 .palette-group-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
 .palette-item {
-  position: relative; overflow: hidden;
+  position: relative; isolation: isolate; overflow: hidden;
   display: flex; align-items: center; gap: 1rem;
   padding: 0.85rem 1.05rem; border-radius: 15px; cursor: pointer;
   transition: background 0.2s var(--ease-lux), box-shadow 0.2s var(--ease-lux);
@@ -966,26 +1000,22 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 20ms);
 }
 
+.palette-item::after {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,.16) 47%, rgba(255,255,255,.05) 53%, transparent 68%);
+  background-size: 260% 100%; background-position: 150% 0;
+  opacity: 0; mix-blend-mode: overlay;
+  transition: opacity 0.3s var(--ease-out);
+}
+.palette-item:hover::after {
+  opacity: 1; background-position: -50% 0;
+  transition: background-position 0.7s var(--ease-io), opacity 0.3s var(--ease-out);
+}
+:root[data-theme="light"] .palette-item::after { mix-blend-mode: soft-light; }
+
 #paletteResults:not(.entrance-armed) .palette-item { animation: none; }
 
 @keyframes paletteItemIn { from { opacity: 0; transform: translateY(6px); } }
-
-.palette-item::after {
-  content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
-  background: linear-gradient(115deg,
-    transparent 32%,
-    rgba(255,255,255,.16) 47%,
-    rgba(255,255,255,.05) 53%,
-    transparent 68%);
-  background-size: 260% 100%;
-  background-position: 130% 0;
-  opacity: 0;
-  mix-blend-mode: overlay;
-  transition: opacity 0.2s var(--ease-out), background-position 0.5s var(--ease-out);
-}
-.palette-item:hover::after { opacity: 1; background-position: -130% 0; }
-:root[data-theme="light"] .palette-item::after { mix-blend-mode: soft-light; }
-:root[data-theme="light"] .palette-item:hover::after { opacity: .6; }
 
 .palette-item::before {
   content: ''; position: absolute; inset-inline-start: 4px; top: 18%; bottom: 18%;
@@ -1142,12 +1172,23 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   opacity: .8;
 }
 .palette-hints span { display: inline-flex; align-items: center; gap: 0.35rem; }
-.palette-hints kbd { font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.12rem 0.45rem; box-shadow: 0 1px 0 var(--border); }
+.palette-hints kbd { font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.12rem 0.45rem; box-shadow: 0 1px 0 var(--border); transition: transform 0.12s var(--ease-spring), background-color 0.2s var(--ease-out); }
+.palette-hints kbd.is-pressed { transform: translateY(1px) scale(.94); background: var(--surface-hover); }
 .palette-status {
   position: absolute; inset-inline-start: 1.5rem; top: 50%; transform: translateY(-50%);
   font-size: 0.72rem; color: var(--text-muted); opacity: 0.85; font-variant-numeric: tabular-nums;
 }
 .palette-status:empty { display: none; }
+.palette-ghost-hint {
+  display: inline-block; margin-inline-start: 0.3em;
+  color: var(--live-accent, var(--tab-accent));
+  animation: ghostHintFlash .9s var(--ease-out);
+}
+@keyframes ghostHintFlash {
+  0% { opacity: 0; scale: .6; }
+  40% { opacity: 1; scale: 1.15; }
+  100% { opacity: .75; scale: 1; }
+}
 
 .grid-empty {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -1169,14 +1210,17 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   }
   .app-card { grid-column: auto !important; grid-row: auto !important; }
   .app-card.card-wide, .app-card.card-hero, .app-card.card-tall { grid-column: span 2 !important; }
-  .card-hero { flex-direction: column; align-items: flex-start; justify-content: space-between; }
+  .card-hero .card-clip { flex-direction: column; align-items: flex-start; justify-content: space-between; }
   .card-hero .bento-header { width: 100%; justify-content: space-between; gap: 0; }
   .card-hero .bento-footer { width: 100%; justify-content: flex-end; }
 }
 
+@media (max-height: 860px) {
+  .lx-bar { height: 56px; }
+}
+
 @media (max-height: 820px) {
   h1 { font-size: clamp(2.2rem, 4vw, 3.4rem); }
-  .lx-bar-search { padding-block: 1rem; }
   .lx-bar-kbd { display: none; }
 }
 
@@ -1199,12 +1243,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   .card-wide .app-icon, .card-hero .app-icon, .card-tall .app-icon { font-size: 1.6rem; }
   .card-wide .app-title, .card-hero .app-title, .card-tall .app-title { font-size: 1.6rem; }
   h1 { font-size: 2.6rem; }
-  .tab-rail { max-width: 100%; overflow-x: auto; }
+  .tab-rail { overflow-x: auto; }
+  .lx-bar-search { min-width: 0; padding-inline: 1rem; gap: 0.6rem; }
+  .lx-bar-kbd { display: none; }
+  .tab-btn { padding: 0.55rem 0.95rem; }
+  .tab-btn[aria-selected="true"] .label > span { max-width: 9ch; text-overflow: ellipsis; overflow: hidden; display: inline-block; }
   #lx-palette { margin-top: 8vh; }
   .palette-status { display: none; }
-  .lx-bar { border-radius: 28px; }
-  .lx-bar-search { flex-basis: 100%; width: 100%; padding: 1rem 1.15rem; }
-  #lxInlineInput { font-size: 1.05rem; }
+  .lx-bar-label { font-size: 1.05rem; }
 }
 
 @media (max-width: 720px) {
@@ -1215,7 +1261,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  .app-card, .controls-pill, .tab-rail, #lx-palette, .lx-bar {
+  .card-clip, .controls-pill, .tab-rail, #lx-palette, .lx-bar {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -1227,28 +1273,29 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 @media (prefers-contrast: more) {
   :root { --border: light-dark(rgba(20,18,15,.2), rgba(255,255,255,.16)); }
-  .app-card::after { opacity: max(var(--reveal-o), .35); }
-  .app-card { border-color: var(--border); }
+  .card-clip::after { opacity: max(var(--reveal-o), .35); }
+  .card-clip { border-color: var(--border); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   h1, .site-header, .tab-rail, .card-glow, .lx-bar,
   .app-card:not(.is-revealed), .palette-item, .badge-new .badge-dot,
-  .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions, .grid-empty,
-  .palette-ghost-hint {
+  .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions, .grid-empty {
     animation: none !important;
   }
   .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; --hov: 0 !important; }
   
   .app-card { translate: none !important; }
-  .app-card, .app-icon-wrapper, .app-title, .badges, .variant-chips,
+  .app-card, .card-clip, .app-icon-wrapper, .app-title, .badges, .variant-chips,
   .tab-indicator, .tab-ghost, .variant-chip-indicator,
-  .tab-btn span, .card-sheen, .palette-item::after,
   .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
     transition-property: opacity, color, background-color, border-color, box-shadow;
   }
   #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
   .lx-bar { transition-property: opacity; }
+  .tab-btn .label, .tab-btn .label > span { transition: none !important; }
+  .tab-indicator { transition: none !important; }
+  .palette-item::after { transition: opacity 0.3s var(--ease-out) !important; background-position: 50% 0 !important; }
   .lx-context-menu { transition: opacity 0.01ms; transform: none !important; }
 }
 
@@ -1258,28 +1305,30 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
     -webkit-text-fill-color: currentColor;
     color: CanvasText;
   }
-  .card-glow, .closed-tint, .palette-detail-slab { display: none; }
-  .app-card::after { display: none; }
-  .app-card { border: 1px solid CanvasText; }
+  .card-glow, .card-sheen, .closed-tint, .palette-detail-slab { display: none; }
+  .card-clip::after { display: none; }
+  .card-clip { border: 1px solid CanvasText; }
 }
 </style>
 </head>
 <body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs><symbol id="fa-arrow-right-to-bracket" viewBox="0 0 512 512"><path fill="currentColor" d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/></symbol><symbol id="fa-arrow-up-right-from-square" viewBox="0 0 512 512"><path fill="currentColor" d="M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h82.7L201.4 265.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3V192c0 17.7 14.3 32 32 32s32-14.3 32-32V32c0-17.7-14.3-32-32-32H320zM80 32C35.8 32 0 67.8 0 112V432c0 44.2 35.8 80 80 80H400c44.2 0 80-35.8 80-80V320c0-17.7-14.3-32-32-32s-32 14.3-32 32V432c0 8.8-7.2 16-16 16H80c-8.8 0-16-7.2-16-16V112c0-8.8 7.2-16 16-16H192c17.7 0 32-14.3 32-32s-14.3-32-32-32H80z"/></symbol><symbol id="fa-bolt" viewBox="0 0 448 512"><path fill="currentColor" d="M349.4 44.6c5.9-13.7 1.5-29.7-10.6-38.5s-28.6-8-39.9 1.8l-256 224c-10 8.8-13.6 22.9-8.9 35.3S50.7 288 64 288H175.5L98.6 467.4c-5.9 13.7-1.5 29.7 10.6 38.5s28.6 8 39.9-1.8l256-224c10-8.8 13.6-22.9 8.9-35.3s-16.6-20.7-30-20.7H272.5L349.4 44.6z"/></symbol><symbol id="fa-book" viewBox="0 0 448 512"><path fill="currentColor" d="M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></symbol><symbol id="fa-book-medical" viewBox="0 0 448 512"><path fill="currentColor" d="M0 96C0 43 43 0 96 0H384h32c17.7 0 32 14.3 32 32V352c0 17.7-14.3 32-32 32v64c17.7 0 32 14.3 32 32s-14.3 32-32 32H384 96c-53 0-96-43-96-96V96zM64 416c0 17.7 14.3 32 32 32H352V384H96c-17.7 0-32 14.3-32 32zM208 112v48H160c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h48v48c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V224h48c8.8 0 16-7.2 16-16V176c0-8.8-7.2-16-16-16H272V112c0-8.8-7.2-16-16-16H224c-8.8 0-16 7.2-16 16z"/></symbol><symbol id="fa-box-open" viewBox="0 0 640 512"><path fill="currentColor" d="M58.9 42.1c3-6.1 9.6-9.6 16.3-8.7L320 64 564.8 33.4c6.7-.8 13.3 2.7 16.3 8.7l41.7 83.4c9 17.9-.6 39.6-19.8 45.1L439.6 217.3c-13.9 4-28.8-1.9-36.2-14.3L320 64 236.6 203c-7.4 12.4-22.3 18.3-36.2 14.3L37.1 170.6c-19.3-5.5-28.8-27.2-19.8-45.1L58.9 42.1zM321.1 128l54.9 91.4c14.9 24.8 44.6 36.6 72.5 28.6L576 211.6v167c0 22-15 41.2-36.4 46.6l-204.1 51c-10.2 2.6-20.9 2.6-31 0l-204.1-51C79 419.7 64 400.5 64 378.5v-167L191.6 248c27.8 8 57.6-3.8 72.5-28.6L318.9 128h2.2z"/></symbol><symbol id="fa-briefcase" viewBox="0 0 512 512"><path fill="currentColor" d="M184 48H328c4.4 0 8 3.6 8 8V96H176V56c0-4.4 3.6-8 8-8zm-56 8V96H64C28.7 96 0 124.7 0 160v96H192 320 512V160c0-35.3-28.7-64-64-64H384V56c0-30.9-25.1-56-56-56H184c-30.9 0-56 25.1-56 56zM512 288H320v32c0 17.7-14.3 32-32 32H224c-17.7 0-32-14.3-32-32V288H0V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V288z"/></symbol><symbol id="fa-calculator" viewBox="0 0 384 512"><path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM96 64H288c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z"/></symbol><symbol id="fa-calendar-days" viewBox="0 0 448 512"><path fill="currentColor" d="M128 0c17.7 0 32 14.3 32 32V64H288V32c0-17.7 14.3-32 32-32s32 14.3 32 32V64h48c26.5 0 48 21.5 48 48v48H0V112C0 85.5 21.5 64 48 64H96V32c0-17.7 14.3-32 32-32zM0 192H448V464c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V192zm64 80v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm128 0v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H208c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V272c0-8.8-7.2-16-16-16H336zM64 400v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H80c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H208zm112 16v32c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16V400c0-8.8-7.2-16-16-16H336c-8.8 0-16 7.2-16 16z"/></symbol><symbol id="fa-chart-area" viewBox="0 0 512 512"><path fill="currentColor" d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm96 288H448c17.7 0 32-14.3 32-32V251.8c0-7.6-2.7-15-7.7-20.8l-65.8-76.8c-12.1-14.2-33.7-15-46.9-1.8l-21 21c-10 10-26.4 9.2-35.4-1.6l-39.2-47c-12.6-15.1-35.7-15.4-48.7-.6L135.9 215c-5.1 5.8-7.9 13.3-7.9 21.1v84c0 17.7 14.3 32 32 32z"/></symbol><symbol id="fa-chart-column" viewBox="0 0 512 512"><path fill="currentColor" d="M32 32c17.7 0 32 14.3 32 32V400c0 8.8 7.2 16 16 16H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H80c-44.2 0-80-35.8-80-80V64C0 46.3 14.3 32 32 32zM160 224c17.7 0 32 14.3 32 32v64c0 17.7-14.3 32-32 32s-32-14.3-32-32V256c0-17.7 14.3-32 32-32zm128-64V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V160c0-17.7 14.3-32 32-32s32 14.3 32 32zm64 32c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V224c0-17.7 14.3-32 32-32zM480 96V320c0 17.7-14.3 32-32 32s-32-14.3-32-32V96c0-17.7 14.3-32 32-32s32 14.3 32 32z"/></symbol><symbol id="fa-chart-line" viewBox="0 0 512 512"><path fill="currentColor" d="M64 64c0-17.7-14.3-32-32-32S0 46.3 0 64V400c0 44.2 35.8 80 80 80H480c17.7 0 32-14.3 32-32s-14.3-32-32-32H80c-8.8 0-16-7.2-16-16V64zm406.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L320 210.7l-57.4-57.4c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L240 221.3l57.4 57.4c12.5 12.5 32.8 12.5 45.3 0l128-128z"/></symbol><symbol id="fa-check" viewBox="0 0 448 512"><path fill="currentColor" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></symbol><symbol id="fa-circle" viewBox="0 0 512 512"><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z"/></symbol><symbol id="fa-circle-dot" viewBox="0 0 512 512"><path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-352a96 96 0 1 1 0 192 96 96 0 1 1 0-192z"/></symbol><symbol id="fa-clone" viewBox="0 0 512 512"><path fill="currentColor" d="M288 448H64V224h64V160H64c-35.3 0-64 28.7-64 64V448c0 35.3 28.7 64 64 64H288c35.3 0 64-28.7 64-64V384H288v64zm-64-96H448c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H224c-35.3 0-64 28.7-64 64V288c0 35.3 28.7 64 64 64z"/></symbol><symbol id="fa-copy" viewBox="0 0 448 512"><path fill="currentColor" d="M208 0H332.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H208c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128h80v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/></symbol><symbol id="fa-crosshairs" viewBox="0 0 512 512"><path fill="currentColor" d="M256 0c17.7 0 32 14.3 32 32V42.4c93.7 13.9 167.7 88 181.6 181.6H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H469.6c-13.9 93.7-88 167.7-181.6 181.6V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V469.6C130.3 455.7 56.3 381.7 42.4 288H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H42.4C56.3 130.3 130.3 56.3 224 42.4V32c0-17.7 14.3-32 32-32zM107.4 288c12.5 58.3 58.4 104.1 116.6 116.6V384c0-17.7 14.3-32 32-32s32 14.3 32 32v20.6c58.3-12.5 104.1-58.4 116.6-116.6H384c-17.7 0-32-14.3-32-32s14.3-32 32-32h20.6C392.1 165.7 346.3 119.9 288 107.4V128c0 17.7-14.3 32-32 32s-32-14.3-32-32V107.4C165.7 119.9 119.9 165.7 107.4 224H128c17.7 0 32 14.3 32 32s-14.3 32-32 32H107.4zM256 224a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/></symbol><symbol id="fa-dollar-sign" viewBox="0 0 320 512"><path fill="currentColor" d="M160 0c17.7 0 32 14.3 32 32V67.7c1.6 .2 3.1 .4 4.7 .7c.4 .1 .7 .1 1.1 .2l48 8.8c17.4 3.2 28.9 19.9 25.7 37.2s-19.9 28.9-37.2 25.7l-47.5-8.7c-31.3-4.6-58.9-1.5-78.3 6.2s-27.2 18.3-29 28.1c-2 10.7-.5 16.7 1.2 20.4c1.8 3.9 5.5 8.3 12.8 13.2c16.3 10.7 41.3 17.7 73.7 26.3l2.9 .8c28.6 7.6 63.6 16.8 89.6 33.8c14.2 9.3 27.6 21.9 35.9 39.5c8.5 17.9 10.3 37.9 6.4 59.2c-6.9 38-33.1 63.4-65.6 76.7c-13.7 5.6-28.6 9.2-44.4 11V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V445.1c-.4-.1-.9-.1-1.3-.2l-.2 0 0 0c-24.4-3.8-64.5-14.3-91.5-26.3c-16.1-7.2-23.4-26.1-16.2-42.2s26.1-23.4 42.2-16.2c20.9 9.3 55.3 18.5 75.2 21.6c31.9 4.7 58.2 2 76-5.3c16.9-6.9 24.6-16.9 26.8-28.9c1.9-10.6 .4-16.7-1.3-20.4c-1.9-4-5.6-8.4-13-13.3c-16.4-10.7-41.5-17.7-74-26.3l-2.8-.7 0 0C119.4 279.3 84.4 270 58.4 253c-14.2-9.3-27.5-22-35.8-39.6c-8.4-17.9-10.1-37.9-6.1-59.2C23.7 116 52.3 91.2 84.8 78.3c13.3-5.3 27.9-8.9 43.2-11V32c0-17.7 14.3-32 32-32z"/></symbol><symbol id="fa-eye" viewBox="0 0 576 512"><path fill="currentColor" d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z"/></symbol><symbol id="fa-file-contract" viewBox="0 0 384 512"><path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM80 64h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64h64c8.8 0 16 7.2 16 16s-7.2 16-16 16H80c-8.8 0-16-7.2-16-16s7.2-16 16-16zm54.2 253.8c-6.1 20.3-24.8 34.2-46 34.2H80c-8.8 0-16-7.2-16-16s7.2-16 16-16h8.2c7.1 0 13.3-4.6 15.3-11.4l14.9-49.5c3.4-11.3 13.8-19.1 25.6-19.1s22.2 7.7 25.6 19.1l11.6 38.6c7.4-6.2 16.8-9.7 26.8-9.7c15.9 0 30.4 9 37.5 23.2l4.4 8.8H304c8.8 0 16 7.2 16 16s-7.2 16-16 16H240c-6.1 0-11.6-3.4-14.3-8.8l-8.8-17.7c-1.7-3.4-5.1-5.5-8.8-5.5s-7.2 2.1-8.8 5.5l-8.8 17.7c-2.9 5.9-9.2 9.4-15.7 8.8s-12.1-5.1-13.9-11.3L144 349l-9.8 32.8z"/></symbol><symbol id="fa-file-lines" viewBox="0 0 384 512"><path fill="currentColor" d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V160H256c-17.7 0-32-14.3-32-32V0H64zM256 0V128H384L256 0zM112 256H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16zm0 64H272c8.8 0 16 7.2 16 16s-7.2 16-16 16H112c-8.8 0-16-7.2-16-16s7.2-16 16-16z"/></symbol><symbol id="fa-flask" viewBox="0 0 448 512"><path fill="currentColor" d="M288 0H160 128C110.3 0 96 14.3 96 32s14.3 32 32 32V196.8c0 11.8-3.3 23.5-9.5 33.5L10.3 406.2C3.6 417.2 0 429.7 0 442.6C0 480.9 31.1 512 69.4 512H378.6c38.3 0 69.4-31.1 69.4-69.4c0-12.8-3.6-25.4-10.3-36.4L329.5 230.4c-6.2-10.1-9.5-21.7-9.5-33.5V64c17.7 0 32-14.3 32-32s-14.3-32-32-32H288zM192 196.8V64h64V196.8c0 23.7 6.6 46.9 19 67.1L309.5 320h-171L173 263.9c12.4-20.2 19-43.4 19-67.1z"/></symbol><symbol id="fa-folder-open" viewBox="0 0 576 512"><path fill="currentColor" d="M88.7 223.8L0 375.8V96C0 60.7 28.7 32 64 32H181.5c17 0 33.3 6.7 45.3 18.7l26.5 26.5c12 12 28.3 18.7 45.3 18.7H416c35.3 0 64 28.7 64 64v32H144c-22.8 0-43.8 12.1-55.3 31.8zm27.6 16.1C122.1 230 132.6 224 144 224H544c11.5 0 22 6.1 27.7 16.1s5.7 22.2-.1 32.1l-112 192C453.9 474 443.4 480 432 480H32c-11.5 0-22-6.1-27.7-16.1s-5.7-22.2 .1-32.1l112-192z"/></symbol><symbol id="fa-font" viewBox="0 0 448 512"><path fill="currentColor" d="M254 52.8C249.3 40.3 237.3 32 224 32s-25.3 8.3-30 20.8L57.8 416H32c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32h-1.8l18-48H303.8l18 48H320c-17.7 0-32 14.3-32 32s14.3 32 32 32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H390.2L254 52.8zM279.8 304H168.2L224 155.1 279.8 304z"/></symbol><symbol id="fa-heart-pulse" viewBox="0 0 512 512"><path fill="currentColor" d="M228.3 469.1L47.6 300.4c-4.2-3.9-8.2-8.1-11.9-12.4h87c22.6 0 43-13.6 51.7-34.5l10.5-25.2 49.3 109.5c3.8 8.5 12.1 14 21.4 14.1s17.8-5 22-13.3L320 253.7l1.7 3.4c9.5 19 28.9 31 50.1 31H476.3c-3.7 4.3-7.7 8.5-11.9 12.4L283.7 469.1c-7.5 7-17.4 10.9-27.7 10.9s-20.2-3.9-27.7-10.9zM503.7 240h-132c-3 0-5.8-1.7-7.2-4.4l-23.2-46.3c-4.1-8.1-12.4-13.3-21.5-13.3s-17.4 5.1-21.5 13.3l-41.4 82.8L205.9 158.2c-3.9-8.7-12.7-14.3-22.2-14.1s-18.1 5.9-21.8 14.8l-31.8 76.3c-1.2 3-4.2 4.9-7.4 4.9H16c-2.6 0-5 .4-7.3 1.1C3 225.2 0 208.2 0 190.9v-5.8c0-69.9 50.5-129.5 119.4-141C165 36.5 211.4 51.4 244 84l12 12 12-12c32.6-32.6 79-47.5 124.6-39.9C461.5 55.6 512 115.2 512 185.1v5.8c0 16.9-2.8 33.5-8.3 49.1z"/></symbol><symbol id="fa-id-card" viewBox="0 0 576 512"><path fill="currentColor" d="M0 96l576 0c0-35.3-28.7-64-64-64H64C28.7 32 0 60.7 0 96zm0 32V416c0 35.3 28.7 64 64 64H512c35.3 0 64-28.7 64-64V128H0zM64 405.3c0-29.5 23.9-53.3 53.3-53.3H234.7c29.5 0 53.3 23.9 53.3 53.3c0 5.9-4.8 10.7-10.7 10.7H74.7c-5.9 0-10.7-4.8-10.7-10.7zM176 192a64 64 0 1 1 0 128 64 64 0 1 1 0-128zm176 16c0-8.8 7.2-16 16-16H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16zm0 64c0-8.8 7.2-16 16-16H496c8.8 0 16 7.2 16 16s-7.2 16-16 16H368c-8.8 0-16-7.2-16-16z"/></symbol><symbol id="fa-language" viewBox="0 0 640 512"><path fill="currentColor" d="M0 128C0 92.7 28.7 64 64 64H256h48 16H576c35.3 0 64 28.7 64 64V384c0 35.3-28.7 64-64 64H320 304 256 64c-35.3 0-64-28.7-64-64V128zm320 0V384H576V128H320zM178.3 175.9c-3.2-7.2-10.4-11.9-18.3-11.9s-15.1 4.7-18.3 11.9l-64 144c-4.5 10.1 .1 21.9 10.2 26.4s21.9-.1 26.4-10.2l8.9-20.1h73.6l8.9 20.1c4.5 10.1 16.3 14.6 26.4 10.2s14.6-16.3 10.2-26.4l-64-144zM160 233.2L179 276H141l19-42.8zM448 164c11 0 20 9 20 20v4h44 16c11 0 20 9 20 20s-9 20-20 20h-2l-1.6 4.5c-8.9 24.4-22.4 46.6-39.6 65.4c.9 .6 1.8 1.1 2.7 1.6l18.9 11.3c9.5 5.7 12.5 18 6.9 27.4s-18 12.5-27.4 6.9l-18.9-11.3c-4.5-2.7-8.8-5.5-13.1-8.5c-10.6 7.5-21.9 14-34 19.4l-3.6 1.6c-10.1 4.5-21.9-.1-26.4-10.2s.1-21.9 10.2-26.4l3.6-1.6c6.4-2.9 12.6-6.1 18.5-9.8l-12.2-12.2c-7.8-7.8-7.8-20.5 0-28.3s20.5-7.8 28.3 0l14.6 14.6 .5 .5c12.4-13.1 22.5-28.3 29.8-45H448 376c-11 0-20-9-20-20s9-20 20-20h52v-4c0-11 9-20 20-20z"/></symbol><symbol id="fa-layer-group" viewBox="0 0 576 512"><path fill="currentColor" d="M264.5 5.2c14.9-6.9 32.1-6.9 47 0l218.6 101c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 149.8C37.4 145.8 32 137.3 32 128s5.4-17.9 13.9-21.8L264.5 5.2zM476.9 209.6l53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 277.8C37.4 273.8 32 265.3 32 256s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0l152-70.2zm-152 198.2l152-70.2 53.2 24.6c8.5 3.9 13.9 12.4 13.9 21.8s-5.4 17.9-13.9 21.8l-218.6 101c-14.9 6.9-32.1 6.9-47 0L45.9 405.8C37.4 401.8 32 393.3 32 384s5.4-17.9 13.9-21.8l53.2-24.6 152 70.2c23.4 10.8 50.4 10.8 73.8 0z"/></symbol><symbol id="fa-magnifying-glass" viewBox="0 0 512 512"><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></symbol><symbol id="fa-magnifying-glass-chart" viewBox="0 0 512 512"><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zm-312 8v64c0 13.3 10.7 24 24 24s24-10.7 24-24l0-64c0-13.3-10.7-24-24-24s-24 10.7-24 24zm80-96V280c0 13.3 10.7 24 24 24s24-10.7 24-24V120c0-13.3-10.7-24-24-24s-24 10.7-24 24zm80 64v96c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24s-24 10.7-24 24z"/></symbol><symbol id="fa-moon" viewBox="0 0 384 512"><path fill="currentColor" d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/></symbol><symbol id="fa-pills" viewBox="0 0 576 512"><path fill="currentColor" d="M112 96c-26.5 0-48 21.5-48 48V256h96V144c0-26.5-21.5-48-48-48zM0 144C0 82.1 50.1 32 112 32s112 50.1 112 112V368c0 61.9-50.1 112-112 112S0 429.9 0 368V144zM554.9 399.4c-7.1 12.3-23.7 13.1-33.8 3.1L333.5 214.9c-10-10-9.3-26.7 3.1-33.8C360 167.7 387.1 160 416 160c88.4 0 160 71.6 160 160c0 28.9-7.7 56-21.1 79.4zm-59.5 59.5C472 472.3 444.9 480 416 480c-88.4 0-160-71.6-160-160c0-28.9 7.7-56 21.1-79.4c7.1-12.3 23.7-13.1 33.8-3.1L498.5 425.1c10 10 9.3 26.7-3.1 33.8z"/></symbol><symbol id="fa-scale-balanced" viewBox="0 0 640 512"><path fill="currentColor" d="M384 32H512c17.7 0 32 14.3 32 32s-14.3 32-32 32H398.4c-5.2 25.8-22.9 47.1-46.4 57.3V448H512c17.7 0 32 14.3 32 32s-14.3 32-32 32H320 128c-17.7 0-32-14.3-32-32s14.3-32 32-32H288V153.3c-23.5-10.3-41.2-31.6-46.4-57.3H128c-17.7 0-32-14.3-32-32s14.3-32 32-32H256c14.6-19.4 37.8-32 64-32s49.4 12.6 64 32zm55.6 288H584.4L512 195.8 439.6 320zM512 416c-62.9 0-115.2-34-126-78.9c-2.6-11 1-22.3 6.7-32.1l95.2-163.2c5-8.6 14.2-13.8 24.1-13.8s19.1 5.3 24.1 13.8l95.2 163.2c5.7 9.8 9.3 21.1 6.7 32.1C627.2 382 574.9 416 512 416zM126.8 195.8L54.4 320H199.3L126.8 195.8zM.9 337.1c-2.6-11 1-22.3 6.7-32.1l95.2-163.2c5-8.6 14.2-13.8 24.1-13.8s19.1 5.3 24.1 13.8l95.2 163.2c5.7 9.8 9.3 21.1 6.7 32.1C242 382 189.7 416 126.8 416S11.7 382 .9 337.1z"/></symbol><symbol id="fa-search" viewBox="0 0 512 512"><path fill="currentColor" d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></symbol><symbol id="fa-sliders" viewBox="0 0 512 512"><path fill="currentColor" d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"/></symbol><symbol id="fa-sun" viewBox="0 0 512 512"><path fill="currentColor" d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"/></symbol><symbol id="fa-triangle-exclamation" viewBox="0 0 512 512"><path fill="currentColor" d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224a32 32 0 1 0 -64 0 32 32 0 1 0 64 0z"/></symbol><symbol id="fa-user-secret" viewBox="0 0 448 512"><path fill="currentColor" d="M224 16c-6.7 0-10.8-2.8-15.5-6.1C201.9 5.4 194 0 176 0c-30.5 0-52 43.7-66 89.4C62.7 98.1 32 112.2 32 128c0 14.3 25 27.1 64.6 35.9c-.4 4-.6 8-.6 12.1c0 17 3.3 33.2 9.3 48H45.4C38 224 32 230 32 237.4c0 1.7 .3 3.4 1 5l38.8 96.9C28.2 371.8 0 423.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7c0-58.5-28.2-110.4-71.7-143L415 242.4c.6-1.6 1-3.3 1-5c0-7.4-6-13.4-13.4-13.4H342.7c6-14.8 9.3-31 9.3-48c0-4.1-.2-8.1-.6-12.1C391 155.1 416 142.3 416 128c0-15.8-30.7-29.9-78-38.6C324 43.7 302.5 0 272 0c-18 0-25.9 5.4-32.5 9.9c-4.8 3.3-8.8 6.1-15.5 6.1zm56 208H267.6c-16.5 0-31.1-10.6-36.3-26.2c-2.3-7-12.2-7-14.5 0c-5.2 15.6-19.9 26.2-36.3 26.2H168c-22.1 0-40-17.9-40-40V169.6c28.2 4.1 61 6.4 96 6.4s67.8-2.3 96-6.4V184c0 22.1-17.9 40-40 40zm-88 96l16 32L176 480 128 288l64 32zm128-32L272 480 240 352l16-32 64-32z"/></symbol><symbol id="fa-volume-mute" viewBox="0 0 576 512"><path fill="currentColor" d="M301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM425 167l55 55 55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55 55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55-55-55c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0z"/></symbol><symbol id="fa-volume-up" viewBox="0 0 640 512"><path fill="currentColor" d="M533.6 32.5C598.5 85.2 640 165.8 640 256s-41.5 170.7-106.4 223.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C557.5 398.2 592 331.2 592 256s-34.5-142.2-88.7-186.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM473.1 107c43.2 35.2 70.9 88.9 70.9 149s-27.7 113.8-70.9 149c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C475.3 341.3 496 301.1 496 256s-20.7-85.3-53.2-111.8c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zm-60.5 74.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5zM301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3z"/></symbol></defs></svg>
 <canvas id="gradient-canvas" aria-hidden="true"></canvas>
 <div class="scrim" aria-hidden="true"></div>
 <div class="spotlight" id="spotlight" aria-hidden="true"></div>
 
+<div class="dolly-scrim" aria-hidden="true"></div>
 <div class="controls-pill">
   <button type="button" id="soundToggle" aria-pressed="false" aria-label="تفعيل الصوت" title="تفعيل الصوت">
-    <i class="fas fa-volume-mute" aria-hidden="true"></i>
+    <i class="fas fa-volume-mute" aria-hidden="true"><svg class="fa-svg"><use href="#fa-volume-mute"></use></svg></i>
   </button>
   <div class="controls-divider"></div>
   <button type="button" id="themeToggle" aria-pressed="false" aria-label="تبديل المظهر" title="تبديل المظهر">
-    <i class="fas fa-sun" aria-hidden="true"></i>
+    <i class="fas fa-sun" aria-hidden="true"><svg class="fa-svg"><use href="#fa-sun"></use></svg></i>
   </button>
   <div class="controls-divider"></div>
   <button type="button" id="langToggle" aria-pressed="false" aria-label="Switch to English" title="Switch to English">
-    <i class="fas fa-language" aria-hidden="true"></i>
+    <i class="fas fa-language" aria-hidden="true"><svg class="fa-svg"><use href="#fa-language"></use></svg></i>
   </button>
 </div>
 
@@ -1289,18 +1338,13 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   </header>
 
   <div class="lx-bar" id="lxBar">
-    <div class="lx-bar-search" id="lxBarSearch">
-      <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-      <input id="lxInlineInput" type="text" role="combobox"
-             aria-expanded="false" aria-controls="appGrid"
-             aria-describedby="lxBarHint" aria-haspopup="false" autocomplete="off" spellcheck="false"
-             data-i18n-aria="quickSearch" data-i18n-placeholder="searchPlaceholder" placeholder="ابحث عن تطبيق أو أداة…">
-      <span id="lxBarHint" class="lx-bar-hint" hidden></span>
+    <button type="button" class="lx-bar-search" id="lxBarSearch"
+            aria-haspopup="dialog" aria-expanded="false" aria-controls="lx-palette">
+      <i class="fas fa-magnifying-glass" aria-hidden="true"><svg class="fa-svg"><use href="#fa-magnifying-glass"></use></svg></i>
+      <span class="lx-bar-label" id="lxBarLabel" data-i18n="barSearchLabel">ابحث في كل الأدوات…</span>
       <kbd class="lx-bar-kbd" id="lxBarKbd">⌘K</kbd>
-    </div>
-
+    </button>
     <div class="lx-bar-divider" aria-hidden="true"></div>
-
     <nav class="tab-rail" id="tabRail" role="tablist" aria-label="التصنيفات" data-i18n-aria="categoriesLabel">
       <div class="tab-indicator" id="tabIndicator" aria-hidden="true"></div>
       <div class="tab-ghost" id="tabGhost" aria-hidden="true"></div>
@@ -1313,7 +1357,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
 
 <dialog id="lx-palette" aria-label="لوحة الأوامر" data-i18n-aria="commandPaletteLabel">
   <div class="palette-input-row">
-    <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+    <i class="fas fa-magnifying-glass" aria-hidden="true"><svg class="fa-svg"><use href="#fa-magnifying-glass"></use></svg></i>
     <div class="palette-input-wrap">
       <span class="palette-ghost" id="paletteGhost" aria-hidden="true"></span>
       <input id="paletteInput" type="text" role="combobox" aria-expanded="true" aria-controls="paletteResults"
@@ -1328,7 +1372,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot, lx-float; }
   </div>
   <div class="palette-hints">
     <span id="paletteStatus" class="palette-status" aria-hidden="true"></span>
-    <span id="paletteGhostHint" class="palette-ghost-hint" aria-hidden="true"></span>
     <span><kbd>↑↓</kbd> <span data-i18n="hintNavigate">تنقل</span></span>
     <span><kbd>⇥</kbd> <span data-i18n="hintSwitchPanel">تبديل اللوحة</span></span>
     <span><kbd>↵</kbd> <span data-i18n="hintOpen">فتح</span></span>
@@ -1634,6 +1677,17 @@ const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[c]));
 
+const faIcon = (name, cls = '') =>
+  `<i class="${cls ? cls + ' ' : ''}fas ${name}" aria-hidden="true"><svg class="fa-svg"><use href="#${name}"></use></svg></i>`;
+
+const setIconClass = (el, cls) => {
+  if (!el) return;
+  el.className = cls;
+  const name = cls.split(' ').find(c => c.startsWith('fa-'));
+  const use = el.querySelector('use');
+  if (use && name) use.setAttribute('href', '#' + name);
+};
+
 const categories = JSON.parse(document.getElementById('lx-data').textContent).categories;
 
 const STRINGS = {
@@ -1643,7 +1697,9 @@ const STRINGS = {
   resultsLabel: { ar: 'النتائج', en: 'Results' },
   actionsLabel: { ar: 'الإجراءات', en: 'Actions' },
   searchPlaceholder: { ar: 'ابحث عن تطبيق أو أداة…', en: 'Search for an app or tool…' },
+  barSearchLabel: { ar: 'ابحث في كل الأدوات…', en: 'Search all tools…' },
   quickSearch: { ar: 'بحث سريع', en: 'Quick search' },
+  quickLaunch: { ar: 'وصول سريع', en: 'Quick launch' },
   soundEnable: { ar: 'تفعيل الصوت', en: 'Enable sound' },
   soundMute: { ar: 'كتم الصوت', en: 'Mute sound' },
   themeToDark: { ar: 'التبديل إلى المظهر الداكن', en: 'Switch to dark mode' },
@@ -1760,7 +1816,7 @@ const Motion = (() => {
     last = now;
     acc += dt;
     let n = 0;
-    while (acc >= STEP && n++ < 8) { for (const s of subs) s.fixed?.(STEP); acc -= STEP; }
+    while (acc >= STEP && n++ < 5) { for (const s of subs) s.fixed?.(STEP); acc -= STEP; }
     const alpha = acc / STEP;
     let alive = false;
     for (const s of subs) { if (s.render?.(now / 1000, alpha) !== false) alive = true; }
@@ -1770,14 +1826,37 @@ const Motion = (() => {
   return {
     add(s) { subs.add(s); this.wake(); },
     remove(s) { subs.delete(s); },
-    wake() { if (!raf && !document.hidden) { last = performance.now(); acc = 0; raf = requestAnimationFrame(tick); } }
+    wake() { if (!raf && !document.hidden) { last = performance.now(); acc = 0; raf = requestAnimationFrame(tick); } },
+    get subCount() { return subs.size; },
+    get awake() { return !!raf; }
   };
 })();
 
 document.addEventListener('visibilitychange', () => { if (!document.hidden) Motion.wake(); });
 
+const LX_DEBUG = new URLSearchParams(location.search).get('lxdebug') === '1';
+
+const MQ = (() => {
+  const specs = {
+    reducedMotion: '(prefers-reduced-motion: reduce)',
+    hoverFine: '(hover: hover) and (pointer: fine)',
+    reducedTransparency: '(prefers-reduced-transparency: reduce)',
+    narrow: '(max-width: 1024px)'
+  };
+  const state = {};
+  for (const key in specs) {
+    const mql = window.matchMedia(specs[key]);
+    state[key] = mql.matches;
+    mql.addEventListener('change', (e) => { state[key] = e.matches; });
+  }
+  return state;
+})();
+
 class Spring {
-  constructor(k = 190, c = 24, v = 0, scale = 1) { this.k = k; this.c = c; this.v = v; this.dv = 0; this.to = v; this.scale = scale; }
+  constructor(k = 190, c = 24, v = 0, scale = 1, px = false) {
+    this.k = k; this.c = c; this.v = v; this.dv = 0; this.to = v;
+    this.scale = scale; this.px = px;
+  }
   fixed(dt) {
     const a = -this.k * (this.v - this.to) - this.c * this.dv;
     this.dv += a * dt;
@@ -1786,14 +1865,14 @@ class Spring {
 
   snap() { this.v = this.to; this.dv = 0; }
   get settled() {
-    const eps = 1e-2 * this.scale;
+    const eps = this.px ? Math.max(1e-3 * this.scale, 0.5) : 1e-3 * this.scale;
     return Math.abs(this.dv) < eps && Math.abs(this.v - this.to) < eps;
   }
 }
 
-const criticalSpring = (responseSec, damping = 1, v = 0, scale = 1) => {
+const spring = (responseSec, damping = 1.0, scale = 1, px = false) => {
   const w = (2 * Math.PI) / responseSec;
-  return new Spring(w * w, 2 * damping * w, v, scale);
+  return new Spring(w * w, 2 * damping * w, 0, scale, px);
 };
 
 const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
@@ -1994,7 +2073,7 @@ const createCard = (app, idx, placement, cat) => {
   let badgesHtml = '';
   if (isFresh(app)) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>${escapeHtml(t('badgeNew'))}</div>`;
   if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>${escapeHtml(t('badgeClosed'))}</div>`;
-  if (app.variantBadge) badgesHtml += `<div class="badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${escapeHtml(app.variantBadge)}</div>`;
+  if (app.variantBadge) badgesHtml += `<div class="badge badge-variant">${faIcon('fa-clone')}${escapeHtml(app.variantBadge)}</div>`;
 
   const iconClass = activeVariant ? activeVariant.icon : app.icon;
   const digitHtml = idx < 9 ? `<span class="digit-badge" aria-hidden="true" title="${escapeHtml(t('altShortcutHint').replace('{n}', String(idx + 1)))}">${idx + 1}</span>` : '';
@@ -2011,26 +2090,37 @@ const createCard = (app, idx, placement, cat) => {
   const overlayAttrs = `href="${escapeHtml(activeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
 
   el.innerHTML = `
-    <a class="card-link-overlay" ${overlayAttrs}></a>
-    <div class="card-glow"></div>
-    <div class="card-sheen" aria-hidden="true"></div>
-    ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}
-    <div class="bento-header">
-      <div class="app-icon-wrapper"><i class="app-icon fas ${iconClass}" aria-hidden="true"></i>${digitHtml}</div>
-      ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
-    </div>
-    <div class="bento-footer">
-      <div class="title-row">
-        <h3 class="app-title">${escapeHtml(title)}</h3>
-        <span class="open-affordance" aria-hidden="true"><i class="fas fa-arrow-up-right-from-square"></i></span>
+    <div class="card-shadow" aria-hidden="true"></div>
+    <div class="card-clip">
+      <a class="card-link-overlay" ${overlayAttrs}></a>
+      <div class="card-glow"></div>
+      <div class="card-sheen" aria-hidden="true"></div>
+      ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}
+      <div class="bento-header">
+        <div class="app-icon-wrapper">${faIcon(iconClass, 'app-icon')}${digitHtml}</div>
+        ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
       </div>
-      ${chipsHtml}
+      <div class="bento-footer">
+        <div class="title-row">
+          <h3 class="app-title">${escapeHtml(title)}</h3>
+          <span class="open-affordance" aria-hidden="true">${faIcon('fa-arrow-up-right-from-square')}</span>
+        </div>
+        ${chipsHtml}
+      </div>
     </div>
   `;
 
-  el.addEventListener('click', () => sfx.click());
+  el.addEventListener('click', () => {
+    sfx.click();
+    try { localStorage.setItem('lx-last-open', app.id); } catch (e) {}
+  });
   el.addEventListener('mouseenter', () => { sfx.hover(soundIndex, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
   el.addEventListener('focusin', () => { sfx.hover(soundIndex, { octave }); setInteractionOrigin(el); });
+  el.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'touch') { el._pressed = true; Motion.wake(); } });
+  const releasePress = () => { if (el._pressed) { el._pressed = false; Motion.wake(); } };
+  el.addEventListener('pointerup', releasePress);
+  el.addEventListener('pointercancel', releasePress);
+  el.addEventListener('pointerleave', releasePress);
   el.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     openCardContextMenu(el, e.clientX, e.clientY);
@@ -2095,13 +2185,12 @@ const setInteractionOrigin = (el) => {
 };
 
 let contextMenuEl = null;
-
-let contextMenuAbort = null;
+let contextMenuAC = null;
 
 const closeContextMenu = () => {
-  if (contextMenuEl) contextMenuEl.classList.remove('is-open');
-  contextMenuAbort?.abort();
-  contextMenuAbort = null;
+  if (!contextMenuEl || !contextMenuEl.classList.contains('is-open')) return;
+  contextMenuEl.classList.remove('is-open');
+  if (contextMenuAC) { contextMenuAC.abort(); contextMenuAC = null; }
 };
 
 const buildContextMenu = () => {
@@ -2114,20 +2203,21 @@ const buildContextMenu = () => {
 };
 
 const openCardContextMenu = (card, clientX, clientY) => {
+  closeContextMenu();
   const menu = buildContextMenu();
   const linkEl = card.querySelector('.card-link-overlay');
   const activeUrl = linkEl ? linkEl.href : '';
   const variantChips = Array.from(card.querySelectorAll('.variant-chip'));
 
   let itemsHtml = `
-    <button type="button" data-action="open" role="menuitem"><i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>${escapeHtml(t('ctxOpen'))}</button>
-    <button type="button" data-action="copy" role="menuitem"><i class="fas fa-copy" aria-hidden="true"></i>${escapeHtml(t('ctxCopyLink'))}</button>
+    <button type="button" data-action="open" role="menuitem">${faIcon('fa-arrow-up-right-from-square')}${escapeHtml(t('ctxOpen'))}</button>
+    <button type="button" data-action="copy" role="menuitem">${faIcon('fa-copy')}${escapeHtml(t('ctxCopyLink'))}</button>
   `;
   if (variantChips.length) {
     itemsHtml += `<div class="lx-context-menu-sep" role="separator"></div>`;
     variantChips.forEach((chip, i) => {
       const active = chip.classList.contains('is-active');
-      itemsHtml += `<button type="button" data-variant="${i}" role="menuitemradio" aria-checked="${active}" class="${active ? 'is-active' : ''}"><i class="fas ${active ? 'fa-circle-dot' : 'fa-circle'}" aria-hidden="true"></i>${escapeHtml(chip.textContent)}</button>`;
+      itemsHtml += `<button type="button" data-variant="${i}" role="menuitemradio" aria-checked="${active}" class="${active ? 'is-active' : ''}">${faIcon(active ? 'fa-circle-dot' : 'fa-circle')}${escapeHtml(chip.textContent)}</button>`;
     });
   }
   menu.innerHTML = itemsHtml;
@@ -2141,7 +2231,7 @@ const openCardContextMenu = (card, clientX, clientY) => {
     const btn = e.currentTarget;
     const ok = activeUrl ? await copyToClipboard(activeUrl) : false;
     sfx.click();
-    btn.innerHTML = `<i class="fas ${ok ? 'fa-check' : 'fa-triangle-exclamation'}" aria-hidden="true"></i>${escapeHtml(ok ? t('linkCopied') : t('copyFailed'))}`;
+    btn.innerHTML = `${faIcon(ok ? 'fa-check' : 'fa-triangle-exclamation')}${escapeHtml(ok ? t('linkCopied') : t('copyFailed'))}`;
     setTimeout(closeContextMenu, 650);
   });
   menu.querySelectorAll('[data-variant]').forEach((btn) => {
@@ -2153,11 +2243,10 @@ const openCardContextMenu = (card, clientX, clientY) => {
   });
 
   menu.classList.add('is-open');
-  contextMenuAbort?.abort();
-  contextMenuAbort = new AbortController();
-  const { signal } = contextMenuAbort;
+  contextMenuAC = new AbortController();
+  const { signal } = contextMenuAC;
   document.addEventListener('pointerdown', (e) => {
-    if (!menu.contains(e.target)) closeContextMenu();
+    if (!contextMenuEl.contains(e.target)) closeContextMenu();
   }, { signal });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeContextMenu();
@@ -2177,15 +2266,17 @@ const openCardContextMenu = (card, clientX, clientY) => {
 
 const renderCards = (grid, categoryId) => {
   const cat = categories.find(c => c.id === categoryId);
+  const hadFocusInGrid = grid.contains(document.activeElement) && document.activeElement !== grid;
   grid.classList.remove('has-overflow', 'at-bottom');
 
   if (!cat.apps.length) {
     grid.classList.remove('is-auto-flow');
     grid.style.gridTemplateColumns = '';
     grid.style.gridTemplateRows = '';
-    grid.innerHTML = `<div class="grid-empty"><i class="fas fa-box-open" aria-hidden="true"></i><span>${escapeHtml(t('emptyCategory'))}</span></div>`;
+    grid.innerHTML = `<div class="grid-empty">${faIcon('fa-box-open')}<span>${escapeHtml(t('emptyCategory'))}</span></div>`;
     pointerFieldDirty = true;
-    return;
+    if (hadFocusInGrid) document.getElementById(`tab-${categoryId}`)?.focus({ preventScroll: true });
+    return false;
   }
 
   const n = cat.apps.length;
@@ -2225,14 +2316,18 @@ const renderCards = (grid, categoryId) => {
   grid.appendChild(frag);
   firstCardBatchDone = true;
   pointerFieldDirty = true;
-  if (grid.classList.contains('is-auto-flow')) {
-    grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
-  }
+  if (hadFocusInGrid) grid.querySelector('.card-link-overlay')?.focus({ preventScroll: true });
+  return isBootBatch;
+};
 
+const staggerCardEntry = (grid, isBootBatch) => {
   const origin = lastInteractionPoint ?? railCenter();
   const cards = [...grid.children];
-  const skipEntryAnim = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const skipEntryAnim = MQ.reducedMotion;
   const bootOffset = isBootBatch ? 260 : 0;
+  const isAutoFlow = grid.classList.contains('is-auto-flow');
+
+  const overflowAmount = isAutoFlow ? grid.scrollHeight - grid.clientHeight : 0;
   let max = 1;
   const dists = cards.map(c => {
     const r = c.getBoundingClientRect();
@@ -2240,6 +2335,8 @@ const renderCards = (grid, categoryId) => {
     max = Math.max(max, dist);
     return dist;
   });
+
+  if (isAutoFlow) grid.classList.toggle('has-overflow', overflowAmount > 4);
   cards.forEach((c, i) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
     c.style.animationDelay = scrollDriven
@@ -2257,7 +2354,7 @@ const initPointerField = () => {
   const container = document.querySelector('.container');
   const spot = document.getElementById('spotlight');
   if (!grid || !container) return;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (!MQ.hoverFine) return;
 
   let REVEAL_RADIUS = Math.max(150, Math.min(260, window.innerWidth * 0.22));
   let cards = [];
@@ -2265,22 +2362,27 @@ const initPointerField = () => {
   let sx = -9999, sy = -9999;
   let hasPointer = false;
   let lastMove = 0;
-
-  const reducedMotionMQ = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let hoveredAccentCard = null;
+  let lastHoverAccent = '';
 
   const measure = () => {
     cards = Array.from(grid.querySelectorAll('.app-card'));
+    if (LX_DEBUG) window.__lxDebugPointerFieldCount = cards.length;
     cards.forEach(c => {
       const r = c.getBoundingClientRect();
       c._r = { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
       if (!c._springs) {
 
         c._springs = {
-          tx: criticalSpring(0.22, 1, 0, 1),
-          ty: criticalSpring(0.22, 1, 0, 1),
-          tz: criticalSpring(0.24, 1, 0, 14),
-          reveal: criticalSpring(0.36, 1, 0, 1)
+          tx: spring(0.28, 1.0),
+          ty: spring(0.28, 1.0),
+          tz: spring(0.28, 1.0, 14, true),
+          reveal: spring(0.40, 1.0),
+          sc: spring(0.32, 0.92, 0.02),
+          hov: spring(0.32, 0.92)
         };
+        c._springs.sc.v = 1;
+        c._springs.sc.to = 1;
       }
       if (!c._last) c._last = {};
     });
@@ -2298,7 +2400,8 @@ const initPointerField = () => {
     fixed(dt) {
       pointerVX *= Math.exp(-dt / 0.14);
       if (pointerFieldDirty) measure();
-      const wantsTilt = !reducedMotionMQ.matches;
+      const wantsTilt = !MQ.reducedMotion;
+      hoveredAccentCard = null;
 
       cards.forEach(c => {
         const r = c._r;
@@ -2313,6 +2416,7 @@ const initPointerField = () => {
         s.reveal.to = o * 0.9;
 
         const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
+        if (inside) hoveredAccentCard = c;
         if (inside && wantsTilt) {
           const nx = (px - r.left - (r.right - r.left) / 2) / ((r.right - r.left) / 2);
           const ny = (py - r.top - (r.bottom - r.top) / 2) / ((r.bottom - r.top) / 2);
@@ -2324,13 +2428,27 @@ const initPointerField = () => {
           s.tx.to = 0; s.ty.to = 0; s.tz.to = 0;
         }
 
+        const focused = document.activeElement ? c.contains(document.activeElement) : false;
+        const active = inside || focused;
+        s.hov.to = active ? 1 : 0;
+        s.sc.to = c._pressed ? 0.992 : (active ? 1.006 : 1);
+
         if (wantsTilt) {
           s.tx.fixed(dt); s.ty.fixed(dt); s.tz.fixed(dt); s.reveal.fixed(dt);
+          s.sc.fixed(dt); s.hov.fixed(dt);
         } else {
 
           s.tx.snap(); s.ty.snap(); s.tz.snap(); s.reveal.snap();
+          s.sc.snap(); s.hov.snap();
         }
       });
+
+      const nextAccent = hoveredAccentCard ? hoveredAccentCard.style.getPropertyValue('--c1') : '';
+      if (nextAccent !== lastHoverAccent) {
+        lastHoverAccent = nextAccent;
+        if (nextAccent) document.documentElement.style.setProperty('--hover-accent', nextAccent);
+        else document.documentElement.style.removeProperty('--hover-accent');
+      }
 
       if (hasPointer) {
         const k = 1 - Math.exp(-dt / 0.09);
@@ -2361,6 +2479,8 @@ const initPointerField = () => {
         }
         setIfChanged(c, '--tx', s.tx.v, 0.001);
         setIfChanged(c, '--ty', s.ty.v, 0.001);
+        setIfChanged(c, '--sc', s.sc.v, 0.0002);
+        setIfChanged(c, '--hov', s.hov.v, 0.001);
 
         const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
         if (inside) {
@@ -2381,7 +2501,7 @@ const initPointerField = () => {
           delete c._last['--tz'];
         }
 
-        const settled = s.tx.settled && s.ty.settled && s.tz.settled && s.reveal.settled;
+        const settled = s.tx.settled && s.ty.settled && s.tz.settled && s.reveal.settled && s.sc.settled && s.hov.settled;
         const active = inside || s.reveal.to > 0 || !settled;
         if (active && !c._wc) { c.style.willChange = 'transform'; c._wc = true; }
         else if (!active && c._wc) { c.style.willChange = ''; c._wc = false; }
@@ -2389,7 +2509,7 @@ const initPointerField = () => {
         if (!settled) alive = true;
       });
 
-      if (spot) {
+      if (spot && !document.body.classList.contains('is-cinema')) {
         if (hasPointer) {
           const idle = performance.now() - lastMove > 2200;
           spot.style.setProperty('--sx', `${sx.toFixed(1)}px`);
@@ -2456,8 +2576,8 @@ const initPointerField = () => {
 const initMagneticControls = () => {
   const pill = document.querySelector('.controls-pill');
   if (!pill) return;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!MQ.hoverFine) return;
+  if (MQ.reducedMotion) return;
 
   const FIELD = 40, MAX_PULL = 6;
   let buttons = [];
@@ -2467,7 +2587,8 @@ const initMagneticControls = () => {
   const measure = () => {
     buttons = Array.from(pill.querySelectorAll('button')).map(btn => {
       if (!btn._mag) {
-        btn._mag = { x: criticalSpring(0.2, 1, 0, 6), y: criticalSpring(0.2, 1, 0, 6), s: criticalSpring(0.2, 1, 1, 1) };
+        btn._mag = { x: spring(0.22, 1.0, MAX_PULL, true), y: spring(0.22, 1.0, MAX_PULL, true), s: spring(0.22, 1.0, 0.06) };
+        btn._mag.s.v = 1; btn._mag.s.to = 1;
         btn.addEventListener('pointerenter', () => { btn._mag.s.to = 1.06; Motion.wake(); });
         btn.addEventListener('pointerleave', () => { btn._mag.s.to = 1; Motion.wake(); });
       }
@@ -2496,7 +2617,8 @@ const initMagneticControls = () => {
     render() {
       let alive = false;
       buttons.forEach(({ btn, m }) => {
-        btn.style.transform = `translate(${m.x.v.toFixed(2)}px, ${m.y.v.toFixed(2)}px) scale(${m.s.v.toFixed(3)})`;
+        btn.style.translate = `${m.x.v.toFixed(2)}px ${m.y.v.toFixed(2)}px`;
+        btn.style.scale = m.s.v.toFixed(3);
         if (!m.x.settled || !m.y.settled || !m.s.settled) alive = true;
       });
       return alive;
@@ -2561,7 +2683,7 @@ class OrbField {
     this.resize();
     this.spawn();
 
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (!MQ.reducedMotion) {
       Motion.add(this);
     } else {
       this.bloomStart = 0;
@@ -2571,7 +2693,7 @@ class OrbField {
 
   resize() {
     const oldW = this.cv.width, oldH = this.cv.height;
-    const scale = 0.55;
+    const scale = 0.35;
     const dpr = 1;
     this.cv.width = Math.round(window.innerWidth * scale * dpr);
     this.cv.height = Math.round(window.innerHeight * scale * dpr);
@@ -2605,7 +2727,7 @@ class OrbField {
         orbitSpeed: 0.15 + Math.random() * 0.1,
         r: Math.random() * 160 + 120,
         hue,
-        hueSpring: new Spring(40, 14, hue, 360),
+        hueSpring: new Spring(40, 14, hue),
         phase: Math.random() * Math.PI * 2
       };
     });
@@ -2613,26 +2735,26 @@ class OrbField {
 
   retarget() {
     const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = MQ.reducedMotion;
     this.orbs.forEach((o, i) => {
       o.hueSpring.to = palette[i % 3];
       if (reduced) { o.hueSpring.snap(); o.hue = o.hueSpring.v; }
     });
     this.lastActive = performance.now();
-    if (reduced) this.render(performance.now());
+    if (reduced) this.render(performance.now() / 1000);
     else Motion.wake();
   }
 
   retargetCategory(hex, impulseDir = 0) {
     const hue = hueFromHex(hex);
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = MQ.reducedMotion;
     this.orbs.forEach((o, i) => {
       o.hueSpring.to = (hue + (i - (this.orbs.length - 1) / 2) * 22 + 360) % 360;
       if (reduced) { o.hueSpring.snap(); o.hue = o.hueSpring.v; }
       else if (impulseDir) o.hueSpring.dv += impulseDir * (i % 2 ? 26 : -26);
     });
     this.lastActive = performance.now();
-    if (reduced) this.render(performance.now());
+    if (reduced) this.render(performance.now() / 1000);
     else Motion.wake();
   }
 
@@ -2667,11 +2789,12 @@ class OrbField {
     const bloom = Math.max(0, 1 - (performance.now() - this.bloomStart) / 7000) * 0.15;
 
     this.orbs.forEach(o => {
-      const rr = o.r * (1 + bloom);
+      const rr = o.r * (1 + bloom) * 1.25;
       const g = this.cx.createRadialGradient(o.x, o.y, 0, o.x, o.y, rr);
       const a = (isLightTheme ? 0.07 : 0.1) * (1 + bloom);
       g.addColorStop(0, `hsla(${o.hue}, 78%, ${isLightTheme ? 60 : 40}%, ${a})`);
-      g.addColorStop(0.4, `hsla(${o.hue}, 68%, ${isLightTheme ? 70 : 30}%, ${a * 0.4})`);
+      g.addColorStop(0.3, `hsla(${o.hue}, 68%, ${isLightTheme ? 70 : 30}%, ${a * 0.4})`);
+      g.addColorStop(0.65, `hsla(${o.hue}, 68%, ${isLightTheme ? 70 : 30}%, ${a * 0.12})`);
       g.addColorStop(1, 'transparent');
 
       this.cx.fillStyle = g;
@@ -2698,7 +2821,7 @@ const applyStoredSoundPref = () => {
   const btn = document.getElementById('soundToggle');
   if (!btn) return;
   btn.setAttribute('aria-pressed', 'true');
-  btn.querySelector('i').className = 'fas fa-volume-up';
+  setIconClass(btn.querySelector('i'), 'fas fa-volume-up');
   updateSoundButtonLabel();
 };
 
@@ -2721,7 +2844,7 @@ const applyTheme = (explicit) => {
   const btn = document.getElementById('themeToggle');
   btn.setAttribute('aria-pressed', String(isLight));
   btn.setAttribute('aria-label', isLight ? t('themeToDark') : t('themeToLight'));
-  btn.querySelector('i').className = `fas ${isLight ? 'fa-moon' : 'fa-sun'}`;
+  setIconClass(btn.querySelector('i'), `fas ${isLight ? 'fa-moon' : 'fa-sun'}`);
 
   if (window.bgAnim) {
     window.bgAnim.retarget();
@@ -2765,12 +2888,13 @@ const isMacPlatform = () => {
 };
 
 const updateBarKbd = () => {
-  const input = document.getElementById('lxInlineInput');
-  if (!input) return;
+  const btn = document.getElementById('lxBarSearch');
+  if (!btn) return;
   const kbd = document.getElementById('lxBarKbd');
   const shortcut = isMacPlatform() ? '⌘K' : 'Ctrl K';
   if (kbd) kbd.textContent = shortcut;
-  input.title = `${t('quickSearch')} (${shortcut})`;
+  btn.setAttribute('aria-label', t('quickSearch'));
+  btn.title = `${t('quickSearch')} (${shortcut})`;
 };
 
 const applyI18n = (opts = {}) => {
@@ -2800,8 +2924,10 @@ const applyI18n = (opts = {}) => {
     const grid = document.getElementById('appGrid');
 
     grid.classList.add('is-relang');
-    renderCards(grid, preservedTab);
+    const wasBoot = renderCards(grid, preservedTab);
+    staggerCardEntry(grid, wasBoot);
     requestAnimationFrame(() => requestAnimationFrame(() => grid.classList.remove('is-relang')));
+    requestAnimationFrame(() => measureRail());
   }
 
   const paletteDialog = document.getElementById('lx-palette');
@@ -2824,7 +2950,7 @@ let firstCardBatchDone = false;
 
 const supportsTileTransitions = typeof CSS !== 'undefined' && CSS.supports('view-transition-class', 'x');
 const supportsViewTimeline = typeof CSS !== 'undefined' && CSS.supports('animation-timeline', 'view()');
-const isNarrowViewport = () => window.matchMedia('(max-width: 1024px)').matches;
+const isNarrowViewport = () => MQ.narrow;
 
 const withViewTransition = (fn) => {
   if (activeViewTransition) { try { activeViewTransition.skipTransition(); } catch (e) {} }
@@ -2864,10 +2990,9 @@ const clearTileStagger = () => {
 const catIndex = (id) => categories.findIndex(c => c.id === id);
 
 const applyTabAccent = (cat, impulseDir = 0) => {
-  const rail = document.getElementById('tabRail');
-  if (rail && cat) rail.style.setProperty('--tab-accent', cat.accent);
+  const bar = document.getElementById('lxBar');
+  if (bar && cat) bar.style.setProperty('--tab-accent', cat.accent);
   if (cat) document.documentElement.style.setProperty('--tab-accent', cat.accent);
-  if (cat) document.documentElement.style.setProperty('--hover-accent', cat.accent);
   if (cat) updateFavicon(cat);
   if (cat) window.bgAnim?.retargetCategory(cat.accent, impulseDir);
 };
@@ -2878,37 +3003,41 @@ let railAnim = null;
 
 const measureRail = () => {
   const rail = document.getElementById('tabRail');
-  const btns = Array.from(rail.querySelectorAll('.tab-btn'));
+  const btns = [...rail.querySelectorAll('.tab-btn')];
   if (!btns.length) return;
 
-  const clone = rail.cloneNode(true);
-  clone.id = '';
-  clone.setAttribute('aria-hidden', 'true');
-  clone.setAttribute('inert', '');
-  clone.classList.add('is-measuring');
-  clone.style.cssText = 'position:absolute; visibility:hidden; top:0; left:0; width:auto; pointer-events:none;';
-  clone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
-  const cloneBtns = Array.from(clone.querySelectorAll('.tab-btn'));
-  rail.parentNode.appendChild(clone);
+  const stage = document.createElement('div');
+  stage.inert = true;
+  stage.setAttribute('aria-hidden', 'true');
+  stage.style.cssText = 'position:absolute;top:-9999px;inset-inline-start:-9999px;visibility:hidden;pointer-events:none;';
+
+  const rigs = btns.map((b) => {
+    const cr = rail.cloneNode(true);
+    cr.removeAttribute('id');
+    cr.classList.add('is-measuring');
+    cr.style.width = 'auto';
+    const cBtns = [...cr.querySelectorAll('.tab-btn')];
+    cBtns.forEach(x => x.removeAttribute('id'));
+    const idx = btns.indexOf(b);
+    cBtns.forEach((x, i) => x.setAttribute('aria-selected', String(i === idx)));
+    stage.appendChild(cr);
+    return { id: b.dataset.id, rail: cr, btn: cBtns[idx] };
+  });
+
+  document.body.appendChild(stage);
 
   let maxW = 0;
-  cloneBtns.forEach(b => {
-    cloneBtns.forEach(x => x.setAttribute('aria-selected', String(x === b)));
-    void clone.offsetWidth;
-    maxW = Math.max(maxW, clone.getBoundingClientRect().width);
-  });
-  clone.style.width = `${Math.ceil(maxW)}px`;
-
-  railGeom = new Map();
-  cloneBtns.forEach((b, i) => {
-    cloneBtns.forEach(x => x.setAttribute('aria-selected', String(x === b)));
-    void clone.offsetWidth;
-    const rr = clone.getBoundingClientRect(), br = b.getBoundingClientRect();
+  const geom = new Map();
+  rigs.forEach(({ id, rail: cr, btn }) => {
+    const rr = cr.getBoundingClientRect(), br = btn.getBoundingClientRect();
+    maxW = Math.max(maxW, rr.width);
     const l = br.left - rr.left;
-    railGeom.set(btns[i].dataset.id, { l, r: rr.width - l - br.width });
+    geom.set(id, { l, r: rr.width - l - br.width });
   });
 
-  clone.remove();
+  stage.remove();
+
+  railGeom = geom;
   rail.style.width = `${Math.ceil(maxW)}px`;
 
   const g = railGeom.get(currentTabId);
@@ -2927,7 +3056,7 @@ const moveIndicator = (toId, fromId) => {
 
   railAnim?.cancel(); railAnim = null;
 
-  if (fromId === toId || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (fromId === toId || MQ.reducedMotion) {
     ind.style.clipPath = ins(to);
     return;
   }
@@ -2936,7 +3065,7 @@ const moveIndicator = (toId, fromId) => {
 
   railAnim = ind.animate(
     [{ clipPath: ins(from) }, { clipPath: ins(mid), offset: 0.42 }, { clipPath: ins(to) }],
-    { duration: 380, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both' }
+    { duration: 460, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }
   );
   railAnim.finished.then(() => {
     ind.style.clipPath = ins(to);
@@ -2944,11 +3073,54 @@ const moveIndicator = (toId, fromId) => {
   }).catch(() => {});
 };
 
+const initTabGhost = () => {
+  const rail = document.getElementById('tabRail');
+  const ghost = document.getElementById('tabGhost');
+  if (!rail || !ghost) return;
+  if (!MQ.hoverFine) return;
+
+  rail.addEventListener('pointerover', (e) => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn || btn.dataset.id === currentTabId) { ghost.style.opacity = '0'; return; }
+    const g = railGeom.get(btn.dataset.id);
+    if (!g) return;
+    ghost.style.clipPath = ins(g);
+    ghost.style.opacity = '1';
+  });
+  rail.addEventListener('pointerleave', () => { ghost.style.opacity = '0'; });
+};
+
 const setActiveButtonStates = (id) => {
   document.querySelectorAll('.tab-btn').forEach(btn => {
     const active = btn.dataset.id === id;
     btn.setAttribute('aria-selected', String(active));
     btn.tabIndex = active ? 0 : -1;
+  });
+};
+
+const flipTabRail = (mutate) => {
+  const rail = document.getElementById('tabRail');
+  const btns = rail ? [...rail.querySelectorAll('.tab-btn')] : [];
+  if (!btns.length || MQ.reducedMotion) { mutate(); return; }
+
+  const first = btns.map(b => b.getBoundingClientRect().left);
+  mutate();
+  const last = btns.map(b => b.getBoundingClientRect().left);
+
+  btns.forEach((b, i) => {
+    const delta = first[i] - last[i];
+    if (Math.abs(delta) < 0.5) return;
+    b.style.transition = 'none';
+    b.style.translate = `${delta}px 0`;
+    b.getBoundingClientRect();
+    b.style.transition = 'translate 460ms var(--ease-out)';
+    b.style.translate = '0 0';
+    b.addEventListener('transitionend', function cleanup(e) {
+      if (e.propertyName !== 'translate') return;
+      b.style.transition = '';
+      b.style.translate = '';
+      b.removeEventListener('transitionend', cleanup);
+    });
   });
 };
 
@@ -2961,7 +3133,7 @@ const activateTab = (id, opts = {}) => {
 
   const cat = categories.find(c => c.id === id);
 
-  setActiveButtonStates(id);
+  flipTabRail(() => setActiveButtonStates(id));
   applyTabAccent(cat, prevId && prevId !== id ? dir : 0);
   moveIndicator(id, instant ? id : prevId);
 
@@ -2973,30 +3145,31 @@ const activateTab = (id, opts = {}) => {
   const g = document.getElementById('appGrid');
   g.setAttribute('aria-labelledby', `tab-${id}`);
 
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reducedMotion = MQ.reducedMotion;
   const rtl = document.documentElement.dir === 'rtl';
   document.documentElement.style.setProperty('--dir', String(dir * (rtl ? 1 : -1)));
 
-  const run = () => {
-    const hadFocus = g.contains(document.activeElement);
-    renderCards(g, id);
-    if (hadFocus) g.querySelector('.card-link-overlay')?.focus({ preventScroll: true });
-  };
+  const run = () => renderCards(g, id);
 
   let rendered;
   if (instant || reducedMotion) {
-    run();
+    const wasBoot = run();
+    staggerCardEntry(g, wasBoot);
     rendered = Promise.resolve();
   } else if (document.startViewTransition && supportsTileTransitions) {
 
     setTileStagger(dir * (rtl ? 1 : -1));
     nameTiles(g, true);
-    const vt = withViewTransition(() => { run(); nameTiles(g, true); });
+    let wasBoot = false;
+    const vt = withViewTransition(() => { wasBoot = run(); nameTiles(g, true); });
+    vt.ready.then(() => requestAnimationFrame(() => staggerCardEntry(g, wasBoot))).catch(() => {});
     rendered = vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) { activeViewTransition = null; nameTiles(g, false); clearTileStagger(); } });
   } else if (document.startViewTransition) {
 
     g.style.viewTransitionName = 'grid';
-    const vt = withViewTransition(run);
+    let wasBoot = false;
+    const vt = withViewTransition(() => { wasBoot = run(); });
+    vt.ready.then(() => requestAnimationFrame(() => staggerCardEntry(g, wasBoot))).catch(() => {});
     rendered = vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) { activeViewTransition = null; g.style.viewTransitionName = ''; } });
   } else {
     g.classList.add('is-out');
@@ -3005,11 +3178,13 @@ const activateTab = (id, opts = {}) => {
       const finish = () => {
         if (done) return;
         done = true;
-        g.removeEventListener('animationend', finish);
-        run(); g.classList.remove('is-out'); resolve();
+        const wasBoot = run();
+        staggerCardEntry(g, wasBoot);
+        g.classList.remove('is-out');
+        resolve();
       };
       g.addEventListener('animationend', finish, { once: true });
-      setTimeout(finish, 320);
+      setTimeout(finish, 300);
     });
   }
 
@@ -3037,9 +3212,9 @@ const buildTabRail = () => {
     btn.setAttribute('aria-selected', 'false');
     btn.setAttribute('aria-controls', 'appGrid');
     btn.setAttribute('aria-label', loc(cat.label));
-    btn.tabIndex = -1;
     btn.title = loc(cat.label);
-    btn.innerHTML = `<i class="fas ${cat.icon}" aria-hidden="true"></i><span class="label" aria-hidden="true"><span>${escapeHtml(loc(cat.label))}</span></span>`;
+    btn.tabIndex = -1;
+    btn.innerHTML = `${faIcon(cat.icon)}<span class="label"><span>${escapeHtml(loc(cat.label))}</span></span>`;
     btn.addEventListener('click', () => { setInteractionOrigin(btn); activateTab(cat.id); });
     btn.addEventListener('mouseenter', () => sfx.hover(cat.key + i, { throttle: false }));
     btn.addEventListener('focus', () => sfx.hover(cat.key + i, { throttle: false }));
@@ -3215,6 +3390,7 @@ const getRecentEntries = (allEntries, limit) => {
   const freq = getFreqMap();
   const byId = new Map();
   allEntries.forEach(e => { if (!byId.has(e.app.id)) byId.set(e.app.id, e); });
+  allEntries.forEach(e => { if (e.app.parentId && !byId.has(e.app.parentId)) byId.set(e.app.parentId, e); });
 
   const candidateIds = new Set([...ids, ...Object.keys(freq)]);
   const scored = [];
@@ -3242,7 +3418,14 @@ let lastDetailKey = null;
 let paletteSkipCloseChime = false;
 let paletteBusy = false;
 let heroReturnFocus = false;
-let paletteRenderGen = 0;
+let heroRestBox = null;
+
+const syncHeroRestBox = () => {
+  const dialog = document.getElementById('lx-palette');
+  if (dialog && dialog.open) return;
+  const hero = document.getElementById('lxBarSearch');
+  if (hero) heroRestBox = hero.getBoundingClientRect();
+};
 
 const getActionsForEntry = (entry) => {
   const actions = [
@@ -3271,7 +3454,7 @@ const scoreEntry = (query, entry) => {
 const paletteItemHtml = (e, globalIndex, query) => `
   <li class="palette-item${globalIndex === 0 ? ' is-active' : ''}" role="option" id="palette-item-${globalIndex}" aria-selected="${globalIndex === 0}" data-index="${globalIndex}" style="${gradVars(e.app.gradient)}--n:${globalIndex};">
     <div class="app-icon-wrapper">
-      <i class="app-icon fas ${e.app.icon}" aria-hidden="true"></i>
+      ${faIcon(e.app.icon, 'app-icon')}
     </div>
     <div class="palette-item-text">
       <span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span>
@@ -3280,7 +3463,6 @@ const paletteItemHtml = (e, globalIndex, query) => `
   </li>`;
 
 const renderPaletteResults = (query) => {
-  paletteRenderGen++;
   const paletteResults = document.getElementById('paletteResults');
   const allEntries = allPaletteEntries();
   const scored = allEntries
@@ -3359,7 +3541,6 @@ const updatePaletteGhost = (query) => {
   const ghostEl = document.getElementById('paletteGhost');
   if (!ghostEl) return;
   const top = paletteItems[0];
-  const hadTail = !!paletteGhostTail;
   paletteGhostTail = '';
   if (query && top) {
     const title = loc(top.app.title);
@@ -3372,18 +3553,6 @@ const updatePaletteGhost = (query) => {
   ghostEl.innerHTML = paletteGhostTail
     ? `<span class="ghost-typed">${escapeHtml(query)}</span><span class="ghost-tail">${escapeHtml(paletteGhostTail)}</span>`
     : '';
-
-  const hintEl = document.getElementById('paletteGhostHint');
-  if (hintEl) {
-    if (paletteGhostTail && !hadTail) {
-      hintEl.textContent = document.documentElement.dir === 'rtl' ? '←' : '→';
-      hintEl.classList.remove('is-flash');
-      void hintEl.offsetWidth;
-      hintEl.classList.add('is-flash');
-    } else if (!paletteGhostTail) {
-      hintEl.classList.remove('is-flash');
-    }
-  }
 };
 
 let paletteStatusAnnounceTimer;
@@ -3395,7 +3564,12 @@ const updatePaletteStatus = (query, resultCount) => {
   const text = query
     ? (resultCount ? `${resultCount} ${t('resultsCountLabel')}` : '')
     : scopeLabel;
-  statusEl.textContent = text;
+  if (query && paletteGhostTail) {
+    const arrow = document.documentElement.dir === 'rtl' ? '←' : '→';
+    statusEl.innerHTML = `${escapeHtml(text)} <span class="palette-ghost-hint">${arrow}</span>`;
+  } else {
+    statusEl.textContent = text;
+  }
   clearTimeout(paletteStatusAnnounceTimer);
   if (query) paletteStatusAnnounceTimer = setTimeout(() => announcePalette(text), 600);
 };
@@ -3425,7 +3599,7 @@ const renderPaletteDetail = () => {
     detail.removeAttribute('style');
     detail.innerHTML = `
       <div class="palette-detail-empty">
-        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+        ${faIcon('fa-magnifying-glass')}
         <span>${escapeHtml(t('noResultsMatch'))}</span>
       </div>`;
     return;
@@ -3437,7 +3611,7 @@ const renderPaletteDetail = () => {
   let badgesHtml = '';
   if (isFresh(app)) badgesHtml += `<span class="palette-detail-badge badge-new"><span class="badge-dot"></span>${escapeHtml(t('badgeNew'))}</span>`;
   if (app.closed) badgesHtml += `<span class="palette-detail-badge badge-closed"><span class="badge-dot"></span>${escapeHtml(t('badgeClosed'))}</span>`;
-  if (app.variantBadge) badgesHtml += `<span class="palette-detail-badge badge-variant"><i class="fas fa-clone" aria-hidden="true"></i>${escapeHtml(app.variantBadge)}</span>`;
+  if (app.variantBadge) badgesHtml += `<span class="palette-detail-badge badge-variant">${faIcon('fa-clone')}${escapeHtml(app.variantBadge)}</span>`;
 
   let host = '';
   try { host = new URL(app.url).hostname; } catch (e) {}
@@ -3447,11 +3621,11 @@ const renderPaletteDetail = () => {
   detail.innerHTML = `
     <div class="palette-detail-slab">
       <div class="palette-detail-slab-noise"></div>
-      <i class="palette-detail-watermark fas ${app.icon}" aria-hidden="true"></i>
+      ${faIcon(app.icon, 'palette-detail-watermark')}
     </div>
     <div class="palette-detail-header">
       <div class="app-icon-wrapper">
-        <i class="app-icon fas ${app.icon}" aria-hidden="true"></i>
+        ${faIcon(app.icon, 'app-icon')}
       </div>
       <div class="palette-detail-title-wrap">
         <h3 class="palette-detail-title">${escapeHtml(loc(app.title))}</h3>
@@ -3466,7 +3640,7 @@ const renderPaletteDetail = () => {
     <div class="palette-actions" role="group" aria-label="${escapeHtml(t('actionsLabel'))}">
       ${getActionsForEntry(entry).map(a => `
         <button type="button" class="palette-action${a.id === 'new-tab' ? ' is-primary' : ''}" id="palette-action-${a.id}" data-action="${a.id}">
-          <span class="palette-action-icon"><i class="fas ${a.icon}" aria-hidden="true"></i></span>
+          <span class="palette-action-icon">${faIcon(a.icon)}</span>
           <span class="palette-action-label">${escapeHtml(a.label)}</span>
           ${a.kbd ? `<kbd>${a.kbd}</kbd>` : ''}
         </button>
@@ -3553,11 +3727,11 @@ const showActionFeedback = (actionId, ok, okLabel, failLabel) => {
   const prevIconClass = icon.className;
   const prevLabelText = label.textContent;
   const msg = ok ? okLabel : failLabel;
-  icon.className = ok ? 'fas fa-check' : 'fas fa-triangle-exclamation';
+  setIconClass(icon, ok ? 'fas fa-check' : 'fas fa-triangle-exclamation');
   label.textContent = msg;
   announcePalette(msg);
   actionFeedbackTimer = setTimeout(() => {
-    icon.className = prevIconClass;
+    setIconClass(icon, prevIconClass);
     label.textContent = prevLabelText;
   }, 1400);
 };
@@ -3566,12 +3740,12 @@ const revealInGrid = async (entry) => {
   if (entry.cat.id === '_secret') return;
   const targetId = entry.app.parentId || entry.app.id;
   const targetCatId = entry.cat.id;
-  requestClosePalette();
+  closePaletteImmediate();
   if (currentTabId !== targetCatId) await activateTab(targetCatId);
   requestAnimationFrame(() => {
     const card = document.querySelector(`#appGrid .app-card[data-app-id="${targetId}"]`);
     if (!card) return;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion = MQ.reducedMotion;
     card.scrollIntoView({ block: 'center', behavior: reducedMotion ? 'auto' : 'smooth' });
     card.classList.add('is-revealed');
     card.addEventListener('animationend', () => card.classList.remove('is-revealed'), { once: true });
@@ -3588,12 +3762,13 @@ const executeAction = async (actionId) => {
   if (actionId === 'new-tab' || actionId === 'same-tab') {
     pushRecent(entry.app.id);
     bumpFreq(entry.app.id);
-    try { localStorage.setItem('lx-last-open', entry.app.parentId || entry.app.id); } catch (e) {}
+    try { localStorage.setItem('lx-last-open', entry.app.id); } catch (e) {}
   }
   if (actionId === 'new-tab') {
     sfx.click();
     window.open(entry.app.url, '_blank', 'noopener');
     paletteSkipCloseChime = true;
+    document.querySelector('.palette-body')?.classList.add('is-collapsing');
     requestClosePalette();
   } else if (actionId === 'same-tab') {
     sfx.click();
@@ -3617,53 +3792,16 @@ const openPaletteItem = (i) => {
   executeAction('new-tab');
 };
 
-const deferExcessPaletteRows = (keep) => {
-  const list = document.getElementById('paletteResults');
-  const children = Array.from(list.children);
-  let itemCount = 0;
-  let cutIndex = -1;
-  for (let i = 0; i < children.length; i++) {
-    if (children[i].classList.contains('palette-item')) {
-      itemCount++;
-      if (itemCount === keep) { cutIndex = i; break; }
-    }
-  }
-  if (cutIndex === -1 || cutIndex >= children.length - 1) return null;
-  const frag = document.createDocumentFragment();
-  for (let i = cutIndex + 1; i < children.length; i++) frag.appendChild(children[i]);
-  return frag;
-};
-
-const awaitAnimationSettled = (anim, maxMs) => new Promise((resolve) => {
-  let done = false;
-  const finishNow = () => {
-    if (done) return;
-    done = true;
-    try { anim.finish(); } catch (e) {}
-    resolve();
-  };
-  const t = setTimeout(finishNow, maxMs);
-  anim.finished.catch(() => {}).finally(() => {
-    if (done) return;
-    done = true;
-    clearTimeout(t);
-    resolve();
-  });
-});
-
-const canMorphPalette = (hero) => {
-  if (!hero) return false;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-  if (window.innerWidth < 1024) return false;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return false;
-  const dialog = document.getElementById('lx-palette');
-  return typeof dialog.animate === 'function';
-};
+const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
+const MORPH_OPEN_MS = 420;
+const MORPH_CLOSE_MS = 250;
 
 const openPalette = (seed = '') => {
   const dialog = document.getElementById('lx-palette');
   if (dialog.open || paletteBusy) return;
   paletteBusy = true;
+  document.querySelector('.palette-body')?.classList.remove('is-collapsing');
 
   if (activeViewTransition) {
     try { activeViewTransition.skipTransition(); } catch (e) {}
@@ -3671,25 +3809,28 @@ const openPalette = (seed = '') => {
   }
 
   const hero = document.getElementById('lxBarSearch');
-  const bar = document.getElementById('lxBar');
-  const inlineInput = document.getElementById('lxInlineInput');
   const input = document.getElementById('paletteInput');
-  const canMorph = canMorphPalette(hero);
+  const reducedMotion = MQ.reducedMotion;
+  const skipMorph = !hero || reducedMotion || typeof dialog.animate !== 'function' ||
+    window.innerWidth < 1024 || !MQ.hoverFine;
 
   input.value = seed;
   paletteTryPicks = null;
   lastDetailKey = null;
   paletteEntranceArmed = true;
 
+  if (hero && !heroRestBox) heroRestBox = hero.getBoundingClientRect();
+
   const results = document.getElementById('paletteResults');
-  if (results) results.style.setProperty('--stagger-base', canMorph ? '160ms' : '0ms');
+  if (results) results.style.setProperty('--stagger-base', skipMorph ? '0ms' : '160ms');
   renderPaletteResults(seed);
 
   document.querySelector('.container').classList.add('is-dollied');
   document.querySelector('.controls-pill').classList.add('is-dollied');
-  inlineInput?.setAttribute('aria-expanded', 'true');
+  document.querySelector('.dolly-scrim').classList.add('is-dollied');
+  hero?.setAttribute('aria-expanded', 'true');
 
-  if (!canMorph) {
+  if (skipMorph) {
     dialog.showModal();
     document.body.classList.add('palette-open');
     sfx.veil(true);
@@ -3698,8 +3839,9 @@ const openPalette = (seed = '') => {
     return;
   }
 
-  const heroBox = hero.getBoundingClientRect();
+  const heroBox = heroRestBox;
 
+  dialog.classList.remove('did-morph');
   dialog.classList.add('is-morphing');
   dialog.showModal();
   sfx.veil(true);
@@ -3708,49 +3850,63 @@ const openPalette = (seed = '') => {
     const row = dialog.querySelector('.palette-input-row');
     const rowBox = row.getBoundingClientRect();
     const dlgBox = dialog.getBoundingClientRect();
-    const dx = (heroBox.left + heroBox.width / 2) - (dlgBox.left + dlgBox.width / 2);
-    const dy = (heroBox.top + heroBox.height / 2) - (rowBox.top + rowBox.height / 2);
-    const deferGen = paletteRenderGen;
-    const deferred = deferExcessPaletteRows(8);
 
-    if (bar) bar.style.transition = 'none';
     document.body.classList.add('palette-open');
-    if (bar) requestAnimationFrame(() => { bar.style.transition = ''; });
+
+    const dy = (heroBox.top + heroBox.height / 2) - (rowBox.top + rowBox.height / 2);
+    const bottomGap = Math.max(0, dlgBox.height - rowBox.height);
 
     const chrome = [dialog.querySelector('.palette-live-dot'), row.querySelector('kbd')].filter(Boolean);
     chrome.forEach(el => { el.style.opacity = '0'; });
 
-    dialog.style.willChange = 'width, height, transform';
+    dialog.style.willChange = 'clip-path, transform';
     const panel = dialog.animate([
-      { width: `${heroBox.width}px`, height: `${rowBox.height}px`, transform: `translate(${dx}px, ${dy}px)`, borderRadius: '999px' },
-      { width: `${dlgBox.width}px`, height: `${dlgBox.height}px`, transform: 'translate(0, 0)', borderRadius: '28px' }
-    ], { duration: 420, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' });
+      { clipPath: `inset(0px 0px ${bottomGap}px 0px round 999px)`, transform: `translateY(${dy}px)` },
+      { clipPath: 'inset(0px 0px 0px 0px round 28px)', transform: 'translateY(0)' }
+    ], { duration: MORPH_OPEN_MS, easing: EASE_LUX, fill: 'both' });
 
     const bodyAnim = dialog.querySelector('.palette-body').animate(
       [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 200, delay: 140, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' }
+      { duration: 200, delay: 140, easing: EASE_LUX, fill: 'both' }
     );
     const chromeAnim = chrome.map(el => el.animate(
       [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 200, delay: 140, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' }
+      { duration: 200, delay: 140, easing: EASE_LUX, fill: 'both' }
     ));
 
     requestAnimationFrame(() => input.focus({ preventScroll: true }));
 
-    awaitAnimationSettled(panel, 900).then(() => {
+    panel.finished.catch(() => {}).finally(() => {
       dialog.style.willChange = '';
       dialog.classList.remove('is-morphing');
+      dialog.classList.add('did-morph');
+      results?.style.removeProperty('--stagger-base');
       try { panel.cancel(); } catch (e) {}
       try { bodyAnim.cancel(); } catch (e) {}
       chromeAnim.forEach(a => { try { a.cancel(); } catch (e) {} });
       chrome.forEach(el => { el.style.opacity = ''; });
-      if (deferred && deferGen === paletteRenderGen) {
-        const list = document.getElementById('paletteResults');
-        if (list) list.appendChild(deferred);
-      }
       paletteBusy = false;
     });
   });
+};
+
+const closePaletteImmediate = () => {
+  const dialog = document.getElementById('lx-palette');
+  if (!dialog.open) return;
+  const hero = document.getElementById('lxBarSearch');
+  hero?.setAttribute('aria-expanded', 'false');
+  if (!paletteSkipCloseChime) sfx.veil(false);
+  paletteSkipCloseChime = true;
+  document.getElementById('paletteGhost')?.replaceChildren();
+  dialog.classList.remove('is-morphing', 'did-morph');
+  dialog.style.willChange = '';
+  dialog.close();
+  document.body.classList.remove('palette-open');
+  if (heroReturnFocus) {
+    heroReturnFocus = false;
+    hero?.focus({ preventScroll: true });
+  }
+  paletteBusy = false;
 };
 
 const requestClosePalette = () => {
@@ -3759,8 +3915,7 @@ const requestClosePalette = () => {
   paletteBusy = true;
 
   const hero = document.getElementById('lxBarSearch');
-  const inlineInput = document.getElementById('lxInlineInput');
-  inlineInput?.setAttribute('aria-expanded', 'false');
+  hero?.setAttribute('aria-expanded', 'false');
 
   const skipChime = paletteSkipCloseChime;
   if (!skipChime) sfx.veil(false);
@@ -3768,46 +3923,48 @@ const requestClosePalette = () => {
 
   const g = document.getElementById('paletteGhost'); if (g) g.innerHTML = '';
 
+  const reducedMotion = MQ.reducedMotion;
+  const canMorph = !!hero && dialog.classList.contains('did-morph') && !reducedMotion && typeof dialog.animate === 'function';
+
   const finish = () => {
     dialog.close();
     dialog.style.willChange = '';
-    dialog.classList.remove('is-morphing');
+    dialog.classList.remove('is-morphing', 'did-morph');
     document.body.classList.remove('palette-open');
     if (heroReturnFocus) {
       heroReturnFocus = false;
-      inlineInput?.focus({ preventScroll: true });
+      hero?.focus({ preventScroll: true });
     }
     paletteBusy = false;
   };
 
-  if (!canMorphPalette(hero)) {
+  if (!canMorph) {
     finish();
     return;
   }
 
   const row = dialog.querySelector('.palette-input-row').getBoundingClientRect();
-  const heroBox = hero.getBoundingClientRect();
+  const heroBox = heroRestBox || hero.getBoundingClientRect();
   const dlgBox = dialog.getBoundingClientRect();
-  const dx = (heroBox.left + heroBox.width / 2) - (dlgBox.left + dlgBox.width / 2);
   const dy = (heroBox.top + heroBox.height / 2) - (row.top + row.height / 2);
-  const EXIT_MS = 250;
+  const bottomGap = Math.max(0, dlgBox.height - row.height);
 
   dialog.classList.add('is-morphing');
-  dialog.style.willChange = 'width, height, transform';
+  dialog.style.willChange = 'clip-path, transform';
 
-  const hideHeroTimer = setTimeout(() => { document.body.classList.remove('palette-open'); }, Math.max(0, EXIT_MS - 80));
+  const hideHeroTimer = setTimeout(() => { document.body.classList.remove('palette-open'); }, Math.max(0, MORPH_CLOSE_MS - 80));
 
   const panel = dialog.animate([
-    { width: `${dlgBox.width}px`, height: `${dlgBox.height}px`, transform: 'translate(0, 0)', borderRadius: '28px' },
-    { width: `${heroBox.width}px`, height: `${row.height}px`, transform: `translate(${dx}px, ${dy}px)`, borderRadius: '999px' }
-  ], { duration: EXIT_MS, easing: 'cubic-bezier(0.4, 0, 1, 1)', fill: 'both' });
+    { clipPath: 'inset(0px 0px 0px 0px round 28px)', transform: 'translateY(0)' },
+    { clipPath: `inset(0px 0px ${bottomGap}px 0px round 999px)`, transform: `translateY(${dy}px)` }
+  ], { duration: MORPH_CLOSE_MS, easing: EASE_ACCEL, fill: 'both' });
 
   const bodyAnim = dialog.querySelector('.palette-body').animate(
     [{ opacity: 1 }, { opacity: 0 }],
-    { duration: Math.round(EXIT_MS * 0.6), easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'both' }
+    { duration: Math.round(MORPH_CLOSE_MS * 0.6), easing: EASE_LUX, fill: 'both' }
   );
 
-  awaitAnimationSettled(panel, 600).then(() => {
+  panel.finished.catch(() => {}).finally(() => {
     clearTimeout(hideHeroTimer);
     try { panel.cancel(); } catch (e) {}
     try { bodyAnim.cancel(); } catch (e) {}
@@ -3815,18 +3972,63 @@ const requestClosePalette = () => {
   });
 };
 
+let idleTimer;
+const IDLE_MS = 25000;
+
+const cinemaSpot = {
+  t: 0,
+  fixed(dt) {
+    if (!document.body.classList.contains('is-cinema')) return;
+    this.t += dt;
+  },
+  render() {
+    if (!document.body.classList.contains('is-cinema')) return false;
+    if (MQ.reducedMotion) return false;
+    const spot = document.getElementById('spotlight');
+    if (!spot) return false;
+    const x = 50 + Math.sin(this.t * 0.08) * 22;
+    const y = 15 + Math.cos(this.t * 0.05) * 8;
+    spot.style.setProperty('--sx', `${x}%`);
+    spot.style.setProperty('--sy', `${y}%`);
+    return true;
+  }
+};
+Motion.add(cinemaSpot);
+
+const stopIdle = () => {
+  if (!document.body.classList.contains('is-cinema')) return;
+  document.body.classList.remove('is-cinema');
+};
+
+const startIdle = () => {
+  const spot = document.getElementById('spotlight');
+  if (!spot) return;
+  spot.classList.remove('is-active', 'is-idle');
+  document.body.classList.add('is-cinema');
+  cinemaSpot.t = 0;
+  Motion.wake();
+};
+
+let armIdleAt = 0;
+const armIdle = () => {
+  const now = performance.now();
+  if (now - armIdleAt < 150) return;
+  armIdleAt = now;
+  clearTimeout(idleTimer);
+  stopIdle();
+  idleTimer = setTimeout(startIdle, IDLE_MS);
+};
+
 const togglePalette = () => {
   if (paletteBusy) return;
   const dialog = document.getElementById('lx-palette');
-  if (dialog.open) { requestClosePalette(); return; }
-  const inlineInput = document.getElementById('lxInlineInput');
-  openPalette(inlineInput ? inlineInput.value : '');
+  if (dialog.open) requestClosePalette(); else openPalette();
 };
 
 const initBarGlow = () => {
   const bar = document.getElementById('lxBar');
   if (!bar) return;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  if (!MQ.hoverFine) return;
 
   bar.addEventListener('pointermove', (e) => {
     const r = bar.getBoundingClientRect();
@@ -3839,97 +4041,49 @@ const initBarGlow = () => {
   });
 };
 
-const initAmbientAccent = () => {
-  const grid = document.getElementById('appGrid');
-  if (!grid) return;
-  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+const initDebugOverlay = () => {
+  if (!LX_DEBUG) return;
 
-  grid.addEventListener('pointerover', (e) => {
-    const card = e.target.closest('.app-card');
-    if (!card) return;
-    const c1 = getComputedStyle(card).getPropertyValue('--c1').trim();
-    if (c1) document.documentElement.style.setProperty('--hover-accent', c1);
-  });
-  grid.addEventListener('pointerleave', () => {
-    const accent = getComputedStyle(document.documentElement).getPropertyValue('--tab-accent').trim();
-    document.documentElement.style.setProperty('--hover-accent', accent || '#7c9bff');
-  });
-};
+  const box = document.createElement('div');
+  box.setAttribute('aria-hidden', 'true');
+  box.style.cssText = 'position:fixed;bottom:8px;inset-inline-start:8px;z-index:99999;' +
+    'background:rgba(0,0,0,.82);color:#5eff8f;font:11px/1.6 ui-monospace,monospace;' +
+    'padding:8px 10px;border-radius:8px;pointer-events:none;white-space:pre;';
+  document.body.appendChild(box);
 
-const initReturnMemory = () => {
-  const grid = document.getElementById('appGrid');
-  if (grid) {
-    grid.addEventListener('click', (e) => {
-      const overlay = e.target.closest('.card-link-overlay');
-      if (!overlay) return;
-      const card = overlay.closest('.app-card');
-      const id = card?.dataset.appId;
-      if (id) { try { localStorage.setItem('lx-last-open', id); } catch (err) {} }
-    });
+  let frames = 0, fps = 0, lastFpsAt = performance.now();
+  let longTaskCount = 0;
+
+  if ('PerformanceObserver' in window) {
+    try {
+      new PerformanceObserver((list) => { longTaskCount += list.getEntries().length; })
+        .observe({ type: 'longtask', buffered: true });
+    } catch (e) {}
   }
 
-  window.addEventListener('pageshow', () => {
-    let id = null;
-    try { id = localStorage.getItem('lx-last-open'); } catch (err) {}
-    if (!id) return;
-    const card = document.querySelector(`.app-card[data-app-id="${CSS.escape(id)}"]`);
-    if (!card) return;
-    card.classList.add('is-returned');
-    card.addEventListener('animationend', () => card.classList.remove('is-returned'), { once: true });
-  });
-};
-
-const initIdleCinema = () => {
-  let idleTimer = null;
-  let cinemaStartS = 0;
-
-  const cinemaSubscriber = {
-    render(now) {
-      if (!document.body.classList.contains('is-cinema')) return false;
-      const t = now - cinemaStartS;
-      const W = window.innerWidth, H = window.innerHeight;
-      const spot = document.getElementById('spotlight');
-      if (!spot) return false;
-      spot.style.setProperty('--sx', `${W / 2 + 0.32 * W * Math.sin(0.11 * t + 1.3)}px`);
-      spot.style.setProperty('--sy', `${0.28 * H + 0.16 * H * Math.sin(0.07 * t)}px`);
-      return true;
-    }
-  };
-  Motion.add(cinemaSubscriber);
-
-  const stopIdle = () => {
-    if (document.body.classList.contains('is-cinema')) document.body.classList.remove('is-cinema');
-  };
-
-  let lastArm = 0;
-  const armIdle = () => {
+  const tick = () => {
+    frames++;
     const now = performance.now();
-    const isCinema = document.body.classList.contains('is-cinema');
-    if (!isCinema && now - lastArm < 150) return;
-    lastArm = now;
-    clearTimeout(idleTimer);
-    stopIdle();
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    idleTimer = setTimeout(() => {
-      cinemaStartS = performance.now() / 1000;
-      document.body.classList.add('is-cinema');
-      Motion.wake();
-    }, 25000);
+    if (now - lastFpsAt >= 500) {
+      fps = Math.round((frames * 1000) / (now - lastFpsAt));
+      frames = 0;
+      lastFpsAt = now;
+    }
+    const liveCards = document.querySelectorAll('.app-card').length;
+    const refCards = window.__lxDebugPointerFieldCount ?? 0;
+    box.textContent =
+      `FPS: ${fps}\n` +
+      `Motion: ${Motion.awake ? 'awake' : 'asleep'} (${Motion.subCount} subs)\n` +
+      `Cards: ${liveCards} live / ${refCards} tracked\n` +
+      `Long tasks: ${longTaskCount}`;
+    requestAnimationFrame(tick);
   };
-
-  ['pointermove', 'pointerdown', 'keydown', 'wheel', 'touchstart']
-    .forEach(evt => window.addEventListener(evt, armIdle, { passive: true }));
-  armIdle();
+  requestAnimationFrame(tick);
 };
 
 const setupInteractions = () => {
   lang = resolveInitialLang();
   applyI18n({ rebuild: false });
-
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    document.body.classList.add('is-booted');
-    setTimeout(() => document.body.classList.remove('is-booted'), 1400);
-  }
 
   applyTheme();
   applyStoredSoundPref();
@@ -3939,32 +4093,20 @@ const setupInteractions = () => {
   }
   buildTabRail();
 
-  const tabRailEl = document.getElementById('tabRail');
-  const tabGhostEl = document.getElementById('tabGhost');
-  if (tabRailEl && tabGhostEl) {
-    tabRailEl.addEventListener('pointerover', (e) => {
-      const btn = e.target.closest('.tab-btn');
-      if (!btn || btn.dataset.id === currentTabId) { tabGhostEl.style.opacity = '0'; return; }
-      const g = railGeom.get(btn.dataset.id);
-      if (!g) return;
-      tabGhostEl.style.clipPath = ins(g);
-      tabGhostEl.style.opacity = '1';
-    });
-    tabRailEl.addEventListener('pointerleave', () => { tabGhostEl.style.opacity = '0'; });
-  }
-
+  document.body.classList.add('is-booted');
   const initialTab = getInitialTab();
   activateTab(initialTab, { pushHash: false, playSound: false, instant: true });
   initPointerField();
   initMagneticControls();
   initBarGlow();
-  initAmbientAccent();
-  initReturnMemory();
-  initIdleCinema();
+  initTabGhost();
+  initDebugOverlay();
+  syncHeroRestBox();
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
       measureRail();
+      syncHeroRestBox();
       document.documentElement.classList.add('fonts-ready');
     });
   } else {
@@ -3980,12 +4122,28 @@ const setupInteractions = () => {
     debTimer = setTimeout(() => {
       window.bgAnim.resize();
       measureRail();
+      syncHeroRestBox();
       const g = document.getElementById('appGrid');
       if (g && g.classList.contains('is-auto-flow')) {
         g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
       }
     }, 180);
   });
+
+  window.addEventListener('pageshow', () => {
+    let id = null;
+    try { id = localStorage.getItem('lx-last-open'); } catch (err) {}
+    if (!id) return;
+    const card = document.querySelector(`.app-card[data-app-id="${CSS.escape(id.split('::')[0])}"]`);
+    if (!card) return;
+    card.classList.add('is-returned');
+    card.addEventListener('animationend', () => card.classList.remove('is-returned'), { once: true });
+  });
+
+  ['pointermove', 'keydown', 'wheel', 'touchstart'].forEach(evt =>
+    document.addEventListener(evt, armIdle, { passive: true })
+  );
+  armIdle();
 
   window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', (e) => {
     if (getStoredTheme()) return;
@@ -3994,7 +4152,7 @@ const setupInteractions = () => {
 
   document.getElementById('themeToggle').addEventListener('click', (e) => {
     const isLight = document.documentElement.dataset.theme !== 'light';
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion = MQ.reducedMotion;
 
     if (!document.startViewTransition || reducedMotion) {
       applyTheme(isLight ? 'light' : 'dark');
@@ -4016,7 +4174,7 @@ const setupInteractions = () => {
     vt.ready.then(() => {
       document.documentElement.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
-        { duration: 700, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' }
+        { duration: 620, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' }
       );
     }).catch(() => {});
     vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) activeViewTransition = null; });
@@ -4031,7 +4189,7 @@ const setupInteractions = () => {
     try { localStorage.setItem('lx-sound', sfx.enabled ? '1' : '0'); } catch (e) {}
     soundBtn.setAttribute('aria-pressed', String(sfx.enabled));
     updateSoundButtonLabel();
-    soundBtn.querySelector('i').className = `fas ${sfx.enabled ? 'fa-volume-up' : 'fa-volume-mute'}`;
+    setIconClass(soundBtn.querySelector('i'), `fas ${sfx.enabled ? 'fa-volume-up' : 'fa-volume-mute'}`);
     if (sfx.enabled) sfx.arpUp();
   });
 
@@ -4182,6 +4340,7 @@ const setupInteractions = () => {
   paletteDialog.addEventListener('close', () => {
     document.querySelector('.container').classList.remove('is-dollied');
     document.querySelector('.controls-pill').classList.remove('is-dollied');
+    document.querySelector('.dolly-scrim').classList.remove('is-dollied');
     document.body.classList.remove('palette-open');
     if (paletteSkipCloseChime) paletteSkipCloseChime = false;
     else sfx.veil(false);
@@ -4199,19 +4358,17 @@ const setupInteractions = () => {
     if (!inside) requestClosePalette();
   });
 
-  const inlineInput = document.getElementById('lxInlineInput');
-  if (inlineInput) {
-    inlineInput.addEventListener('focus', () => { heroReturnFocus = true; });
-    inlineInput.addEventListener('input', (e) => {
-      if (e.isComposing) return;
-      if (!paletteDialog.open) openPalette(inlineInput.value);
-    });
-    inlineInput.addEventListener('keydown', (e) => {
-      if (paletteDialog.open || e.isComposing) return;
-      if (e.key === 'Enter' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        openPalette(inlineInput.value);
-      }
+  const searchBtn = document.getElementById('lxBarSearch');
+  if (searchBtn) {
+    const syncBarFocusState = () => {
+      const bar = document.getElementById('lxBar');
+      if (bar) bar.classList.toggle('is-focused', document.activeElement === searchBtn);
+    };
+    searchBtn.addEventListener('focus', syncBarFocusState);
+    searchBtn.addEventListener('blur', syncBarFocusState);
+    searchBtn.addEventListener('click', () => {
+      heroReturnFocus = true;
+      openPalette('');
     });
   }
 
@@ -4235,20 +4392,11 @@ const setupInteractions = () => {
   };
 
   document.addEventListener('keydown', (e) => {
-    if (paletteDialog.open) {
-      const kbdMap = { ArrowUp: '↑↓', ArrowDown: '↑↓', Tab: '⇥', Enter: '↵', Escape: 'Esc' };
-      const label = kbdMap[e.key];
-      if (label) {
-        const hintKbd = [...document.querySelectorAll('.palette-hints kbd')].find(k => k.textContent === label);
-        if (hintKbd) {
-          hintKbd.classList.add('is-pressed');
-          setTimeout(() => hintKbd.classList.remove('is-pressed'), 140);
-        }
-      }
-    }
     if ((e.metaKey || e.ctrlKey) && isPhysical(e, 'KeyK', 'k', 'ن')) {
       e.preventDefault();
-      togglePalette();
+      if (paletteDialog.open) { requestClosePalette(); return; }
+      if (document.activeElement === searchBtn) heroReturnFocus = true;
+      openPalette('');
       return;
     }
     if (e.key === 'Escape' && paletteDialog.open) {
@@ -4261,13 +4409,13 @@ const setupInteractions = () => {
     if (tag === 'input' || tag === 'textarea') return;
     if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
       e.preventDefault();
-      document.getElementById('lxInlineInput')?.focus();
+      heroReturnFocus = true;
+      openPalette('');
       return;
     }
     if (isTypeAhead(e)) {
       e.preventDefault();
-      const input = document.getElementById('lxInlineInput');
-      if (input) { input.value = e.key; input.focus(); }
+      heroReturnFocus = true;
       openPalette(e.key);
       return;
     }
@@ -4276,11 +4424,20 @@ const setupInteractions = () => {
       const cards = document.querySelectorAll('#appGrid .app-card');
       const card = cards[digit - 1];
       if (card) {
+        try { localStorage.setItem('lx-last-open', card.dataset.appId); } catch (err) {}
         card.classList.add('is-keylaunched');
         setTimeout(() => card.classList.remove('is-keylaunched'), 260);
         card.querySelector('.card-link-overlay')?.click();
       }
     }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const kbd = [...document.querySelectorAll('.palette-hints kbd')]
+      .find(k => k.textContent === e.key);
+    if (!kbd) return;
+    kbd.classList.add('is-pressed');
+    setTimeout(() => kbd.classList.remove('is-pressed'), 140);
   });
 };
 
