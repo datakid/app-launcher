@@ -820,14 +820,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 .app-card.status-closed:hover .closed-tint,
 .app-card.status-closed:focus-within .closed-tint { opacity: .48; }
 
-.app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
+.app-grid:has(.app-card:is(:hover, :focus-within)) .app-card:not(:hover, :focus-within) {
   opacity: 0.64;
 }
-.app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) .card-clip {
+.app-grid:has(.app-card:is(:hover, :focus-within)) .app-card:not(:hover, :focus-within) .card-clip {
   border-color: transparent;
 }
 
-.app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card.status-closed:not(:hover, :focus-visible) { opacity: 0.5; }
+.app-grid:has(.app-card:is(:hover, :focus-within)) .app-card.status-closed:not(:hover, :focus-within) { opacity: 0.5; }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
@@ -871,16 +871,17 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 .tab-btn:active { opacity: 0.7; transition-duration: 90ms; }
 
 .tab-btn .label {
-  display: inline-block; overflow: hidden; white-space: nowrap;
+  display: inline-block; overflow: clip; overflow-clip-margin: 0.4em; white-space: nowrap;
   max-width: 0; margin-inline-start: 0; vertical-align: top;
   padding-block: 1em; margin-block: -1em;
 }
 .tab-btn .label > span {
   display: inline-block; opacity: 0; transform: translateX(6px);
+  padding-inline: 0.22em 0.32em;
   transition: opacity 0.2s var(--ease-lux), transform var(--tab-dur) var(--ease-out);
 }
 :root[dir="rtl"] .tab-btn .label > span { transform: translateX(-6px); }
-.tab-btn[aria-selected="true"] .label { max-width: 220px; margin-inline-start: 0.5rem; }
+.tab-btn[aria-selected="true"] .label { max-width: var(--tab-label-width, 220px); margin-inline-start: 0.5rem; }
 .tab-btn[aria-selected="true"] .label > span { opacity: 1; transform: translateX(0); transition-delay: 0.12s; }
 
 ::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-lux) both; }
@@ -1256,11 +1257,13 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   .card-wide .app-icon, .card-hero .app-icon, .card-tall .app-icon { font-size: 1.6rem; }
   .card-wide .app-title, .card-hero .app-title, .card-tall .app-title { font-size: 1.6rem; }
   h1 { font-size: 2.6rem; }
-  .tab-rail { overflow-x: auto; }
+  .tab-rail { overflow-x: auto; scrollbar-width: none; overscroll-behavior-inline: contain; }
+  .tab-rail::-webkit-scrollbar { display: none; }
   .lx-bar-search { min-width: 0; padding-inline: 1rem; gap: 0.6rem; }
   .lx-bar-kbd { display: none; }
   .tab-btn { padding: 0.55rem 0.95rem; }
   .tab-btn[aria-selected="true"] .label > span { max-width: 9ch; text-overflow: ellipsis; overflow: hidden; display: inline-block; padding-block: 0.75em; margin-block: -0.75em; }
+  :root:lang(ar) .tab-btn[aria-selected="true"] .label > span { max-width: none; overflow: visible; text-overflow: clip; }
   #lx-palette { margin-top: 8vh; }
   .palette-status { display: none; }
   .lx-bar-label { font-size: 1.05rem; }
@@ -1301,7 +1304,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   .app-card { translate: none !important; }
   .app-card, .card-clip, .app-icon-wrapper, .app-title, .badges, .variant-chips,
   .tab-indicator, .tab-ghost, .variant-chip-indicator,
-  .app-grid:has(.app-card:is(:hover, :focus-visible)) .app-card:not(:hover, :focus-visible) {
+  .app-grid:has(.app-card:is(:hover, :focus-within)) .app-card:not(:hover, :focus-within) {
     transition-property: opacity, color, background-color, border-color, box-shadow;
   }
   #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
@@ -3103,6 +3106,13 @@ const measureRail = () => {
   const btns = [...rail.querySelectorAll('.tab-btn')];
   if (!btns.length) return;
 
+  btns.forEach((btn) => {
+    const span = btn.querySelector('.label > span');
+    if (!span) return;
+    const width = Math.max(span.scrollWidth, span.getBoundingClientRect().width);
+    btn.style.setProperty('--tab-label-width', `${Math.ceil(width) + 8}px`);
+  });
+
   const stage = document.createElement('div');
   stage.inert = true;
   stage.setAttribute('aria-hidden', 'true');
@@ -4275,9 +4285,13 @@ const setupInteractions = () => {
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
-      measureRail();
-      syncHeroRestBox();
-      document.documentElement.classList.add('fonts-ready');
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          measureRail();
+          syncHeroRestBox();
+          document.documentElement.classList.add('fonts-ready');
+        });
+      });
     });
   } else {
     document.documentElement.classList.add('fonts-ready');
