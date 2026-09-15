@@ -81,17 +81,19 @@
   --gap: clamp(0.7rem, 1.6vh, 1.15rem);
   --lx-panel-w: min(880px, 94vw);
   --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: var(--ease-lux);
   --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
+  --ease-io: cubic-bezier(.65, 0, .35, 1);
   --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.92 39.6%, 1.015 56.4%, 0.99 73.2%, 1 100%);
-  --tab-dur: 460ms;
+  --dur-tap: 90ms;
   --dur-micro: 160ms;
   --dur-fast: 300ms;
   --dur-base: 380ms;
+  --tab-dur: 460ms;
   --dur-slow: 620ms;
   --dur-story: 700ms;
-  --ease-out: cubic-bezier(.22, 1, .36, 1);
-  --ease-io: cubic-bezier(.65, 0, .35, 1);
+  --dur-ambient: 1s;
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
   --ui-font: 'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
   --display-font: 'El Messiri', 'El Messiri Fallback', var(--ui-font);
@@ -116,11 +118,12 @@
 @property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
 @property --hover-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
-:root { transition-property: --tab-accent, --hover-accent; transition-duration: 0.34s, 0.5s; transition-timing-function: var(--ease-lux), var(--ease-out); }
+:root { transition-property: --tab-accent, --hover-accent; transition-duration: var(--dur-fast), var(--dur-base); transition-timing-function: var(--ease-lux), var(--ease-out); }
 @property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --reveal-r { syntax: '<length>'; inherits: true; initial-value: 230px; }
+@property --icon-lift { syntax: '<number>'; inherits: false; initial-value: 0; }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; font-synthesis: none; }
 
@@ -134,7 +137,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: background 1s var(--ease-smooth), color 1s var(--ease-smooth);
+  transition: background var(--dur-ambient) var(--ease-smooth), color var(--dur-ambient) var(--ease-smooth);
 }
 
 a, button { cursor: pointer; }
@@ -163,7 +166,7 @@ a, button { cursor: pointer; }
 .scrim {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background: radial-gradient(circle at center, transparent 22%, color-mix(in oklab, var(--tab-accent) 3%, var(--bg)) 118%);
-  transition: background 1s var(--ease-smooth);
+  transition: background var(--dur-ambient) var(--ease-smooth);
 }
 
 .scrim::after {
@@ -183,7 +186,7 @@ a, button { cursor: pointer; }
     radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 5%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%),
     radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 5%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
   opacity: 0;
-  transition: opacity 0.6s var(--ease-lux);
+  transition: opacity var(--dur-slow) var(--ease-lux);
 }
 
 .spotlight.is-active { opacity: 1; }
@@ -199,7 +202,7 @@ body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
   padding: clamp(2.25rem, 3.6vh, 3.25rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3vh, 2.5rem);
   position: relative; z-index: 3;
   display: flex; flex-direction: column; gap: clamp(1rem, 2.2vh, 1.6rem);
-  transition: transform 0.45s var(--ease-lux);
+  transition: transform var(--dur-base) var(--ease-lux);
 }
 
 .container.is-dollied, .controls-pill.is-dollied {
@@ -209,14 +212,14 @@ body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
 .dolly-scrim {
   position: fixed; inset: 0; z-index: 150; pointer-events: none;
   background: #000; opacity: 0;
-  transition: opacity 0.45s var(--ease-lux);
+  transition: opacity var(--dur-base) var(--ease-lux);
 }
 .dolly-scrim.is-dollied { opacity: 0.28; }
 
 .site-header {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  animation: slideDown 0.9s var(--ease-lux) 0.06s both;
+  animation: slideDown var(--dur-story) var(--ease-lux) 0.06s both;
 }
 
 h1 {
@@ -253,7 +256,7 @@ h1 {
   border-radius: 50px; padding: 0.35rem; gap: 0.2rem;
   z-index: 100;
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-  transition: transform 0.45s var(--ease-lux), background 0.6s var(--ease-smooth), opacity 0.4s var(--ease-out);
+  transition: transform var(--dur-base) var(--ease-lux), background var(--dur-slow) var(--ease-smooth), opacity var(--dur-base) var(--ease-out);
 }
 
 .controls-pill button {
@@ -263,19 +266,19 @@ h1 {
   font-size: 1rem;
   touch-action: manipulation;
   transition:
-    background-color 0.4s var(--ease-lux),
-    color 0.4s var(--ease-lux),
-    transform 0.4s var(--ease-lux),
-    opacity 0.25s var(--ease-lux);
+    background-color var(--dur-base) var(--ease-lux),
+    color var(--dur-base) var(--ease-lux),
+    transform var(--dur-base) var(--ease-lux),
+    opacity var(--dur-fast) var(--ease-lux);
 }
-.controls-pill button:active { opacity: 0.65; transition-duration: 90ms; }
+.controls-pill button:active { opacity: 0.65; transition-duration: var(--dur-tap); }
 
 .controls-pill:not(.is-magnetic) button:hover {
   background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)); color: var(--text);
   transform: scale(1.06);
 }
 
-.controls-pill.is-magnetic button { transition: background-color 0.4s var(--ease-lux), color 0.4s var(--ease-lux), opacity 0.25s var(--ease-lux); }
+.controls-pill.is-magnetic button { transition: background-color var(--dur-base) var(--ease-lux), color var(--dur-base) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux); }
 .controls-pill.is-magnetic button:hover { background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)); color: var(--text); }
 
 .controls-pill button[aria-pressed="true"] { color: var(--text); background: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.1)); }
@@ -287,7 +290,7 @@ h1 {
   border: 1px solid var(--border); border-radius: 14px; padding: 0.35rem;
   box-shadow: var(--shadow-deep);
   opacity: 0; transform: scale(0.92); transform-origin: top left; pointer-events: none;
-  transition: opacity 0.18s var(--ease-lux), transform 0.18s var(--ease-lux);
+  transition: opacity var(--dur-micro) var(--ease-lux), transform var(--dur-micro) var(--ease-lux);
 }
 :root[dir="rtl"] .lx-context-menu { transform-origin: top right; }
 .lx-context-menu.is-open { opacity: 1; transform: scale(1); pointer-events: auto; }
@@ -296,12 +299,12 @@ h1 {
   padding: 0.55rem 0.7rem; border-radius: 9px; background: transparent; border: none;
   color: var(--text); font-size: 0.85rem; text-align: start;
   touch-action: manipulation;
-  transition: opacity 0.2s var(--ease-lux);
+  transition: opacity var(--dur-micro) var(--ease-lux);
 }
 .lx-context-menu button:hover, .lx-context-menu button:focus-visible { background: var(--surface-hover); outline: none; }
 .lx-context-menu button svg { width: 16px; text-align: center; color: var(--text-muted); font-size: 0.82rem; flex-shrink: 0; }
 .lx-context-menu button.is-active svg { color: var(--tab-accent); }
-.lx-context-menu button:active { opacity: 0.7; transition-duration: 90ms; }
+.lx-context-menu button:active { opacity: 0.7; transition-duration: var(--dur-tap); }
 .lx-context-menu-sep { height: 1px; background: var(--border); margin: 0.3rem 0.2rem; }
 
 .controls-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.2rem; }
@@ -316,15 +319,15 @@ h1 {
   -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid var(--border);
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
-  animation: slideDown 0.8s var(--ease-out) 0.06s both;
+  animation: slideDown var(--dur-story) var(--ease-out) 0.06s both;
   --tab-accent: #7c9bff;
   --c1: var(--tab-accent);
-  transition: --tab-accent 0.34s var(--ease-lux), border-color 0.34s var(--ease-lux), box-shadow 0.34s var(--ease-lux), opacity 120ms var(--ease-lux), transform 200ms var(--ease-lux);
+  transition: --tab-accent var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux), transform var(--dur-micro) var(--ease-lux);
   font-family: var(--ui-font); color: var(--text);
 }
 body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: none; }
 .lx-bar.is-focused { border-color: var(--border-highlight); box-shadow: var(--shadow-deep), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
-.lx-bar.is-focused .tab-rail { filter: saturate(.85); transition: filter 0.4s var(--ease-lux); }
+.lx-bar.is-focused .tab-rail { filter: saturate(.85); transition: filter var(--dur-base) var(--ease-lux); }
 
 .lx-bar-search {
   flex: 1; min-width: 22ch; min-height: 0;
@@ -337,7 +340,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
 }
 .lx-bar-search:hover .lx-bar-label, .lx-bar-search:focus-visible .lx-bar-label { color: var(--text); }
 .lx-bar-search svg.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; }
-.lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.2rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color 0.2s var(--ease-lux); }
+.lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.2rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color var(--dur-micro) var(--ease-lux); }
 .lx-bar-kbd { margin-inline-start: auto; font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 7px; padding: 0.2rem 0.6rem; flex-shrink: 0; }
 
 .lx-bar-divider { width: 1px; height: 26px; background: var(--border); margin-inline: 6px; flex-shrink: 0; }
@@ -352,7 +355,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
           mask-composite: exclude;
   opacity: var(--reveal-o);
-  transition: opacity 0.25s var(--ease-lux);
+  transition: opacity var(--dur-fast) var(--ease-lux);
 }
 :root[data-theme="light"] .lx-bar::after {
   background: radial-gradient(var(--reveal-r, 260px) circle at var(--rx) var(--ry),
@@ -415,7 +418,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   border-radius: var(--radius);
   --hov: 0;
   --depth: 7px;
-  animation: cardEnter 0.7s var(--ease-lux) both;
+  animation: cardEnter var(--dur-story) var(--ease-lux) both;
   animation-delay: 0s;
   transform: perspective(1600px) rotateX(calc(var(--ty) * -2.2deg)) rotateY(calc(var(--tx) * 2.2deg)) translateZ(var(--tz)) scale3d(var(--sc), var(--sc), var(--sc));
   transition: opacity var(--dur-fast) var(--ease-lux);
@@ -426,7 +429,9 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
 
 .card-shadow {
   position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent), inset 0 1px 1px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.045);
+  box-shadow: var(--shadow-soft), 0 10px 30px -20px color-mix(in oklab, var(--tint) 30%, transparent),
+    inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05)),
+    inset 0 0 0 1px light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.045));
 }
 .card-shadow::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
@@ -562,9 +567,9 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 }
 .card-link-overlay:focus-visible {
   outline-offset: -3px;
-  transition: outline-offset .15s var(--ease-out);
+  transition: outline-offset var(--dur-micro) var(--ease-out);
 }
-.card-link-overlay:focus-visible:not(:hover) { animation: focusSettle .3s var(--ease-out); }
+.card-link-overlay:focus-visible:not(:hover) { animation: focusSettle var(--dur-fast) var(--ease-out); }
 @keyframes focusSettle { from { outline-offset: -8px; } }
 
 .variant-chips, .variant-chip { pointer-events: auto; }
@@ -582,37 +587,51 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   font-family: var(--ui-font); font-size: 0.72rem; font-weight: 700;
   font-variant-numeric: tabular-nums;
   opacity: 0; transform: translateY(-4px) scale(0.85);
-  transition: opacity 0.25s var(--ease-lux), transform 0.25s var(--ease-spring);
+  transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring);
   pointer-events: none;
 }
 :root[data-theme="light"] .digit-badge { background: rgba(255,255,255,0.85); color: var(--text); }
 .app-grid:is(:hover, :focus-within) .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
 .app-card.is-keylaunched .digit-badge {
-  opacity: 1; transform: scale(1.35); background: var(--tab-accent); color: #fff;
+  opacity: 1; transform: scale(1.35);
+  background: var(--tint); color: #fff;
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--tint) 45%, transparent), 0 6px 16px -6px var(--tint);
 }
 
 .app-icon-wrapper {
-  width: clamp(46px, 6.4vh, 56px); height: clamp(46px, 6.4vh, 56px);
-  border-radius: 13px;
+  --icon-size: clamp(46px, 6.4vh, 56px);
+  --icon-radius: 13px;
+  --icon-veil: light-dark(rgba(255,255,255,.28), rgba(255,255,255,.42));
+  --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.10));
+  width: var(--icon-size); height: var(--icon-size);
+  border-radius: var(--icon-radius);
   background:
-    radial-gradient(60% 55% at 50% 28%, rgba(255,255,255,.42), transparent 68%),
+    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 16%) calc(28% - var(--ty,0) * 11%),
+      var(--icon-veil), transparent 68%),
     linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   display: flex; align-items: center; justify-content: center;
   box-shadow:
-    0 calc(10px + var(--ty,0) * 4px) 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
+    0 calc(10px + var(--ty,0) * 4px + var(--icon-lift) * 5px)
+      calc(24px + var(--icon-lift) * 10px) -10px
+      color-mix(in oklab, var(--c1) 45%, transparent),
     0 2px 6px -2px rgba(0,0,0,.35),
     inset 0 calc(1px + var(--ty,0) * 1.5px) 0 rgba(255,255,255,.42),
     inset 0 calc(-1px - var(--ty,0) * 1.5px) 0 rgba(0,0,0,.3),
-    inset 0 0 0 1px rgba(255,255,255,.10),
+    inset 0 0 0 1px var(--icon-rim),
     inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
-  transition: box-shadow var(--dur-fast) var(--ease-lux);
   position: relative; flex-shrink: 0;
-  
   transform:
-    translate3d(calc(var(--tx, 0) * var(--depth) * 1.0), calc(var(--ty, 0) * var(--depth) * 1.0), 0)
-    rotate(calc(var(--hov, 0) * -2deg))
-    scale(calc(1 + .05 * var(--hov, 0)));
+    translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0)
+    rotate(calc(var(--icon-lift) * -2deg))
+    scale(calc(1 + .05 * var(--icon-lift)));
 }
+
+.app-card .app-icon-wrapper { --icon-lift: var(--hov, 0); }
+.palette-item .app-icon-wrapper,
+.palette-detail .app-icon-wrapper { transition: --icon-lift var(--dur-fast) var(--ease-lux); }
+.palette-item:hover .app-icon-wrapper,
+.palette-item.is-active .app-icon-wrapper,
+.palette-detail .app-icon-wrapper { --icon-lift: 1; }
 
 .app-icon-wrapper::before {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -620,41 +639,21 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
     radial-gradient(72% 56% at calc(50% - var(--tx,0) * 15%) calc(24% - var(--ty,0) * 11%),
       rgba(255,255,255,.5) 0%, rgba(255,255,255,.15) 44%, rgba(255,255,255,0) 80%);
   mix-blend-mode: plus-lighter;
-  opacity: calc(.24 * var(--hov, 0));
+  opacity: calc(.24 * var(--icon-lift));
 }
 
 :root[data-theme="light"] .app-icon-wrapper::before {
   background:
     radial-gradient(72% 56% at calc(50% - var(--tx,0) * 15%) calc(24% - var(--ty,0) * 11%),
       rgba(255,255,255,.38) 0%, rgba(255,255,255,.11) 44%, rgba(255,255,255,0) 80%);
-  opacity: calc(.18 * var(--hov, 0));
-}
-
-:root[data-theme="light"] .app-icon-wrapper {
-  background:
-    radial-gradient(60% 55% at 50% 28%, rgba(255,255,255,.28), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
-  box-shadow:
-    0 calc(10px + var(--ty,0) * 4px) 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 calc(1px + var(--ty,0) * 1.5px) 0 rgba(255,255,255,.42),
-    inset 0 calc(-1px - var(--ty,0) * 1.5px) 0 rgba(0,0,0,.3),
-    inset 0 0 0 1px rgba(255,255,255,.22),
-    inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
+  opacity: calc(.18 * var(--icon-lift));
 }
 
 .app-icon-wrapper::after {
   content: ''; position: absolute; inset: -14px; border-radius: inherit;
   background: radial-gradient(circle, var(--tint), transparent 70%);
-  opacity: 0; z-index: -1; filter: blur(14px);
-  transition: opacity 0.6s var(--ease-lux);
+  opacity: calc(.32 * var(--icon-lift)); z-index: -1; filter: blur(14px);
 }
-
-.app-card:hover .app-icon-wrapper, .app-card:focus-within .app-icon-wrapper {
-  box-shadow: 0 15px 30px -5px rgba(0,0,0,0.5), inset 0 2px 3px rgba(255,255,255,0.5), inset 0 -2px 4px rgba(0,0,0,0.2);
-}
-
-.app-card:hover .app-icon-wrapper::after, .app-card:focus-within .app-icon-wrapper::after { opacity: 0.32; }
 
 .fa-svg, svg.fas { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; flex-shrink: 0; overflow: visible; }
 
@@ -663,10 +662,10 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   color: rgba(255,255,255,.96); text-shadow: 0 1px 2px rgba(0,0,0,.35);
   filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
   position: relative; z-index: 1;
-  transition: opacity 0.175s var(--ease-lux);
+  transition: opacity var(--dur-micro) var(--ease-lux);
 }
 
-.badges { display: flex; gap: 0.5rem; flex-direction: row; transform: translate3d(calc(var(--tx, 0) * var(--depth) * 1.3), calc(var(--ty, 0) * var(--depth) * 1.3), 0); }
+.badges { display: flex; gap: 0.5rem; flex-direction: row; transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 1.3), calc(var(--ty, 0) * var(--depth, 0px) * 1.3), 0); }
 
 .badge {
   display: inline-flex; align-items: center; gap: 0.35rem;
@@ -707,9 +706,9 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   letter-spacing: 0;
   text-wrap: balance;
   text-rendering: optimizeLegibility;
-  transform: translate3d(calc(var(--tx, 0) * var(--depth) * 1.6), calc(var(--ty, 0) * var(--depth) * 1.6), 0) scale(calc(1 + .006 * var(--hov, 0)));
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
-  transition: background-position 480ms var(--ease-lux);
+  transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 1.6), calc(var(--ty, 0) * var(--depth, 0px) * 1.6), 0) scale(calc(1 + .006 * var(--hov, 0)));
+  filter: drop-shadow(0 4px 12px light-dark(rgba(28,25,20,0.08), rgba(0,0,0,0.2)));
+  transition: background-position var(--dur-base) var(--ease-lux);
   background-image: linear-gradient(135deg,
     var(--text) 0%,
     var(--text) 38%,
@@ -752,7 +751,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   border-radius: 999px; flex-shrink: 0;
   background: light-dark(rgba(20,18,15,0.055), rgba(255,255,255,0.06));
   anchor-scope: --active-chip;
-  transform: translate3d(calc(var(--tx, 0) * var(--depth) * 0.7), calc(var(--ty, 0) * var(--depth) * 0.7), 0);
+  transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 0.7), calc(var(--ty, 0) * var(--depth, 0px) * 0.7), 0);
 }
 
 .variant-chip-indicator {
@@ -770,7 +769,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
     position-anchor: --active-chip;
     inset-inline-start: calc(anchor(--active-chip start) - 3px);
     inset-inline-end: calc(anchor(--active-chip end) - 3px);
-    transition: inset-inline-start 0.32s var(--ease-pill), inset-inline-end 0.44s var(--ease-pill);
+    transition: inset-inline-start var(--dur-fast) var(--ease-pill), inset-inline-end var(--dur-base) var(--ease-pill);
   }
 }
 @supports not (anchor-name: --a) {
@@ -784,26 +783,26 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   color: var(--text-muted);
   font-family: var(--ui-font); font-size: 0.68rem; font-weight: 600;
   touch-action: manipulation;
-  transition: color 0.25s var(--ease-lux), opacity 0.2s var(--ease-lux);
+  transition: color var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux);
 }
 .variant-chip.is-active { color: var(--text); }
-.variant-chip:active { opacity: 0.7; transition-duration: 90ms; }
-.variant-chip:focus-visible { outline: 2px solid var(--c1, #7c9bff); outline-offset: 1px; }
+.variant-chip:active { opacity: 0.7; transition-duration: var(--dur-tap); }
+.variant-chip:focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 1px; }
 
-.card-wide .app-icon-wrapper { width: clamp(52px, 7.2vh, 62px); height: clamp(52px, 7.2vh, 62px); border-radius: 15px; }
+.card-wide .app-icon-wrapper { --icon-size: clamp(52px, 7.2vh, 62px); --icon-radius: 15px; }
 .card-wide .app-icon { font-size: clamp(1.3rem, 3vh, 1.6rem); }
 .card-wide .app-title { font-size: clamp(1.3rem, 3vh, 1.6rem); }
 
 .card-hero .card-clip { flex-direction: row; align-items: center; padding: clamp(1.5rem, 3.5vh, 2.5rem); }
 .card-hero .bento-header { width: auto; align-items: center; gap: clamp(1rem, 2.5vh, 2rem); }
 .card-hero .bento-footer { width: auto; flex: 1; justify-content: flex-end; }
-.card-hero .app-icon-wrapper { width: clamp(72px, 9.5vh, 88px); height: clamp(72px, 9.5vh, 88px); border-radius: 18px; }
+.card-hero .app-icon-wrapper { --icon-size: clamp(72px, 9.5vh, 88px); --icon-radius: 18px; }
 .card-hero .app-icon { font-size: clamp(2rem, 4vh, 2.4rem); }
 .card-hero .app-title { font-size: clamp(2.1rem, 4.4vh, 3rem); font-weight: 700; letter-spacing: 0; }
 .card-hero .open-affordance { width: 32px; height: 32px; font-size: 0.75rem; }
 
 .card-tall .card-clip { justify-content: center; gap: clamp(1rem, 3vh, 1.75rem); }
-.card-tall .app-icon-wrapper { width: clamp(64px, 8.4vh, 84px); height: clamp(64px, 8.4vh, 84px); border-radius: 17px; }
+.card-tall .app-icon-wrapper { --icon-size: clamp(64px, 8.4vh, 84px); --icon-radius: 17px; }
 .card-tall .app-icon { font-size: clamp(1.7rem, 3.6vh, 2.2rem); }
 .card-tall .app-title { font-size: clamp(1.5rem, 3.4vh, 2.2rem); font-weight: 700; }
 
@@ -815,7 +814,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   background: hsl(0, 0%, 50%);
   mix-blend-mode: saturation;
   opacity: .74;
-  transition: opacity 0.32s var(--ease-lux);
+  transition: opacity var(--dur-fast) var(--ease-lux);
 }
 .app-card.status-closed:hover .closed-tint,
 .app-card.status-closed:focus-within .closed-tint { opacity: .48; }
@@ -851,7 +850,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   background: color-mix(in oklab, var(--text) 5%, transparent);
   clip-path: inset(0 100% 0 0 round 999px);
   opacity: 0;
-  transition: clip-path 0.3s var(--ease-io), opacity 0.2s var(--ease-out);
+  transition: clip-path var(--dur-fast) var(--ease-io), opacity var(--dur-micro) var(--ease-out);
 }
 
 .tab-btn {
@@ -862,13 +861,13 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   font-family: var(--ui-font);
   font-size: 0.92rem; font-weight: 600; white-space: nowrap;
   touch-action: manipulation;
-  transition: color var(--tab-dur) var(--ease-out), opacity 0.2s var(--ease-lux);
+  transition: color var(--tab-dur) var(--ease-out), opacity var(--dur-micro) var(--ease-lux);
 }
 
 .tab-btn svg { font-size: 0.85rem; transition: color var(--tab-dur) var(--ease-out); }
 .tab-btn[aria-selected="true"] { color: var(--text); }
 .tab-btn[aria-selected="true"] svg { color: var(--tab-accent); }
-.tab-btn:active { opacity: 0.7; transition-duration: 90ms; }
+.tab-btn:active { opacity: 0.7; transition-duration: var(--dur-tap); }
 
 .tab-btn .label {
   display: inline-block; overflow: clip; overflow-clip-margin: 0.4em; white-space: nowrap;
@@ -878,14 +877,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 .tab-btn .label > span {
   display: inline-block; opacity: 0; transform: translateX(6px);
   padding-inline: 0.22em 0.32em;
-  transition: opacity 0.2s var(--ease-lux), transform var(--tab-dur) var(--ease-out);
+  transition: opacity var(--dur-micro) var(--ease-lux), transform var(--tab-dur) var(--ease-out);
 }
 :root[dir="rtl"] .tab-btn .label > span { transform: translateX(-6px); }
 .tab-btn[aria-selected="true"] .label { max-width: var(--tab-label-width, 220px); margin-inline-start: 0.5rem; }
 .tab-btn[aria-selected="true"] .label > span { opacity: 1; transform: translateX(0); transition-delay: 0.12s; }
 
-::view-transition-old(grid) { animation: lx-grid-out 0.26s var(--ease-lux) both; }
-::view-transition-new(grid) { animation: lx-grid-in 0.28s var(--ease-lux) both; }
+::view-transition-old(grid) { animation: lx-grid-out var(--dur-fast) var(--ease-lux) both; }
+::view-transition-new(grid) { animation: lx-grid-in var(--dur-fast) var(--ease-lux) both; }
 
 @keyframes lx-grid-out {
   to { transform: translateX(calc(var(--dir, 1) * -18px)) scale(0.98); opacity: 0; }
@@ -895,11 +894,11 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   to { transform: none; opacity: 1; }
 }
 
-.app-grid.is-out { animation: lx-grid-out 0.22s var(--ease-lux) both; }
+.app-grid.is-out { animation: lx-grid-out var(--dur-micro) var(--ease-lux) both; }
 
-::view-transition-group(.tile) { animation-duration: .3s; animation-timing-function: var(--ease-lux); }
-::view-transition-old(.tile)   { animation: lx-tile-out .14s var(--ease-lux) both; }
-::view-transition-new(.tile)   { animation: lx-tile-in  .22s var(--ease-lux) .05s both; }
+::view-transition-group(.tile) { animation-duration: var(--dur-fast); animation-timing-function: var(--ease-lux); }
+::view-transition-old(.tile)   { animation: lx-tile-out var(--dur-micro) var(--ease-lux) both; }
+::view-transition-new(.tile)   { animation: lx-tile-in  var(--dur-micro) var(--ease-lux) .05s both; }
 @keyframes lx-tile-out { to   { opacity: 0; transform: scale(.97); } }
 @keyframes lx-tile-in  { from { opacity: 0; transform: scale(1.02); } }
 
@@ -921,7 +920,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   border-radius: 28px; box-shadow: var(--shadow-deep), inset 0 1px 1px rgba(255,255,255,0.1), inset 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.12));
   padding: 0; overflow: hidden; color: var(--text);
   opacity: 0; transform: translateY(-10px) scale(0.97);
-  transition: opacity 0.3s var(--ease-spring), transform 0.3s var(--ease-spring), --live-accent 0.45s var(--ease-lux), display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+  transition: opacity var(--dur-fast) var(--ease-spring), transform var(--dur-fast) var(--ease-spring), --live-accent var(--dur-base) var(--ease-lux), display var(--dur-fast) allow-discrete, overlay var(--dur-fast) allow-discrete;
 }
 #lx-palette:not([open]) { pointer-events: none; }
 
@@ -945,7 +944,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   -webkit-backdrop-filter: blur(22px);
   opacity: 0;
   
-  transition: opacity 220ms var(--ease-lux), display 220ms allow-discrete, overlay 220ms allow-discrete;
+  transition: opacity var(--dur-micro) var(--ease-lux), display var(--dur-micro) allow-discrete, overlay var(--dur-micro) allow-discrete;
 }
 #lx-palette[open]::backdrop { opacity: 1; }
 @starting-style { #lx-palette[open]::backdrop { opacity: 0; } }
@@ -983,7 +982,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   50% { scale: 1.15; opacity: 1; }
 }
 
-.palette-body { display: flex; flex: 1; min-height: 0; transition: opacity 0.16s var(--ease-out); }
+.palette-body { display: flex; flex: 1; min-height: 0; transition: opacity var(--dur-micro) var(--ease-out); }
 .palette-body.is-collapsing { opacity: 0; }
 
 .palette-results {
@@ -1007,8 +1006,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   position: relative; isolation: isolate; overflow: hidden;
   display: flex; align-items: center; gap: 1rem;
   padding: 0.85rem 1.05rem; border-radius: 15px; cursor: pointer;
-  transition: background 0.2s var(--ease-lux), box-shadow 0.2s var(--ease-lux);
-  animation: paletteItemIn .3s var(--ease-lux) both;
+  transition: background var(--dur-micro) var(--ease-lux), box-shadow var(--dur-micro) var(--ease-lux);
+  animation: paletteItemIn var(--dur-fast) var(--ease-lux) both;
   animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 20ms);
 }
 
@@ -1017,11 +1016,11 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   background: linear-gradient(115deg, transparent 32%, rgba(255,255,255,.16) 47%, rgba(255,255,255,.05) 53%, transparent 68%);
   background-size: 260% 100%; background-position: 150% 0;
   opacity: 0; mix-blend-mode: overlay;
-  transition: opacity 0.3s var(--ease-out);
+  transition: opacity var(--dur-fast) var(--ease-out);
 }
 .palette-item:hover::after {
   opacity: 1; background-position: -50% 0;
-  transition: background-position 0.7s var(--ease-io), opacity 0.3s var(--ease-out);
+  transition: background-position var(--dur-story) var(--ease-io), opacity var(--dur-fast) var(--ease-out);
 }
 :root[data-theme="light"] .palette-item::after { mix-blend-mode: soft-light; }
 
@@ -1032,23 +1031,11 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 .palette-item::before {
   content: ''; position: absolute; inset-inline-start: 4px; top: 18%; bottom: 18%;
   width: 4px; border-radius: 999px; background: var(--live-accent);
-  transform: scaleY(0.4); opacity: 0; transition: transform 0.3s var(--ease-spring), opacity 0.3s var(--ease-lux);
+  transform: scaleY(0.4); opacity: 0; transition: transform var(--dur-fast) var(--ease-spring), opacity var(--dur-fast) var(--ease-lux);
 }
 .palette-item.is-active::before { transform: scaleY(1); opacity: 1; }
 
-.palette-item .app-icon-wrapper {
-  width: 42px; height: 42px; border-radius: 13px;
-  background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 28%) calc(28% - var(--ty,0) * 18%),
-      rgba(255,255,255,.42), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
-  box-shadow:
-    0 10px 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.38),
-    inset 0 -1px 0 rgba(0,0,0,.28),
-    inset 0 0 0 1px rgba(255,255,255,.10);
-}
+.palette-item .app-icon-wrapper { --icon-size: 42px; --icon-radius: 13px; }
 .palette-item .app-icon { font-size: 1.1rem; }
 .palette-item-text { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
 .palette-item-title { font-weight: 600; color: var(--text); font-size: 1.02rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1079,34 +1066,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   color: color-mix(in oklab, var(--tint) 16%, transparent);
 }
 
-.palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; animation: detailIn .32s var(--ease-lux) both; }
-.palette-detail .app-icon-wrapper {
-  width: 64px; height: 64px; border-radius: 18px;
-  background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 28%) calc(28% - var(--ty,0) * 18%),
-      rgba(255,255,255,.42), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
-  box-shadow:
-    0 10px 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.38),
-    inset 0 -1px 0 rgba(0,0,0,.28),
-    inset 0 0 0 1px rgba(255,255,255,.10);
-}
-
-:root[data-theme="light"] .palette-item .app-icon-wrapper,
-:root[data-theme="light"] .palette-detail .app-icon-wrapper {
-  background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 28%) calc(28% - var(--ty,0) * 18%),
-      rgba(255,255,255,.28), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
-  box-shadow:
-    0 10px 24px -10px color-mix(in oklab, var(--c1) 45%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.38),
-    inset 0 -1px 0 rgba(0,0,0,.28),
-    inset 0 0 0 1px rgba(255,255,255,.22);
-}
+.palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; animation: detailIn var(--dur-fast) var(--ease-lux) both; }
+.palette-detail .app-icon-wrapper { --icon-size: 64px; --icon-radius: 18px; }
 .palette-detail .app-icon { font-size: 1.35rem; }
 
 .palette-detail-title-wrap { min-width: 0; }
@@ -1133,7 +1094,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   font-size: 0.88rem; color: var(--text-muted);
   background: color-mix(in oklab, #d06868 8%, transparent); border: 1px solid color-mix(in oklab, #d06868 22%, transparent);
   border-radius: 14px; padding: 0.7rem 0.95rem;
-  animation: detailIn .32s var(--ease-lux) .05s both;
+  animation: detailIn var(--dur-fast) var(--ease-lux) .05s both;
 }
 @keyframes detailIn { from { opacity: 0; translate: 0 8px; } }
 .palette-detail-badge {
@@ -1146,22 +1107,22 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 .palette-detail-badge.badge-variant { color: #7ea4e8; border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
 .palette-detail-badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-.palette-actions { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.5rem; animation: detailIn .32s var(--ease-lux) .09s both; }
+.palette-actions { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 0.5rem; animation: detailIn var(--dur-fast) var(--ease-lux) .09s both; }
 .palette-action {
   display: flex; align-items: center; gap: 0.9rem; width: 100%; text-align: start;
   background: var(--surface); border: 1px solid var(--border); color: var(--text);
   padding: 0.75rem 1rem; border-radius: 14px;
   font-family: var(--ui-font); font-size: 0.95rem; font-weight: 600;
   touch-action: manipulation;
-  transition: background 0.25s var(--ease-lux), border-color 0.25s var(--ease-lux), opacity 0.2s var(--ease-lux);
+  transition: background var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux);
 }
-.palette-action:active { opacity: 0.75; transition-duration: 90ms; }
+.palette-action:active { opacity: 0.75; transition-duration: var(--dur-tap); }
 .palette-action-icon {
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
   width: 34px; height: 34px; border-radius: 11px;
   background: light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05));
   color: var(--text-muted);
-  transition: background 0.25s var(--ease-lux), color 0.25s var(--ease-lux);
+  transition: background var(--dur-fast) var(--ease-lux), color var(--dur-fast) var(--ease-lux);
 }
 .palette-action-label { flex: 1; }
 .palette-action kbd { font-size: 0.68rem; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.18rem 0.55rem; flex-shrink: 0; }
@@ -1186,7 +1147,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   opacity: .8;
 }
 .palette-hints span { display: inline-flex; align-items: center; gap: 0.35rem; }
-.palette-hints kbd { font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.12rem 0.45rem; box-shadow: 0 1px 0 var(--border); transition: transform 0.12s var(--ease-spring), background-color 0.2s var(--ease-out); }
+.palette-hints kbd { font-size: 0.7rem; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.12rem 0.45rem; box-shadow: 0 1px 0 var(--border); transition: transform var(--dur-micro) var(--ease-spring), background-color var(--dur-micro) var(--ease-out); }
 .palette-hints kbd.is-pressed { transform: translateY(1px) scale(.94); background: var(--surface-hover); }
 .palette-status {
   position: absolute; inset-inline-start: 1.5rem; top: 50%; transform: translateY(-50%);
@@ -1196,7 +1157,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 .palette-ghost-hint {
   display: inline-block; margin-inline-start: 0.3em;
   color: var(--live-accent, var(--tab-accent));
-  animation: ghostHintFlash .9s var(--ease-out);
+  animation: ghostHintFlash var(--dur-story) var(--ease-out);
 }
 @keyframes ghostHintFlash {
   0% { opacity: 0; scale: .6; }
@@ -1207,7 +1168,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 .grid-empty {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 0.9rem; color: var(--text-muted); opacity: 0.7;
-  animation: cardEnter 0.7s var(--ease-lux) both;
+  animation: cardEnter var(--dur-story) var(--ease-lux) both;
 }
 .grid-empty svg { font-size: 2.4rem; }
 .grid-empty span { font-size: 0.95rem; }
@@ -1241,8 +1202,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 @media (max-width: 1024px) {
   @supports (animation-timeline: view()) {
     .app-card {
-      animation-timeline: view(), auto;
-      animation-range: entry 0% cover 22%, normal;
+      animation-timeline: view();
+      animation-range: entry 0% cover 22%;
     }
   }
 }
@@ -1253,7 +1214,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   .container { height: auto; padding-top: 5rem; padding-bottom: 2rem; gap: 1rem; }
   .app-grid { flex: none; grid-template-columns: 1fr !important; grid-template-rows: none !important; grid-auto-rows: 180px; gap: 1rem; }
   .app-card, .app-card.card-wide, .app-card.card-hero, .app-card.card-tall { grid-column: 1 / -1 !important; grid-row: auto !important; }
-  .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper, .card-tall .app-icon-wrapper { width: 60px; height: 60px; border-radius: 16px; }
+  .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper, .card-tall .app-icon-wrapper { --icon-size: 60px; --icon-radius: 16px; }
   .card-wide .app-icon, .card-hero .app-icon, .card-tall .app-icon { font-size: 1.6rem; }
   .card-wide .app-title, .card-hero .app-title, .card-tall .app-title { font-size: 1.6rem; }
   h1 { font-size: 2.6rem; }
@@ -1311,7 +1272,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   .lx-bar { transition-property: opacity; }
   .tab-btn .label, .tab-btn .label > span { transition: none !important; }
   .tab-indicator { transition: none !important; }
-  .palette-item::after { transition: opacity 0.3s var(--ease-out) !important; background-position: 50% 0 !important; }
+  .palette-item::after { transition: opacity var(--dur-fast) var(--ease-out) !important; background-position: 50% 0 !important; }
   .lx-context-menu { transition: opacity 0.01ms; transform: none !important; }
 }
 
@@ -1926,6 +1887,9 @@ const MQ = (() => {
   return state;
 })();
 
+const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
+
 class Spring {
   constructor(k = 190, c = 24, v = 0, scale = 1, px = false) {
     this.k = k; this.c = c; this.v = v; this.dv = 0; this.to = v;
@@ -2432,8 +2396,8 @@ const staggerCardEntry = (grid, isBootBatch) => {
   cards.forEach((c, i) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
     c.style.animationDelay = scrollDriven
-      ? `0s, calc(0.95s + var(--i, ${i}) * 0.29s)`
-      : `${bootOffset + Math.round((dists[i] / max) * 220)}ms, calc(0.95s + var(--i, ${i}) * 0.29s)`;
+      ? '0s'
+      : `${bootOffset + Math.round((dists[i] / max) * 220)}ms`;
     if (!skipEntryAnim) {
       c.style.willChange = 'transform, opacity';
       c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
@@ -3172,7 +3136,7 @@ const moveIndicator = (toId, fromId) => {
 
   railAnim = ind.animate(
     [{ clipPath: ins(from) }, { clipPath: ins(mid), offset: 0.42 }, { clipPath: ins(to) }],
-    { duration: 460, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }
+    { duration: 460, easing: EASE_LUX, fill: 'both' }
   );
   railAnim.finished.then(() => {
     ind.style.clipPath = ins(to);
@@ -3955,8 +3919,6 @@ const openPaletteItem = (i) => {
   executeAction('new-tab');
 };
 
-const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
-const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
 const MORPH_OPEN_MS = 420;
 const MORPH_CLOSE_MS = 250;
 
@@ -4358,7 +4320,7 @@ const setupInteractions = () => {
     vt.ready.then(() => {
       document.documentElement.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
-        { duration: 620, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' }
+        { duration: 620, easing: EASE_LUX, pseudoElement: '::view-transition-new(root)' }
       );
     }).catch(() => {});
     vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) activeViewTransition = null; });
