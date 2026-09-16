@@ -1407,7 +1407,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
           ],
           "defaultVariant": 0
         },
-        { "id": "plan-maker", "title": { "ar": "الخطة", "en": "Plan Maker" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-calendar-days", "gradient": ["#9c6fa8", "#e5c3ef", "#5b2f66"], "isNew": true, "since": "2026-08-30" }
+        {
+          "id": "plan-maker", "title": { "ar": "الخطة", "en": "Plan Maker" }, "icon": "fa-calendar-days", "gradient": ["#9c6fa8", "#e5c3ef", "#5b2f66"], "isNew": true, "since": "2026-08-30",
+          "variants": [
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders" }
+          ],
+          "defaultVariant": 0
+        }
       ]
     },
     {
