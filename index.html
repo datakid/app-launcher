@@ -226,7 +226,6 @@ body.is-zen .container {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   animation: slideDown var(--dur-story) var(--ease-lux) 0.06s both;
-  overflow: clip;
   max-block-size: var(--site-header-height, 180px);
   transform: translateY(0) scale(1);
   transform-origin: center top;
@@ -234,6 +233,7 @@ body.is-zen .container {
 }
 
 body.is-zen .site-header {
+  overflow: clip;
   max-block-size: 0;
   opacity: 0;
   transform: translateY(-12px) scale(0.985);
