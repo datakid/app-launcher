@@ -674,7 +674,7 @@ kbd {
   border-radius: var(--radius);
   --hov: 0;
   --depth: 7px;
-  animation: cardEnter var(--dur-story) var(--ease-lux) both;
+  animation: cardEnter var(--dur-story) var(--ease-lux) backwards;
   animation-delay: 0s;
   transition: opacity var(--dur-fast) var(--ease-lux) 90ms;
   -webkit-tap-highlight-color: transparent;
@@ -2167,6 +2167,7 @@ const STRINGS = {
   importConfirm: { ar: 'سيتم استبدال روابطك الحالية ({m}) بـ {n} رابط من الملف. متابعة؟', en: 'Replace your {m} current link(s) with {n} from this file?' },
   importConfirmNew: { ar: 'إضافة {n} رابط من الملف إلى «روابطي»؟', en: 'Add {n} link(s) from this file to “My Links”?' },
   importDone: { ar: 'تم استيراد {n} رابط', en: 'Imported {n} link(s)' },
+  importPrefsDone: { ar: 'تم استيراد إعداداتك', en: 'Your settings were imported' },
   importSkipped: { ar: '(تم تجاهل {n} غير صالح)', en: '({n} invalid skipped)' },
   exportDone: { ar: 'تم تصدير بياناتك', en: 'Your data was exported' },
   resetConfirm: { ar: 'حذف كل روابطك المستوردة؟', en: 'Remove all your imported links?' },
@@ -2223,7 +2224,7 @@ const LEGACY_IDS = {
     const recents = JSON.parse(localStorage.getItem('lx-recents') || '[]');
     if (Array.isArray(recents)) {
       localStorage.setItem('lx-recents',
-        JSON.stringify(recents.map(tt => LEGACY_IDS[tt]).filter(Boolean)));
+        JSON.stringify(recents.map(tt => LEGACY_IDS[tt] || tt).filter(x => typeof x === 'string')));
     }
     localStorage.setItem('lx-schema', String(SCHEMA));
   } catch (e) { if (LX_DEBUG) console.warn(e); }
@@ -3916,6 +3917,7 @@ const buildTabRail = () => {
       if (currentTabId !== cat.id) activateTab(cat.id);
     });
     btn.addEventListener('click', () => {
+      if (currentTabId === cat.id) { btn._pdActivated = false; return; }
       if (btn._pdActivated) { btn._pdActivated = false; return; }
       setInteractionOrigin(btn);
       activateTab(cat.id);
@@ -3933,7 +3935,7 @@ const getInitialTab = () => {
   let stored = null;
   try { stored = localStorage.getItem('lx-last-tab'); } catch (e) { if (LX_DEBUG) console.warn(e); }
   if (categories.some(c => c.id === stored)) return stored;
-  return categories[0].id;
+  return categories[0]?.id;
 };
 
 const handleHashNav = () => {
@@ -5624,7 +5626,6 @@ const hashId = (s) => {
 
 const cleanUserLinks = (raw) => {
   const list = Array.isArray(raw) ? raw : isObj(raw) && Array.isArray(raw.links) ? raw.links : fail('importInvalid');
-  if (list.length > LIMITS.userLinks) fail('importTooMany');
   const seenUrls = new Set(), seenIds = new Set(), links = [];
   list.forEach((item) => {
     const app = cleanApp(item, { allowHttp: false, allowVariants: false });
@@ -5636,6 +5637,7 @@ const cleanUserLinks = (raw) => {
     app.id = id;
     links.push(app);
   });
+  if (links.length > LIMITS.userLinks) fail('importTooMany');
   return { links, skipped: list.length - links.length };
 };
 
@@ -5774,18 +5776,21 @@ const importUserLinks = async () => {
     let raw;
     try { raw = JSON.parse((await file.text()).replace(/^\ufeff/, '')); } catch (e) { fail('importInvalid'); }
     const { links, skipped } = cleanUserLinks(raw);
-    if (!links.length) fail('importEmpty');
-    const current = readUserLinks().length;
-    const question = current
-      ? fmt('importConfirm', { n: links.length, m: current })
-      : fmt('importConfirmNew', { n: links.length });
-    if (!window.confirm(question)) return;
-    try { localStorage.setItem(USER_LINKS_KEY, JSON.stringify(links)); } catch (e) { fail('storageFailed'); }
-    if (isObj(raw)) applyImportedPrefs(raw.prefs);
+    const prefs = isObj(raw) && isObj(raw.prefs) ? raw.prefs : null;
+    if (!links.length && !prefs) fail('importEmpty');
+    if (links.length) {
+      const current = readUserLinks().length;
+      const question = current
+        ? fmt('importConfirm', { n: links.length, m: current })
+        : fmt('importConfirmNew', { n: links.length });
+      if (!window.confirm(question)) return;
+      try { localStorage.setItem(USER_LINKS_KEY, JSON.stringify(links)); } catch (e) { fail('storageFailed'); }
+    }
+    if (prefs) applyImportedPrefs(prefs);
     composeCategories();
-    rebuildCatalogUI(USER_CAT_ID);
+    rebuildCatalogUI(links.length ? USER_CAT_ID : undefined);
     const note = skipped ? ` ${fmt('importSkipped', { n: skipped })}` : '';
-    showToast(fmt('importDone', { n: links.length }) + note);
+    showToast((links.length ? fmt('importDone', { n: links.length }) : t('importPrefsDone')) + note);
     sfx.arpUp();
   } catch (e) {
     const key = IMPORT_ERRORS.includes(e && e.message) ? e.message : 'importInvalid';
@@ -5799,7 +5804,12 @@ const exportUserData = () => {
   try {
     ['theme', 'lang', 'sound'].forEach((k) => { const v = localStorage.getItem('lx-' + k); if (v !== null) prefs[k] = v; });
   } catch (e) { if (LX_DEBUG) console.warn(e); }
-  categories.forEach(c => c.apps.forEach((a) => { if (a.variants) prefs.variants[a.id] = getSelectedVariantIndex(a); }));
+  categories.forEach(c => c.apps.forEach((a) => {
+    if (!a.variants) return;
+    let stored = null;
+    try { stored = localStorage.getItem('lx-variant-' + a.id); } catch (e) { if (LX_DEBUG) console.warn(e); }
+    if (stored !== null) prefs.variants[a.id] = getSelectedVariantIndex(a);
+  }));
   const links = readUserLinks().map(({ title, url, icon: ic, gradient }) => ({ title, url, icon: ic, color: gradient[0] }));
   const body = JSON.stringify({ app: 'linkexpress', version: 1, exportedAt: new Date().toISOString(), links, prefs }, null, 2);
   const a = document.createElement('a');
