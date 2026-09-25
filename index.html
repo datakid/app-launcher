@@ -224,14 +224,15 @@
   --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
   --ease-io: cubic-bezier(.65, 0, .35, 1);
   --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.92 39.6%, 1.015 56.4%, 0.99 73.2%, 1 100%);
-  --dur-tap: 90ms;
-  --dur-micro: 160ms;
-  --dur-fast: 300ms;
-  --dur-base: 380ms;
-  --tab-dur: 460ms;
-  --dur-slow: 620ms;
-  --dur-story: 700ms;
-  --dur-ambient: 1s;
+  --ease-in: cubic-bezier(.4, 0, 1, 1);
+  --dur-tap: 80ms;
+  --dur-micro: 150ms;
+  --dur-fast: 240ms;
+  --dur-base: 340ms;
+  --tab-dur: 400ms;
+  --dur-slow: 520ms;
+  --dur-story: 560ms;
+  --dur-ambient: 600ms;
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
   --ui-font: 'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
   --display-font: 'El Messiri', 'El Messiri Fallback', var(--ui-font);
@@ -248,8 +249,8 @@
 :root[data-theme="dark"] { color-scheme: dark; }
 
 @property --live-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
-@property --mx { syntax: '<length-percentage>'; inherits: true; initial-value: 50%; }
-@property --my { syntax: '<length-percentage>'; inherits: true; initial-value: -20%; }
+@property --gx { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --gy { syntax: '<length>'; inherits: true; initial-value: 0px; }
 @property --tx { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --ty { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tz { syntax: '<length>'; inherits: false; initial-value: 0px; }
@@ -257,7 +258,7 @@
 @property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
 @property --hover-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
-:root { transition-property: --tab-accent, --hover-accent; transition-duration: var(--dur-fast), var(--dur-base); transition-timing-function: var(--ease-lux), var(--ease-out); }
+:root { transition-property: --tab-accent; transition-duration: var(--dur-fast); transition-timing-function: var(--ease-lux); }
 @property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
@@ -265,6 +266,9 @@
 @property --icon-lift { syntax: '<number>'; inherits: false; initial-value: 0; }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; font-synthesis: none; }
+a, button, [role="tab"], [role="option"] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+html.lx-theme-swapping *, html.lx-theme-swapping *::before, html.lx-theme-swapping *::after { transition: none !important; }
 
 html,body { height: 100dvh; width: 100vw; overflow: hidden; }
 
@@ -318,7 +322,7 @@ a, button { cursor: pointer; }
   position: fixed; inset: 0; z-index: 0;
   pointer-events: none;
   transform: scale(1.06); opacity: 0;
-  animation: fadeIn 2.5s var(--ease-lux) forwards;
+  animation: fadeIn 900ms var(--ease-lux) forwards;
 }
 
 .scrim {
@@ -336,22 +340,28 @@ a, button { cursor: pointer; }
 :root[data-theme="light"] .scrim::after { opacity: 0.14; }
 
 .spotlight {
-  position: fixed; inset: 0; z-index: 2; pointer-events: none;
-  background:
-    radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03)), transparent 70%),
-    radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022)), transparent 70%);
-  background:
-    radial-gradient(900px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 3%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%),
-    radial-gradient(320px circle at var(--sx, 50%) var(--sy, 15%), color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 3%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
+  position: fixed; left: 0; top: 0; z-index: 2; pointer-events: none;
+  width: 1800px; height: 1800px; margin: -900px 0 0 -900px;
+  border-radius: 50%;
+  transform: translate3d(50vw, 15vh, 0);
+  will-change: transform, opacity;
+  contain: strict;
+  background: radial-gradient(closest-side, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03)), transparent 70%);
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 3%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%);
   opacity: 0;
-  transition: opacity var(--dur-slow) var(--ease-lux);
+  transition: opacity var(--dur-slow) var(--ease-lux), --hover-accent var(--dur-base) var(--ease-lux);
+}
+.spotlight::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 640px; height: 640px; margin: -320px 0 0 -320px; border-radius: 50%;
+  background: radial-gradient(closest-side, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022)), transparent 70%);
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 3%, light-dark(rgba(255,255,255,0.13), rgba(255,255,255,0.022))), transparent 70%);
 }
 
 .spotlight.is-active { opacity: 1; }
 .spotlight.is-active.is-idle { opacity: 0.45; }
 
 body.is-cinema .spotlight { opacity: .55; transition: opacity 2.5s var(--ease-io); }
-body.is-cinema h1 { animation: shimmerText 6s var(--ease-io) infinite alternate; }
 body.is-cinema .controls-pill { opacity: .5; }
 @media (hover: hover) and (pointer: fine) {
   body:has(.app-card:hover) .spotlight.is-active { opacity: 0.3; }
@@ -367,6 +377,7 @@ body.is-cinema .controls-pill { opacity: .5; }
 
 .container.is-dollied, .controls-pill.is-dollied {
   transform: scale(0.97);
+  will-change: transform;
 }
 
 body.is-zen .container {
@@ -517,7 +528,7 @@ h1 {
   animation: slideDown var(--dur-story) var(--ease-out) 0.06s both;
   --tab-accent: #7c9bff;
   --c1: var(--tab-accent);
-  transition: --tab-accent var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux), transform var(--dur-micro) var(--ease-lux), height var(--dur-base) var(--ease-lux);
+  transition: --tab-accent var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux), transform var(--dur-micro) var(--ease-lux);
   font-family: var(--ui-font); color: var(--text);
 }
 body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: none; }
@@ -563,6 +574,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
 
 .app-grid {
   flex: 1 1 0; min-height: 0;
+  position: relative;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(3, 1fr);
@@ -615,8 +627,17 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   --depth: 7px;
   animation: cardEnter var(--dur-story) var(--ease-lux) both;
   animation-delay: 0s;
-  transform: perspective(1600px) rotateX(calc(var(--ty) * -2.2deg)) rotateY(calc(var(--tx) * 2.2deg)) translateZ(var(--tz)) scale3d(var(--sc), var(--sc), var(--sc));
-  transition: opacity var(--dur-fast) var(--ease-lux);
+  transition: opacity var(--dur-fast) var(--ease-lux) 90ms;
+  -webkit-tap-highlight-color: transparent;
+}
+.app-card:hover,
+.app-grid:has(.app-card:hover) .app-card:not(:hover),
+.app-card:focus-within,
+.app-grid:has(.app-card:focus-within) .app-card:not(:focus-within) { transition-delay: 0ms; }
+@media not ((hover: hover) and (pointer: fine)) {
+  .app-card { transition: opacity var(--dur-fast) var(--ease-lux), transform 420ms var(--ease-spring); }
+  .app-card:active { transform: scale(.982); transition-duration: var(--dur-tap), 90ms; }
+  .app-card:active .card-clip { border-color: var(--border-highlight); }
 }
 .app-card:focus-within { --hov: 1; z-index: 10; }
 @media (hover: hover) and (pointer: fine) {
@@ -624,6 +645,9 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
 }
 
 .app-grid.is-relang .app-card { animation: none !important; }
+.app-grid.is-switching .app-card { animation: none !important; }
+.app-card.no-enter:not(.is-revealed):not(.is-returned) { animation: none; }
+.grid-ghost .digit-badge { transition: none; }
 
 .card-shadow {
   position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -686,21 +710,25 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
 }
 
 @keyframes cardBoot {
-  from { opacity: 0; clip-path: inset(10% 8% 10% 8% round var(--radius)); translate: 0 10px; }
-  to   { opacity: 1; clip-path: inset(0 0 0 0 round var(--radius));       translate: 0 0; }
+  from { opacity: 0; scale: .965; translate: 0 18px; }
+  to   { opacity: 1; scale: 1;    translate: 0 0; }
 }
-body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
+body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-duration: 620ms; }
 
 .card-clip::before {
-  content: ''; position: absolute; inset: -1px; border-radius: inherit;
-  background: radial-gradient(circle 320px at var(--mx, 50%) var(--my, -20%), light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.085)), transparent 58%);
+  content: ''; position: absolute; left: 0; top: 0;
+  width: 640px; height: 640px; margin: -320px 0 0 -320px; border-radius: 50%;
+  background: radial-gradient(closest-side, light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.085)), transparent 58%);
+  transform: translate3d(var(--gx), var(--gy), 0);
   opacity: 0; pointer-events: none; z-index: 2;
   transition: opacity var(--dur-base) var(--ease-lux); mix-blend-mode: overlay;
 }
 :root[data-theme="light"] .card-clip::before {
-  background: radial-gradient(circle 240px at var(--mx, 50%) var(--my, -20%), rgba(255,255,255,0.2), transparent 62%);
+  width: 480px; height: 480px; margin: -240px 0 0 -240px;
+  background: radial-gradient(closest-side, rgba(255,255,255,0.2), transparent 62%);
   mix-blend-mode: soft-light;
 }
+.app-card:not(.has-pointer-pos) .card-clip::before { left: 50%; top: -20%; transform: none; }
 
 .card-clip::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
@@ -726,45 +754,46 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   :root[data-theme="light"] .card-clip::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
 }
 
-.app-card:has(.card-link-overlay:focus-visible) {
+.app-card:has(.card-link-overlay:focus-visible) .card-clip {
   --reveal-o: 1 !important;
   --rx: 50% !important;
   --ry: 50% !important;
 }
 
 .card-glow {
-  position: absolute; inset: 0;
-  background: radial-gradient(circle 600px at var(--mx) var(--glow-y, 118%), var(--tint), transparent 60%);
+  position: absolute; left: 0; top: 0;
+  width: 1200px; height: 1200px; margin: -600px 0 0 -600px; border-radius: 50%;
+  background: radial-gradient(closest-side, var(--tint), transparent 60%);
+  transform: translate3d(var(--gx), var(--gy), 0);
   opacity: 0; pointer-events: none; z-index: 0;
   transition: opacity var(--dur-slow) var(--ease-lux);
 }
-.app-card.is-tracking .card-glow { --glow-y: var(--my); }
+.app-card:not(.has-pointer-pos) .card-glow { left: 50%; top: 118%; transform: none; }
+.app-card.is-tracking .card-glow,
+.app-card.is-tracking .card-clip::before { will-change: transform, opacity; }
 
 .card-sheen {
   position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
+  overflow: hidden;
+  opacity: var(--hov, 0);
+}
+.card-sheen::before {
+  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 260%;
   background: linear-gradient(115deg,
     transparent 32%,
     rgba(255,255,255,.16) 47%,
     rgba(255,255,255,.05) 53%,
     transparent 68%);
-  background-size: 260% 100%;
-  background-position: calc(130% - var(--hov, 0) * 260%) 0;
-  opacity: var(--hov, 0);
+  transform: translate3d(calc(-80% + var(--hov, 0) * 160%), 0, 0);
 }
 :root[data-theme="light"] .card-sheen { mix-blend-mode: soft-light; opacity: calc(var(--hov, 0) * .6); }
-:root[data-theme="dark"] .card-sheen {
+:root[data-theme="dark"] .card-sheen::before {
   background: linear-gradient(115deg,
     transparent 32%,
     rgba(255,255,255,.11) 47%,
     rgba(255,255,255,.03) 53%,
     transparent 68%);
 }
-
-.app-card:focus-within { --tz: 14px; --sc: 1.006; }
-@media (hover: hover) and (pointer: fine) {
-  .app-card:hover { --tz: 14px; --sc: 1.006; }
-}
-.app-card:active { --sc: .992; }
 
 .app-card:focus-within .card-glow { opacity: 0.06; }
 :root[data-theme="light"] .app-card:focus-within .card-glow { opacity: 0.065; }
@@ -803,9 +832,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   position: absolute; top: -6px; inset-inline-end: -6px; z-index: 6;
   width: 22px; height: 22px; border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.4); color: #fff;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.18);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background: rgba(8,9,12,0.72); color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 6px -2px rgba(0,0,0,.4);
   font-family: var(--ui-font); font-size: 0.72rem; font-weight: 700;
   font-variant-numeric: tabular-nums;
   opacity: 0; transform: translateY(-4px) scale(0.85);
@@ -836,12 +864,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
     linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   display: flex; align-items: center; justify-content: center;
   box-shadow:
-    0 calc(10px + var(--ty,0) * 4px + var(--icon-lift) * 5px)
+    0 calc(10px + var(--icon-lift) * 5px)
       calc(24px + var(--icon-lift) * 10px) -10px
       color-mix(in oklab, var(--c1) 45%, transparent),
     0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 calc(1px + var(--ty,0) * 1.5px) 0 rgba(255,255,255,.42),
-    inset 0 calc(-1px - var(--ty,0) * 1.5px) 0 rgba(0,0,0,.3),
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -1px 0 rgba(0,0,0,.3),
     inset 0 0 0 1px var(--icon-rim),
     inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
   position: relative; flex-shrink: 0;
@@ -896,8 +924,10 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   display: inline-flex; align-items: center; gap: 0.35rem;
   padding: 0.3rem 0.7rem; border-radius: 50px;
   font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em;
-  background: light-dark(rgba(255,255,255,0.7), rgba(0,0,0,0.3)); backdrop-filter: blur(12px);
+  background: light-dark(rgba(255,255,255,0.82), rgba(10,11,14,0.52));
+  box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.06));
   border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
+  font-variant-numeric: tabular-nums;
   transition: color var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux);
 }
 
@@ -1203,10 +1233,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   width: var(--lx-panel-w); max-height: 76vh;
   margin: min(16vh, 150px) auto auto;
   display: flex; flex-direction: column;
-  background-color: light-dark(rgba(255,255,255,0.82), rgba(10,11,15,0.82));
+  background-color: light-dark(rgba(250,249,246,0.97), rgba(12,13,17,0.955));
   background-image: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0) 40%);
-  backdrop-filter: blur(28px) saturate(150%);
-  -webkit-backdrop-filter: blur(28px) saturate(150%);
   border: 1px solid var(--border-highlight);
   border-radius: 28px; box-shadow: var(--shadow-deep), inset 0 1px 1px rgba(255,255,255,0.1), inset 0 0 0 1px rgba(255,255,255,0.05), inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.12));
   padding: 0; overflow: hidden; color: var(--text);
@@ -1230,12 +1258,9 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 #lx-palette::backdrop {
   background:
     radial-gradient(70% 50% at 50% 0%, color-mix(in oklab, var(--live-accent) 10%, transparent), transparent 70%),
-    light-dark(rgba(20,18,15,0.32), rgba(2,3,5,0.5));
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+    light-dark(rgba(20,18,15,0.38), rgba(2,3,5,0.62));
   opacity: 0;
-  
-  transition: opacity var(--dur-micro) var(--ease-lux), display var(--dur-micro) allow-discrete, overlay var(--dur-micro) allow-discrete;
+  transition: opacity 200ms var(--ease-lux), display 200ms allow-discrete, overlay 200ms allow-discrete;
 }
 #lx-palette[open]::backdrop { opacity: 1; }
 @starting-style { #lx-palette[open]::backdrop { opacity: 0; } }
@@ -1551,8 +1576,9 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions, .grid-empty {
     animation: none !important;
   }
-  .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; --hov: 0 !important; }
-  
+  .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; --hov: 0 !important; transform: none !important; }
+  .card-sheen::before, .card-glow, .card-clip::before { transform: none !important; }
+  .spotlight { display: none; }
   .app-card { translate: none !important; }
   .app-card, .card-clip, .app-icon-wrapper, .app-title, .badges, .variant-chips,
   .tab-indicator, .tab-ghost, .variant-chip-indicator,
@@ -2148,25 +2174,21 @@ const applyManifest = () => {
 
 const Motion = (() => {
   const subs = new Set();
-  const STEP = 1 / 120;
-  let raf = null, last = 0, acc = 0;
+  let raf = null, last = 0;
 
   const tick = (now) => {
-    const dt = Math.min((now - last) / 1000, 0.05);
+    const dt = Math.max(0, Math.min((now - last) / 1000, 1 / 20));
     last = now;
-    acc += dt;
-    let n = 0;
-    while (acc >= STEP && n++ < 5) { for (const s of subs) s.fixed?.(STEP); acc -= STEP; }
-    const alpha = acc / STEP;
+    if (dt > 0) for (const s of subs) s.fixed?.(dt);
     let alive = false;
-    for (const s of subs) { if (s.render?.(now / 1000, alpha) !== false) alive = true; }
-    raf = alive && !document.hidden ? requestAnimationFrame(tick) : (raf = null);
+    for (const s of subs) { if (s.render?.(now / 1000, 1) !== false) alive = true; }
+    raf = alive && !document.hidden ? requestAnimationFrame(tick) : null;
   };
 
   return {
     add(s) { subs.add(s); this.wake(); },
     remove(s) { subs.delete(s); },
-    wake() { if (!raf && !document.hidden) { last = performance.now(); acc = 0; raf = requestAnimationFrame(tick); } },
+    wake() { if (!raf && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(tick); } },
     get subCount() { return subs.size; },
     get awake() { return !!raf; }
   };
@@ -2200,9 +2222,14 @@ class Spring {
     this.scale = scale; this.px = px;
   }
   fixed(dt) {
-    const a = -this.k * (this.v - this.to) - this.c * this.dv;
-    this.dv += a * dt;
-    this.v += this.dv * dt;
+    let t = Math.min(dt, 1 / 20);
+    while (t > 1e-6) {
+      const h = Math.min(t, 1 / 240);
+      const a = -this.k * (this.v - this.to) - this.c * this.dv;
+      this.dv += a * h;
+      this.v += this.dv * h;
+      t -= h;
+    }
   }
 
   snap() { this.v = this.to; this.dv = 0; }
@@ -2454,8 +2481,10 @@ const createCard = (app, idx, placement, cat) => {
   `;
 
   el.addEventListener('click', () => {
-    sfx.click();
-    try { localStorage.setItem('lx-last-open', app.id); } catch (e) { if (LX_DEBUG) console.warn(e); }
+    setTimeout(() => {
+      sfx.click();
+      try { localStorage.setItem('lx-last-open', app.id); } catch (e) { if (LX_DEBUG) console.warn(e); }
+    }, 0);
   });
   el.addEventListener('mouseenter', () => { sfx.hover(soundIndex, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
   el.addEventListener('focusin', () => { sfx.hover(soundIndex, { octave }); setInteractionOrigin(el); });
@@ -2686,7 +2715,7 @@ const staggerCardEntry = (grid, isBootBatch) => {
   const origin = lastInteractionPoint ?? railCenter();
   const cards = [...grid.children];
   const skipEntryAnim = MQ.reducedMotion;
-  const bootOffset = isBootBatch ? 260 : 0;
+  const bootOffset = isBootBatch ? 120 : 0;
   const isAutoFlow = grid.classList.contains('is-auto-flow');
 
   const overflowAmount = isAutoFlow ? grid.scrollHeight - grid.clientHeight : 0;
@@ -2703,7 +2732,7 @@ const staggerCardEntry = (grid, isBootBatch) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
     c.style.animationDelay = scrollDriven
       ? '0s'
-      : `${bootOffset + Math.round((dists[i] / max) * 220)}ms`;
+      : `${bootOffset + Math.round((dists[i] / max) * 180)}ms`;
     if (!skipEntryAnim) {
       c.style.willChange = 'transform, opacity';
       c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
@@ -2730,9 +2759,15 @@ const initPointerField = () => {
   const measure = () => {
     cards = Array.from(grid.querySelectorAll('.app-card'));
     if (LX_DEBUG) window.__lxDebugPointerFieldCount = cards.length;
+    const gr = grid.getBoundingClientRect();
+    const gl = gr.left - grid.scrollLeft, gt = gr.top - grid.scrollTop;
     cards.forEach(c => {
-      const r = c.getBoundingClientRect();
-      c._r = { left: r.left, top: r.top, right: r.right, bottom: r.bottom };
+      const w = c.offsetWidth, h = c.offsetHeight;
+      let left, top;
+      if (c.offsetParent === grid) { left = gl + c.offsetLeft; top = gt + c.offsetTop; }
+      else { const r = c.getBoundingClientRect(); left = r.left; top = r.top; }
+      c._r = { left, top, right: left + w, bottom: top + h };
+      if (!c._clip) c._clip = c.querySelector('.card-clip');
       if (!c._springs) {
 
         c._springs = {
@@ -2800,7 +2835,7 @@ const initPointerField = () => {
         const focused = document.activeElement ? c.contains(document.activeElement) : false;
         const active = inside || focused;
         s.hov.to = active ? 1 : 0;
-        s.sc.to = c._pressed ? 0.992 : (active ? 1.006 : 1);
+        s.sc.to = c._pressed ? 0.985 : (active ? 1.006 : 1);
 
         if (wantsTilt) {
           s.tx.fixed(dt); s.ty.fixed(dt); s.tz.fixed(dt); s.reveal.fixed(dt);
@@ -2813,10 +2848,10 @@ const initPointerField = () => {
       });
 
       const nextAccent = hoveredAccentCard ? hoveredAccentCard.style.getPropertyValue('--c1') : '';
-      if (nextAccent !== lastHoverAccent) {
+      if (nextAccent !== lastHoverAccent && spot) {
         lastHoverAccent = nextAccent;
-        if (nextAccent) document.documentElement.style.setProperty('--hover-accent', nextAccent);
-        else document.documentElement.style.removeProperty('--hover-accent');
+        if (nextAccent) spot.style.setProperty('--hover-accent', nextAccent);
+        else spot.style.removeProperty('--hover-accent');
       }
 
       if (hasPointer) {
@@ -2836,42 +2871,51 @@ const initPointerField = () => {
         const s = c._springs;
         if (!r || !s) return;
 
-        setIfChanged(c, '--reveal-o', s.reveal.v, 0.001);
+        const clip = c._clip || c;
+        const lp = clip._last || (clip._last = {});
+        const setLeaf = (key, val, eps, unit) => {
+          const prev = lp[key];
+          if (prev !== undefined && Math.abs(prev - val) < eps) return;
+          lp[key] = val;
+          clip.style.setProperty(key, unit ? `${val}${unit}` : String(val));
+        };
+        setLeaf('--reveal-o', s.reveal.v, 0.001);
         if (s.reveal.v > 0.002 || s.reveal.to > 0) {
-          setIfChanged(c, '--rx', px - r.left, 0.5, 'px');
-          setIfChanged(c, '--ry', py - r.top, 0.5, 'px');
-        } else if ('--rx' in c._last) {
-          c.style.removeProperty('--rx');
-          c.style.removeProperty('--ry');
-          delete c._last['--rx'];
-          delete c._last['--ry'];
+          setLeaf('--rx', px - r.left, 0.5, 'px');
+          setLeaf('--ry', py - r.top, 0.5, 'px');
+        } else if ('--rx' in lp) {
+          clip.style.removeProperty('--rx');
+          clip.style.removeProperty('--ry');
+          delete lp['--rx'];
+          delete lp['--ry'];
         }
-        setIfChanged(c, '--tx', s.tx.v, 0.001);
-        setIfChanged(c, '--ty', s.ty.v, 0.001);
-        setIfChanged(c, '--sc', s.sc.v, 0.0002);
-        setIfChanged(c, '--hov', s.hov.v, 0.001);
+        setIfChanged(c, '--tx', s.tx.v, 0.002);
+        setIfChanged(c, '--ty', s.ty.v, 0.002);
+        setIfChanged(c, '--hov', s.hov.v, 0.002);
 
         const inside = px >= r.left && px <= r.right && py >= r.top && py <= r.bottom;
         if (inside) {
+          if (!c._hasPos) { c._hasPos = true; c.classList.add('has-pointer-pos'); }
           c.classList.add('is-tracking');
-          setIfChanged(c, '--mx', px - r.left, 0.5, 'px');
-          setIfChanged(c, '--my', py - r.top, 0.5, 'px');
+          setLeaf('--gx', px - r.left, 0.5, 'px');
+          setLeaf('--gy', py - r.top, 0.5, 'px');
         } else if (c.classList.contains('is-tracking')) {
           c.classList.remove('is-tracking');
-          c.style.removeProperty('--mx');
-          c.style.removeProperty('--my');
-          delete c._last['--mx']; delete c._last['--my'];
         }
 
-        if (inside || !s.tz.settled) {
-          setIfChanged(c, '--tz', s.tz.v, 0.5, 'px');
-        } else if ('--tz' in c._last) {
-          c.style.removeProperty('--tz');
-          delete c._last['--tz'];
+        const tx = s.tx.v, ty = s.ty.v, tz = s.tz.v, sc = s.sc.v;
+        const rest = Math.abs(tx) < 0.001 && Math.abs(ty) < 0.001 && Math.abs(tz) < 0.05 && Math.abs(sc - 1) < 0.0002;
+        const L = c._last;
+        if (rest) {
+          if (L.tf !== '') { c.style.transform = ''; L.tf = ''; L.tx = L.ty = L.tz = L.sc = undefined; }
+        } else if (L.tx === undefined || Math.abs(L.tx - tx) > 0.0015 || Math.abs(L.ty - ty) > 0.0015 || Math.abs(L.tz - tz) > 0.05 || Math.abs(L.sc - sc) > 0.0002) {
+          L.tx = tx; L.ty = ty; L.tz = tz; L.sc = sc;
+          L.tf = `perspective(1600px) rotateX(${(-ty * 2.2).toFixed(3)}deg) rotateY(${(tx * 2.2).toFixed(3)}deg) translateZ(${tz.toFixed(2)}px) scale(${sc.toFixed(4)})`;
+          c.style.transform = L.tf;
         }
 
         const settled = s.tx.settled && s.ty.settled && s.tz.settled && s.reveal.settled && s.sc.settled && s.hov.settled;
-        const active = inside || s.reveal.to > 0 || !settled;
+        const active = inside || !settled;
         if (active && !c._wc) { c.style.willChange = 'transform'; c._wc = true; }
         else if (!active && c._wc) { c.style.willChange = ''; c._wc = false; }
 
@@ -2881,8 +2925,7 @@ const initPointerField = () => {
       if (spot && !document.body.classList.contains('is-cinema')) {
         if (hasPointer) {
           const idle = performance.now() - lastMove > 2200;
-          spot.style.setProperty('--sx', `${sx.toFixed(1)}px`);
-          spot.style.setProperty('--sy', `${sy.toFixed(1)}px`);
+          spot.style.transform = `translate3d(${sx.toFixed(1)}px, ${sy.toFixed(1)}px, 0)`;
           spot.classList.add('is-active');
           spot.classList.toggle('is-idle', idle);
           if (!idle || Math.abs(px - sx) > 0.1 || Math.abs(py - sy) > 0.1) alive = true;
@@ -2956,8 +2999,10 @@ const initMagneticControls = () => {
   let buttons = [];
   let px = -9999, py = -9999;
   let dirty = true;
+  let pillRect = null;
 
   const measure = () => {
+    pillRect = pill.getBoundingClientRect();
     buttons = Array.from(pill.querySelectorAll('button')).map(btn => {
       if (!btn._mag) {
         btn._mag = { x: spring(0.22, 1.0, MAX_PULL, true), y: spring(0.22, 1.0, MAX_PULL, true), s: spring(0.22, 1.0, 0.06) };
@@ -3005,7 +3050,8 @@ const initMagneticControls = () => {
     pillResizeObserver.observe(pill);
   }
   document.addEventListener('pointermove', (e) => {
-    const r = pill.getBoundingClientRect();
+    if (!pillRect || dirty) measure();
+    const r = pillRect;
     const inField = e.clientX >= r.left - FIELD && e.clientX <= r.right + FIELD &&
                     e.clientY >= r.top - FIELD && e.clientY <= r.bottom + FIELD;
     if (inField) { px = e.clientX; py = e.clientY; Motion.wake(); }
@@ -3124,6 +3170,7 @@ class OrbField {
 
   retargetCategory(hex, impulseDir = 0) {
     const hue = hueFromHex(hex);
+    this.hotUntil = performance.now() + 1400;
     const reduced = MQ.reducedMotion;
     this.orbs.forEach((o, i) => {
       o.hueSpring.to = (hue + (i - (this.orbs.length - 1) / 2) * 22 + 360) % 360;
@@ -3157,7 +3204,7 @@ class OrbField {
     const idleFor = performance.now() - this.lastActive;
     if (idleFor > 20000 && this.idleScale === 0) return false;
 
-    const minInterval = idleFor > 20000 ? 1 / 12 : 1 / 30;
+    const minInterval = performance.now() < (this.hotUntil || 0) ? 1 / 60 : (idleFor > 20000 ? 1 / 12 : 1 / 30);
     if (this._lastDraw && now - this._lastDraw < minInterval) return true;
     this._lastDraw = now;
 
@@ -3531,6 +3578,90 @@ const flipTabRail = (mutate) => {
   });
 };
 
+let gridSwitch = null;
+
+const settleGridSwitch = () => {
+  if (!gridSwitch) return;
+  const s = gridSwitch;
+  gridSwitch = null;
+  s.anims.forEach((a) => { try { a.cancel(); } catch (e) { if (LX_DEBUG) console.warn(e); } });
+  s.ghost?.remove();
+  s.cards.forEach((c) => { c.style.willChange = ''; });
+};
+
+const runGridSwitch = (g, run, travel) => {
+  settleGridSwitch();
+  const container = g.parentElement;
+  const hadCards = g.querySelector('.app-card, .grid-empty');
+  let ghost = null;
+  const anims = [];
+
+  if (hadCards) {
+    ghost = g.cloneNode(true);
+    ghost.removeAttribute('id');
+    ghost.removeAttribute('role');
+    ghost.removeAttribute('tabindex');
+    ghost.removeAttribute('aria-labelledby');
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.inert = true;
+    ghost.classList.add('is-switching', 'grid-ghost');
+    ghost.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
+    ghost.querySelectorAll('.app-card').forEach((c) => { c.classList.remove('is-tracking'); c.style.transform = ''; c.style.willChange = ''; });
+    ghost.style.cssText += `;position:absolute;left:${g.offsetLeft}px;top:${g.offsetTop}px;width:${g.offsetWidth}px;height:${g.offsetHeight}px;margin:0;pointer-events:none;z-index:0;overflow:hidden;`;
+    ghost.scrollTop = g.scrollTop;
+    container.insertBefore(ghost, g);
+    const out = ghost.animate(
+      [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * 14}px,0,0) scale(.985)` }],
+      { duration: 160, easing: EASE_ACCEL, fill: 'forwards' }
+    );
+    anims.push(out);
+  }
+
+  const wasBoot = run();
+  const scrollDriven = supportsViewTimeline && isNarrowViewport();
+  const cards = [...g.querySelectorAll('.app-card, .grid-empty')];
+  const origin = lastInteractionPoint ?? railCenter();
+  const gr = g.getBoundingClientRect();
+  let max = 1;
+  const dists = cards.map((c) => {
+    const cx = gr.left + c.offsetLeft + c.offsetWidth / 2;
+    const cy = gr.top + c.offsetTop + c.offsetHeight / 2;
+    const d = Math.hypot(cx - origin.x, cy - origin.y);
+    max = Math.max(max, d);
+    return d;
+  });
+
+  if (g.classList.contains('is-auto-flow')) g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
+
+  if (!scrollDriven) {
+    cards.forEach((c, i) => {
+      c.classList.add('no-enter');
+      c.style.willChange = 'opacity, translate, scale';
+      const a = c.animate(
+        [{ opacity: 0, translate: `${travel * 22}px 0`, scale: '.985' }, { opacity: 1, translate: '0 0', scale: '1' }],
+        { duration: 420, delay: 50 + Math.round((dists[i] / max) * 110), easing: EASE_LUX, fill: 'backwards' }
+      );
+      anims.push(a);
+    });
+  } else if (wasBoot) {
+    staggerCardEntry(g, wasBoot);
+  }
+
+  const state = { anims, ghost, cards };
+  gridSwitch = state;
+  pointerFieldDirty = true;
+  Motion.wake();
+
+  return Promise.allSettled(anims.map((a) => a.finished)).then(() => {
+    if (gridSwitch !== state) return;
+    gridSwitch = null;
+    ghost?.remove();
+    cards.forEach((c) => { c.style.willChange = ''; });
+    pointerFieldDirty = true;
+    Motion.wake();
+  });
+};
+
 const activateTab = (id, opts = {}) => {
   const { pushHash = true, playSound = true, instant = false } = opts;
   if (!categories.some(c => c.id === id)) return Promise.resolve();
@@ -3559,40 +3690,13 @@ const activateTab = (id, opts = {}) => {
   const run = () => renderCards(g, id);
 
   let rendered;
-  if (instant || reducedMotion) {
+  if (instant || reducedMotion || !prevId || prevId === id || typeof g.animate !== 'function') {
+    settleGridSwitch();
     const wasBoot = run();
     staggerCardEntry(g, wasBoot);
     rendered = Promise.resolve();
-  } else if (document.startViewTransition && supportsTileTransitions) {
-
-    setTileStagger(dir * (rtl ? 1 : -1));
-    nameTiles(g, true);
-    let wasBoot = false;
-    const vt = withViewTransition(() => { wasBoot = run(); nameTiles(g, true); });
-    vt.ready.then(() => requestAnimationFrame(() => staggerCardEntry(g, wasBoot))).catch(() => {});
-    rendered = vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) { activeViewTransition = null; nameTiles(g, false); clearTileStagger(); } });
-  } else if (document.startViewTransition) {
-
-    g.style.viewTransitionName = 'grid';
-    let wasBoot = false;
-    const vt = withViewTransition(() => { wasBoot = run(); });
-    vt.ready.then(() => requestAnimationFrame(() => staggerCardEntry(g, wasBoot))).catch(() => {});
-    rendered = vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) { activeViewTransition = null; g.style.viewTransitionName = ''; } });
   } else {
-    g.classList.add('is-out');
-    rendered = new Promise((resolve) => {
-      let done = false;
-      const finish = () => {
-        if (done) return;
-        done = true;
-        const wasBoot = run();
-        staggerCardEntry(g, wasBoot);
-        g.classList.remove('is-out');
-        resolve();
-      };
-      g.addEventListener('animationend', finish, { once: true });
-      setTimeout(finish, 300);
-    });
+    rendered = runGridSwitch(g, run, dir * (rtl ? -1 : 1));
   }
 
   try { localStorage.setItem('lx-last-tab', id); } catch (e) { if (LX_DEBUG) console.warn(e); }
@@ -3622,7 +3726,17 @@ const buildTabRail = () => {
     btn.title = loc(cat.label);
     btn.tabIndex = -1;
     btn.innerHTML = `${icon(cat.icon)}<span class="label" aria-hidden="true"><span>${escapeHtml(loc(cat.label))}</span></span>`;
-    btn.addEventListener('click', () => { setInteractionOrigin(btn); activateTab(cat.id); });
+    btn.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      btn._pdActivated = true;
+      setInteractionOrigin(btn);
+      if (currentTabId !== cat.id) activateTab(cat.id);
+    });
+    btn.addEventListener('click', () => {
+      if (btn._pdActivated) { btn._pdActivated = false; return; }
+      setInteractionOrigin(btn);
+      activateTab(cat.id);
+    });
     btn.addEventListener('mouseenter', () => sfx.hover(cat.key + i, { throttle: false }));
     btn.addEventListener('focus', () => sfx.hover(cat.key + i, { throttle: false }));
     rail.appendChild(btn);
@@ -4466,8 +4580,7 @@ const cinemaSpot = {
     if (!spot) return false;
     const x = 50 + Math.sin(this.t * 0.08) * 22;
     const y = 15 + Math.cos(this.t * 0.05) * 8;
-    spot.style.setProperty('--sx', `${x}%`);
-    spot.style.setProperty('--sy', `${y}%`);
+    spot.style.transform = `translate3d(${(x * window.innerWidth / 100).toFixed(1)}px, ${(y * window.innerHeight / 100).toFixed(1)}px, 0)`;
     return true;
   }
 };
@@ -4842,15 +4955,16 @@ const setupInteractions = () => {
       Math.max(y, window.innerHeight - y)
     );
 
-    const vt = withViewTransition(() => { applyTheme(isLight ? 'light' : 'dark'); });
+    const rootEl = document.documentElement;
+    const vt = withViewTransition(() => { rootEl.classList.add('lx-theme-swapping'); applyTheme(isLight ? 'light' : 'dark'); });
 
     vt.ready.then(() => {
-      document.documentElement.animate(
+      rootEl.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
-        { duration: 620, easing: EASE_LUX, pseudoElement: '::view-transition-new(root)' }
+        { duration: 540, easing: EASE_LUX, pseudoElement: '::view-transition-new(root)' }
       );
     }).catch(() => {});
-    vt.finished.catch(() => {}).finally(() => { if (activeViewTransition === vt) activeViewTransition = null; });
+    vt.finished.catch(() => {}).finally(() => { rootEl.classList.remove('lx-theme-swapping'); if (activeViewTransition === vt) activeViewTransition = null; });
 
     sfx.chime(isLight);
   });
@@ -5135,6 +5249,47 @@ const setupInteractions = () => {
         card.querySelector('.card-link-overlay')?.click();
       }
     }
+  });
+
+  appGrid.addEventListener('keydown', (e) => {
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(e.key)) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    const from = e.target.closest && e.target.closest('.app-card');
+    if (!from || e.target.closest('.variant-chips')) return;
+    const cards = [...appGrid.querySelectorAll('.app-card')];
+    if (!cards.length) return;
+    let target = null;
+    if (e.key === 'Home') target = cards[0];
+    else if (e.key === 'End') target = cards[cards.length - 1];
+    else {
+      const rtl = document.documentElement.dir === 'rtl';
+      const center = (c) => ({ x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2 });
+      const o = center(from);
+      let vx = 0, vy = 0;
+      if (e.key === 'ArrowLeft') vx = -1;
+      if (e.key === 'ArrowRight') vx = 1;
+      if (e.key === 'ArrowUp') vy = -1;
+      if (e.key === 'ArrowDown') vy = 1;
+      let best = Infinity;
+      cards.forEach((c) => {
+        if (c === from) return;
+        const p = center(c);
+        const dx = p.x - o.x, dy = p.y - o.y;
+        const along = dx * vx + dy * vy;
+        if (along <= 4) return;
+        const across = Math.abs(dx * vy) + Math.abs(dy * vx);
+        const score = along + across * 2.2;
+        if (score < best) { best = score; target = c; }
+      });
+      if (!target && vx !== 0) {
+        const idx = cards.indexOf(from);
+        const step = (vx > 0) !== rtl ? 1 : -1;
+        target = cards[idx + step] || null;
+      }
+    }
+    if (!target) return;
+    e.preventDefault();
+    target.querySelector('.card-link-overlay')?.focus({ preventScroll: false });
   });
 
   document.addEventListener('keydown', (e) => {
