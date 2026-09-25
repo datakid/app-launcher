@@ -519,7 +519,7 @@ h1 {
 }
 .lx-toast.is-visible { opacity: 1; transform: translateY(0); }
 .lx-toast.is-error { border-color: color-mix(in srgb, #f87171 55%, var(--border)); }
-.lx-toast:empty { visibility: hidden; }
+.lx-toast:empty { display: none; }
 .lx-context-menu button {
   display: flex; align-items: center; gap: 0.65rem; width: 100%;
   padding: 0.55rem 0.7rem; border-radius: 9px; background: transparent; border: none;
@@ -2699,8 +2699,6 @@ const buildContextMenu = () => {
 
 const placeContextMenu = (menu, x, y) => {
   const pad = 8;
-  menu.style.left = '0px';
-  menu.style.top = '0px';
   const w = menu.offsetWidth, h = menu.offsetHeight;
   menu.style.left = `${clamp(x, pad, Math.max(pad, window.innerWidth - w - pad))}px`;
   menu.style.top = `${clamp(y, pad, Math.max(pad, window.innerHeight - h - pad))}px`;
@@ -5841,8 +5839,6 @@ const openDataMenu = (btn, focusFirst) => {
   menu.dataset.owner = 'data';
   btn.setAttribute('aria-expanded', 'true');
   const pad = 8;
-  menu.style.left = '0px';
-  menu.style.top = '0px';
   const r = btn.getBoundingClientRect();
   const w = menu.offsetWidth, h = menu.offsetHeight;
   const rtl = document.documentElement.dir === 'rtl';
