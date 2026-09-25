@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'none'">
 <meta name="theme-color" content="#030406">
 <script>
 (function () {
@@ -504,6 +505,21 @@ h1 {
 }
 :root[dir="rtl"] .lx-context-menu { transform-origin: top right; }
 .lx-context-menu.is-open { opacity: 1; transform: scale(1); pointer-events: auto; }
+.lx-context-menu:focus { outline: none; }
+.lx-toast {
+  position: fixed; inset-inline: 0; bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  margin-inline: auto; width: max-content; max-width: calc(100vw - 2rem);
+  z-index: 400; padding: 0.6rem 1rem; border-radius: 999px;
+  background: light-dark(rgba(255,255,255,0.94), rgba(28,26,24,0.94));
+  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid var(--border); box-shadow: var(--shadow-deep);
+  color: var(--text); font-size: 0.85rem; text-align: center;
+  opacity: 0; transform: translateY(8px); pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux);
+}
+.lx-toast.is-visible { opacity: 1; transform: translateY(0); }
+.lx-toast.is-error { border-color: color-mix(in srgb, #f87171 55%, var(--border)); }
+.lx-toast:empty { visibility: hidden; }
 .lx-context-menu button {
   display: flex; align-items: center; gap: 0.65rem; width: 100%;
   padding: 0.55rem 0.7rem; border-radius: 9px; background: transparent; border: none;
@@ -1669,7 +1685,12 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   <button type="button" id="langToggle" aria-pressed="false" aria-label="Switch to English" title="Switch to English">
     <svg class="fas fa-language" aria-hidden="true" focusable="false"><use href="#fa-language"></use></svg>
   </button>
+  <div class="controls-divider"></div>
+  <button type="button" id="dataToggle" aria-haspopup="menu" aria-expanded="false" aria-label="بياناتي" title="بياناتي">
+    <svg class="fas fa-folder-open" aria-hidden="true" focusable="false"><use href="#fa-folder-open"></use></svg>
+  </button>
 </div>
+<div class="lx-toast" id="lxToast" role="status" aria-live="polite"></div>
 
 <div class="container">
   <header class="site-header">
@@ -2137,7 +2158,24 @@ const STRINGS = {
   allGroup: { ar: 'الكل', en: 'All' },
   tryGroup: { ar: 'جرّب', en: 'Try' },
   langSwitchToEn: { ar: 'التبديل إلى الإنجليزية', en: 'Switch to English' },
-  langSwitchToAr: { ar: 'التبديل إلى العربية', en: 'Switch to Arabic' }
+  langSwitchToAr: { ar: 'التبديل إلى العربية', en: 'Switch to Arabic' },
+  dataMenu: { ar: 'بياناتي', en: 'My data' },
+  dataImport: { ar: 'استيراد روابط (JSON)', en: 'Import links (JSON)' },
+  dataExport: { ar: 'تصدير بياناتي', en: 'Export my data' },
+  dataReset: { ar: 'حذف روابطي', en: 'Remove my links' },
+  userCategory: { ar: 'روابطي', en: 'My Links' },
+  importConfirm: { ar: 'سيتم استبدال روابطك الحالية ({m}) بـ {n} رابط من الملف. متابعة؟', en: 'Replace your {m} current link(s) with {n} from this file?' },
+  importConfirmNew: { ar: 'إضافة {n} رابط من الملف إلى «روابطي»؟', en: 'Add {n} link(s) from this file to “My Links”?' },
+  importDone: { ar: 'تم استيراد {n} رابط', en: 'Imported {n} link(s)' },
+  importSkipped: { ar: '(تم تجاهل {n} غير صالح)', en: '({n} invalid skipped)' },
+  exportDone: { ar: 'تم تصدير بياناتك', en: 'Your data was exported' },
+  resetConfirm: { ar: 'حذف كل روابطك المستوردة؟', en: 'Remove all your imported links?' },
+  resetDone: { ar: 'تم حذف روابطك', en: 'Your links were removed' },
+  importTooLarge: { ar: 'الملف أكبر من {n} كيلوبايت.', en: 'File is larger than {n} KB.' },
+  importTooMany: { ar: 'الحد الأقصى {n} رابطًا.', en: 'Maximum is {n} links.' },
+  importEmpty: { ar: 'لا توجد روابط صالحة (يجب أن تبدأ بـ https://).', en: 'No valid links (must start with https://).' },
+  importInvalid: { ar: 'ملف غير صالح.', en: 'Invalid file.' },
+  storageFailed: { ar: 'تعذر الحفظ في المتصفح.', en: "Couldn't save in this browser." }
 };
 
 let lang = 'ar';
@@ -2399,7 +2437,7 @@ const getSelectedVariantIndex = (app) => {
     const stored = localStorage.getItem('lx-variant-' + app.id);
     if (stored !== null && app.variants[Number(stored)]) return Number(stored);
   } catch (e) { if (LX_DEBUG) console.warn(e); }
-  return typeof app.defaultVariant === 'number' ? app.defaultVariant : 0;
+  return Number.isInteger(app.defaultVariant) && app.variants[app.defaultVariant] ? app.defaultVariant : 0;
 };
 
 const supportsAnchor = typeof CSS !== 'undefined' && CSS.supports('anchor-name', '--a');
@@ -2520,11 +2558,24 @@ const createCard = (app, idx, placement, cat) => {
     </div>
   `;
 
-  el.addEventListener('click', () => {
+  const recordLaunch = () => {
+    const vi = getSelectedVariantIndex(app);
+    const recentId = vi >= 0 && app.variants[vi] ? `${app.id}::${app.variants[vi].id}` : app.id;
+    pushRecent(recentId);
+    bumpFreq(recentId);
+  };
+  el.addEventListener('click', (e) => {
+    const launched = !!e.target.closest('.card-link-overlay');
     setTimeout(() => {
       sfx.click();
-      try { localStorage.setItem('lx-last-open', app.id); } catch (e) { if (LX_DEBUG) console.warn(e); }
+      try { localStorage.setItem('lx-last-open', app.id); } catch (err) { if (LX_DEBUG) console.warn(err); }
+      if (launched) recordLaunch();
     }, 0);
+  });
+  el.addEventListener('auxclick', (e) => {
+    if (e.button !== 1 || !e.target.closest('.card-link-overlay')) return;
+    try { localStorage.setItem('lx-last-open', app.id); } catch (err) { if (LX_DEBUG) console.warn(err); }
+    recordLaunch();
   });
   el.addEventListener('mouseenter', () => { sfx.hover(soundIndex, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
   el.addEventListener('focusin', () => { sfx.hover(soundIndex, { octave }); setInteractionOrigin(el); });
@@ -2533,9 +2584,12 @@ const createCard = (app, idx, placement, cat) => {
   el.addEventListener('pointerup', releasePress, { passive: true });
   el.addEventListener('pointercancel', releasePress, { passive: true });
   el.addEventListener('pointerleave', releasePress, { passive: true });
+  el.addEventListener('pointerdown', () => { el._pdAt = performance.now(); }, { passive: true, capture: true });
   el.addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    openCardContextMenu(el, e.clientX, e.clientY);
+    const kb = (e.clientX === 0 && e.clientY === 0) || !(el._pdAt && performance.now() - el._pdAt < 2000);
+    const r = el.getBoundingClientRect();
+    openCardContextMenu(el, kb ? r.left + r.width / 2 : e.clientX, kb ? r.top + r.height / 2 : e.clientY, kb);
   });
 
   if (app.variants) {
@@ -2617,11 +2671,19 @@ const openInNewTab = (url) => {
 
 let contextMenuEl = null;
 let contextMenuAC = null;
+let contextMenuReturn = null;
 
 const closeContextMenu = () => {
   if (!contextMenuEl || !contextMenuEl.classList.contains('is-open')) return;
+  const hadFocus = contextMenuEl.contains(document.activeElement);
   contextMenuEl.classList.remove('is-open');
+  contextMenuEl.inert = true;
+  delete contextMenuEl.dataset.owner;
+  document.getElementById('dataToggle')?.setAttribute('aria-expanded', 'false');
   if (contextMenuAC) { contextMenuAC.abort(); contextMenuAC = null; }
+  const back = contextMenuReturn;
+  contextMenuReturn = null;
+  if (hadFocus && back && back.isConnected && typeof back.focus === 'function') back.focus({ preventScroll: true });
 };
 
 const buildContextMenu = () => {
@@ -2629,13 +2691,62 @@ const buildContextMenu = () => {
   contextMenuEl = document.createElement('div');
   contextMenuEl.className = 'lx-context-menu';
   contextMenuEl.setAttribute('role', 'menu');
+  contextMenuEl.tabIndex = -1;
+  contextMenuEl.inert = true;
   document.body.appendChild(contextMenuEl);
   return contextMenuEl;
 };
 
-const openCardContextMenu = (card, clientX, clientY) => {
+const placeContextMenu = (menu, x, y) => {
+  const pad = 8;
+  menu.style.left = '0px';
+  menu.style.top = '0px';
+  const w = menu.offsetWidth, h = menu.offsetHeight;
+  menu.style.left = `${clamp(x, pad, Math.max(pad, window.innerWidth - w - pad))}px`;
+  menu.style.top = `${clamp(y, pad, Math.max(pad, window.innerHeight - h - pad))}px`;
+};
+
+const showContextMenu = (menu, { anchor = null, returnTo = null, focusFirst = false } = {}) => {
+  contextMenuReturn = returnTo;
+  menu.inert = false;
+  menu.classList.add('is-open');
+  contextMenuAC = new AbortController();
+  const { signal } = contextMenuAC;
+  document.addEventListener('pointerdown', (e) => {
+    if (menu.contains(e.target) || (anchor && anchor.contains(e.target))) return;
+    contextMenuReturn = null;
+    closeContextMenu();
+  }, { passive: true, signal });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      closeContextMenu();
+      return;
+    }
+    if (!menu.contains(document.activeElement)) return;
+    e.stopImmediatePropagation();
+    if (e.key === 'Tab') { e.preventDefault(); closeContextMenu(); return; }
+    const items = [...menu.querySelectorAll('button')];
+    if (!items.length) return;
+    const i = items.indexOf(document.activeElement);
+    let next = null;
+    if (e.key === 'ArrowDown') next = items[(i + 1) % items.length];
+    else if (e.key === 'ArrowUp') next = items[i <= 0 ? items.length - 1 : i - 1];
+    else if (e.key === 'Home') next = items[0];
+    else if (e.key === 'End') next = items[items.length - 1];
+    if (next) { e.preventDefault(); next.focus({ preventScroll: true }); }
+  }, { signal, capture: true });
+  window.addEventListener('resize', () => { contextMenuReturn = null; closeContextMenu(); }, { passive: true, signal });
+  window.addEventListener('scroll', () => { contextMenuReturn = null; closeContextMenu(); }, { passive: true, capture: true, signal });
+  const first = menu.querySelector('button');
+  (focusFirst && first ? first : menu).focus({ preventScroll: true });
+};
+
+const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   closeContextMenu();
   const menu = buildContextMenu();
+  menu.dataset.owner = 'card';
   const linkEl = card.querySelector('.card-link-overlay');
   const activeUrl = linkEl ? linkEl.href : '';
   const variantChips = Array.from(card.querySelectorAll('.variant-chip'));
@@ -2655,7 +2766,17 @@ const openCardContextMenu = (card, clientX, clientY) => {
 
   menu.querySelector('[data-action="open"]').addEventListener('click', () => {
     sfx.click();
-    if (activeUrl) openInNewTab(activeUrl);
+    if (activeUrl) {
+      const appId = card.dataset.appId;
+      const activeChip = card.querySelector('.variant-chip.is-active');
+      const app = categories.flatMap(c => c.apps).find(a => a.id === appId);
+      const v = app && app.variants && activeChip ? app.variants[Number(activeChip.dataset.variantIndex)] : null;
+      const recentId = v ? `${appId}::${v.id}` : appId;
+      pushRecent(recentId);
+      bumpFreq(recentId);
+      try { localStorage.setItem('lx-last-open', appId); } catch (err) { if (LX_DEBUG) console.warn(err); }
+      openInNewTab(activeUrl);
+    }
     closeContextMenu();
   });
   menu.querySelector('[data-action="copy"]').addEventListener('click', async (e) => {
@@ -2663,7 +2784,7 @@ const openCardContextMenu = (card, clientX, clientY) => {
     const ok = activeUrl ? await copyToClipboard(activeUrl) : false;
     sfx.click();
     btn.innerHTML = `${icon(ok ? 'fa-check' : 'fa-triangle-exclamation')}${escapeHtml(ok ? t('linkCopied') : t('copyFailed'))}`;
-    setTimeout(closeContextMenu, 650);
+    setTimeout(() => { if (btn.isConnected && menu.contains(btn)) closeContextMenu(); }, 650);
   });
   menu.querySelectorAll('[data-variant]').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -2673,30 +2794,14 @@ const openCardContextMenu = (card, clientX, clientY) => {
     });
   });
 
-  menu.classList.add('is-open');
-  contextMenuAC = new AbortController();
-  const { signal } = contextMenuAC;
-  document.addEventListener('pointerdown', (e) => {
-    if (!contextMenuEl.contains(e.target)) closeContextMenu();
-  }, { passive: true, signal });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeContextMenu();
-  }, { signal });
-  window.addEventListener('resize', closeContextMenu, { passive: true, signal });
-  window.addEventListener('scroll', closeContextMenu, { passive: true, capture: true, signal });
-  menu.style.left = '0px';
-  menu.style.top = '0px';
-  const rect = menu.getBoundingClientRect();
-  const pad = 8;
-  let x = clientX, y = clientY;
-  if (x + rect.width + pad > window.innerWidth) x = window.innerWidth - rect.width - pad;
-  if (y + rect.height + pad > window.innerHeight) y = window.innerHeight - rect.height - pad;
-  menu.style.left = `${Math.max(pad, x)}px`;
-  menu.style.top = `${Math.max(pad, y)}px`;
+  placeContextMenu(menu, clientX, clientY);
+  const returnTo = fromKeyboard || card.contains(document.activeElement) ? (linkEl || card) : document.activeElement;
+  showContextMenu(menu, { returnTo, focusFirst: fromKeyboard });
 };
 
 const renderCards = (grid, categoryId) => {
   const cat = categories.find(c => c.id === categoryId);
+  if (!cat) return false;
   const hadFocusInGrid = grid.contains(document.activeElement) && document.activeElement !== grid;
   grid.classList.remove('has-overflow', 'at-bottom');
 
@@ -3423,6 +3528,7 @@ const applyI18n = (opts = {}) => {
   updateThemeButtonLabel();
   updateLangButtonLabel();
   updateZenButtonLabel();
+  updateDataButtonLabel();
   syncZenMetrics();
 
   if (!rebuild) return;
@@ -4399,7 +4505,7 @@ const revealInGrid = async (entry) => {
   closePaletteImmediate();
   if (currentTabId !== targetCatId) await activateTab(targetCatId);
   requestAnimationFrame(() => {
-    const card = document.querySelector(`#appGrid .app-card[data-app-id="${targetId}"]`);
+    const card = document.querySelector(`#appGrid .app-card[data-app-id="${CSS.escape(targetId)}"]`);
     if (!card) return;
     const reducedMotion = MQ.reducedMotion;
     card.scrollIntoView({ block: 'center', behavior: reducedMotion ? 'auto' : 'smooth' });
@@ -4471,6 +4577,7 @@ const awaitAnimationSettled = (anim, maxMs) => new Promise((resolve) => {
 const openPalette = (seed = '') => {
   const dialog = document.getElementById('lx-palette');
   if (dialog.open || paletteBusy) return;
+  closeContextMenu();
   paletteBusy = true;
   document.querySelector('.palette-body')?.classList.remove('is-collapsing');
 
@@ -5270,7 +5377,7 @@ const setupInteractions = () => {
 
   const isTypeAhead = (e) =>
     !e.metaKey && !e.ctrlKey && !e.altKey &&
-    [...(e.key || '')].length === 1 &&
+    [...(e.key || '')].length === 1 && /\S/.test(e.key) &&
     !/[0-9\u0660-\u0669\u06f0-\u06f9]/.test(e.key);
 
   const isPhysical = (e, code, ...chars) =>
@@ -5398,11 +5505,394 @@ const setupInteractions = () => {
   });
 };
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setupInteractions);
-} else {
+const CATALOG_URL = 'links.json';
+const CATALOG_CACHE_KEY = 'lx-catalog-cache';
+const USER_LINKS_KEY = 'lx-user-links';
+const USER_CAT_ID = 'mine';
+const LIMITS = Object.freeze({
+  fileBytes: 64 * 1024, catalogBytes: 256 * 1024,
+  userLinks: 24, cats: 12, appsPerCat: 24, variants: 4, text: 60, url: 2048
+});
+const ID_RE = /^[a-z0-9][a-z0-9-]{0,39}$/;
+const HEX_RE = /^#[0-9a-f]{6}$/i;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const CTRL_RE = /[\u0000-\u001f\u007f-\u009f\u061c\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff]/g;
+const DEFAULT_GRADIENT = ['#7c9bff', '#b4c6ff', '#1c2f8f'];
+const IMPORT_ERRORS = ['importTooLarge', 'importTooMany', 'importEmpty', 'importInvalid', 'storageFailed'];
+const fail = (key) => { throw new Error(key); };
+const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+const fmt = (key, vars = {}) => t(key).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
+
+let toastTimer = null;
+const showToast = (msg, isError = false) => {
+  const el = document.getElementById('lxToast');
+  if (!el) return;
+  clearTimeout(toastTimer);
+  el.textContent = msg;
+  el.classList.toggle('is-error', isError);
+  requestAnimationFrame(() => el.classList.add('is-visible'));
+  toastTimer = setTimeout(() => {
+    el.classList.remove('is-visible');
+    toastTimer = setTimeout(() => { el.textContent = ''; }, 400);
+  }, isError ? 4200 : 2600);
+};
+
+const safeUrl = (v, allowHttp) => {
+  if (typeof v !== 'string' || v.length > LIMITS.url) return null;
+  try {
+    const u = new URL(v.trim());
+    const ok = u.protocol === 'https:' || (allowHttp && u.protocol === 'http:');
+    return ok && u.hostname && !u.username && !u.password ? u.href : null;
+  } catch (e) { return null; }
+};
+const cleanText = (v, max = LIMITS.text) =>
+  typeof v === 'string' ? v.replace(CTRL_RE, '').replace(/\s+/g, ' ').trim().slice(0, max) : '';
+const cleanLoc = (v) => {
+  const ar = cleanText(typeof v === 'string' ? v : isObj(v) ? v.ar : '');
+  const en = cleanText(typeof v === 'string' ? v : isObj(v) ? v.en : '');
+  return ar || en ? { ar: ar || en, en: en || ar } : null;
+};
+const cleanIcon = (v) => (typeof v === 'string' && ICON_IDS.has(v) ? v : DEFAULT_ICON);
+const cleanHex = (v, fb) => (typeof v === 'string' && HEX_RE.test(v) ? v.toLowerCase() : fb);
+const cleanGradient = (g, color) => {
+  const c = cleanHex(color, null);
+  if (c) return [c, hexBlend(c, [255, 255, 255], 0.45), hexBlend(c, [0, 0, 0], 0.55)];
+  return DEFAULT_GRADIENT.map((d, i) => cleanHex(Array.isArray(g) ? g[i] : null, d));
+};
+
+const cleanApp = (a, { allowHttp, allowVariants }) => {
+  if (!isObj(a)) return null;
+  const title = cleanLoc(a.title);
+  if (!title) return null;
+  const app = {
+    id: typeof a.id === 'string' && ID_RE.test(a.id) ? a.id : '',
+    title, icon: cleanIcon(a.icon), gradient: cleanGradient(a.gradient, a.color)
+  };
+  if (allowVariants && Array.isArray(a.variants) && a.variants.length) {
+    const seen = new Set();
+    const variants = a.variants.slice(0, LIMITS.variants).map((v) => {
+      if (!isObj(v) || typeof v.id !== 'string' || !ID_RE.test(v.id) || seen.has(v.id)) return null;
+      const url = safeUrl(v.url, allowHttp), label = cleanLoc(v.label);
+      if (!url || !label) return null;
+      seen.add(v.id);
+      return { id: v.id, label, url, icon: cleanIcon(v.icon) };
+    }).filter(Boolean);
+    if (!variants.length) return null;
+    app.variants = variants;
+    app.defaultVariant = Number.isInteger(a.defaultVariant) && variants[a.defaultVariant] ? a.defaultVariant : 0;
+  } else {
+    const url = safeUrl(a.url, allowHttp);
+    if (!url) return null;
+    app.url = url;
+  }
+  if (a.closed === true) {
+    app.closed = true;
+    const reason = cleanLoc(a.closedReason);
+    if (reason) app.closedReason = reason;
+  }
+  if (a.isNew === true) app.isNew = true;
+  if (typeof a.since === 'string' && DATE_RE.test(a.since) && !Number.isNaN(Date.parse(a.since))) app.since = a.since;
+  const badge = cleanText(a.variantBadge, 24);
+  if (badge) app.variantBadge = badge;
+  return app;
+};
+
+const cleanCatalog = (raw) => {
+  if (!isObj(raw) || !Array.isArray(raw.categories)) return null;
+  const catIds = new Set(), appIds = new Set(), out = [];
+  raw.categories.slice(0, LIMITS.cats).forEach((c, ci) => {
+    if (!isObj(c) || typeof c.id !== 'string' || !ID_RE.test(c.id) || c.id === USER_CAT_ID || catIds.has(c.id)) return;
+    const label = cleanLoc(c.label);
+    if (!label) return;
+    const apps = [];
+    (Array.isArray(c.apps) ? c.apps.slice(0, LIMITS.appsPerCat) : []).forEach((a) => {
+      const app = cleanApp(a, { allowHttp: false, allowVariants: true });
+      if (app && app.id && !app.id.startsWith('u-') && !appIds.has(app.id)) { appIds.add(app.id); apps.push(app); }
+    });
+    catIds.add(c.id);
+    out.push({
+      id: c.id, label, icon: cleanIcon(c.icon), accent: cleanHex(c.accent, DEFAULT_GRADIENT[0]),
+      key: Number.isInteger(c.key) ? clamp(c.key, 0, 64) : ci, apps
+    });
+  });
+  return out.length ? out : null;
+};
+
+const hashId = (s) => {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(36);
+};
+
+const cleanUserLinks = (raw) => {
+  const list = Array.isArray(raw) ? raw : isObj(raw) && Array.isArray(raw.links) ? raw.links : fail('importInvalid');
+  if (list.length > LIMITS.userLinks) fail('importTooMany');
+  const seenUrls = new Set(), seenIds = new Set(), links = [];
+  list.forEach((item) => {
+    const app = cleanApp(item, { allowHttp: false, allowVariants: false });
+    if (!app || seenUrls.has(app.url)) return;
+    let id = 'u-' + hashId(app.url);
+    for (let n = 2; seenIds.has(id); n++) id = 'u-' + hashId(app.url + '#' + n);
+    seenUrls.add(app.url);
+    seenIds.add(id);
+    app.id = id;
+    links.push(app);
+  });
+  return { links, skipped: list.length - links.length };
+};
+
+const readUserLinks = () => {
+  try { return cleanUserLinks(JSON.parse(localStorage.getItem(USER_LINKS_KEY) || '[]')).links; }
+  catch (e) { return []; }
+};
+
+let inlineCatalog = null;
+let baseCatalog = [];
+
+const userCategory = (apps) => ({
+  id: USER_CAT_ID, label: STRINGS.userCategory, icon: 'fa-id-card', accent: '#e0a458', key: 6, apps
+});
+
+const composeCategories = () => {
+  const mine = readUserLinks();
+  categories.splice(0, categories.length, ...baseCatalog, ...(mine.length ? [userCategory(mine)] : []));
+};
+
+const loadCatalog = () => {
+  inlineCatalog = cleanCatalog({ categories });
+  if (LX_DEBUG && inlineCatalog) {
+    const count = (list) => list.reduce((n, c) => n + c.apps.length, 0);
+    if (count(inlineCatalog) !== count(categories)) console.warn('lx: cleanCatalog dropped inline entries');
+  }
+  let cached = null;
+  if (CATALOG_URL) {
+    try { cached = cleanCatalog(JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY) || 'null')); }
+    catch (e) { if (LX_DEBUG) console.warn(e); }
+  }
+  baseCatalog = cached || inlineCatalog || categories.slice();
+  composeCategories();
+};
+
+const rebuildCatalogUI = (preferId) => {
+  if (!categories.length) return;
+  closeContextMenu();
+  const has = (id) => !!id && categories.some(c => c.id === id);
+  const target = has(preferId) ? preferId : has(currentTabId) ? currentTabId : categories[0].id;
+  const hashWasTab = location.hash.replace('#', '') === currentTabId;
+  const changed = target !== currentTabId;
+  if (!has(currentTabId)) currentTabId = null;
+  buildTabRail();
+  activateTab(target, { playSound: false, instant: true, pushHash: changed && (hashWasTab || target === preferId) });
+  const dialog = document.getElementById('lx-palette');
+  if (dialog && dialog.open) {
+    lastDetailKey = null;
+    renderPaletteResults(document.getElementById('paletteInput').value);
+  }
+};
+
+const sameCatalog = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
+const setBaseCatalog = (next) => {
+  if (sameCatalog(next, baseCatalog)) return;
+  baseCatalog = next;
+  composeCategories();
+  rebuildCatalogUI();
+};
+
+const refreshCatalog = async () => {
+  if (!CATALOG_URL || !/^https?:$/.test(location.protocol)) return;
+  try {
+    const url = new URL(CATALOG_URL, location.href);
+    if (url.origin !== location.origin) return;
+    const res = await fetch(url, { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' });
+    if (new URL(res.url || url.href).origin !== location.origin) return;
+    if (res.status === 404) {
+      try { localStorage.removeItem(CATALOG_CACHE_KEY); } catch (e) { if (LX_DEBUG) console.warn(e); }
+      if (inlineCatalog) setBaseCatalog(inlineCatalog);
+      return;
+    }
+    if (!res.ok) return;
+    const declared = Number(res.headers.get('content-length'));
+    if (declared && declared > LIMITS.catalogBytes) return;
+    const text = await res.text();
+    if (text.length > LIMITS.catalogBytes) return;
+    const next = cleanCatalog(JSON.parse(text.replace(/^\ufeff/, '')));
+    if (!next) return;
+    try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify(next)); } catch (e) { if (LX_DEBUG) console.warn(e); }
+    setBaseCatalog(next);
+  } catch (e) { if (LX_DEBUG) console.warn(e); }
+};
+
+const setSoundEnabled = (on) => {
+  sfx.enabled = on;
+  const btn = document.getElementById('soundToggle');
+  if (!btn) return;
+  btn.setAttribute('aria-pressed', String(on));
+  setIcon(btn.querySelector('svg'), on ? 'fa-volume-up' : 'fa-volume-mute');
+  updateSoundButtonLabel();
+};
+
+const applyImportedPrefs = (p) => {
+  if (!isObj(p)) return;
+  try {
+    if (p.sound === '0' || p.sound === '1') {
+      localStorage.setItem('lx-sound', p.sound);
+      setSoundEnabled(p.sound === '1');
+      if (sfx.enabled) sfx.resume();
+    }
+    if (isObj(p.variants)) {
+      categories.forEach(c => c.apps.forEach((a) => {
+        if (!a.variants || !Object.prototype.hasOwnProperty.call(p.variants, a.id)) return;
+        const i = p.variants[a.id];
+        if (Number.isInteger(i) && a.variants[i]) localStorage.setItem('lx-variant-' + a.id, String(i));
+      }));
+    }
+    if (p.theme === 'light' || p.theme === 'dark') applyTheme(p.theme);
+    if ((p.lang === 'ar' || p.lang === 'en') && p.lang !== lang) {
+      lang = p.lang;
+      localStorage.setItem('lx-lang', lang);
+      applyI18n({ rebuild: false });
+    }
+  } catch (e) { if (LX_DEBUG) console.warn(e); }
+};
+
+const pickFile = () => new Promise((resolve) => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.hidden = true;
+  const done = (file) => { input.remove(); resolve(file); };
+  input.addEventListener('change', () => done(input.files && input.files[0] ? input.files[0] : null), { once: true });
+  input.addEventListener('cancel', () => done(null), { once: true });
+  document.body.appendChild(input);
+  input.click();
+});
+
+const importUserLinks = async () => {
+  const file = await pickFile();
+  if (!file) return;
+  try {
+    if (file.size > LIMITS.fileBytes) fail('importTooLarge');
+    let raw;
+    try { raw = JSON.parse((await file.text()).replace(/^\ufeff/, '')); } catch (e) { fail('importInvalid'); }
+    const { links, skipped } = cleanUserLinks(raw);
+    if (!links.length) fail('importEmpty');
+    const current = readUserLinks().length;
+    const question = current
+      ? fmt('importConfirm', { n: links.length, m: current })
+      : fmt('importConfirmNew', { n: links.length });
+    if (!window.confirm(question)) return;
+    try { localStorage.setItem(USER_LINKS_KEY, JSON.stringify(links)); } catch (e) { fail('storageFailed'); }
+    if (isObj(raw)) applyImportedPrefs(raw.prefs);
+    composeCategories();
+    rebuildCatalogUI(USER_CAT_ID);
+    const note = skipped ? ` ${fmt('importSkipped', { n: skipped })}` : '';
+    showToast(fmt('importDone', { n: links.length }) + note);
+    sfx.arpUp();
+  } catch (e) {
+    const key = IMPORT_ERRORS.includes(e && e.message) ? e.message : 'importInvalid';
+    const n = { importTooLarge: LIMITS.fileBytes / 1024, importTooMany: LIMITS.userLinks }[key] ?? '';
+    showToast(fmt(key, { n }), true);
+  }
+};
+
+const exportUserData = () => {
+  const prefs = { variants: {} };
+  try {
+    ['theme', 'lang', 'sound'].forEach((k) => { const v = localStorage.getItem('lx-' + k); if (v !== null) prefs[k] = v; });
+  } catch (e) { if (LX_DEBUG) console.warn(e); }
+  categories.forEach(c => c.apps.forEach((a) => { if (a.variants) prefs.variants[a.id] = getSelectedVariantIndex(a); }));
+  const links = readUserLinks().map(({ title, url, icon: ic, gradient }) => ({ title, url, icon: ic, color: gradient[0] }));
+  const body = JSON.stringify({ app: 'linkexpress', version: 1, exportedAt: new Date().toISOString(), links, prefs }, null, 2);
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([body], { type: 'application/json' }));
+  a.download = `linkexpress-${new Date().toISOString().slice(0, 10)}.json`;
+  a.hidden = true;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  showToast(t('exportDone'));
+};
+
+const resetUserLinks = () => {
+  if (!window.confirm(t('resetConfirm'))) return;
+  try { localStorage.removeItem(USER_LINKS_KEY); } catch (e) { if (LX_DEBUG) console.warn(e); }
+  composeCategories();
+  rebuildCatalogUI();
+  showToast(t('resetDone'));
+};
+
+const updateDataButtonLabel = () => {
+  const btn = document.getElementById('dataToggle');
+  if (!btn) return;
+  btn.setAttribute('aria-label', t('dataMenu'));
+  btn.title = t('dataMenu');
+};
+
+const openDataMenu = (btn, focusFirst) => {
+  closeContextMenu();
+  const menu = buildContextMenu();
+  const items = [['import', 'fa-box-open', 'dataImport'], ['export', 'fa-file-lines', 'dataExport']];
+  if (categories.some(c => c.id === USER_CAT_ID)) items.push(['reset', 'fa-triangle-exclamation', 'dataReset']);
+  menu.innerHTML = items.map(([id, ic, key]) =>
+    `<button type="button" role="menuitem" data-data-action="${id}">${icon(ic)}${escapeHtml(t(key))}</button>`).join('');
+  const run = { import: importUserLinks, export: exportUserData, reset: resetUserLinks };
+  menu.dataset.owner = 'data';
+  btn.setAttribute('aria-expanded', 'true');
+  const pad = 8;
+  menu.style.left = '0px';
+  menu.style.top = '0px';
+  const r = btn.getBoundingClientRect();
+  const w = menu.offsetWidth, h = menu.offsetHeight;
+  const rtl = document.documentElement.dir === 'rtl';
+  const x = rtl ? r.right - w : r.left;
+  const y = r.bottom + pad + h <= window.innerHeight - pad ? r.bottom + pad : r.top - h - pad;
+  placeContextMenu(menu, x, y);
+  showContextMenu(menu, { anchor: btn, returnTo: btn, focusFirst });
+  menu.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-data-action]');
+    if (!b || !run[b.dataset.dataAction]) return;
+    sfx.click();
+    closeContextMenu();
+    run[b.dataset.dataAction]();
+  }, { signal: contextMenuAC.signal });
+};
+
+const initDataMenu = () => {
+  const btn = document.getElementById('dataToggle');
+  if (!btn) return;
+  let viaKeyboard = false;
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') viaKeyboard = true;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); sfx.click(); openDataMenu(btn, true); }
+  });
+  btn.addEventListener('click', (e) => {
+    const kb = viaKeyboard || e.detail === 0;
+    viaKeyboard = false;
+    if (contextMenuEl && contextMenuEl.classList.contains('is-open') && contextMenuEl.dataset.owner === 'data') {
+      closeContextMenu();
+      return;
+    }
+    sfx.click();
+    openDataMenu(btn, kb);
+  });
+  window.addEventListener('storage', (e) => {
+    if (e.key !== USER_LINKS_KEY && e.key !== null) return;
+    composeCategories();
+    rebuildCatalogUI();
+  });
+};
+
+const boot = () => {
+  loadCatalog();
   setupInteractions();
-}
+  initDataMenu();
+  refreshCatalog();
+};
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
 </script>
 </body>
 </html>

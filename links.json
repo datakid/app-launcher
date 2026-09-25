@@ -1,0 +1,72 @@
+{
+  "categories": [
+    {
+      "id": "core", "label": { "ar": "الأساسية", "en": "Core" }, "icon": "fa-layer-group", "accent": "#7c9bff", "key": 0,
+      "apps": [
+        {
+          "id": "ledger-form", "title": { "ar": "خارجي 2", "en": "Ledger Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
+          "variants": [
+            { "id": "new", "label": { "ar": "الجديد", "en": "New" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-bolt" },
+            { "id": "legacy", "label": { "ar": "القديم", "en": "Legacy" }, "url": "https://datakid-github-io.vercel.app/", "icon": "fa-sliders" }
+          ],
+          "defaultVariant": 0
+        },
+        { "id": "parser", "title": { "ar": "خارجي 0", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"] },
+        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"] },
+        {
+          "id": "drug-list", "title": { "ar": "لستة الادوية", "en": "Drug List" }, "icon": "fa-search", "gradient": ["#5e8df0", "#7dd3fc", "#075985"],
+          "variants": [
+            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders" }
+          ],
+          "defaultVariant": 0
+        },
+        { "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"] },
+        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"] },
+        { "id": "index-builder", "title": { "ar": "فهرس الادوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11" }
+      ]
+    },
+    {
+      "id": "tools", "label": { "ar": "أدوات", "en": "Tools" }, "icon": "fa-calculator", "accent": "#22c1a4", "key": 4,
+      "apps": [
+        { "id": "id-dates", "title": { "ar": "الرقم القومي والتاريخ", "en": "ID and Dates" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11" },
+        {
+          "id": "roi", "title": { "ar": "عائد الاستثمار", "en": "ROI Calculator" }, "icon": "fa-chart-line", "gradient": ["#42a374", "#bbf7d0", "#14532d"], "isNew": true, "since": "2026-08-11",
+          "variants": [
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders" }
+          ],
+          "defaultVariant": 0
+        },
+        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25" },
+        {
+          "id": "qisma-mizan", "title": { "ar": "قسمة العوائد", "en": "Qisma / Mizan" }, "icon": "fa-scale-balanced", "gradient": ["#ab8a4f", "#fef08a", "#713f12"], "isNew": true, "since": "2026-08-11",
+          "variants": [
+            { "id": "express", "label": { "ar": "السريع", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders" }
+          ],
+          "defaultVariant": 0
+        },
+        {
+          "id": "plan-maker", "title": { "ar": "الخطة", "en": "Planner" }, "icon": "fa-calendar-days", "gradient": ["#9c6fa8", "#e5c3ef", "#5b2f66"], "isNew": true, "since": "2026-08-30",
+          "variants": [
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders" }
+          ],
+          "defaultVariant": 0
+        }
+      ]
+    },
+    {
+      "id": "experimental", "label": { "ar": "تجريبي", "en": "Experimental" }, "icon": "fa-flask", "accent": "#a78bfa", "key": 8,
+      "apps": [
+        { "id": "to-do", "title": { "ar": "تقارير", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
+        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" },
+        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11" },
+        { "id": "prep", "title": { "ar": "اعداد", "en": "Prep" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-09-18" },
+        { "id": "draw", "title": { "ar": "بيان", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18" },
+        { "id": "data-cleaner", "title": { "ar": "جدولة", "en": "Sift" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-magnifying-glass", "gradient": ["#3fae83", "#9df0c7", "#0c4a33"], "isNew": true, "since": "2026-09-18" }
+      ]
+    }
+  ]
+}
