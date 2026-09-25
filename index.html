@@ -5811,7 +5811,14 @@ const exportUserData = () => {
     if (stored !== null) prefs.variants[a.id] = getSelectedVariantIndex(a);
   }));
   const links = readUserLinks().map(({ title, url, icon: ic, gradient }) => ({ title, url, icon: ic, color: gradient[0] }));
-  const body = JSON.stringify({ app: 'linkexpress', version: 1, exportedAt: new Date().toISOString(), links, prefs }, null, 2);
+  const base = { app: 'linkexpress', version: 1, exportedAt: new Date().toISOString(), links, prefs };
+  let body = JSON.stringify(base, null, 2);
+  let catalog = null;
+  try { catalog = cleanCatalog({ categories: baseCatalog }); } catch (e) { if (LX_DEBUG) console.warn(e); }
+  if (catalog) {
+    const withCatalog = JSON.stringify({ ...base, catalog }, null, 2);
+    if (new Blob([withCatalog]).size <= LIMITS.fileBytes) body = withCatalog;
+  }
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([body], { type: 'application/json' }));
   a.download = `linkexpress-${new Date().toISOString().slice(0, 10)}.json`;
