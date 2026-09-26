@@ -76,7 +76,7 @@
           "id": "prep", "title": { "ar": "تجهيز البيانات", "en": "Data Prep" }, "icon": "fa-chart-column", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-09-18",
           "variants": [
             { "id": "prep", "label": { "ar": "تجهيز", "en": "Prep" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column" },
-            { "id": "sift", "label": { "ar": "تنقية", "en": "Sift" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter" }
+            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter" }
           ],
           "defaultVariant": 0
         },
