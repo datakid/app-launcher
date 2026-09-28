@@ -21,6 +21,9 @@
     root.dir = lang === 'en' ? 'ltr' : 'rtl';
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
+    if (/^https?:$/.test(location.protocol) && window.fetch) {
+      window.__lxCatalog = fetch('links.json', { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).catch(function () { return null; });
+    }
   } catch (e) {
     if (location.search.indexOf('lxdebug=1') !== -1) console.warn(e);
   }
@@ -348,7 +351,7 @@ a, button { cursor: pointer; }
   will-change: transform, opacity;
   contain: strict;
   background: radial-gradient(closest-side, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03)), transparent 70%);
-  background: radial-gradient(closest-side, color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 3%, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03))), transparent 70%);
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 3%, light-dark(rgba(255,252,245,0.16), rgba(255,255,255,0.02))), transparent 70%);
   opacity: 0;
   transition: opacity var(--dur-slow) var(--ease-lux), --hover-accent var(--dur-base) var(--ease-lux);
 }
@@ -365,7 +368,7 @@ a, button { cursor: pointer; }
 body.is-cinema .spotlight { opacity: .55; transition: opacity 2.5s var(--ease-io); }
 body.is-cinema .controls-pill { opacity: .5; }
 @media (hover: hover) and (pointer: fine) {
-  body.is-card-hover .spotlight.is-active { opacity: 0.3; }
+  body.is-card-hover .spotlight.is-active { opacity: 0.55; }
 }
 
 .container {
@@ -696,7 +699,8 @@ kbd {
   transition: opacity var(--dur-base) var(--ease-lux);
   -webkit-tap-highlight-color: transparent;
 }
-.app-grid.has-dim-engine .app-card { transition: none; will-change: transform, opacity; }
+.app-grid.has-dim-engine .app-card { transition: none; will-change: transform; }
+.app-grid.has-dim-engine .card-clip { will-change: opacity; }
 .app-card.is-live .app-icon-wrapper,
 .app-card.is-live .app-title { will-change: transform; }
 @media not ((hover: hover) and (pointer: fine)) {
@@ -787,24 +791,25 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .card-clip::before {
   content: ''; position: absolute; left: 0; top: 0;
-  width: 640px; height: 640px; margin: -320px 0 0 -320px; border-radius: 50%;
-  background: radial-gradient(closest-side, light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.085)), transparent 58%);
+  width: 560px; height: 560px; margin: -280px 0 0 -280px; border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255,255,255,0.05), rgba(255,255,255,0.018) 45%, transparent 72%);
   transform: translate3d(var(--gx), var(--gy), 0);
   opacity: 0; pointer-events: none; z-index: 2;
-  transition: opacity var(--dur-base) var(--ease-lux); mix-blend-mode: overlay;
+  transition: opacity var(--dur-slow) var(--ease-lux);
 }
 :root[data-theme="light"] .card-clip::before {
-  width: 480px; height: 480px; margin: -240px 0 0 -240px;
-  background: radial-gradient(closest-side, rgba(255,255,255,0.2), transparent 62%);
-  mix-blend-mode: soft-light;
+  background: radial-gradient(closest-side, rgba(255,255,255,0.55), rgba(255,255,255,0.18) 45%, transparent 72%);
 }
 .app-card:not(.has-pointer-pos) .card-clip::before { left: 50%; top: -20%; transform: none; }
 
 .card-clip::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
   padding: 1px; z-index: 4; pointer-events: none;
-  background: radial-gradient(var(--reveal-r) circle at var(--rx) var(--ry),
-    rgba(255,255,255,.95), rgba(255,255,255,.34) 26%, rgba(255,255,255,.12) 48%, transparent 74%);
+  background:
+    radial-gradient(var(--reveal-r) circle at var(--rx) var(--ry),
+      rgba(255,255,255,.62), rgba(255,255,255,.2) 28%, rgba(255,255,255,.06) 52%, transparent 74%),
+    radial-gradient(calc(var(--reveal-r) * .7) circle at calc(100% - var(--rx)) calc(100% - var(--ry)),
+      rgba(255,255,255,.22), rgba(255,255,255,.06) 40%, transparent 72%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -813,8 +818,11 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   transition: none;
 }
 :root[data-theme="light"] .card-clip::after {
-  background: radial-gradient(var(--reveal-r) circle at var(--rx) var(--ry),
-    rgba(20,18,15,.55), rgba(20,18,15,.2) 26%, rgba(20,18,15,.07) 48%, transparent 74%);
+  background:
+    radial-gradient(var(--reveal-r) circle at var(--rx) var(--ry),
+      rgba(255,255,255,1), rgba(255,255,255,.55) 30%, rgba(20,18,15,.05) 60%, transparent 76%),
+    radial-gradient(calc(var(--reveal-r) * .7) circle at calc(100% - var(--rx)) calc(100% - var(--ry)),
+      rgba(20,18,15,.14), rgba(20,18,15,.04) 45%, transparent 72%);
 }
 .card-hero { --reveal-r: 320px; }
 :root[data-theme="light"] .app-card { --reveal-r: 180px; }
@@ -832,8 +840,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .card-glow {
   position: absolute; left: 0; top: 0;
-  width: 1200px; height: 1200px; margin: -600px 0 0 -600px; border-radius: 50%;
-  background: radial-gradient(closest-side, var(--tint), transparent 60%);
+  width: 900px; height: 900px; margin: -450px 0 0 -450px; border-radius: 50%;
+  background: radial-gradient(closest-side, var(--tint), transparent 65%);
   transform: translate3d(var(--gx), var(--gy), 0);
   opacity: 0; pointer-events: none; z-index: 0;
   transition: opacity var(--dur-slow) var(--ease-lux);
@@ -844,33 +852,25 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .card-sheen {
   position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
-  overflow: hidden;
   opacity: var(--hov, 0);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,0) 22%),
+    linear-gradient(0deg, color-mix(in oklab, var(--tint) 7%, transparent), transparent 30%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -1px 0 rgba(255,255,255,.03);
 }
-.card-sheen::before {
-  content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 260%;
-  background: linear-gradient(115deg,
-    transparent 32%,
-    rgba(255,255,255,.16) 47%,
-    rgba(255,255,255,.05) 53%,
-    transparent 68%);
-  transform: translate3d(calc(-80% + var(--hov, 0) * 160%), 0, 0);
-}
-:root[data-theme="light"] .card-sheen { mix-blend-mode: soft-light; opacity: calc(var(--hov, 0) * .6); }
-:root[data-theme="dark"] .card-sheen::before {
-  background: linear-gradient(115deg,
-    transparent 32%,
-    rgba(255,255,255,.11) 47%,
-    rgba(255,255,255,.03) 53%,
-    transparent 68%);
+:root[data-theme="light"] .card-sheen {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,0) 26%),
+    linear-gradient(0deg, color-mix(in oklab, var(--tint) 6%, transparent), transparent 30%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,1), inset 0 -1px 0 rgba(20,18,15,.04);
 }
 
-.app-card.is-kb-focus .card-glow { opacity: 0.06; }
-:root[data-theme="light"] .app-card.is-kb-focus .card-glow { opacity: 0.065; }
+.app-card.is-kb-focus .card-glow { opacity: 0.045; }
+:root[data-theme="light"] .app-card.is-kb-focus .card-glow { opacity: 0.05; }
 .app-card.is-kb-focus .card-clip::before { opacity: 1; }
 @media (hover: hover) and (pointer: fine) {
-  .app-card:hover .card-glow { opacity: 0.06; }
-  :root[data-theme="light"] .app-card:hover .card-glow { opacity: 0.065; }
+  .app-card:hover .card-glow { opacity: 0.045; }
+  :root[data-theme="light"] .app-card:hover .card-glow { opacity: 0.05; }
   .app-card:hover .card-clip::before { opacity: 1; }
 }
 
@@ -1880,107 +1880,16 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   <div id="paletteLive" class="visually-hidden" aria-live="polite"></div>
 </dialog>
 
-<script type="application/json" id="lx-data">
-{
-  "categories": [
-    {
-      "id": "core", "label": { "ar": "الأساسية", "en": "Core" }, "icon": "fa-layer-group", "accent": "#7c9bff", "key": 0,
-      "apps": [
-        {
-          "id": "ledger-form", "title": { "ar": "نموذج", "en": "Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
-          "variants": [
-            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt" },
-            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders" }
-          ],
-          "defaultVariant": 0
-        },
-        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"] },
-        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"] },
-        {
-          "id": "drug-list", "title": { "ar": "قائمة الأدوية", "en": "Drug List" }, "icon": "fa-search", "gradient": ["#5e8df0", "#7dd3fc", "#075985"],
-          "variants": [
-            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders" }
-          ],
-          "defaultVariant": 0
-        },
-        { "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"] },
-        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"] },
-        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11" },
-        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" }
-      ]
-    },
-    {
-      "id": "tools", "label": { "ar": "أدوات", "en": "Tools" }, "icon": "fa-calculator", "accent": "#22c1a4", "key": 4,
-      "apps": [
-        { "id": "id-dates", "title": { "ar": "الرقم القومي والتاريخ", "en": "ID and Dates" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11" },
-        {
-          "id": "roi", "title": { "ar": "عائد الاستثمار", "en": "ROI Calculator" }, "icon": "fa-chart-line", "gradient": ["#42a374", "#bbf7d0", "#14532d"], "isNew": true, "since": "2026-08-11",
-          "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders" }
-          ],
-          "defaultVariant": 0
-        },
-        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25" },
-        {
-          "id": "qisma-mizan", "title": { "ar": "قسمة العوائد", "en": "Qisma / Mizan" }, "icon": "fa-scale-balanced", "gradient": ["#ab8a4f", "#fef08a", "#713f12"], "isNew": true, "since": "2026-08-11",
-          "variants": [
-            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt" },
-            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders" }
-          ],
-          "defaultVariant": 0
-        },
-        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26" },
-        {
-          "id": "plan-maker", "title": { "ar": "الخطة", "en": "Planner" }, "icon": "fa-calendar-days", "gradient": ["#9c6fa8", "#e5c3ef", "#5b2f66"], "isNew": true, "since": "2026-08-30",
-          "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders" }
-          ],
-          "defaultVariant": 0
-        },
-        {
-          "id": "criteria-builder", "title": { "ar": "بناء المعايير", "en": "Criteria Builder" }, "icon": "fa-compass", "gradient": ["#d0785a", "#ffc8a8", "#7a2e17"], "isNew": true, "since": "2026-09-26",
-          "variants": [
-            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass" },
-            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star" }
-          ],
-          "defaultVariant": 0
-        }
-      ]
-    },
-    {
-      "id": "experimental", "label": { "ar": "تجريبي", "en": "Experimental" }, "icon": "fa-flask", "accent": "#a78bfa", "key": 8,
-      "apps": [
-        {
-          "id": "prep", "title": { "ar": "تجهيز البيانات", "en": "Data Prep" }, "icon": "fa-chart-column", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-09-27",
-          "variants": [
-            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column" },
-            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group" }
-          ],
-          "defaultVariant": 0
-        },
-        {
-          "id": "text-tools", "title": { "ar": "أدوات النصوص", "en": "Text Tools" }, "icon": "fa-font", "gradient": ["#c08a3e", "#f6d9a8", "#6b4513"], "isNew": true, "since": "2026-09-27",
-          "variants": [
-            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter" },
-            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font" }
-          ],
-          "defaultVariant": 0
-        },
-        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
-        { "id": "pillbug", "title": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check", "gradient": ["#5fa05a", "#c9f0c0", "#1f4d1c"], "isNew": true, "since": "2026-09-27" },
-        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11" },
-        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18" }
-      ]
-    }
-  ]
-}
-</script>
-
 <script>
 const LX_DEBUG = new URLSearchParams(location.search).get('lxdebug') === '1';
+const CATALOG_URL = 'links.json';
+const catalogRequest = (() => {
+  if (!/^https?:$/.test(location.protocol)) return Promise.resolve(null);
+  if (window.__lxCatalog) return window.__lxCatalog;
+  try {
+    return fetch(new URL(CATALOG_URL, location.href), { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).catch(() => null);
+  } catch (e) { return Promise.resolve(null); }
+})();
 class AudioEngine {
   constructor() {
     this.ctx = null;
@@ -2204,28 +2113,66 @@ const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
 }[c]));
 
-const ICON_IDS = new Set([
-  'fa-arrow-right-to-bracket', 'fa-arrow-up-right-from-square', 'fa-bolt', 'fa-book',
-  'fa-book-medical', 'fa-box-open', 'fa-briefcase', 'fa-calculator', 'fa-calendar-days',
-  'fa-chart-area', 'fa-chart-column', 'fa-chart-line', 'fa-check', 'fa-circle', 'fa-circle-dot',
-  'fa-clone', 'fa-compass', 'fa-compress', 'fa-copy', 'fa-crosshairs', 'fa-dollar-sign', 'fa-expand', 'fa-eye', 'fa-file-contract',
-  'fa-file-lines', 'fa-filter', 'fa-flask', 'fa-folder-open', 'fa-font', 'fa-heart-pulse', 'fa-id-card',
-  'fa-language', 'fa-layer-group', 'fa-list-check', 'fa-magnifying-glass', 'fa-magnifying-glass-chart', 'fa-moon',
-  'fa-pills', 'fa-ranking-star', 'fa-scale-balanced', 'fa-search', 'fa-sliders', 'fa-square-root-variable', 'fa-sun', 'fa-triangle-exclamation',
-  'fa-user-secret', 'fa-volume-mute', 'fa-volume-up'
-]);
-
+const ICON_RE = /^fa-[a-z0-9]+(?:-[a-z0-9]+){0,6}$/;
 const DEFAULT_ICON = 'fa-circle';
+const ICON_CDN = 'https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/svgs/solid/';
+const iconDefs = () => document.querySelector('body > svg defs');
+const iconState = new Map();
+
+const swapIconRefs = (from, to) => {
+  document.querySelectorAll(`use[href="#${from}"]`).forEach((u) => {
+    u.removeAttribute('href');
+    u.setAttribute('href', `#${to}`);
+    const svg = u.parentNode;
+    if (svg && svg.classList && from !== to) { svg.classList.remove(from); svg.classList.add(to); }
+  });
+};
+
+const ensureIcon = (name) => {
+  if (!ICON_RE.test(name) || iconState.has(name)) return;
+  if (document.getElementById(name)) { iconState.set(name, 'ok'); return; }
+  iconState.set(name, 'loading');
+  fetch(ICON_CDN + name.slice(3) + '.svg', { mode: 'cors', credentials: 'omit' })
+    .then((r) => (r.ok ? r.text() : Promise.reject(r.status)))
+    .then((text) => {
+      const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+      const src = doc.documentElement;
+      const vb = (src.getAttribute('viewBox') || '').trim();
+      const paths = [...doc.querySelectorAll('path')].map((p) => p.getAttribute('d')).filter((d) => d && /^[MmLlHhVvCcSsQqTtAaZz0-9.,\s-]+$/.test(d));
+      if (!/^[\d.\s-]+$/.test(vb) || !paths.length) throw new Error('icon');
+      const NS = 'http://www.w3.org/2000/svg';
+      const sym = document.createElementNS(NS, 'symbol');
+      sym.id = name;
+      sym.setAttribute('viewBox', vb);
+      paths.forEach((d) => {
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('fill', 'currentColor');
+        p.setAttribute('d', d);
+        sym.appendChild(p);
+      });
+      iconDefs()?.appendChild(sym);
+      iconState.set(name, 'ok');
+      swapIconRefs(name, name);
+    })
+    .catch(() => { iconState.set(name, 'missing'); swapIconRefs(name, DEFAULT_ICON); });
+};
+
+const resolveIcon = (name) => {
+  if (typeof name !== 'string' || !ICON_RE.test(name)) return DEFAULT_ICON;
+  if (iconState.get(name) === 'missing') return DEFAULT_ICON;
+  ensureIcon(name);
+  return name;
+};
 
 const icon = (name, extraClass = '') => {
-  const safe = ICON_IDS.has(name) ? name : DEFAULT_ICON;
+  const safe = resolveIcon(name);
   const cls = extraClass ? `${extraClass} fas ${safe}` : `fas ${safe}`;
   return `<svg class="${cls}" aria-hidden="true" focusable="false"><use href="#${safe}"></use></svg>`;
 };
 
 const setIcon = (element, name) => {
   if (!element) return;
-  const safe = ICON_IDS.has(name) ? name : DEFAULT_ICON;
+  const safe = resolveIcon(name);
   const use = element.querySelector('use');
   if (use) use.setAttribute('href', `#${safe}`);
   const kept = (element.getAttribute('class') || '').split(/\s+/).filter((c) => c && !c.startsWith('fa-'));
@@ -2273,7 +2220,7 @@ const scheduleWarmActiveEntry = () => {
   paletteWarmTimer = setTimeout(() => warmOrigin(entry.app.url), 120);
 };
 
-const categories = JSON.parse(document.getElementById('lx-data').textContent).categories;
+const categories = [];
 
 const STRINGS = {
   skipToContent: { ar: 'تخطي إلى المحتوى', en: 'Skip to content' },
@@ -2316,6 +2263,7 @@ const STRINGS = {
   ctxOpen: { ar: 'فتح', en: 'Open' },
   ctxCopyLink: { ar: 'نسخ الرابط', en: 'Copy link' },
   emptyCategory: { ar: 'لا توجد عناصر هنا بعد', en: 'Nothing here yet' },
+  catalogUnavailable: { ar: 'تعذر تحميل قائمة الأدوات', en: 'Could not load the tool list' },
   resultsCountLabel: { ar: 'نتيجة', en: 'results' },
   noResultsMatch: { ar: 'لا توجد نتائج مطابقة', en: 'No matching results' },
   recentGroup: { ar: 'الأخيرة', en: 'Recent' },
@@ -3090,11 +3038,11 @@ const initPointerField = () => {
   let gapSince = 0;
   let cardHoverFlag = false;
   let intentPending = false;
-  const engage = spring(0.30, 1.0);
-  const DIM_BASE = 0.30;
-  const DIM_FAR = 0.44;
-  const DIM_INTENT_MS = 70;
-  const GAP_HOLD_MS = 420;
+  const engage = spring(0.55, 1.0);
+  const DIM_BASE = 0.12;
+  const DIM_FAR = 0.22;
+  const DIM_INTENT_MS = 180;
+  const GAP_HOLD_MS = 520;
   grid.classList.add('has-dim-engine');
 
   const measure = () => {
@@ -3115,16 +3063,17 @@ const initPointerField = () => {
       else { const r = c.getBoundingClientRect(); left = r.left; top = r.top; }
       c._r = { left, top, right: left + w, bottom: top + h };
       if (!c._clip) c._clip = c.querySelector('.card-clip');
+      if (!c._shadow) c._shadow = c.querySelector('.card-shadow');
       if (!c._springs) {
 
         c._springs = {
-          tx: spring(0.28, 1.0),
-          ty: spring(0.28, 1.0),
-          tz: spring(0.28, 1.0, 14, true),
-          reveal: spring(0.40, 1.0),
-          sc: spring(0.32, 0.92, 0.02),
-          hov: spring(0.32, 0.92),
-          dim: spring(0.34, 1.0)
+          tx: spring(0.36, 1.0),
+          ty: spring(0.36, 1.0),
+          tz: spring(0.36, 1.0, 8, true),
+          reveal: spring(0.46, 1.0),
+          sc: spring(0.36, 1.0, 0.02),
+          hov: spring(0.36, 1.0),
+          dim: spring(0.62, 1.0)
         };
         c._springs.sc.v = 1;
         c._springs.sc.to = 1;
@@ -3234,7 +3183,7 @@ const initPointerField = () => {
           const lean = clamp(pointerVX * 0.0006, -0.25, 0.25);
           s.tx.to = nx + lean;
           s.ty.to = ny;
-          s.tz.to = 14;
+          s.tz.to = 8;
         } else {
           s.tx.to = 0; s.ty.to = 0; s.tz.to = 0;
         }
@@ -3242,7 +3191,7 @@ const initPointerField = () => {
         const focused = !suspended && c.classList.contains('is-kb-focus');
         const active = inside || focused;
         s.hov.to = active ? 1 : 0;
-        s.sc.to = c._pressed ? 0.985 : (active ? 1.006 : 1 - 0.012 * s.dim.v);
+        s.sc.to = c._pressed ? 0.988 : (active ? 1.004 : 1);
 
         if (wantsTilt) {
           s.tx.fixed(dt); s.ty.fixed(dt); s.tz.fixed(dt); s.reveal.fixed(dt);
@@ -3304,10 +3253,15 @@ const initPointerField = () => {
         setIfChanged(c, '--hov', s.hov.v, 0.002);
         const op = 1 - s.dim.v;
         if (op > 0.999) {
-          if (c._last.op !== undefined) { c.style.opacity = ''; c._last.op = undefined; }
+          if (c._last.op !== undefined) {
+            clip.style.opacity = '';
+            if (c._shadow) c._shadow.style.opacity = '';
+            c._last.op = undefined;
+          }
         } else if (c._last.op === undefined || Math.abs(c._last.op - op) > 0.002) {
           c._last.op = op;
-          c.style.opacity = op.toFixed(3);
+          clip.style.opacity = op.toFixed(3);
+          if (c._shadow) c._shadow.style.opacity = (op * op).toFixed(3);
         }
 
         const inside = fx >= r.left && fx <= r.right && fy >= r.top && fy <= r.bottom;
@@ -3327,7 +3281,7 @@ const initPointerField = () => {
           if (L.tf !== '') { c.style.transform = ''; L.tf = ''; L.tx = L.ty = L.tz = L.sc = undefined; }
         } else if (L.tx === undefined || Math.abs(L.tx - tx) > 0.0015 || Math.abs(L.ty - ty) > 0.0015 || Math.abs(L.tz - tz) > 0.05 || Math.abs(L.sc - sc) > 0.0002) {
           L.tx = tx; L.ty = ty; L.tz = tz; L.sc = sc;
-          L.tf = `perspective(1600px) rotateX(${(-ty * 2.2).toFixed(3)}deg) rotateY(${(tx * 2.2).toFixed(3)}deg) translateZ(${tz.toFixed(2)}px) scale(${sc.toFixed(4)})`;
+          L.tf = `perspective(1600px) rotateX(${(-ty * 1.4).toFixed(3)}deg) rotateY(${(tx * 1.4).toFixed(3)}deg) translateZ(${tz.toFixed(2)}px) scale(${sc.toFixed(4)})`;
           c.style.transform = L.tf;
         }
 
@@ -3366,6 +3320,7 @@ const initPointerField = () => {
       pointerVX = 0;
       hasPointer = true;
       lastMove = now;
+      pointerFieldDirty = true;
       Motion.wake();
       return;
     }
@@ -3389,6 +3344,21 @@ const initPointerField = () => {
   }
   grid.addEventListener('focusin', () => Motion.wake());
   grid.addEventListener('focusout', () => Motion.wake());
+  grid.addEventListener('animationend', (e) => {
+    if (!e.target.classList || !e.target.classList.contains('app-card')) return;
+    pointerFieldDirty = true;
+    Motion.wake();
+  });
+  document.addEventListener('pointerover', (e) => {
+    if (e.pointerType === 'touch' || hasPointer) return;
+    px = e.clientX; py = e.clientY;
+    sx = px; sy = py;
+    hasPointer = true;
+    lastMove = performance.now();
+    pointerFieldDirty = true;
+    Motion.wake();
+  }, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { pointerFieldDirty = true; Motion.wake(); });
   container.addEventListener('transitionend', (e) => {
     if (e.target !== container || e.propertyName !== 'transform') return;
     pointerFieldDirty = true;
@@ -4064,6 +4034,7 @@ const runGridSwitch = (g, run, travel) => {
     ghost.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
     ghost.classList.remove('has-dim-engine');
     ghost.querySelectorAll('.app-card').forEach((c) => { c.classList.remove('is-tracking', 'is-live', 'is-kb-focus'); c.style.transform = ''; c.style.willChange = ''; });
+    ghost.querySelectorAll('.card-clip, .card-shadow').forEach((n) => { n.style.opacity = ''; });
     ghost.style.cssText += `;position:absolute;left:${g.offsetLeft}px;top:${g.offsetTop}px;width:${g.offsetWidth}px;height:${g.offsetHeight}px;margin:0;pointer-events:none;z-index:0;overflow:hidden;`;
     ghost.scrollTop = g.scrollTop;
     container.insertBefore(ghost, g);
@@ -5969,7 +5940,6 @@ const setupInteractions = () => {
   });
 };
 
-const CATALOG_URL = 'links.json';
 const CATALOG_CACHE_KEY = 'lx-catalog-cache';
 const USER_LINKS_KEY = 'lx-user-links';
 const USER_CAT_ID = 'mine';
@@ -6017,7 +5987,7 @@ const cleanLoc = (v) => {
   const en = cleanText(typeof v === 'string' ? v : isObj(v) ? v.en : '');
   return ar || en ? { ar: ar || en, en: en || ar } : null;
 };
-const cleanIcon = (v) => (typeof v === 'string' && ICON_IDS.has(v) ? v : DEFAULT_ICON);
+const cleanIcon = (v) => (typeof v === 'string' && ICON_RE.test(v) ? v : DEFAULT_ICON);
 const cleanHex = (v, fb) => (typeof v === 'string' && HEX_RE.test(v) ? v.toLowerCase() : fb);
 const cleanGradient = (g, color) => {
   const c = cleanHex(color, null);
@@ -6111,7 +6081,6 @@ const readUserLinks = () => {
   catch (e) { return []; }
 };
 
-let inlineCatalog = null;
 let baseCatalog = [];
 
 const userCategory = (apps) => ({
@@ -6123,24 +6092,52 @@ const composeCategories = () => {
   categories.splice(0, categories.length, ...baseCatalog, ...(mine.length ? [userCategory(mine)] : []));
 };
 
-const loadCatalog = () => {
-  inlineCatalog = cleanCatalog({ categories });
-  if (LX_DEBUG && inlineCatalog) {
-    const count = (list) => list.reduce((n, c) => n + c.apps.length, 0);
-    if (count(inlineCatalog) !== count(categories)) console.warn('lx: cleanCatalog dropped inline entries');
+const readCachedCatalog = () => {
+  try { return cleanCatalog(JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY) || 'null')); }
+  catch (e) { if (LX_DEBUG) console.warn(e); return null; }
+};
+
+const parseCatalogResponse = async (res) => {
+  if (!res) return { status: 'offline' };
+  if (new URL(res.url || location.href).origin !== location.origin) return { status: 'error' };
+  if (res.status === 404) return { status: 'missing' };
+  if (!res.ok) return { status: 'error' };
+  const declared = Number(res.headers.get('content-length'));
+  if (declared && declared > LIMITS.catalogBytes) return { status: 'error' };
+  const text = await res.text();
+  if (text.length > LIMITS.catalogBytes) return { status: 'error' };
+  let raw;
+  try { raw = JSON.parse(text.replace(/^\ufeff/, '')); } catch (e) { if (LX_DEBUG) console.warn('lx: links.json is not valid JSON', e); return { status: 'error' }; }
+  const next = cleanCatalog(raw);
+  if (LX_DEBUG && next && Array.isArray(raw.categories)) {
+    const count = (list) => list.reduce((n, c) => n + (Array.isArray(c.apps) ? c.apps.length : 0), 0);
+    if (count(next) !== count(raw.categories)) console.warn('lx: some links.json entries were rejected');
   }
-  let cached = null;
-  if (CATALOG_URL) {
-    try { cached = cleanCatalog(JSON.parse(localStorage.getItem(CATALOG_CACHE_KEY) || 'null')); }
-    catch (e) { if (LX_DEBUG) console.warn(e); }
+  return next ? { status: 'ok', catalog: next } : { status: 'error' };
+};
+
+let catalogParse = null;
+const fetchedCatalog = () => (catalogParse ||= catalogRequest.then(parseCatalogResponse).catch(() => ({ status: 'error' })));
+
+const loadCatalog = async () => {
+  const cached = readCachedCatalog();
+  if (cached) {
+    baseCatalog = cached;
+    composeCategories();
+    return { fromCache: true };
   }
-  baseCatalog = cached || inlineCatalog || categories.slice();
+  const result = await fetchedCatalog();
+  if (result.status === 'ok') {
+    baseCatalog = result.catalog;
+    try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify(result.catalog)); } catch (e) { if (LX_DEBUG) console.warn(e); }
+  }
   composeCategories();
+  return { fromCache: false, consumed: true };
 };
 
 const rebuildCatalogUI = (preferId) => {
-  if (!categories.length) return;
   closeContextMenu();
+  if (!categories.length) { buildTabRail(); renderEmptyCatalog(); return; }
   const has = (id) => !!id && categories.some(c => c.id === id);
   const target = has(preferId) ? preferId : has(currentTabId) ? currentTabId : categories[0].id;
   const hashWasTab = location.hash.replace('#', '') === currentTabId;
@@ -6164,27 +6161,23 @@ const setBaseCatalog = (next) => {
   rebuildCatalogUI();
 };
 
+const renderEmptyCatalog = () => {
+  const grid = document.getElementById('appGrid');
+  if (!grid || categories.length) return;
+  grid.classList.remove('is-auto-flow');
+  grid.innerHTML = `<div class="grid-empty">${icon('fa-box-open')}<span>${escapeHtml(t('catalogUnavailable'))}</span></div>`;
+};
+
 const refreshCatalog = async () => {
-  if (!CATALOG_URL || !/^https?:$/.test(location.protocol)) return;
   try {
-    const url = new URL(CATALOG_URL, location.href);
-    if (url.origin !== location.origin) return;
-    const res = await fetch(url, { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' });
-    if (new URL(res.url || url.href).origin !== location.origin) return;
-    if (res.status === 404) {
+    const result = await fetchedCatalog();
+    if (result.status === 'missing') {
       try { localStorage.removeItem(CATALOG_CACHE_KEY); } catch (e) { if (LX_DEBUG) console.warn(e); }
-      if (inlineCatalog) setBaseCatalog(inlineCatalog);
       return;
     }
-    if (!res.ok) return;
-    const declared = Number(res.headers.get('content-length'));
-    if (declared && declared > LIMITS.catalogBytes) return;
-    const text = await res.text();
-    if (text.length > LIMITS.catalogBytes) return;
-    const next = cleanCatalog(JSON.parse(text.replace(/^\ufeff/, '')));
-    if (!next) return;
-    try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify(next)); } catch (e) { if (LX_DEBUG) console.warn(e); }
-    setBaseCatalog(next);
+    if (result.status !== 'ok') return;
+    try { localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify(result.catalog)); } catch (e) { if (LX_DEBUG) console.warn(e); }
+    setBaseCatalog(result.catalog);
   } catch (e) { if (LX_DEBUG) console.warn(e); }
 };
 
@@ -6362,11 +6355,12 @@ const initDataMenu = () => {
   });
 };
 
-const boot = () => {
-  loadCatalog();
+const boot = async () => {
+  const { fromCache } = await loadCatalog();
   setupInteractions();
   initDataMenu();
-  refreshCatalog();
+  if (!categories.length) renderEmptyCatalog();
+  if (fromCache) refreshCatalog();
 };
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
