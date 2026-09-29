@@ -25,6 +25,11 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - Command palette: flat keycaps, a quiet cursor, a strong primary action, dot-separated hints and a live status dot
 - Visual system (v2): accent-aware gradient rim on the bar and palette, glass surfaces with a stronger blur, a circular magnifier badge on the bar and palette input, a tab indicator with an inner accent glow, active-state dots on the controls pill, an accent hairline across the top of each card, refined icon tiles, tinted variant chips and a more legible hostname line. Motion timings were tightened across the board (springs, tab switch, palette morph, card entry) so animations feel snappy and never block interaction
 
+- Card glyph: a large, faint copy of the tool's icon sits in the corner of each card and drifts slightly with the pointer
+- Zen mode persists across reloads (`lx-zen`), is applied before first paint, and travels with export/import prefs
+- Palette: a tappable close button (Esc keycap on desktop, × on touch). Closing or pressing Esc during the open morph cancels it instantly instead of being ignored
+- Short desktop windows (≤700 px tall) scroll instead of squashing the grid; very narrow phones (≤360 px) get a compact controls pill
+
 ## Files and URLs
 - `index.html`: the app. `#<categoryId>` opens a tab (`#core`, `#tools`, `#experimental`, `#mine`). `?lxdebug=1` shows debug warnings
 - `links.json`: the catalog
@@ -35,7 +40,7 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - IDs: lowercase letters, digits and `-`, up to 40 characters, unique. Colors must be `#rrggbb`. URLs must be `https:`
 - Limits: 12 categories, 24 apps per category, 4 variants per app, 256 KB file
 - Import file: `{ "links": [{ "title": "..." | {ar,en}, "url": "https://...", "icon": "fa-...", "color": "#rrggbb" }], "prefs": {...} }`
-- localStorage keys: `lx-user-links`, `lx-catalog-cache`, `lx-theme`, `lx-lang`, `lx-sound`, `lx-variant-*`, `lx-recents`, `lx-freq`, `lx-last-tab`, `lx-last-open`
+- localStorage keys: `lx-user-links`, `lx-catalog-cache`, `lx-theme`, `lx-lang`, `lx-sound`, `lx-zen`, `lx-variant-*`, `lx-recents`, `lx-freq`, `lx-last-tab`, `lx-last-open`
 
 ## Notes
 - Must be served over http(s). Opening `index.html` directly from disk cannot read `links.json`
