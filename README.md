@@ -20,7 +20,7 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - My data menu: import personal links (they go into a "My Links" tab), export data, remove imported links
 - Pointer light: glass rim highlights with an opposite-edge glint, a soft inner glow and a sweeping sheen
 - Focus falloff: when you hover a card, the others recede by distance (0.90 opacity for neighbours down to about 0.74 for the farthest, plus a slight scale-back). It starts after 110 ms of intent, so passing over cards doesn't flicker
-- Cards: an accent glow in the corner, a large faded icon that moves opposite to the tilt, a hostname line under the title and an accent-tinted border on hover
+- Cards: an accent glow in the corner, a hostname line under the title and an accent-tinted border on hover
 - Palette scopes: category chips with live match counts and a sliding highlight. Shift+Tab cycles through them
 - Command palette: flat keycaps, a quiet cursor, a strong primary action, dot-separated hints and a live status dot
 - Visual system (v2): accent-aware gradient rim on the bar and palette, glass surfaces with a stronger blur, a circular magnifier badge on the bar and palette input, a tab indicator with an inner accent glow, active-state dots on the controls pill, an accent hairline across the top of each card, refined icon tiles, tinted variant chips and a more legible hostname line. Motion timings were tightened across the board (springs, tab switch, palette morph, card entry) so animations feel snappy and never block interaction
