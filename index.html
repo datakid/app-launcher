@@ -210,12 +210,14 @@
 :root {
   color-scheme: dark;
   --bg: light-dark(#f3f1ec, #030406);
-  --surface: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.028));
-  --surface-hover: light-dark(rgba(255,255,255,0.86), rgba(255,255,255,0.058));
-  --border: light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.07));
-  --border-highlight: light-dark(rgba(20,18,15,0.16), rgba(255,255,255,0.3));
+  --surface: light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.036));
+  --surface-hover: light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.07));
+  --border: light-dark(rgba(20,18,15,0.075), rgba(255,255,255,0.085));
+  --border-highlight: light-dark(rgba(20,18,15,0.18), rgba(255,255,255,0.32));
   --text: light-dark(#15130f, #f6f5f2);
-  --text-muted: light-dark(rgba(21,19,15,0.60), rgba(246,245,242,0.52));
+  --text-muted: light-dark(rgba(21,19,15,0.62), rgba(246,245,242,0.6));
+  --rim: linear-gradient(180deg, light-dark(rgba(255,255,255,0.95), rgba(255,255,255,0.16)), light-dark(rgba(255,255,255,0.35), rgba(255,255,255,0.025)) 45%, light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.06)));
+  --glass-blur: blur(22px) saturate(165%);
   --tint: var(--tab-accent);
   --shadow-soft: light-dark(0 1px 2px rgba(28,25,20,.05), 0 1px 2px rgba(0,0,0,.3)), light-dark(0 10px 28px -14px rgba(28,25,20,.14), 0 10px 30px -14px rgba(0,0,0,.6));
   --shadow-deep: light-dark(0 2px 8px rgba(28,25,20,.07), 0 2px 6px rgba(0,0,0,.34)), light-dark(0 30px 60px -22px rgba(28,25,20,.18), 0 30px 64px -22px rgba(0,0,0,.72));
@@ -229,14 +231,14 @@
   --ease-io: cubic-bezier(.65, 0, .35, 1);
   --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.92 39.6%, 1.015 56.4%, 0.99 73.2%, 1 100%);
   --ease-in: cubic-bezier(.4, 0, 1, 1);
-  --dur-tap: 80ms;
-  --dur-micro: 150ms;
-  --dur-fast: 240ms;
-  --dur-base: 340ms;
-  --tab-dur: 400ms;
-  --dur-slow: 520ms;
-  --dur-story: 560ms;
-  --dur-ambient: 600ms;
+  --dur-tap: 70ms;
+  --dur-micro: 130ms;
+  --dur-fast: 200ms;
+  --dur-base: 280ms;
+  --tab-dur: 320ms;
+  --dur-slow: 420ms;
+  --dur-story: 480ms;
+  --dur-ambient: 520ms;
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
   --ui-font: 'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
   --display-font: 'El Messiri', 'El Messiri Fallback', var(--ui-font);
@@ -331,7 +333,9 @@ a, button { cursor: pointer; }
 
 .scrim {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background: radial-gradient(circle at center, transparent 22%, color-mix(in oklab, var(--tab-accent) 2%, var(--bg)) 118%);
+  background:
+    radial-gradient(70% 45% at 50% -10%, color-mix(in oklab, var(--tab-accent) 7%, transparent), transparent 70%),
+    radial-gradient(circle at center, transparent 22%, color-mix(in oklab, var(--tab-accent) 3%, var(--bg)) 118%);
   transition: background var(--dur-ambient) var(--ease-smooth);
 }
 
@@ -441,7 +445,7 @@ h1 {
   font-weight: 400; font-style: normal;
   font-size: clamp(2.6rem, 5.4vw, 5.6rem);
   letter-spacing: -0.008em; line-height: 1.1;
-  background: linear-gradient(135deg, light-dark(#0f172a, #ffffff) 0%, light-dark(#2563eb, #b4c6ff) 40%, light-dark(#0f172a, #ffffff) 80%);
+  background: linear-gradient(135deg, light-dark(#0f172a, #ffffff) 0%, color-mix(in oklab, var(--tab-accent) 72%, light-dark(#0f172a, #ffffff)) 40%, light-dark(#0f172a, #ffffff) 80%);
   background-size: 200% auto;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -463,17 +467,20 @@ h1 {
 .controls-pill {
   position: fixed; top: calc(1.5rem + env(safe-area-inset-top, 0px)); inset-inline-start: 1.5rem;
   display: flex; align-items: center;
-  background: light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.025));
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  background:
+    linear-gradient(180deg, light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.05)), transparent 60%),
+    light-dark(rgba(255,255,255,0.62), rgba(16,17,22,0.55));
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border);
-  border-radius: 50px; padding: 0.35rem; gap: 0.2rem;
+  border-radius: 50px; padding: 0.3rem; gap: 0.15rem;
   z-index: 100;
   box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
   transition: transform var(--dur-base) var(--ease-lux), background var(--dur-slow) var(--ease-smooth), opacity var(--dur-base) var(--ease-out);
 }
 
 .controls-pill button {
+  position: relative;
   background: transparent; border: none; color: var(--text-muted);
   width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -495,8 +502,14 @@ h1 {
 .controls-pill.is-magnetic button { transition: background-color var(--dur-base) var(--ease-lux), color var(--dur-base) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux); }
 .controls-pill.is-magnetic button:hover { background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)); color: var(--text); }
 
-.controls-pill button[aria-pressed="true"] { color: var(--text); background: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.1)); box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08)); }
+.controls-pill button[aria-pressed="true"] { color: var(--text); background: color-mix(in oklab, var(--tab-accent) 14%, light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.06))); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 24%, transparent), inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08)); }
 .controls-pill button[aria-pressed="true"] svg { color: color-mix(in oklab, var(--tab-accent) 70%, var(--text)); }
+.controls-pill button[aria-pressed="true"]::after {
+  content: ''; position: absolute; bottom: 5px; left: 50%; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
+  background: var(--tab-accent);
+  box-shadow: 0 0 8px color-mix(in oklab, var(--tab-accent) 80%, transparent);
+}
+.controls-pill button svg { font-size: 0.95rem; }
 .controls-pill button svg { transition: color var(--dur-base) var(--ease-lux); }
 .controls-divider { opacity: 0.7; }
 
@@ -542,18 +555,21 @@ h1 {
 .lx-context-menu button:active { opacity: 0.7; transition-duration: var(--dur-tap); }
 .lx-context-menu-sep { height: 1px; background: var(--border); margin: 0.3rem 0.2rem; }
 
-.controls-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.2rem; }
+.controls-divider { width: 1px; height: 18px; background: linear-gradient(180deg, transparent, var(--border-highlight), transparent); margin: 0 0.1rem; opacity: .6; }
 
 .lx-bar {
   width: var(--lx-panel-w); height: 64px;
   align-self: center; position: relative; z-index: 3; flex-shrink: 0;
   display: flex; align-items: center;
   border-radius: 999px;
-  background: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.025));
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  background:
+    linear-gradient(180deg, light-dark(rgba(255,255,255,0.5), rgba(255,255,255,0.045)), transparent 55%),
+    radial-gradient(60% 140% at 50% 0%, color-mix(in oklab, var(--tab-accent) 9%, transparent), transparent 70%),
+    light-dark(rgba(255,255,255,0.6), rgba(16,17,22,0.55));
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
+  box-shadow: var(--shadow-soft), 0 24px 48px -32px color-mix(in oklab, var(--tab-accent) 35%, transparent), inset 0 1px 0 light-dark(rgba(255,255,255,0.95), rgba(255,255,255,0.07));
   animation: slideDown var(--dur-story) var(--ease-out) 0.06s both;
   --tab-accent: #7c9bff;
   --c1: var(--tab-accent);
@@ -574,8 +590,17 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   outline: none;
 }
 .lx-bar-search:hover .lx-bar-label, .lx-bar-search:focus-visible .lx-bar-label { color: var(--text); }
-.lx-bar-search svg.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; }
-.lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.2rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color var(--dur-micro) var(--ease-lux); }
+.lx-bar-search svg.fa-magnifying-glass {
+  width: 34px; height: 34px; padding: 9px; box-sizing: border-box; flex-shrink: 0;
+  border-radius: 50%;
+  color: color-mix(in oklab, var(--tab-accent) 55%, var(--text));
+  background: color-mix(in oklab, var(--tab-accent) 13%, light-dark(rgba(255,255,255,0.6), rgba(255,255,255,0.03)));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 22%, transparent), inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08));
+  transition: transform var(--dur-fast) var(--ease-spring), background-color var(--dur-fast) var(--ease-lux), color var(--dur-fast) var(--ease-lux);
+}
+.lx-bar-search:hover svg.fa-magnifying-glass { transform: scale(1.06) rotate(-8deg); }
+.lx-bar-search:active svg.fa-magnifying-glass { transform: scale(.96); transition-duration: var(--dur-tap); }
+.lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.1rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color var(--dur-micro) var(--ease-lux); }
 .lx-bar-label-short { display: none; }
 @media (max-width: 640px) {
   .lx-bar-label-long { display: none; }
@@ -617,6 +642,16 @@ kbd {
 
 .lx-bar-divider { width: 1px; height: 26px; background: var(--border); margin-inline: 6px; flex-shrink: 0; }
 
+.lx-bar::before {
+  content: ''; position: absolute; inset: -1px; border-radius: inherit;
+  padding: 1px; z-index: 2; pointer-events: none;
+  background: var(--rim);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  opacity: 0.9;
+}
 .lx-bar::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
   padding: 1px; z-index: 2; pointer-events: none;
@@ -635,6 +670,7 @@ kbd {
 }
 @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
   .lx-bar::after { background: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
+  .lx-bar::before, #lx-palette::after { display: none; }
   :root[data-theme="light"] .lx-bar::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
 }
 
@@ -725,7 +761,7 @@ kbd {
 .card-shadow::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
   opacity: 0;
-  box-shadow: var(--shadow-deep), 0 18px 44px -18px color-mix(in oklab, var(--tint) 34%, transparent), inset 0 1px 2px rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 0 20px rgba(255,255,255,0.05);
+  box-shadow: var(--shadow-deep), 0 22px 48px -18px color-mix(in oklab, var(--tint) 46%, transparent), inset 0 1px 2px rgba(255,255,255,0.14), inset 0 0 0 1px rgba(255,255,255,0.14), inset 0 0 20px rgba(255,255,255,0.05);
   transition: opacity var(--dur-fast) var(--ease-lux);
 }
 .app-card.is-kb-focus .card-shadow::after { opacity: 1; }
@@ -744,8 +780,8 @@ kbd {
   text-decoration: none; border-radius: var(--radius);
   background-color: var(--surface);
   background-image:
-    linear-gradient(90deg, transparent 8%, rgba(255,255,255,0.12) 50%, transparent 92%),
-    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0) 44%);
+    linear-gradient(90deg, transparent 8%, rgba(255,255,255,0.2) 50%, transparent 92%),
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0) 44%);
   background-size: 100% 1px, 100% 100%;
   background-repeat: no-repeat;
   backdrop-filter: none;
@@ -786,7 +822,7 @@ kbd {
   from { opacity: 0; scale: .965; translate: 0 18px; }
   to   { opacity: 1; scale: 1;    translate: 0 0; }
 }
-body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-duration: 620ms; }
+body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-duration: 540ms; }
 
 .card-clip::before {
   content: ''; position: absolute; left: 0; top: 0;
@@ -936,7 +972,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .app-icon-wrapper {
   --icon-size: clamp(46px, 6.4vh, 56px);
-  --icon-radius: 13px;
+  --icon-radius: 14px;
   --icon-veil: light-dark(rgba(255,255,255,.28), rgba(255,255,255,.42));
   --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.10));
   width: var(--icon-size); height: var(--icon-size);
@@ -947,14 +983,13 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
     linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   display: flex; align-items: center; justify-content: center;
   box-shadow:
-    0 calc(10px + var(--icon-lift) * 5px)
-      calc(24px + var(--icon-lift) * 10px) -10px
-      color-mix(in oklab, var(--c1) 45%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.42),
-    inset 0 -1px 0 rgba(0,0,0,.3),
+    0 calc(10px + var(--icon-lift) * 6px)
+      calc(24px + var(--icon-lift) * 12px) -10px
+      color-mix(in oklab, var(--c1) 55%, transparent),
+    0 1px 3px -1px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.5),
     inset 0 0 0 1px var(--icon-rim),
-    inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
+    inset 0 -8px 14px -8px rgba(0,0,0,.35);
   position: relative; flex-shrink: 0;
   transform:
     translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0)
@@ -1005,8 +1040,8 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .badge {
   display: inline-flex; align-items: center; gap: 0.35rem;
-  padding: 0.3rem 0.7rem; border-radius: 50px;
-  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em;
+  padding: 0.26rem 0.62rem; border-radius: 50px;
+  font-size: 0.64rem; font-weight: 700; letter-spacing: 0.03em;
   background: light-dark(rgba(255,255,255,0.82), rgba(10,11,14,0.52));
   box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.06));
   border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
@@ -1078,8 +1113,9 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .open-affordance {
   display: flex; align-items: center; justify-content: center;
   width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-  background: light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.08)); border: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.1));
-  color: color-mix(in oklab, var(--tint) 80%, var(--text)); font-size: 0.65rem;
+  background: color-mix(in oklab, var(--tint) 18%, light-dark(rgba(255,255,255,0.7), rgba(255,255,255,0.04))); border: 1px solid color-mix(in oklab, var(--tint) 32%, transparent);
+  color: var(--tint-ink); font-size: 0.65rem;
+  box-shadow: 0 4px 10px -6px color-mix(in oklab, var(--tint) 60%, transparent);
   opacity: 0; transform: translateY(4px) scale(0.8);
   transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring);
 }
@@ -1091,18 +1127,21 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .variant-chips {
   position: relative; z-index: 1;
-  display: flex; gap: 2px; padding: 3px;
+  display: flex; gap: 2px; padding: 2px;
   border-radius: 999px; flex-shrink: 0;
-  background: light-dark(rgba(20,18,15,0.055), rgba(255,255,255,0.06));
+  background: light-dark(rgba(20,18,15,0.05), rgba(0,0,0,0.22));
+  box-shadow: inset 0 0 0 1px light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.07));
   anchor-scope: --active-chip;
   transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 0.7), calc(var(--ty, 0) * var(--depth, 0px) * 0.7), 0);
 }
 
 .variant-chip-indicator {
-  position: absolute; top: 3px; height: calc(100% - 6px);
+  position: absolute; top: 2px; height: calc(100% - 4px);
   border-radius: 999px;
-  background: light-dark(#ffffff, rgba(255,255,255,0.15));
-  box-shadow: 0 1px 2px light-dark(rgba(20,18,15,0.12), rgba(0,0,0,0.35)), inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,0.14)), inset 0 0 0 1px light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
+  background:
+    linear-gradient(180deg, light-dark(rgba(255,255,255,1), rgba(255,255,255,0.08)), transparent 70%),
+    color-mix(in oklab, var(--tint) 16%, light-dark(#ffffff, rgba(255,255,255,0.12)));
+  box-shadow: 0 1px 3px light-dark(rgba(20,18,15,0.14), rgba(0,0,0,0.4)), inset 0 0 0 1px color-mix(in oklab, var(--tint) 30%, light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)));
   pointer-events: none;
 }
 
@@ -1125,10 +1164,10 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .variant-chip {
   position: relative; z-index: 1;
-  height: 26px; padding: 0 0.75rem; border-radius: 999px;
+  height: 24px; padding: 0 0.7rem; border-radius: 999px;
   border: none; background: transparent; cursor: pointer;
   color: var(--text-muted);
-  font-family: var(--ui-font); font-size: 0.68rem; font-weight: 600;
+  font-family: var(--ui-font); font-size: 0.66rem; font-weight: 600;
   touch-action: manipulation;
   transition: color var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux);
 }
@@ -1196,9 +1235,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   position: absolute; inset: 4px 0; z-index: 0; pointer-events: none;
   border-radius: 999px;
   background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,0.8), rgba(255,255,255,0.06)), transparent),
-    color-mix(in oklab, var(--tab-accent) 12%, color-mix(in oklab, var(--text) 7%, transparent));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 20%, transparent), inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08));
+    linear-gradient(180deg, light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.09)), light-dark(rgba(255,255,255,0.2), rgba(255,255,255,0)) 60%),
+    color-mix(in oklab, var(--tab-accent) 16%, color-mix(in oklab, var(--text) 6%, transparent));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 28%, transparent),
+    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,0.1)),
+    inset 0 -8px 16px -12px color-mix(in oklab, var(--tab-accent) 45%, transparent);
   clip-path: inset(0 100% 0 0 round 999px);
 }
 
@@ -1310,9 +1352,11 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   display: flex; flex-direction: column;
   background-color: light-dark(rgba(250,249,246,0.985), rgba(13,14,18,0.975));
   background-image:
-    radial-gradient(80% 50% at 50% -18%, color-mix(in oklab, var(--live-accent) 11%, transparent), transparent 70%),
+    radial-gradient(80% 50% at 50% -18%, color-mix(in oklab, var(--live-accent) 16%, transparent), transparent 70%),
+    radial-gradient(60% 40% at 100% 100%, color-mix(in oklab, var(--live-accent) 6%, transparent), transparent 70%),
     linear-gradient(180deg, light-dark(rgba(255,255,255,0.8), rgba(255,255,255,0.035)), transparent 120px);
-  border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.08));
+  background-clip: padding-box;
+  border: 1px solid transparent;
   border-radius: var(--pal-radius);
   box-shadow:
     0 1px 1px light-dark(rgba(28,25,20,0.04), rgba(0,0,0,0.4)),
@@ -1322,7 +1366,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
     inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,0.07));
   padding: 0; overflow: hidden; color: var(--text);
   opacity: 0; transform: translateY(-8px) scale(0.985);
-  transition: opacity 180ms var(--ease-lux), transform 320ms var(--ease-lux), --live-accent var(--dur-slow) var(--ease-lux), display 320ms allow-discrete, overlay 320ms allow-discrete;
+  transition: opacity 160ms var(--ease-lux), transform 260ms var(--ease-lux), --live-accent var(--dur-slow) var(--ease-lux), display 260ms allow-discrete, overlay 260ms allow-discrete;
 }
 #lx-palette:not([open]) { pointer-events: none; }
 
@@ -1331,6 +1375,17 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 60%, light-dark(rgba(20,18,15,0.1), rgba(255,255,255,0.7))), transparent);
   opacity: 0.7;
   pointer-events: none;
+}
+
+#lx-palette::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: 4; pointer-events: none;
+  padding: 1px;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--live-accent) 35%, light-dark(rgba(255,255,255,1), rgba(255,255,255,0.22))), light-dark(rgba(255,255,255,0.3), rgba(255,255,255,0.04)) 30%, light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05)));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  transition: background var(--dur-slow) var(--ease-lux);
 }
 
 #lx-palette[open] { opacity: 1; transform: none; }
@@ -1342,7 +1397,9 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 #lx-palette::backdrop {
   background:
     radial-gradient(70% 55% at 50% 22%, color-mix(in oklab, var(--live-accent) 9%, transparent), transparent 75%),
-    light-dark(rgba(30,27,22,0.26), rgba(2,3,5,0.62));
+    light-dark(rgba(30,27,22,0.22), rgba(2,3,5,0.55));
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
   opacity: 0;
   transition: opacity 260ms var(--ease-lux), display 260ms allow-discrete, overlay 260ms allow-discrete;
 }
@@ -1358,16 +1415,23 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-input-row {
   position: relative;
   display: flex; align-items: center; gap: 0.85rem;
-  min-height: 68px; padding: 0 1.15rem 0 1.5rem; flex-shrink: 0;
+  min-height: 72px; padding: 0 1.15rem 0 1.25rem; flex-shrink: 0;
 }
-:root[dir="rtl"] .palette-input-row { padding: 0 1.5rem 0 1.15rem; }
+:root[dir="rtl"] .palette-input-row { padding: 0 1.25rem 0 1.15rem; }
 .palette-input-row::after {
   content: ''; position: absolute; inset-inline: 0; bottom: 0; height: 1px;
   background: var(--pal-line);
 }
-.palette-input-row > svg { color: color-mix(in oklab, var(--live-accent) 45%, var(--text-muted)); font-size: 1.1rem; transition: color var(--dur-base) var(--ease-lux); }
+.palette-input-row > svg.fas {
+  width: 34px; height: 34px; padding: 9px; box-sizing: border-box; flex-shrink: 0;
+  border-radius: 50%;
+  color: color-mix(in oklab, var(--live-accent) 60%, var(--text));
+  background: color-mix(in oklab, var(--live-accent) 14%, light-dark(rgba(255,255,255,0.6), rgba(255,255,255,0.03)));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 26%, transparent), inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08)), 0 6px 14px -8px color-mix(in oklab, var(--live-accent) 60%, transparent);
+  transition: color var(--dur-base) var(--ease-lux), background-color var(--dur-base) var(--ease-lux), box-shadow var(--dur-base) var(--ease-lux);
+}
 .palette-input-row > kbd { margin-inline-start: auto; }
-#paletteInput { flex: 1; min-width: 0; height: 100%; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--ui-font); font-size: 1.24rem; font-weight: 400; letter-spacing: -0.012em; caret-color: var(--live-accent); }
+#paletteInput { flex: 1; min-width: 0; height: 100%; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--ui-font); font-size: 1.28rem; font-weight: 400; letter-spacing: -0.012em; caret-color: var(--live-accent); }
 #paletteInput::placeholder { color: var(--pal-ink-2); opacity: 1; }
 #paletteInput:focus-visible { outline: none; }
 
@@ -1391,8 +1455,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   min-width: 20px; height: 20px; padding: 0 5px;
   font-size: 0.66rem; font-weight: 500; color: var(--pal-ink-2);
   border-radius: 6px;
-  background: light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05));
-  box-shadow: inset 0 0 0 1px light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.05)), inset 0 -1px 0 light-dark(rgba(20,18,15,0.06), rgba(0,0,0,0.3));
+  background: light-dark(rgba(255,255,255,0.5), rgba(255,255,255,0.03));
+  box-shadow: inset 0 0 0 1px light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.09));
 }
 .palette-input-row > kbd { height: 24px; padding: 0 8px; border-radius: 7px; font-size: 0.68rem; }
 
@@ -1400,7 +1464,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-input-wrap #paletteInput { position: relative; z-index: 1; }
 .palette-ghost {
   position: absolute; inset: 0; display: flex; align-items: center;
-  font-family: var(--ui-font); font-size: 1.24rem; font-weight: 400; letter-spacing: -0.012em; white-space: pre; pointer-events: none;
+  font-family: var(--ui-font); font-size: 1.28rem; font-weight: 400; letter-spacing: -0.012em; white-space: pre; pointer-events: none;
 }
 .palette-ghost .ghost-typed { color: transparent; }
 .palette-ghost .ghost-tail { color: var(--pal-ink-2); opacity: 0.6; }
@@ -1434,18 +1498,25 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   position: absolute; top: 0; inset-inline: 0.5rem; z-index: 0;
   height: 0; border-radius: 12px; pointer-events: none;
   background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.03)), light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0))),
-    color-mix(in oklab, var(--live-accent) 9%, light-dark(rgba(20,18,15,0.03), rgba(255,255,255,0.045)));
+    linear-gradient(180deg, light-dark(rgba(255,255,255,0.95), rgba(255,255,255,0.05)), light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0))),
+    color-mix(in oklab, var(--live-accent) 12%, light-dark(rgba(20,18,15,0.03), rgba(255,255,255,0.045)));
   box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 16%, light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.04))),
-    0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.25));
+    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 24%, light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.04))),
+    0 2px 6px -2px light-dark(rgba(28,25,20,0.08), rgba(0,0,0,0.35)),
+    0 10px 24px -16px color-mix(in oklab, var(--live-accent) 60%, transparent);
   opacity: 0;
   will-change: transform;
   transition:
-    transform 220ms var(--ease-lux),
-    height 220ms var(--ease-lux),
+    transform 180ms var(--ease-lux),
+    height 180ms var(--ease-lux),
     opacity var(--dur-micro) var(--ease-lux);
 }
+.palette-cursor::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit;
+  background: radial-gradient(60% 100% at 0% 50%, color-mix(in oklab, var(--live-accent) 14%, transparent), transparent 70%);
+  transition: background var(--dur-slow) var(--ease-lux);
+}
+:root[dir="rtl"] .palette-cursor::before { background: radial-gradient(60% 100% at 100% 50%, color-mix(in oklab, var(--live-accent) 14%, transparent), transparent 70%); }
 .palette-cursor.is-visible { opacity: 1; }
 .palette-cursor.is-dimmed { opacity: 0.4; }
 .palette-cursor.is-snapping { transition: none; }
@@ -1455,8 +1526,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   display: flex; align-items: center; gap: 0.8rem;
   min-height: 52px; padding: 0.5rem 0.7rem; border-radius: 12px; cursor: pointer;
   transition: background-color var(--dur-micro) var(--ease-lux);
-  animation: paletteItemIn 260ms var(--ease-lux) both;
-  animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 16ms);
+  animation: paletteItemIn 200ms var(--ease-lux) both;
+  animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 12ms);
 }
 
 #paletteResults:not(.entrance-armed) .palette-item { animation: none; }
@@ -1464,14 +1535,14 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 @keyframes paletteItemIn { from { opacity: 0; transform: translateY(4px); } }
 
 .palette-item .app-icon-wrapper {
-  --icon-size: 34px; --icon-radius: 10px;
+  --icon-size: 36px; --icon-radius: 11px;
   box-shadow: 0 2px 6px -2px color-mix(in oklab, var(--c1) 50%, transparent), inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.08);
   transform: none;
 }
 .palette-item .app-icon-wrapper::after { display: none; }
 .palette-item .app-icon { font-size: 0.88rem; filter: none; }
 .palette-item-text { flex: 1; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.palette-item-title { font-weight: 500; color: color-mix(in oklab, var(--text) 80%, transparent); font-size: 0.94rem; letter-spacing: -0.006em; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color var(--dur-micro) var(--ease-lux); }
+.palette-item-title { font-weight: 500; color: color-mix(in oklab, var(--text) 84%, transparent); font-size: 0.94rem; letter-spacing: -0.006em; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color var(--dur-micro) var(--ease-lux); }
 .palette-item.is-active .palette-item-title { color: var(--text); }
 .palette-item-title mark { background: none; color: var(--text); font-weight: 600; box-shadow: inset 0 -0.42em 0 color-mix(in oklab, var(--tint) 24%, transparent); border-radius: 2px; }
 .palette-item-cat { font-size: 0.72rem; color: var(--pal-ink-2); line-height: 1.3; }
@@ -1508,7 +1579,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 @keyframes watermarkIn { from { opacity: 0; transform: rotate(-3deg) scale(0.94); } }
 
 .palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; animation: detailIn 280ms var(--ease-lux) both; }
-.palette-detail .app-icon-wrapper { --icon-size: 56px; --icon-radius: 15px; }
+.palette-detail .app-icon-wrapper { --icon-size: 60px; --icon-radius: 16px; }
 .palette-detail .app-icon { font-size: 1.25rem; }
 
 .palette-detail-title-wrap { min-width: 0; display: flex; flex-direction: column; }
@@ -1520,7 +1591,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 :root:lang(ar) .palette-detail-eyebrow { letter-spacing: 0; font-size: 0.74rem; }
 .palette-detail-title {
   font-family: var(--display-font);
-  font-size: 1.55rem; font-weight: 600; color: var(--text);
+  font-size: 1.65rem; font-weight: 600; color: var(--text);
   line-height: 1.2; letter-spacing: -0.005em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   padding-block: 0.08em;
@@ -1561,7 +1632,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-detail-reason {
   position: relative; z-index: 1;
   font-size: 0.84rem; line-height: 1.5; color: color-mix(in oklab, var(--closed-ink) 55%, var(--text));
-  background: color-mix(in oklab, var(--closed-ink) 7%, transparent); border: 1px solid color-mix(in oklab, var(--closed-ink) 18%, transparent);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--closed-ink) 9%, transparent), color-mix(in oklab, var(--closed-ink) 4%, transparent)); border: 1px solid color-mix(in oklab, var(--closed-ink) 12%, transparent);
+  box-shadow: 0 2px 8px -4px color-mix(in oklab, var(--closed-ink) 30%, transparent);
   border-radius: 12px; padding: 0.65rem 0.9rem;
   animation: detailIn var(--dur-fast) var(--ease-lux) .05s both;
 }
@@ -1601,8 +1673,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   min-height: 46px; margin-bottom: 0.35rem;
   background:
     linear-gradient(180deg, light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.045)), light-dark(rgba(255,255,255,0.4), rgba(255,255,255,0.01))),
-    color-mix(in oklab, var(--live-accent) 16%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 34%, transparent), 0 6px 16px -10px color-mix(in oklab, var(--live-accent) 60%, transparent), 0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.3));
+    color-mix(in oklab, var(--live-accent) 22%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 44%, transparent), 0 10px 24px -12px color-mix(in oklab, var(--live-accent) 75%, transparent), 0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.3));
 }
 .palette-action.is-primary .palette-action-icon {
   background: linear-gradient(160deg, color-mix(in oklab, #fff 16%, var(--live-accent)), color-mix(in oklab, #000 18%, var(--live-accent)));
@@ -1622,7 +1694,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   display: flex; align-items: center; justify-content: flex-end; gap: 1rem; flex-wrap: wrap;
   min-height: 40px; padding: 0.45rem 1.1rem; border-top: 1px solid var(--pal-line);
   background: light-dark(rgba(20,18,15,0.018), rgba(0,0,0,0.16));
-  font-size: 0.68rem; color: var(--pal-ink-2); flex-shrink: 0;
+  font-size: 0.66rem; color: color-mix(in oklab, var(--pal-ink-2) 80%, transparent); flex-shrink: 0;
 }
 .palette-hints span { display: inline-flex; align-items: center; gap: 0.35rem; }
 .palette-hints > span:not(.palette-status) + span:not(.palette-status)::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: 0.35; margin-inline-end: 0.65rem; }
@@ -1655,14 +1727,19 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .card-aura {
   position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
   background:
-    radial-gradient(90% 75% at 0% 0%, color-mix(in oklab, var(--tint) 13%, transparent), transparent 62%),
-    radial-gradient(70% 60% at 100% 100%, color-mix(in oklab, var(--c3) 9%, transparent), transparent 70%);
+    radial-gradient(90% 75% at 0% 0%, color-mix(in oklab, var(--tint) 16%, transparent), transparent 62%),
+    radial-gradient(70% 60% at 100% 100%, color-mix(in oklab, var(--c3) 11%, transparent), transparent 70%);
   opacity: calc(.55 + .45 * var(--hov, 0));
+}
+.card-aura::after {
+  content: ''; position: absolute; inset: 0 14% auto; height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--tint-ink) 80%, var(--text)), transparent);
+  opacity: calc(.16 + .64 * var(--hov, 0));
 }
 :root[dir="rtl"] .card-aura {
   background:
-    radial-gradient(90% 75% at 100% 0%, color-mix(in oklab, var(--tint) 13%, transparent), transparent 62%),
-    radial-gradient(70% 60% at 0% 100%, color-mix(in oklab, var(--c3) 9%, transparent), transparent 70%);
+    radial-gradient(90% 75% at 100% 0%, color-mix(in oklab, var(--tint) 16%, transparent), transparent 62%),
+    radial-gradient(70% 60% at 0% 100%, color-mix(in oklab, var(--c3) 11%, transparent), transparent 70%);
 }
 :root[data-theme="light"] .card-aura { opacity: calc(.7 + .3 * var(--hov, 0)); }
 
@@ -1694,9 +1771,9 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .title-stack { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
 .card-meta {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.66rem; letter-spacing: 0.01em;
-  color: var(--text-muted);
-  opacity: calc(.5 + .4 * var(--hov, 0));
+  font-size: 0.68rem; letter-spacing: 0.01em;
+  color: color-mix(in oklab, var(--text) 70%, var(--tint-ink));
+  opacity: calc(.72 + .28 * var(--hov, 0));
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   unicode-bidi: isolate; text-align: start;
   transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 1.2), calc(var(--ty, 0) * var(--depth, 0px) * 1.2), 0);
@@ -1727,8 +1804,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   background:
     linear-gradient(180deg, light-dark(rgba(255,255,255,0.95), rgba(255,255,255,0.06)), light-dark(rgba(255,255,255,0.6), rgba(255,255,255,0.02))),
     color-mix(in oklab, var(--scope-accent, #7c9bff) 14%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--scope-accent, #7c9bff) 30%, transparent), 0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.3));
-  transition: transform 300ms var(--ease-lux), width 300ms var(--ease-lux), background-color var(--dur-base) var(--ease-lux);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--scope-accent, #7c9bff) 30%, transparent), 0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.3)), 0 8px 18px -12px color-mix(in oklab, var(--scope-accent, #7c9bff) 70%, transparent);
+  transition: transform 260ms var(--ease-lux), width 260ms var(--ease-lux), background-color var(--dur-base) var(--ease-lux);
   will-change: transform;
 }
 .palette-scope {
@@ -1745,14 +1822,15 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-scope.is-active svg { color: var(--scope-accent); }
 .palette-scope.is-empty:not(.is-active) { opacity: 0.4; }
 .palette-scope-count {
-  min-width: 18px; height: 17px; padding: 0 5px; border-radius: 999px;
+  min-width: 0; height: auto; padding: 0; border-radius: 0;
   display: inline-flex; align-items: center; justify-content: center;
-  font-size: 0.62rem; font-variant-numeric: tabular-nums;
-  background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.06));
-  color: var(--pal-ink-2);
+  font-size: 0.66rem; font-weight: 500; font-variant-numeric: tabular-nums;
+  background: transparent;
+  color: color-mix(in oklab, var(--pal-ink-2) 70%, transparent);
   transition: background-color var(--dur-fast) var(--ease-lux), color var(--dur-fast) var(--ease-lux);
 }
-.palette-scope.is-active .palette-scope-count { background: color-mix(in oklab, var(--scope-accent) 22%, transparent); color: var(--text); }
+.palette-scope.is-active .palette-scope-count { background: transparent; color: color-mix(in oklab, var(--scope-accent) 70%, var(--text)); }
+.palette-scope:not(.is-active):hover { background: light-dark(rgba(20,18,15,0.035), rgba(255,255,255,0.04)); }
 
 .palette-detail-slab {
   background:
@@ -1864,6 +1942,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   }
   :root { --surface: light-dark(rgba(255,255,255,0.92), rgba(255,255,255,0.10)); }
   #lx-palette { background-color: light-dark(#f3f1ec, #0c0d10); }
+  #lx-palette::backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .lx-bar, .controls-pill { background: light-dark(rgba(255,255,255,0.96), rgba(16,17,22,0.96)); }
   
   .app-icon-wrapper::before { display: none; }
 }
@@ -1907,7 +1987,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
     -webkit-text-fill-color: currentColor;
     color: CanvasText;
   }
-  .card-glow, .card-sheen, .closed-tint, .palette-detail-slab, .card-aura, .card-glyph, .palette-scope-indicator { display: none; }
+  .card-glow, .card-sheen, .closed-tint, .palette-detail-slab, .card-aura, .card-glyph, .palette-scope-indicator, .lx-bar::before, #lx-palette::after, .palette-cursor::before { display: none; }
   .palette-scope.is-active { outline: 1px solid CanvasText; }
   .card-clip::after { display: none; }
   .card-clip { border: 1px solid CanvasText; }
@@ -3249,7 +3329,7 @@ const staggerCardEntry = (grid, isBootBatch) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
     c.style.animationDelay = scrollDriven
       ? '0s'
-      : `${bootOffset + Math.round((dists[i] / max) * 180)}ms`;
+      : `${bootOffset + Math.round((dists[i] / max) * 140)}ms`;
     if (!skipEntryAnim) {
       c.style.willChange = 'transform, opacity';
       c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
@@ -3280,10 +3360,10 @@ const initPointerField = () => {
   let gapSince = 0;
   let cardHoverFlag = false;
   let intentPending = false;
-  const engage = spring(0.42, 1.0);
+  const engage = spring(0.36, 1.0);
   const DIM_BASE = 0.1;
   const DIM_FAR = 0.26;
-  const DIM_INTENT_MS = 110;
+  const DIM_INTENT_MS = 90;
   const GAP_HOLD_MS = 480;
   grid.classList.add('has-dim-engine');
 
@@ -3309,13 +3389,13 @@ const initPointerField = () => {
       if (!c._springs) {
 
         c._springs = {
-          tx: spring(0.36, 1.0),
-          ty: spring(0.36, 1.0),
-          tz: spring(0.34, 1.0, 11, true),
-          reveal: spring(0.46, 1.0),
-          sc: spring(0.34, 0.94, 0.02),
-          hov: spring(0.32, 0.96),
-          dim: spring(0.46, 1.0)
+          tx: spring(0.30, 1.0),
+          ty: spring(0.30, 1.0),
+          tz: spring(0.30, 1.0, 11, true),
+          reveal: spring(0.38, 1.0),
+          sc: spring(0.30, 0.94, 0.02),
+          hov: spring(0.26, 0.96),
+          dim: spring(0.40, 1.0)
         };
         c._springs.sc.v = 1;
         c._springs.sc.to = 1;
@@ -3426,7 +3506,7 @@ const initPointerField = () => {
           const lean = clamp(pointerVX * 0.0006, -0.25, 0.25);
           s.tx.to = nx + lean;
           s.ty.to = ny;
-          s.tz.to = 11;
+          s.tz.to = 13;
         } else {
           s.tx.to = 0; s.ty.to = 0; s.tz.to = 0;
         }
@@ -3434,7 +3514,7 @@ const initPointerField = () => {
         const focused = !suspended && c.classList.contains('is-kb-focus');
         const active = inside || focused;
         s.hov.to = active ? 1 : 0;
-        s.sc.to = c._pressed ? 0.986 : (active ? 1.006 : 1 - 0.03 * s.dim.v);
+        s.sc.to = c._pressed ? 0.986 : (active ? 1.01 : 1 - 0.03 * s.dim.v);
 
         if (wantsTilt) {
           s.tx.fixed(dt); s.ty.fixed(dt); s.tz.fixed(dt); s.reveal.fixed(dt);
@@ -4192,7 +4272,7 @@ const moveIndicator = (toId, fromId) => {
 
   railAnim = ind.animate(
     [{ clipPath: ins(from) }, { clipPath: ins(mid), offset: 0.42 }, { clipPath: ins(to) }],
-    { duration: 460, easing: EASE_LUX, fill: 'both' }
+    { duration: 380, easing: EASE_LUX, fill: 'both' }
   );
   railAnim.finished.then(() => {
     ind.style.clipPath = ins(to);
@@ -4240,7 +4320,7 @@ const flipTabRail = (mutate) => {
     b.style.transition = 'none';
     b.style.translate = `${delta}px 0`;
     b.getBoundingClientRect();
-    b.style.transition = 'translate 460ms var(--ease-out)';
+    b.style.transition = 'translate 380ms var(--ease-out)';
     b.style.translate = '0 0';
     b.addEventListener('transitionend', function cleanup(e) {
       if (e.propertyName !== 'translate') return;
@@ -4287,7 +4367,7 @@ const runGridSwitch = (g, run, travel) => {
     container.insertBefore(ghost, g);
     const out = ghost.animate(
       [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * 14}px,0,0) scale(.985)` }],
-      { duration: 160, easing: EASE_ACCEL, fill: 'forwards' }
+      { duration: 130, easing: EASE_ACCEL, fill: 'forwards' }
     );
     anims.push(out);
   }
@@ -4314,7 +4394,7 @@ const runGridSwitch = (g, run, travel) => {
       c.style.willChange = 'opacity, translate, scale';
       const a = c.animate(
         [{ opacity: 0, translate: `${travel * 22}px 0`, scale: '.985' }, { opacity: 1, translate: '0 0', scale: '1' }],
-        { duration: 420, delay: 50 + Math.round((dists[i] / max) * 110), easing: EASE_LUX, fill: 'backwards' }
+        { duration: 340, delay: 30 + Math.round((dists[i] / max) * 90), easing: EASE_LUX, fill: 'backwards' }
       );
       anims.push(a);
     });
@@ -5290,8 +5370,8 @@ const openPaletteItem = (i) => {
   executeAction('new-tab');
 };
 
-const MORPH_OPEN_MS = 420;
-const MORPH_CLOSE_MS = 250;
+const MORPH_OPEN_MS = 340;
+const MORPH_CLOSE_MS = 210;
 
 const awaitAnimationSettled = (anim, maxMs) => new Promise((resolve) => {
   let done = false;
@@ -5339,7 +5419,7 @@ const openPalette = (seed = '') => {
   if (hero && !heroRestBox) heroRestBox = hero.getBoundingClientRect();
 
   const results = document.getElementById('paletteResults');
-  if (results) results.style.setProperty('--stagger-base', skipMorph ? '0ms' : '160ms');
+  if (results) results.style.setProperty('--stagger-base', skipMorph ? '0ms' : '120ms');
   renderPaletteResults(seed);
 
   document.querySelector('.container').classList.add('is-dollied');
@@ -5386,11 +5466,11 @@ const openPalette = (seed = '') => {
 
     const bodyAnim = dialog.querySelector('.palette-body').animate(
       [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 200, delay: 140, easing: EASE_LUX, fill: 'both' }
+      { duration: 180, delay: 110, easing: EASE_LUX, fill: 'both' }
     );
     const chromeAnim = chrome.map(el => el.animate(
       [{ opacity: 0 }, { opacity: 1 }],
-      { duration: 200, delay: 140, easing: EASE_LUX, fill: 'both' }
+      { duration: 180, delay: 110, easing: EASE_LUX, fill: 'both' }
     ));
 
     requestAnimationFrame(() => input.focus({ preventScroll: true }));
@@ -5902,7 +5982,7 @@ const setupInteractions = () => {
     vt.ready.then(() => {
       rootEl.animate(
         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
-        { duration: 540, easing: EASE_LUX, pseudoElement: '::view-transition-new(root)' }
+        { duration: 480, easing: EASE_LUX, pseudoElement: '::view-transition-new(root)' }
       );
     }).catch(() => {});
     vt.finished.catch(() => {}).finally(() => { rootEl.classList.remove('lx-theme-swapping'); if (activeViewTransition === vt) activeViewTransition = null; });

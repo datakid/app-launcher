@@ -23,6 +23,7 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - Cards: an accent glow in the corner, a large faded icon that moves opposite to the tilt, a hostname line under the title and an accent-tinted border on hover
 - Palette scopes: category chips with live match counts and a sliding highlight. Shift+Tab cycles through them
 - Command palette: flat keycaps, a quiet cursor, a strong primary action, dot-separated hints and a live status dot
+- Visual system (v2): accent-aware gradient rim on the bar and palette, glass surfaces with a stronger blur, a circular magnifier badge on the bar and palette input, a tab indicator with an inner accent glow, active-state dots on the controls pill, an accent hairline across the top of each card, refined icon tiles, tinted variant chips and a more legible hostname line. Motion timings were tightened across the board (springs, tab switch, palette morph, card entry) so animations feel snappy and never block interaction
 
 ## Files and URLs
 - `index.html`: the app. `#<categoryId>` opens a tab (`#core`, `#tools`, `#experimental`, `#mine`). `?lxdebug=1` shows debug warnings
