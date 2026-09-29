@@ -3,7 +3,11 @@
 A bilingual (Arabic/English) launchpad for internal tools. A single static `index.html` driven entirely by `links.json`.
 
 ## Editing links
-`links.json` is the **only** source of truth. There is no copy of the catalog inside `index.html`, so you never have to edit code to add, remove, rename or reorder tools.
+`links.json` is the source of truth. A copy is also baked into `index.html` (`<script id="lx-data">`) so the first paint is instant, even offline or on a first visit.
+
+- Load order: localStorage cache, then the baked-in copy, then `links.json` fetched quietly in the background once the page is idle
+- The **refresh** button (last button in the top-left pill, or the "Refresh tools" command after typing `>` in the palette) forces a network fetch of `links.json` that skips the cache and tells you whether anything changed
+- When you publish, paste the new `links.json` into `lx-data` so the baked-in copy stays current. Until you do, the background fetch still keeps visitors up to date
 
 - Any Font Awesome 6 **solid** icon name works (`"icon": "fa-rocket"`). Built-in icons render instantly; others are fetched once from jsDelivr and fall back to `fa-circle` if the name does not exist
 - Visitors see changes on their next visit. The last good catalog is cached in `localStorage`, shown immediately, then silently refreshed from `links.json`
@@ -14,7 +18,11 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - Command palette (⌘K / Ctrl K, `/`, or start typing) with recents, frequent tools, Arabic-aware fuzzy search and actions
 - Theme, language, sound and Zen mode, all saved in `localStorage`
 - My data menu: import personal links (they go into a "My Links" tab), export data, remove imported links
-- Pointer light: glass rim highlights with an opposite-edge glint, a soft inner glow and a gentle focus fade on other cards
+- Pointer light: glass rim highlights with an opposite-edge glint, a soft inner glow and a sweeping sheen
+- Focus falloff: when you hover a card, the others recede by distance (0.90 opacity for neighbours down to about 0.74 for the farthest, plus a slight scale-back). It starts after 110 ms of intent, so passing over cards doesn't flicker
+- Cards: an accent glow in the corner, a large faded icon that moves opposite to the tilt, a hostname line under the title and an accent-tinted border on hover
+- Palette scopes: category chips with live match counts and a sliding highlight. Shift+Tab cycles through them
+- Command palette: flat keycaps, a quiet cursor, a strong primary action, dot-separated hints and a live status dot
 
 ## Files and URLs
 - `index.html`: the app. `#<categoryId>` opens a tab (`#core`, `#tools`, `#experimental`, `#mine`). `?lxdebug=1` shows debug warnings
