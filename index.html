@@ -1194,13 +1194,13 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .tab-rail.is-measuring, .tab-rail.is-measuring * { transition: none !important; }
 
 .tab-indicator {
-  position: absolute; inset: 4px 0; z-index: 0; pointer-events: none;
+  position: absolute; inset: 4px 100% 4px 0; z-index: 0; pointer-events: none;
   border-radius: 999px;
+  contain: layout paint style;
   background:
     linear-gradient(180deg, light-dark(rgba(255,255,255,0.8), rgba(255,255,255,0.06)), transparent),
     color-mix(in oklab, var(--tab-accent) 12%, color-mix(in oklab, var(--text) 7%, transparent));
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 20%, transparent), inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08));
-  clip-path: inset(0 100% 0 0 round 999px);
 }
 
 .tab-ghost {
@@ -4452,6 +4452,8 @@ const applyTabAccent = (cat, impulseDir = 0) => {
 };
 
 const ins = (g) => `inset(0px ${g.r}px 0px ${g.l}px round 999px)`;
+const railBox = (g) => ({ left: `${g.l}px`, right: `${g.r}px` });
+const placeIndicator = (ind, g) => { ind.style.left = `${g.l}px`; ind.style.right = `${g.r}px`; };
 let railGeom = new Map();
 let railAnim = null;
 
@@ -4505,7 +4507,7 @@ const measureRail = () => {
   if (g) {
     railAnim?.cancel(); railAnim = null;
     const ind = document.getElementById('tabIndicator');
-    if (ind) ind.style.clipPath = ins(g);
+    if (ind) placeIndicator(ind, g);
   }
 };
 
@@ -4518,18 +4520,18 @@ const moveIndicator = (toId, fromId) => {
   railAnim?.cancel(); railAnim = null;
 
   if (fromId === toId || MQ.reducedMotion) {
-    ind.style.clipPath = ins(to);
+    placeIndicator(ind, to);
     return;
   }
 
   const mid = { l: Math.min(from.l, to.l), r: Math.min(from.r, to.r) };
 
   railAnim = ind.animate(
-    [{ clipPath: ins(from) }, { clipPath: ins(mid), offset: 0.42 }, { clipPath: ins(to) }],
+    [railBox(from), { ...railBox(mid), offset: 0.42 }, railBox(to)],
     { duration: 340, easing: EASE_LUX, fill: 'both' }
   );
   railAnim.finished.then(() => {
-    ind.style.clipPath = ins(to);
+    placeIndicator(ind, to);
     railAnim?.cancel(); railAnim = null;
   }).catch(() => {});
 };
@@ -4837,23 +4839,11 @@ const fuzzyScore = (query, target) => {
   return qi === q.length ? s : -1;
 };
 
-const secretApps = {
-  alt: { id: 'alt', title: { ar: 'الحساب البديل', en: 'Alt Account' }, url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }
-};
-
-let unlockedSecrets = new Set();
-try {
-  const storedSecrets = JSON.parse(localStorage.getItem('lx-unlocked-secrets') || '[]');
-  if (Array.isArray(storedSecrets)) storedSecrets.forEach(k => { if (secretApps[k]) unlockedSecrets.add(k); });
-} catch (e) { if (LX_DEBUG) console.warn(e); }
-
-const unlockSecret = (key) => {
-  if (!secretApps[key] || unlockedSecrets.has(key)) return;
-  unlockedSecrets.add(key);
-  try { localStorage.setItem('lx-unlocked-secrets', JSON.stringify([...unlockedSecrets])); } catch (e) { if (LX_DEBUG) console.warn(e); }
-};
-
-const HIDDEN_CAT = { id: '_secret', label: { ar: 'مخفي', en: 'Hidden' } };
+const EXTRA_CAT = { id: '_extra', label: { ar: 'مشغّل بديل', en: 'Alt launcher' } };
+const extraEntries = [
+  { app: { id: 'alt', title: { ar: 'الحساب البديل', en: 'Alt Account' }, url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }, cat: EXTRA_CAT }
+];
+try { localStorage.removeItem('lx-unlocked-secrets'); } catch (e) { if (LX_DEBUG) console.warn(e); }
 
 const allPaletteEntries = () => {
   const normal = categories.flatMap(cat => cat.apps.flatMap(app => {
@@ -4877,8 +4867,7 @@ const allPaletteEntries = () => {
     }
     return [{ app, cat }];
   }));
-  const unlocked = [...unlockedSecrets].map(key => ({ app: secretApps[key], cat: HIDDEN_CAT }));
-  return normal.concat(unlocked);
+  return normal.concat(extraEntries);
 };
 
 const RECENTS_KEY = 'lx-recents';
@@ -4966,7 +4955,7 @@ const getActionsForEntry = (entry) => {
     { id: 'copy-link', icon: 'fa-copy', label: t('actionCopyLink'), kbd: 'Ctrl/Cmd+Enter' },
     { id: 'copy-title', icon: 'fa-font', label: t('actionCopyTitle'), kbd: '' }
   ];
-  if (entry && entry.cat.id !== '_secret') {
+  if (entry && entry.cat.id !== '_extra') {
     actions.push({ id: 'reveal', icon: 'fa-crosshairs', label: t('actionReveal'), kbd: '' });
   }
   return actions;
@@ -5253,7 +5242,7 @@ const renderPaletteResults = (rawQuery) => {
     }
   } else {
     if (!paletteTryPicks) {
-      const pool = allEntries.filter(e => e.cat.id !== '_secret');
+      const pool = allEntries.filter(e => e.cat.id !== '_extra');
       const picks = [];
       const used = new Set();
       while (picks.length < Math.min(3, pool.length)) {

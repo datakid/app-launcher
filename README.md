@@ -28,6 +28,8 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - Card glyph: a large, faint copy of the tool's icon sits in the corner of each card and drifts slightly with the pointer
 - Zen mode persists across reloads (`lx-zen`), is applied before first paint, and travels with export/import prefs
 - Palette: a tappable close button (Esc keycap on desktop, × on touch). Closing or pressing Esc during the open morph cancels it instantly instead of being ignored
+- Tab indicator: positioned with real `left`/`right` edges (not `clip-path`), so its inset accent ring stays visible all the way around, rounded ends included, both at rest and while it slides
+- Alt Account launcher: always listed in the palette (search "Alt" or "البديل") under an "Alt launcher" group. It has no card and is left out of the random "Try" picks
 - Short desktop windows (≤700 px tall) scroll instead of squashing the grid; very narrow phones (≤360 px) get a compact controls pill
 
 ## Files and URLs
