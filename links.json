@@ -87,7 +87,14 @@
           "defaultVariant": 0
         },
         { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
-        { "id": "pillbug", "title": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check", "gradient": ["#5fa05a", "#c9f0c0", "#1f4d1c"], "isNew": true, "since": "2026-09-27" },
+        {
+          "id": "pharmacy-tools", "title": { "ar": "أدوات الصيدلية", "en": "Pharmacy Tools" }, "icon": "fa-pills", "gradient": ["#5fa05a", "#c9f0c0", "#1f4d1c"], "isNew": true, "since": "2026-10-02",
+          "variants": [
+            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check" },
+            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator" }
+          ],
+          "defaultVariant": 0
+        },
         { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11" },
         { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18" }
       ]
