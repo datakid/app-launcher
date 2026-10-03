@@ -25,6 +25,13 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - Command palette: flat keycaps, a quiet cursor, a strong primary action, dot-separated hints and a live status dot
 - Visual system (v2): accent-aware gradient rim on the bar and palette, glass surfaces with a stronger blur, a circular magnifier badge on the bar and palette input, a tab indicator with an inner accent glow, active-state dots on the controls pill, an accent hairline across the top of each card, refined icon tiles, tinted variant chips and a more legible hostname line. Motion timings were tightened across the board (springs, tab switch, palette morph, card entry) so animations feel snappy and never block interaction
 
+- Visual system (v3, "mature"): a single override layer at the end of the stylesheet. Calmer, lower-chroma colour tints (oklch); smaller corner radii (cards 18px, palette 20px, chips and badges 6–9px); flatter icon tiles with less gloss and no tilt on hover; quieter hover glow, sheen and watermark glyph; small-caps style badges with letter spacing; a hostname line in the UI font with a hairline lead-in; a solid title with a soft tone fade and fine rules on either side; hairline keycaps; and a palette cursor, primary action and scope indicator without the coloured glow. Background orbs are less saturated. All motion timings are unchanged
+- **Appearance menu** (sliders button in the controls pill). Two independent settings that work in both light and dark mode, so there are 4 × 3 × 2 combinations:
+  - **Colors**: **Curated** (default) maps each colour to the nearest of eight shared tones (`CURATED_TONES`). **Muted** keeps each tool's own hue, softened. **Vivid** keeps each tool's own hue with richer chroma, a stronger aura, glow and rim, and more saturated background orbs. **Monochrome** turns everything graphite: no hue on cards, icons, tabs, favicon or orbs
+  - **Corners**: **Balanced** (default, 18px cards), **Soft** (24px cards, pill chips and badges) and **Crisp** (10px cards, and the bar, tabs and controls become rounded rectangles). One set of `--r-*` tokens drives every radius, including the tab indicator's clip-path
+  - Switch with the menu, the palette commands (`>` then "Colors: …" / "Corners: …"), Alt+P (next colours), Alt+R (next corners), or `?palette=curated|muted|vivid|mono` and `?corners=balanced|soft|crisp` (URL parameters override the saved choice without saving it). Saved as `lx-palette` and `lx-corners`, applied before first paint, synced across tabs, and included in export/import prefs
+  - A change crossfades in 280 ms through a View Transition (instant with reduced motion). Pure CSS variable swap: no re-layout of the grid and no extra animation loops, so motion and frame budget are unchanged
+- `compare.html` shows all four colour looks in a 2×2 grid, with theme and corner switches that apply to every pane
 - Card glyph: a large, faint copy of the tool's icon sits in the corner of each card and drifts slightly with the pointer
 - Zen mode persists across reloads (`lx-zen`), is applied before first paint, and travels with export/import prefs
 - Palette: a tappable close button (Esc keycap on desktop, × on touch). Closing or pressing Esc during the open morph cancels it instantly instead of being ignored
@@ -33,7 +40,7 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - Short desktop windows (≤700 px tall) scroll instead of squashing the grid; very narrow phones (≤360 px) get a compact controls pill
 
 ## Files and URLs
-- `index.html`: the app. `#<categoryId>` opens a tab (`#core`, `#tools`, `#experimental`, `#mine`). `?lxdebug=1` shows debug warnings
+- `index.html`: the app. `#<categoryId>` opens a tab (`#core`, `#tools`, `#experimental`, `#mine`). `?lxdebug=1` shows debug warnings. `?palette=` and `?corners=` preview a look
 - `links.json`: the catalog
 - `fonts/*.woff2`: self-hosted IBM Plex Sans Arabic, El Messiri, Inter and Cormorant Garamond
 
@@ -42,7 +49,7 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - IDs: lowercase letters, digits and `-`, up to 40 characters, unique. Colors must be `#rrggbb`. URLs must be `https:`
 - Limits: 12 categories, 24 apps per category, 4 variants per app, 256 KB file
 - Import file: `{ "links": [{ "title": "..." | {ar,en}, "url": "https://...", "icon": "fa-...", "color": "#rrggbb" }], "prefs": {...} }`
-- localStorage keys: `lx-user-links`, `lx-catalog-cache`, `lx-theme`, `lx-lang`, `lx-sound`, `lx-zen`, `lx-variant-*`, `lx-recents`, `lx-freq`, `lx-last-tab`, `lx-last-open`
+- localStorage keys: `lx-user-links`, `lx-catalog-cache`, `lx-theme`, `lx-lang`, `lx-sound`, `lx-zen`, `lx-variant-*`, `lx-recents`, `lx-freq`, `lx-last-tab`, `lx-last-open`, `lx-palette`, `lx-corners`
 
 ## Notes
 - Must be served over http(s). Opening `index.html` directly from disk cannot read `links.json`
