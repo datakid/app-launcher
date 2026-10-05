@@ -21,7 +21,14 @@
           ],
           "defaultVariant": 0
         },
-        { "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"] },
+        {
+          "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid Calculator" }, "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"],
+          "variants": [
+            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign" },
+            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book" }
+          ],
+          "defaultVariant": 0
+        },
         { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"] },
         { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11" },
         { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" }
