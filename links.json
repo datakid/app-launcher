@@ -22,7 +22,7 @@
           "defaultVariant": 0
         },
         {
-          "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid Calculator" }, "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"],
+          "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid" }, "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"],
           "variants": [
             { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign" },
             { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book" }

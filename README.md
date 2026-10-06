@@ -2,6 +2,13 @@
 
 A bilingual (Arabic/English) launchpad for internal tools. A single static `index.html` driven entirely by `links.json`.
 
+## Mobile layout (≤ 640px)
+- Compact header: title on the start side, a small utility pill on the end side (theme, look, language, data, refresh). Zen and sound stay on desktop and in the `>` command palette
+- Full-width search bar that sticks to the top while scrolling
+- Category tabs become a fixed bottom tab bar with icons and labels, padded for the safe area
+- Cards sit in a 2-column grid with a natural height; if the count is odd, the last card spans both columns. Variant chips fill the card width
+- Desktop (> 640px) is unchanged
+
 ## Editing links
 `links.json` is the source of truth. A copy is also baked into `index.html` (`<script id="lx-data">`) so the first paint is instant, even offline or on a first visit.
 
