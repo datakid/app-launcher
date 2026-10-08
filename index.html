@@ -5608,6 +5608,40 @@ const showContextMenu = (menu, { anchor = null, returnTo = null, focusFirst = fa
   (focusFirst && first ? first : menu).focus({ preventScroll: true });
 };
 
+const syncCardMenuMode = (menu, mode) => {
+  const seg = menu.querySelector('.ctx-seg');
+  if (seg) seg.dataset.mode = mode;
+  menu.querySelectorAll('[data-open-mode]').forEach((b) => {
+    const on = b.dataset.openMode === mode;
+    b.classList.toggle('is-active', on);
+    b.setAttribute('aria-checked', String(on));
+  });
+  const other = otherOpenMode(mode);
+  const otherLabel = t(other === 'new' ? 'actionNewTab' : 'actionSameTab');
+  menu.querySelectorAll('[data-vother]').forEach((b) => {
+    setIcon(b.querySelector('svg'), openModeIcon(other));
+    b.title = otherLabel;
+    const vLabel = b.parentElement?.querySelector('.ctx-vopen .ctx-label')?.textContent || '';
+    b.setAttribute('aria-label', `${vLabel} — ${otherLabel}`);
+  });
+  const group = menu.querySelector('[data-action="open-new"]')?.parentElement;
+  if (group) {
+    const first = group.querySelector(`[data-action="open-${mode}"]`);
+    const second = group.querySelector(`[data-action="open-${other}"]`);
+    if (first && second) {
+      group.querySelectorAll('.ctx-tag').forEach(tag => tag.remove());
+      first.classList.add('is-default');
+      second.classList.remove('is-default');
+      const tag = document.createElement('span');
+      tag.className = 'ctx-tag';
+      tag.textContent = t('ctxDefault');
+      first.appendChild(tag);
+      group.insertBefore(first, group.firstChild);
+    }
+  }
+  menu.dataset.mode = mode;
+};
+
 const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   closeContextMenu();
   const menu = buildContextMenu();
@@ -5730,11 +5764,11 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   };
   menu.querySelectorAll('[data-vopen]').forEach((btn) => {
     const i = Number(btn.dataset.vopen);
-    btn.addEventListener('click', (e) => launchVariant(i, e.shiftKey || e.metaKey || e.ctrlKey ? otherMode : mode));
+    btn.addEventListener('click', (e) => launchVariant(i, e.shiftKey || e.metaKey || e.ctrlKey ? otherOpenMode(openMode()) : openMode()));
     btn.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); launchVariant(i, 'new'); } });
   });
   menu.querySelectorAll('[data-vother]').forEach((btn) => {
-    btn.addEventListener('click', () => launchVariant(Number(btn.dataset.vother), otherMode));
+    btn.addEventListener('click', () => launchVariant(Number(btn.dataset.vother), otherOpenMode(openMode())));
   });
   menu.querySelectorAll('[data-vpin]').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -5771,11 +5805,11 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   menu.querySelectorAll('[data-open-mode]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const m = btn.dataset.openMode;
+      if (m === openMode()) return;
       sfx.click();
       setOpenMode(m);
-      const fresh = document.querySelector(`#appGrid .app-card[data-app-id="${CSS.escape(appId)}"]`) || card;
-      openCardContextMenu(fresh, parseFloat(menu.style.left) || clientX, parseFloat(menu.style.top) || clientY, fromKeyboard);
-      contextMenuEl?.querySelector(`[data-open-mode="${m}"]`)?.focus({ preventScroll: true });
+      syncCardMenuMode(menu, m);
+      btn.focus({ preventScroll: true });
     });
   });
 
@@ -6419,16 +6453,41 @@ const lookSwap = (apply) => {
   vt.finished.catch(() => {}).finally(() => { rootEl.classList.remove('lx-theme-swapping'); if (activeViewTransition === vt) activeViewTransition = null; });
 };
 
+const retintUI = () => {
+  const appById = new Map();
+  categories.forEach(c => c.apps.forEach(a => appById.set(a.id, a)));
+  document.querySelectorAll('#appGrid .app-card[data-app-id]').forEach((el) => {
+    const app = appById.get(el.dataset.appId);
+    if (app && app.gradient) el.style.setProperty('--c1', tone(app.gradient[0]));
+  });
+  if (contextMenuEl && contextMenuEl.dataset.owner === 'card') closeContextMenu();
+  const activeCat = categories.find(c => c.id === currentTabId);
+  if (activeCat) applyTabAccent(activeCat);
+  const scopes = document.getElementById('paletteScopes');
+  if (scopes) {
+    const accents = new Map(scopeList().map(s => [s.id, s.accent || '#7c9bff']));
+    scopes.querySelectorAll('.palette-scope').forEach((b) => {
+      b.style.setProperty('--scope-accent', tone(accents.get(b.dataset.scope) || '#7c9bff'));
+    });
+    syncScopeIndicator();
+  }
+  const dialog = document.getElementById('lx-palette');
+  if (dialog && dialog.open) {
+    renderPaletteResults(document.getElementById('paletteInput')?.value || '');
+    const entry = paletteItems[paletteActiveIndex];
+    const detail = document.getElementById('paletteDetail');
+    if (detail && entry) detail.style.setProperty('--c1', tone(entry.app.gradient[0]));
+  }
+};
+
 const setPaletteMode = (mode, { silent = false, persist = true } = {}) => {
   const root = document.documentElement;
   if (!PALETTES.includes(mode) || root.dataset.palette === mode) return;
   lookSwap(() => {
     root.dataset.palette = mode;
-    paletteScopesKey = '';
-    applyI18n();
     window.bgAnim?.retarget();
-    const activeCat = categories.find(c => c.id === currentTabId);
-    if (activeCat) window.bgAnim?.retargetCategory(tone(activeCat.accent));
+    retintUI();
+    updateLookButtonLabel();
   });
   if (persist && !root.dataset.paletteLocked) {
     try { localStorage.setItem('lx-palette', mode); } catch (e) { if (LX_DEBUG) console.warn(e); }
@@ -7514,6 +7573,7 @@ const updatePaletteItemNode = (li, e, globalIndex, query, isActive) => {
   li.setAttribute('aria-selected', String(isActive));
   li.dataset.index = String(globalIndex);
   li.style.setProperty('--n', globalIndex);
+  if (e.app.gradient) li.style.setProperty('--c1', tone(e.app.gradient[0]));
   const iconEl = li.querySelector('svg');
   if (iconEl) setIcon(iconEl, e.app.icon);
   const titleEl = li.querySelector('.palette-item-title');
@@ -8692,7 +8752,7 @@ const setupInteractions = () => {
     lang = lang === 'ar' ? 'en' : 'ar';
     try { localStorage.setItem('lx-lang', lang); } catch (e) { if (LX_DEBUG) console.warn(e); }
     sfx.click();
-    applyI18n();
+    lookSwap(() => applyI18n());
   });
 
   const zenBtn = document.getElementById('zenToggle');
@@ -9262,10 +9322,16 @@ const rebuildCatalogUI = (preferId) => {
   const target = has(preferId) ? preferId : has(currentTabId) ? currentTabId : categories[0].id;
   const hashWasTab = location.hash.replace('#', '') === currentTabId;
   const changed = target !== currentTabId;
+  const quiet = firstCardBatchDone && !changed;
+  const focusedTab = document.activeElement?.closest?.('.tab-btn')?.dataset.id || null;
   if (!has(currentTabId)) currentTabId = null;
   buildTabRail();
   updateBarLabel();
   activateTab(target, { playSound: false, instant: true, pushHash: changed && (hashWasTab || target === preferId) });
+  if (quiet) {
+    document.querySelectorAll('#appGrid .app-card').forEach((c) => { c.classList.add('no-enter'); c.style.willChange = ''; });
+  }
+  if (focusedTab) document.getElementById(`tab-${has(focusedTab) ? focusedTab : target}`)?.focus({ preventScroll: true });
   const dialog = document.getElementById('lx-palette');
   if (dialog && dialog.open) {
     lastDetailKey = null;
@@ -9281,7 +9347,8 @@ const setBaseCatalog = (next) => {
   if (sameCatalog(next, baseCatalog)) return;
   baseCatalog = next;
   composeCategories();
-  rebuildCatalogUI();
+  if (firstCardBatchDone && document.visibilityState === 'visible' && !activeViewTransition && !gridSwitch) lookSwap(() => rebuildCatalogUI());
+  else rebuildCatalogUI();
 };
 
 const renderEmptyCatalog = () => {
@@ -9551,6 +9618,33 @@ const renderLookMenu = (menu, next = {}) => {
       `<span class="look-corner" aria-hidden="true" style="--cr:${CORNER_SAMPLES[id]}"></span>`)).join('');
 };
 
+const syncLookMenu = (menu, next = {}) => {
+  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode();
+  const mark = (b, on) => {
+    if (b.getAttribute('aria-checked') === String(on)) return;
+    b.setAttribute('aria-checked', String(on));
+    b.classList.toggle('is-active', on);
+  };
+  menu.querySelectorAll('[data-look-palette]').forEach((b) => {
+    const on = b.dataset.lookPalette === p;
+    if (b.getAttribute('aria-checked') !== String(on)) setIcon(b.querySelector('svg'), on ? 'fa-circle-dot' : 'fa-circle');
+    mark(b, on);
+  });
+  menu.querySelectorAll('[data-look-corners]').forEach((b) => {
+    const on = b.dataset.lookCorners === c;
+    if (b.getAttribute('aria-checked') !== String(on)) setIcon(b.querySelector('svg'), on ? 'fa-circle-dot' : 'fa-circle');
+    mark(b, on);
+  });
+  menu.querySelectorAll('[data-look-open]').forEach((b) => {
+    const on = b.dataset.lookOpen === o;
+    if (b.getAttribute('aria-checked') !== String(on)) {
+      const check = b.querySelector('.ctx-check');
+      if (check) check.innerHTML = on ? icon('fa-check') : '';
+    }
+    mark(b, on);
+  });
+};
+
 const openLookMenu = (btn, focusFirst) => {
   closeContextMenu();
   const menu = buildContextMenu();
@@ -9575,7 +9669,7 @@ const openLookMenu = (btn, focusFirst) => {
     if (b.dataset.lookPalette) setPaletteMode(b.dataset.lookPalette, { silent: true });
     else if (b.dataset.lookCorners) setCornersMode(b.dataset.lookCorners, { silent: true });
     else setOpenMode(b.dataset.lookOpen);
-    renderLookMenu(menu, { palette: b.dataset.lookPalette, corners: b.dataset.lookCorners, open: b.dataset.lookOpen });
+    syncLookMenu(menu, { palette: b.dataset.lookPalette, corners: b.dataset.lookCorners, open: b.dataset.lookOpen });
     menu.querySelector(focusKey)?.focus({ preventScroll: true });
   }, { signal: contextMenuAC.signal });
 };

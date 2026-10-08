@@ -40,6 +40,12 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
   - A change crossfades in 280 ms through a View Transition (instant with reduced motion). Pure CSS variable swap: no re-layout of the grid and no extra animation loops, so motion and frame budget are unchanged
 - Title rendering: the non-vivid title rule sets `background-clip: text` itself, so the title's gradient can no longer paint as a solid block behind the text when the base clip gets overridden (this was the dark rectangle). Muted goes back to plain solid ink
 - Final polish pass: balanced title wrapping, inline padding so italic glyph edges aren't clipped, kerning on all UI text, header hairlines centred on the title, slightly stronger hostname/muted ink, steadier hostname opacity, and badges set to line-height 1
+- No-flicker updates:
+  - **Colors change** (menu, Alt+P, palette command, another tab): retints the existing cards, tab accent, palette rows, scope chips and detail by updating `--c1` / `--tab-accent` in place. The grid, tab rail and palette list are no longer torn down, so focus, hover, variant selection and scroll position all survive. It still uses the 280 ms crossfade
+  - **Appearance menu**: clicking an option updates the checkmarks in place instead of re-rendering the menu, so the entry stagger doesn't replay and focus stays put
+  - **Card right-click menu**: the New tab / Same tab switch slides its thumb and reorders the open rows in place instead of closing and rebuilding the menu
+  - **Language switch**: wrapped in the same crossfade, so the RTL/LTR flip and the re-rendered labels land in one frame instead of jumping
+  - **Background catalog refresh**: if `links.json` changes while you're looking at the page, the swap crossfades and cards don't replay their entry animation. Keyboard focus on a tab is kept. Skipped (instant swap) while another transition or tab switch is running
 - `compare.html` polish: self-hosted Inter, 1px pane gutters, custom select chevron with hover and focus states, and pane labels aligned on a shared baseline
 - `compare.html` shows all four colour looks in a 2×2 grid, with theme and corner switches that apply to every pane
 - Card glyph: a large, faint copy of the tool's icon sits in the corner of each card and drifts slightly with the pointer
