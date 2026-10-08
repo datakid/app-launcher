@@ -63,6 +63,3 @@ A bilingual (Arabic/English) launchpad for internal tools. A single static `inde
 - Limits: 12 categories, 24 apps per category, 4 variants per app, 256 KB file
 - Import file: `{ "links": [{ "title": "..." | {ar,en}, "url": "https://...", "icon": "fa-...", "color": "#rrggbb" }], "prefs": {...} }`
 - localStorage keys: `lx-user-links`, `lx-catalog-cache`, `lx-theme`, `lx-lang`, `lx-sound`, `lx-zen`, `lx-variant-*`, `lx-recents`, `lx-freq`, `lx-last-tab`, `lx-last-open`, `lx-palette`, `lx-corners`, `lx-open`
-
-## Not yet included
-- `fonts/*.woff2` were not part of this upload. Add them back next to `index.html` or the app falls back to system fonts
