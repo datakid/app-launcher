@@ -2571,6 +2571,67 @@ h1 {
     --tint-ink: oklch(from var(--c1, #8b9099) .32 .008 h);
   }
 }
+@supports (color: oklch(from red calc(l + cos(h * 1deg) * .01) c h)) {
+  :root[data-palette="curated"] .app-card,
+  :root[data-palette="curated"] .palette-item,
+  :root[data-palette="curated"] #paletteDetail,
+  :root[data-palette="curated"] #lx-palette {
+    --tint: oklch(from var(--c1, #6d82ad) calc(.662 + .026 * cos((h - 95) * 1deg)) min(c, calc(.066 + .008 * max(0, cos((h - 80) * 1deg)))) h);
+    --c2: oklch(from var(--tint) calc(l + .068) calc(c * .78) calc(h - 4));
+    --c3: oklch(from var(--tint) calc(l - .168) calc(c * .96) calc(h + 6));
+  }
+  :root[data-palette="curated"][data-theme="light"] .app-card,
+  :root[data-palette="curated"][data-theme="light"] .palette-item,
+  :root[data-palette="curated"][data-theme="light"] #paletteDetail,
+  :root[data-palette="curated"][data-theme="light"] #lx-palette {
+    --tint: oklch(from var(--c1, #6d82ad) calc(.566 + .01 * cos((h - 95) * 1deg)) min(calc(c * 1.25), .09) h);
+    --tint-ink: oklch(from var(--c1, #6d82ad) calc(.425 - .012 * cos((h - 95) * 1deg)) min(c, .085) h);
+  }
+  :root[data-palette="mono"] .app-card,
+  :root[data-palette="mono"] .palette-item,
+  :root[data-palette="mono"] #paletteDetail,
+  :root[data-palette="mono"] #lx-palette {
+    --tint: oklch(from var(--c1, #8b9099) calc(.715 + .045 * cos((h - 95) * 1deg)) .009 255);
+    --c2: oklch(from var(--tint) calc(l + .1) .006 255);
+    --c3: oklch(from var(--tint) calc(l - .3) .009 258);
+    --tint-ink: var(--tint);
+  }
+  :root[data-palette="mono"][data-theme="light"] .app-card,
+  :root[data-palette="mono"][data-theme="light"] .palette-item,
+  :root[data-palette="mono"][data-theme="light"] #paletteDetail,
+  :root[data-palette="mono"][data-theme="light"] #lx-palette {
+    --tint: oklch(from var(--c1, #8b9099) calc(.5 + .04 * cos((h - 95) * 1deg)) .009 255);
+    --c2: oklch(from var(--tint) calc(l + .14) .006 255);
+    --c3: oklch(from var(--tint) calc(l - .2) .009 258);
+    --tint-ink: oklch(from var(--c1, #8b9099) .32 .008 255);
+  }
+}
+:root[data-palette="curated"] { --closed-ink: oklch(76% .085 36); }
+:root[data-palette="curated"][data-theme="light"] { --closed-ink: oklch(50% .1 36); }
+:root[data-palette="mono"] { --closed-ink: oklch(77% .04 30); }
+:root[data-palette="mono"][data-theme="light"] { --closed-ink: oklch(47% .055 30); }
+:root[data-palette="curated"][data-theme="light"] .app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.26)); }
+:root[data-palette="curated"] .app-card .app-icon-wrapper {
+  box-shadow:
+    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px color-mix(in oklab, var(--c3) 62%, transparent),
+    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.32)),
+    inset 0 1px 0 rgba(255,255,255,.3),
+    inset 0 0 0 1px var(--icon-rim),
+    inset 0 -10px 16px -12px rgba(0,0,0,.3);
+}
+:root[data-palette="mono"] .app-card .app-icon-wrapper {
+  box-shadow:
+    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px light-dark(rgba(20,22,28,.4), rgba(0,0,0,.7)),
+    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.34)),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 0 0 1px light-dark(rgba(255,255,255,.18), rgba(255,255,255,.07)),
+    inset 0 -10px 16px -12px rgba(0,0,0,.34);
+}
+:root[data-palette="mono"] .app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.28)); }
+:root[data-palette="mono"] .card-meta::before { background: color-mix(in oklab, var(--text) 42%, transparent); }
+:root[data-palette="mono"] .app-card.status-closed .card-meta::before { background: var(--closed-ink); }
+:root[data-palette="mono"] .tab-btn[aria-selected="true"] svg { color: var(--text); filter: none; }
+:root[data-palette="mono"] .lx-bar-search svg.fa-magnifying-glass { color: var(--text-muted); }
 :root[data-palette="vivid"] .card-glyph { color: color-mix(in oklab, var(--tint) 10%, transparent); }
 :root[data-palette="vivid"] .scrim::before { opacity: .55; }
 :root[data-palette="vivid"] .card-aura {
@@ -3381,7 +3442,7 @@ h1 {
   #refreshToggle:hover svg { transform: rotate(40deg); }
 }
 
-.card-meta { opacity: calc(.78 + .22 * var(--hov, 0)); }
+.card-meta { color: light-dark(rgba(21,19,15,.66), rgba(246,245,242,.64)); opacity: calc(.88 + .12 * var(--hov, 0)); }
 .open-affordance { transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring), background-color var(--dur-fast) var(--ease-lux); }
 @media (hover: hover) and (pointer: fine) {
   .app-card:hover .open-affordance { background: color-mix(in oklab, var(--tint) 16%, transparent); border-color: color-mix(in oklab, var(--tint) 30%, transparent); }
