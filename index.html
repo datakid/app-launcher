@@ -3065,6 +3065,371 @@ h1 {
   .lx-context-menu { transition: opacity 0.01ms; transform: none !important; }
 }
 
+:root[data-palette="muted"] {
+  --bg: light-dark(#efebe4, #100e0c);
+  --surface: light-dark(rgba(255,253,249,.62), rgba(255,248,240,.032));
+  --surface-hover: light-dark(rgba(255,253,249,.92), rgba(255,248,240,.058));
+  --border: light-dark(rgba(60,48,36,.09), rgba(255,240,225,.07));
+  --border-highlight: light-dark(rgba(60,48,36,.2), rgba(255,240,225,.2));
+  --text: light-dark(#221d17, #eee8df);
+  --text-muted: light-dark(rgba(34,29,23,.66), rgba(238,232,223,.6));
+  --hairline: light-dark(rgba(60,48,36,.1), rgba(255,240,225,.08));
+}
+@supports (color: oklch(from red l c h)) {
+  :root[data-palette="muted"] .app-card,
+  :root[data-palette="muted"] .palette-item,
+  :root[data-palette="muted"] #paletteDetail,
+  :root[data-palette="muted"] #lx-palette,
+  :root[data-palette="muted"] .ctx-head {
+    --tint: oklch(from var(--c1, #8c95b6) .7 clamp(.025, calc(c * .55), .05) h);
+    --c2: oklch(from var(--tint) .8 calc(c * .7) h);
+    --c3: oklch(from var(--tint) .5 c h);
+    --tint-ink: oklch(from var(--c1, #8c95b6) .86 clamp(.035, calc(c * .65), .07) h);
+    --tile: oklch(from var(--c1, #8c95b6) .34 clamp(.022, calc(c * .42), .045) h);
+  }
+  :root[data-palette="muted"][data-theme="light"] .app-card,
+  :root[data-palette="muted"][data-theme="light"] .palette-item,
+  :root[data-palette="muted"][data-theme="light"] #paletteDetail,
+  :root[data-palette="muted"][data-theme="light"] #lx-palette,
+  :root[data-palette="muted"][data-theme="light"] .ctx-head {
+    --tint: oklch(from var(--c1, #8c95b6) .56 clamp(.03, calc(c * .6), .06) h);
+    --tint-ink: oklch(from var(--c1, #8c95b6) .45 clamp(.035, calc(c * .65), .07) h);
+    --tile: oklch(from var(--c1, #8c95b6) .92 clamp(.014, calc(c * .28), .032) h);
+  }
+}
+:root[data-palette="muted"] .card-meta { color: var(--text-muted); opacity: calc(.85 + .15 * var(--hov, 0)); }
+:root[data-palette="muted"] .variant-chip { color: var(--text-muted); }
+:root[data-palette="muted"] .variant-chip.is-active { color: var(--text); }
+:root[data-palette="muted"][data-theme="dark"] .scrim { background: radial-gradient(circle at center, transparent 22%, #0a0807 118%); }
+:root[data-palette="muted"] .scrim::before { opacity: .35; }
+:root[data-palette="muted"] .scrim::after { opacity: .42; }
+:root[data-palette="muted"][data-theme="light"] .scrim::after { opacity: .22; }
+
+:root[data-palette="muted"] h1,
+:root.fonts-ready[data-palette="muted"] h1 {
+  background: none; animation: none; filter: none;
+  -webkit-text-fill-color: currentColor; color: var(--text);
+  letter-spacing: -.012em;
+}
+:root[data-palette="muted"] .app-title {
+  background: none;
+  -webkit-text-fill-color: currentColor; color: var(--text);
+}
+
+:root[data-palette="muted"] .app-icon-wrapper,
+:root[data-palette="muted"] .app-card .app-icon-wrapper,
+:root[data-palette="muted"] .palette-item .app-icon-wrapper,
+:root[data-palette="muted"] .palette-item.is-active .app-icon-wrapper,
+:root[data-palette="muted"] .palette-detail .app-icon-wrapper {
+  background: var(--tile, color-mix(in oklab, var(--tint) 18%, var(--bg)));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--tint) 34%, transparent),
+    inset 0 1px 0 light-dark(rgba(255,255,255,.8), rgba(255,255,255,.07)),
+    0 0 0 .5px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.4)),
+    0 1px 2px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.35));
+  transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0);
+}
+:root[data-palette="muted"] .app-icon-wrapper::before,
+:root[data-palette="muted"] .app-icon-wrapper::after { display: none; }
+:root[data-palette="muted"] .app-icon,
+:root[data-palette="muted"] .app-icon-wrapper .app-icon {
+  color: var(--tint-ink); text-shadow: none; filter: none;
+}
+:root[data-palette="muted"] .ctx-head-icon {
+  background: var(--tile, color-mix(in oklab, var(--tint) 18%, var(--bg)));
+  color: var(--tint-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) 30%, transparent);
+}
+:root[data-palette="muted"] .ctx-head-icon svg { filter: none; }
+
+:root[data-palette="muted"][data-theme] .card-clip {
+  background-image: linear-gradient(90deg, transparent, color-mix(in oklab, var(--tint) 38%, transparent) 50%, transparent);
+  background-size: 56% 1px;
+  background-position: 50% 0;
+}
+:root[data-palette="muted"][data-theme] .card-shadow {
+  box-shadow:
+    0 1px 2px light-dark(rgba(60,48,36,.05), rgba(0,0,0,.3)),
+    0 10px 24px -18px light-dark(rgba(60,48,36,.18), rgba(0,0,0,.7)),
+    inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.035));
+}
+:root[data-palette="muted"][data-theme] .card-shadow::after {
+  box-shadow:
+    0 2px 4px light-dark(rgba(60,48,36,.06), rgba(0,0,0,.32)),
+    0 22px 44px -26px light-dark(rgba(60,48,36,.28), rgba(0,0,0,.8)),
+    inset 0 0 0 1px color-mix(in oklab, var(--tint) 22%, transparent);
+}
+:root[data-palette="muted"] .card-aura {
+  background: radial-gradient(120% 90% at 50% 120%, color-mix(in oklab, var(--tint) 8%, transparent), transparent 70%);
+  opacity: calc(.6 + .4 * var(--hov, 0));
+}
+:root[data-palette="muted"] .card-sheen,
+:root[data-palette="muted"] .card-glow { display: none; }
+:root[data-palette="muted"] .card-clip::before { opacity: 0 !important; }
+:root[data-palette="muted"] .card-glyph { color: color-mix(in oklab, var(--tint) 7%, transparent); }
+:root[data-palette="muted"] .card-meta::before { background: color-mix(in oklab, var(--tint) 85%, var(--text-muted)); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette="muted"] .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 36%, var(--border-highlight)); }
+}
+:root[data-palette="muted"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 36%, var(--border-highlight)); }
+
+:root[data-palette="muted"] .badge,
+:root[data-palette="muted"] .palette-detail-badge { background: transparent; }
+:root[data-palette="muted"] .badge-new { color: light-dark(#8a6d3b, #c9b07e); }
+:root[data-palette="muted"] .badge-variant { color: light-dark(#5d6a86, #a3adc6); }
+:root[data-palette="muted"] .badge .badge-dot { animation: none; }
+
+:root[data-palette="muted"] .variant-chip-indicator {
+  background: light-dark(#fffdf9, rgba(255,248,240,.1));
+  box-shadow: 0 1px 2px light-dark(rgba(60,48,36,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--tint) 26%, transparent);
+}
+
+:root[data-palette="muted"] .lx-bar,
+:root[data-palette="muted"] .controls-pill {
+  background: light-dark(rgba(255,253,249,.7), rgba(255,248,240,.035));
+  box-shadow:
+    0 1px 2px light-dark(rgba(60,48,36,.05), rgba(0,0,0,.3)),
+    0 12px 30px -20px light-dark(rgba(60,48,36,.2), rgba(0,0,0,.75)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.05));
+}
+:root[data-palette="muted"] .lx-bar::before { opacity: .35; }
+:root[data-palette="muted"] .tab-indicator {
+  background: light-dark(#fffdf9, rgba(255,248,240,.08));
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 28%, var(--hairline)),
+    0 1px 2px light-dark(rgba(60,48,36,.1), rgba(0,0,0,.35));
+}
+:root[data-palette="muted"] .tab-btn[aria-selected="true"] svg { color: var(--tab-accent); filter: none; }
+:root[data-palette="muted"] .lx-bar-search svg.fa-magnifying-glass { color: color-mix(in oklab, var(--tab-accent) 55%, var(--text-muted)); }
+
+:root[data-palette="muted"] #lx-palette {
+  background-color: light-dark(rgba(250,247,242,.94), rgba(22,20,18,.92));
+  background-image: linear-gradient(180deg, light-dark(rgba(255,255,255,.7), rgba(255,248,240,.03)), transparent 140px);
+  box-shadow:
+    0 1px 1px light-dark(rgba(60,48,36,.04), rgba(0,0,0,.4)),
+    0 16px 32px -16px light-dark(rgba(60,48,36,.16), rgba(0,0,0,.6)),
+    0 56px 110px -40px light-dark(rgba(60,48,36,.28), rgba(0,0,0,.85)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.05));
+}
+:root[data-palette="muted"] #lx-palette::backdrop { background: light-dark(rgba(40,32,24,.24), rgba(4,3,2,.66)); }
+:root[data-palette="muted"] .palette-cursor {
+  background: light-dark(#fffdf9, rgba(255,248,240,.055));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 22%, var(--hairline)), 0 1px 2px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.3));
+}
+:root[data-palette="muted"] .palette-cursor::before { background: var(--live-accent); box-shadow: none; }
+:root[data-palette="muted"] .palette-detail-slab { background: linear-gradient(180deg, color-mix(in oklab, var(--live-accent) 7%, transparent), transparent 55%); }
+:root[data-palette="muted"] .palette-action.is-primary {
+  background: color-mix(in oklab, var(--live-accent) 12%, light-dark(#fffdf9, rgba(255,248,240,.03)));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 30%, transparent);
+}
+:root[data-palette="muted"] .palette-action.is-primary .palette-action-icon { background: var(--tile, var(--live-accent)); color: var(--tint-ink); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 30%, transparent); }
+:root[data-palette="muted"] .palette-input-row > svg { color: var(--live-accent); filter: none; }
+
+:root[data-palette="muted"] .lx-context-menu {
+  background: light-dark(rgba(251,248,243,.94), rgba(24,22,20,.92));
+  background-image: linear-gradient(180deg, light-dark(rgba(255,255,255,.6), rgba(255,248,240,.04)), transparent 46px);
+}
+:root[data-palette="muted"] .lx-toast { background: light-dark(rgba(251,248,243,.96), rgba(24,22,20,.95)); }
+
+.lx-context-menu {
+  --menu-accent: var(--tab-accent);
+  min-width: 228px;
+  padding: 6px;
+  background: light-dark(rgba(253,252,250,.9), rgba(20,21,26,.86));
+  background-image:
+    radial-gradient(120% 60% at 50% -20%, color-mix(in oklab, var(--menu-accent) 9%, transparent), transparent 70%),
+    linear-gradient(180deg, light-dark(rgba(255,255,255,.75), rgba(255,255,255,.05)), transparent 46px);
+  backdrop-filter: blur(28px) saturate(180%); -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid light-dark(rgba(20,18,15,.08), rgba(255,255,255,.085));
+  box-shadow:
+    0 0 0 .5px light-dark(rgba(20,18,15,.04), rgba(0,0,0,.6)),
+    0 2px 4px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.28)),
+    0 12px 24px -10px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.5)),
+    0 32px 64px -24px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.75)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
+  transform: scale(.96) translateY(-4px);
+  transition: opacity 140ms var(--ease-lux), transform 220ms var(--ease-lux);
+}
+.lx-context-menu.is-open { transform: none; }
+.lx-context-menu[data-owner="card"] { width: 276px; }
+.lx-context-menu[data-owner="look"] { width: 252px; }
+.lx-context-menu button {
+  position: relative; min-height: 34px;
+  padding: .45rem .65rem; gap: .65rem;
+  font-size: .84rem; font-weight: 500; letter-spacing: -.003em;
+  color: light-dark(rgba(21,19,15,.88), rgba(246,245,242,.9));
+}
+:root:lang(ar) .lx-context-menu button { letter-spacing: 0; font-size: .86rem; }
+.lx-context-menu button svg { width: 15px; height: 15px; font-size: .8rem; color: light-dark(rgba(21,19,15,.5), rgba(246,245,242,.48)); transition: color var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
+.lx-context-menu button:hover, .lx-context-menu button:focus-visible {
+  background: color-mix(in oklab, var(--menu-accent) 12%, light-dark(rgba(20,18,15,.035), rgba(255,255,255,.045)));
+  color: var(--text);
+}
+.lx-context-menu button:hover svg, .lx-context-menu button:focus-visible svg { color: color-mix(in oklab, var(--menu-accent) 78%, var(--text)); }
+.lx-context-menu button:focus-visible { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--menu-accent) 40%, transparent); }
+.lx-context-menu-sep { height: 1px; margin: 5px 8px; background: linear-gradient(90deg, transparent, light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08)) 12%, light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08)) 88%, transparent); }
+.lx-context-menu-label { padding: .5rem .7rem .3rem; font-size: .6rem; letter-spacing: .16em; color: light-dark(rgba(21,19,15,.45), rgba(246,245,242,.4)); }
+:root:lang(ar) .lx-context-menu-label { font-size: .7rem; letter-spacing: 0; }
+.lx-context-menu .ctx-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ctx-head {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .6rem .65rem .75rem; margin-bottom: 4px;
+  border-bottom: 1px solid light-dark(rgba(20,18,15,.08), rgba(255,255,255,.07));
+  --tint: var(--c1);
+}
+@supports (color: oklch(from red l c h)) {
+  .ctx-head { --tint: oklch(from var(--c1) clamp(.6, l, .72) clamp(.06, c, .15) h); }
+}
+.ctx-head-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: grid; place-items: center;
+  border-radius: calc(34px * var(--r-icon, .27));
+  color: #fff; font-size: .9rem;
+  background:
+    radial-gradient(70% 60% at 50% 20%, rgba(255,255,255,.32), transparent 70%),
+    linear-gradient(150deg, color-mix(in oklab, var(--tint) 70%, #fff), var(--tint) 55%, color-mix(in oklab, var(--tint) 60%, #000));
+  box-shadow: 0 6px 14px -8px color-mix(in oklab, var(--tint) 85%, transparent), inset 0 1px 0 rgba(255,255,255,.4), inset 0 0 0 1px rgba(255,255,255,.12);
+}
+:root[data-palette="mono"] .ctx-head-icon { background: linear-gradient(150deg, #9aa0aa, #6b707a 55%, #45484f); }
+.ctx-head-icon svg { filter: drop-shadow(0 1px 1px rgba(0,0,0,.3)); }
+.ctx-head-text { display: flex; flex-direction: column; min-width: 0; gap: .12rem; }
+.ctx-head-title { display: flex; align-items: baseline; gap: .4rem; min-width: 0; font-family: var(--display-font); font-size: 1rem; font-weight: 600; line-height: 1.25; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+:root:lang(ar) .ctx-head-title { line-height: 1.5; }
+.ctx-head-variant { font-family: var(--ui-font); font-size: .68rem; font-weight: 600; padding: .08rem .4rem; border-radius: var(--r-badge, 6px); color: color-mix(in oklab, var(--tint) 75%, var(--text)); background: color-mix(in oklab, var(--tint) 14%, transparent); }
+.ctx-head-sub { display: flex; align-items: center; gap: .45rem; font-size: .7rem; color: light-dark(rgba(21,19,15,.62), rgba(246,245,242,.6)); white-space: nowrap; overflow: hidden; }
+.ctx-head-sub > span[dir] { overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
+.ctx-head-closed { flex-shrink: 0; font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--closed-ink); padding: .05rem .35rem; border-radius: var(--r-badge, 6px); background: color-mix(in oklab, var(--closed-ink) 12%, transparent); }
+:root:lang(ar) .ctx-head-closed { letter-spacing: 0; text-transform: none; font-size: .66rem; }
+
+.ctx-group { display: flex; flex-direction: column; gap: 1px; }
+.lx-context-menu .ctx-item.is-default { color: var(--text); font-weight: 600; }
+.lx-context-menu .ctx-item.is-default svg { color: color-mix(in oklab, var(--menu-accent) 80%, var(--text)); }
+.ctx-tag {
+  flex-shrink: 0; font-size: .58rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: .16rem .5rem; border-radius: var(--r-badge, 6px);
+  color: color-mix(in oklab, var(--menu-accent) 80%, var(--text));
+  background: color-mix(in oklab, var(--menu-accent) 13%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--menu-accent) 22%, transparent);
+}
+:root:lang(ar) .ctx-tag { letter-spacing: 0; text-transform: none; font-size: .64rem; }
+.ctx-kbd { flex-shrink: 0; font-family: var(--ui-font); font-size: .64rem; font-weight: 500; color: var(--text-muted); padding: .1rem .35rem; border-radius: var(--r-kbd, 5px); box-shadow: inset 0 0 0 1px var(--hairline, var(--border)); }
+.ctx-check { width: 14px; flex-shrink: 0; display: inline-flex; justify-content: center; }
+.lx-context-menu .ctx-check svg, .lx-context-menu button.is-active .ctx-check svg { width: 11px; height: 11px; color: color-mix(in oklab, var(--menu-accent) 85%, var(--text)); }
+.lx-context-menu button.is-active { color: var(--text); font-weight: 600; }
+.lx-context-menu button.is-done svg { color: oklch(72% .14 155); transform: scale(1.12); }
+.lx-context-menu button.is-failed svg { color: var(--closed-ink); }
+
+.ctx-mode { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .3rem .3rem .3rem .65rem; }
+.ctx-mode-label { font-size: .72rem; font-weight: 500; color: light-dark(rgba(21,19,15,.62), rgba(246,245,242,.6)); white-space: nowrap; }
+.ctx-seg {
+  position: relative; display: inline-grid; grid-template-columns: 1fr 1fr;
+  padding: 2px; border-radius: var(--r-chip, 9px);
+  background: light-dark(rgba(20,18,15,.05), rgba(0,0,0,.28));
+  box-shadow: inset 0 0 0 1px light-dark(rgba(20,18,15,.05), rgba(255,255,255,.04));
+}
+.ctx-seg-thumb {
+  position: absolute; top: 2px; bottom: 2px; inset-inline-start: 2px; width: calc(50% - 2px);
+  border-radius: var(--r-chip-in, 7px);
+  background: light-dark(#fff, rgba(255,255,255,.13));
+  box-shadow: 0 1px 2px light-dark(rgba(20,18,15,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--menu-accent) 24%, transparent);
+  transition: transform 260ms var(--ease-spring);
+}
+.ctx-seg[data-mode="same"] .ctx-seg-thumb { transform: translateX(100%); }
+:root[dir="rtl"] .ctx-seg[data-mode="same"] .ctx-seg-thumb { transform: translateX(-100%); }
+.lx-context-menu .ctx-seg button {
+  position: relative; z-index: 1; min-height: 26px; width: auto;
+  padding: 0 .75rem; justify-content: center;
+  font-size: .7rem; font-weight: 500; white-space: nowrap;
+  color: var(--text-muted); border-radius: var(--r-chip-in, 7px);
+  background: transparent !important;
+}
+.lx-context-menu .ctx-seg button.is-active { color: var(--text); font-weight: 600; }
+.lx-context-menu .ctx-seg button:focus-visible { box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--menu-accent) 55%, transparent); }
+
+.look-open-row { align-items: center; }
+.look-open-text { flex: 1; display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.look-open-text small { font-size: .66rem; font-weight: 400; color: var(--text-muted); margin-top: 1px; }
+
+.lx-context-menu.is-open .ctx-head,
+.lx-context-menu.is-open .ctx-group,
+.lx-context-menu.is-open .ctx-mode,
+.lx-context-menu.is-open > button { animation: ctxRise 260ms var(--ease-lux) backwards; }
+.lx-context-menu.is-open .ctx-group:nth-of-type(2) { animation-delay: 20ms; }
+.lx-context-menu.is-open .ctx-group:nth-of-type(3) { animation-delay: 40ms; }
+.lx-context-menu.is-open .ctx-group:nth-of-type(4) { animation-delay: 55ms; }
+.lx-context-menu.is-open .ctx-mode { animation-delay: 70ms; }
+@keyframes ctxRise { from { opacity: 0; translate: 0 -3px; } }
+
+:root[data-corners] .lx-context-menu { border-radius: calc(var(--r-menu) + 2px); }
+
+.controls-pill button::after { display: none; }
+.controls-pill button[aria-pressed="true"] svg,
+.controls-pill button[aria-expanded="true"] svg { color: color-mix(in oklab, var(--tab-accent) 75%, var(--text)); }
+.controls-pill button[aria-expanded="true"] {
+  color: var(--text);
+  background: color-mix(in oklab, var(--tab-accent) 12%, light-dark(rgba(20,18,15,.05), rgba(255,255,255,.06)));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 24%, transparent);
+}
+.controls-pill button[aria-pressed="true"] {
+  background: color-mix(in oklab, var(--tab-accent) 10%, light-dark(rgba(20,18,15,.04), rgba(255,255,255,.05)));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 18%, transparent);
+}
+.controls-pill button svg { transition: color var(--dur-base) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
+@media (hover: hover) and (pointer: fine) {
+  .controls-pill button:hover svg { transform: scale(1.08); }
+  #refreshToggle:hover svg { transform: rotate(40deg); }
+}
+
+.card-meta { opacity: calc(.78 + .22 * var(--hov, 0)); }
+.open-affordance { transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring), background-color var(--dur-fast) var(--ease-lux); }
+@media (hover: hover) and (pointer: fine) {
+  .app-card:hover .open-affordance { background: color-mix(in oklab, var(--tint) 16%, transparent); border-color: color-mix(in oklab, var(--tint) 30%, transparent); }
+  .variant-chip:not(.is-active):hover { color: var(--text); background: light-dark(rgba(20,18,15,.04), rgba(255,255,255,.05)); }
+}
+.variant-chip { transition: color var(--dur-micro) var(--ease-lux), background-color var(--dur-micro) var(--ease-lux); }
+
+.lx-toast {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .55rem 1rem .55rem .8rem;
+  font-size: .82rem; letter-spacing: -.003em;
+  box-shadow:
+    0 2px 4px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)),
+    0 18px 40px -14px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.7)),
+    0 0 0 1px color-mix(in oklab, var(--tab-accent) 10%, transparent),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
+  transform: translateY(10px) scale(.97);
+  transition: opacity var(--dur-base) var(--ease-lux), transform 320ms var(--ease-spring);
+}
+:root[dir="rtl"] .lx-toast { padding: .55rem .8rem .55rem 1rem; }
+.lx-toast::before {
+  content: ''; width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  background: var(--tab-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--tab-accent) 18%, transparent);
+}
+.lx-toast.is-error::before { background: #f87171; box-shadow: 0 0 0 3px rgba(248,113,113,.18); }
+.lx-toast.is-visible { transform: none; }
+.lx-toast:empty { display: none; }
+
+.palette-hints > span:not(.palette-status) + span:not(.palette-status)::before { opacity: .55; }
+.palette-detail-title { text-wrap: balance; }
+.app-grid { scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--text) 14%, transparent) transparent; }
+.lx-bar-kbd { letter-spacing: .02em; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lx-context-menu, .lx-context-menu.is-open { transform: none !important; }
+  .lx-context-menu.is-open .ctx-head, .lx-context-menu.is-open .ctx-group, .lx-context-menu.is-open .ctx-mode, .lx-context-menu.is-open > button { animation: none; }
+  .ctx-seg-thumb, .lx-toast { transition-duration: .01ms; }
+}
+
+@media (hover: none) { .ctx-kbd { display: none; } }
+@media (max-width: 640px) {
+  .lx-context-menu[data-owner="card"] { width: min(300px, calc(100vw - 16px)); }
+  .lx-context-menu button { min-height: 42px; }
+  .lx-context-menu .ctx-seg button { min-height: 32px; }
+  .lx-toast { padding: .6rem 1rem; }
+}
+
 @media (forced-colors: active) {
   h1, .app-title, :root[data-palette] h1, :root[data-palette] .app-title {
     background: none;
@@ -3665,6 +4030,18 @@ const STRINGS = {
   noResults: { ar: 'لا توجد نتائج', en: 'No results' },
   ctxOpen: { ar: 'فتح', en: 'Open' },
   ctxCopyLink: { ar: 'نسخ الرابط', en: 'Copy link' },
+  ctxCopyName: { ar: 'نسخ الاسم', en: 'Copy name' },
+  ctxDetails: { ar: 'عرض التفاصيل', en: 'Show details' },
+  ctxVersions: { ar: 'النسخة', en: 'Version' },
+  ctxDefault: { ar: 'افتراضي', en: 'Default' },
+  ctxOpenWith: { ar: 'الفتح الافتراضي', en: 'Default open' },
+  openMode: { ar: 'فتح الروابط', en: 'Open links' },
+  openMode_new: { ar: 'تبويب جديد', en: 'New tab' },
+  openMode_same: { ar: 'نفس التبويب', en: 'Same tab' },
+  openModeHint_new: { ar: 'تبقى LinkExpress مفتوحة', en: 'Keeps LinkExpress open' },
+  openModeHint_same: { ar: 'يستبدل هذه الصفحة', en: 'Replaces this page' },
+  openModeSet: { ar: 'الروابط تُفتح في {m}', en: 'Links open in {m}' },
+  cmdOpenMode: { ar: 'فتح الروابط في {m}', en: 'Open links in {m}' },
   emptyCategory: { ar: 'لا توجد عناصر هنا بعد', en: 'Nothing here yet' },
   catalogUnavailable: { ar: 'تعذر تحميل قائمة الأدوات', en: 'Could not load the tool list' },
   resultsCountLabel: { ar: 'نتيجة', en: 'results' },
@@ -3714,7 +4091,7 @@ const STRINGS = {
   scopesLabel: { ar: 'النطاق', en: 'Scope' },
   scopeAll: { ar: 'الكل', en: 'All' },
   hintScope: { ar: 'النطاق', en: 'Scope' },
-  lookMenu: { ar: 'المظهر', en: 'Appearance' },
+  lookMenu: { ar: 'التفضيلات', en: 'Preferences' },
   lookColors: { ar: 'الألوان', en: 'Colors' },
   lookCorners: { ar: 'الزوايا', en: 'Corners' },
   palette_curated: { ar: 'منسقة', en: 'Curated' },
@@ -3727,6 +4104,18 @@ const STRINGS = {
   cmdNextColors: { ar: 'الألوان التالية', en: 'Next colors' },
   cmdNextCorners: { ar: 'الزوايا التالية', en: 'Next corners' }
 };
+
+const OPEN_MODES = ['new', 'same'];
+const openMode = () => {
+  let v = null;
+  try { v = localStorage.getItem('lx-open'); } catch (e) { if (LX_DEBUG) console.warn(e); }
+  return v === 'same' ? 'same' : 'new';
+};
+const otherOpenMode = (m = openMode()) => (m === 'same' ? 'new' : 'same');
+const openModeAction = (m = openMode()) => (m === 'same' ? 'same-tab' : 'new-tab');
+const openModeIcon = (m = openMode()) => (m === 'same' ? 'fa-arrow-right-to-bracket' : 'fa-arrow-up-right-from-square');
+const openInSameTab = (url) => { if (url) window.location.href = url; };
+const openUrlWith = (url, m = openMode()) => (m === 'same' ? openInSameTab(url) : openInNewTab(url));
 
 let lang = 'ar';
 const t = (key) => { const e = STRINGS[key]; return e ? (e[lang] ?? e.ar) : key; };
@@ -4085,12 +4474,13 @@ const createCard = (app, idx, placement, cat) => {
   const host = hostOf(activeUrl);
 
   const overlayLabel = app.closed ? `${activeLabel} — ${t('badgeClosed')}` : activeLabel;
-  const overlayAttrs = `href="${escapeHtml(activeUrl)}" target="_blank" rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
+  const overlayTarget = openMode() === 'same' ? '' : ' target="_blank"';
+  const overlayAttrs = `href="${escapeHtml(activeUrl)}"${overlayTarget} rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
 
   el.innerHTML = `
     <div class="card-shadow" aria-hidden="true"></div>
     <div class="card-clip">
-      <a class="card-link-overlay" ${overlayAttrs}></a>
+      <a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"></a>
       <div class="card-aura" aria-hidden="true"></div>
       <div class="card-glyph" aria-hidden="true">${icon(iconClass)}</div>
       <div class="card-glow"></div>
@@ -4104,7 +4494,7 @@ const createCard = (app, idx, placement, cat) => {
         <div class="title-stack">
           <div class="title-row">
             <h3 class="app-title">${escapeHtml(title)}</h3>
-            <span class="open-affordance" aria-hidden="true">${icon('fa-arrow-up-right-from-square')}</span>
+            <span class="open-affordance" aria-hidden="true">${icon(openModeIcon())}</span>
           </div>
           ${host ? `<span class="card-meta" dir="ltr">${escapeHtml(host)}</span>` : ''}
         </div>
@@ -4247,6 +4637,7 @@ const closeContextMenu = () => {
   const hadFocus = contextMenuEl.contains(document.activeElement);
   contextMenuEl.classList.remove('is-open');
   contextMenuEl.inert = true;
+  contextMenuEl.style.removeProperty('--menu-accent');
   delete contextMenuEl.dataset.owner;
   document.getElementById('dataToggle')?.setAttribute('aria-expanded', 'false');
   document.getElementById('lookToggle')?.setAttribute('aria-expanded', 'false');
@@ -4319,46 +4710,118 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   const activeUrl = linkEl ? linkEl.href : '';
   const variantChips = Array.from(card.querySelectorAll('.variant-chip'));
 
+  const appId = card.dataset.appId;
+  const cat = categories.find(c => c.apps.some(a => a.id === appId));
+  const app = cat ? cat.apps.find(a => a.id === appId) : null;
+  const activeChip = card.querySelector('.variant-chip.is-active');
+  const activeVariant = app && app.variants && activeChip ? app.variants[Number(activeChip.dataset.variantIndex)] : null;
+  const title = app ? loc(app.title) : '';
+  const iconName = activeVariant ? activeVariant.icon : (app ? app.icon : 'fa-circle');
+  let host = '';
+  try { host = new URL(activeUrl).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
+  const mode = openMode();
+  if (app) menu.style.setProperty('--menu-accent', tone(app.gradient[0]));
+  const kbdHint = (txt) => `<span class="ctx-kbd" aria-hidden="true">${escapeHtml(txt)}</span>`;
+  const defaultTag = `<span class="ctx-tag">${escapeHtml(t('ctxDefault'))}</span>`;
+  const openRow = (m) => `<button type="button" data-action="open-${m}" role="menuitem" class="ctx-item${m === mode ? ' is-default' : ''}">${icon(openModeIcon(m))}<span class="ctx-label">${escapeHtml(t(m === 'new' ? 'actionNewTab' : 'actionSameTab'))}</span>${m === mode ? defaultTag : ''}</button>`;
+
   let itemsHtml = `
-    <button type="button" data-action="open" role="menuitem">${icon('fa-arrow-up-right-from-square')}${escapeHtml(t('ctxOpen'))}</button>
-    <button type="button" data-action="copy" role="menuitem">${icon('fa-copy')}${escapeHtml(t('ctxCopyLink'))}</button>
+    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? app.gradient[0] : '#7c9bff'))}">
+      <span class="ctx-head-icon">${icon(iconName)}</span>
+      <span class="ctx-head-text">
+        <span class="ctx-head-title">${escapeHtml(title)}${activeVariant ? `<span class="ctx-head-variant">${escapeHtml(loc(activeVariant.label))}</span>` : ''}</span>
+        <span class="ctx-head-sub">${host ? `<span dir="ltr">${escapeHtml(host)}</span>` : ''}${app && app.closed ? `<span class="ctx-head-closed">${escapeHtml(t('badgeClosed'))}</span>` : ''}</span>
+      </span>
+    </div>
+    <div class="ctx-group" role="group">
+      ${openRow(mode)}
+      ${openRow(otherOpenMode(mode))}
+    </div>
+    <div class="lx-context-menu-sep" role="separator"></div>
+    <div class="ctx-group" role="group">
+      <button type="button" data-action="copy" role="menuitem" class="ctx-item">${icon('fa-copy')}<span class="ctx-label">${escapeHtml(t('ctxCopyLink'))}</span></button>
+      <button type="button" data-action="copy-name" role="menuitem" class="ctx-item">${icon('fa-font')}<span class="ctx-label">${escapeHtml(t('ctxCopyName'))}</span></button>
+      <button type="button" data-action="details" role="menuitem" class="ctx-item">${icon('fa-magnifying-glass')}<span class="ctx-label">${escapeHtml(t('ctxDetails'))}</span>${kbdHint(isMacPlatform() ? '⌘K' : 'Ctrl K')}</button>
+    </div>
   `;
   if (variantChips.length) {
-    itemsHtml += `<div class="lx-context-menu-sep" role="separator"></div>`;
+    itemsHtml += `<div class="lx-context-menu-sep" role="separator"></div><div class="lx-context-menu-label" role="presentation">${escapeHtml(t('ctxVersions'))}</div><div class="ctx-group" role="group">`;
     variantChips.forEach((chip, i) => {
       const active = chip.classList.contains('is-active');
-      itemsHtml += `<button type="button" data-variant="${i}" role="menuitemradio" aria-checked="${active}" class="${active ? 'is-active' : ''}">${icon(active ? 'fa-circle-dot' : 'fa-circle')}${escapeHtml(chip.textContent)}</button>`;
+      const v = app && app.variants ? app.variants[i] : null;
+      itemsHtml += `<button type="button" data-variant="${i}" role="menuitemradio" aria-checked="${active}" class="ctx-item${active ? ' is-active' : ''}">${icon(v ? v.icon : 'fa-circle')}<span class="ctx-label">${escapeHtml(chip.textContent)}</span><span class="ctx-check" aria-hidden="true">${active ? icon('fa-check') : ''}</span></button>`;
     });
+    itemsHtml += `</div>`;
   }
+  itemsHtml += `
+    <div class="lx-context-menu-sep" role="separator"></div>
+    <div class="ctx-mode" role="group" aria-label="${escapeHtml(t('ctxOpenWith'))}">
+      <span class="ctx-mode-label">${escapeHtml(t('ctxOpenWith'))}</span>
+      <span class="ctx-seg" data-mode="${mode}">
+        <span class="ctx-seg-thumb" aria-hidden="true"></span>
+        ${OPEN_MODES.map(m => `<button type="button" role="menuitemradio" aria-checked="${m === mode}" data-open-mode="${m}" class="${m === mode ? 'is-active' : ''}" title="${escapeHtml(t('openModeHint_' + m))}">${escapeHtml(t('openMode_' + m))}</button>`).join('')}
+      </span>
+    </div>
+  `;
   menu.innerHTML = itemsHtml;
 
-  menu.querySelector('[data-action="open"]').addEventListener('click', () => {
-    sfx.click();
-    if (activeUrl) {
-      const appId = card.dataset.appId;
-      const activeChip = card.querySelector('.variant-chip.is-active');
-      const app = categories.flatMap(c => c.apps).find(a => a.id === appId);
-      const v = app && app.variants && activeChip ? app.variants[Number(activeChip.dataset.variantIndex)] : null;
-      const recentId = v ? `${appId}::${v.id}` : appId;
-      pushRecent(recentId);
-      bumpFreq(recentId);
-      try { localStorage.setItem('lx-last-open', appId); } catch (err) { if (LX_DEBUG) console.warn(err); }
-      openInNewTab(activeUrl);
-    }
-    closeContextMenu();
+  const recordCardLaunch = () => {
+    const recentId = activeVariant ? `${appId}::${activeVariant.id}` : appId;
+    pushRecent(recentId);
+    bumpFreq(recentId);
+    try { localStorage.setItem('lx-last-open', appId); } catch (err) { if (LX_DEBUG) console.warn(err); }
+  };
+  OPEN_MODES.forEach((m) => {
+    menu.querySelector(`[data-action="open-${m}"]`)?.addEventListener('click', () => {
+      sfx.click();
+      contextMenuReturn = null;
+      closeContextMenu();
+      if (!activeUrl) return;
+      recordCardLaunch();
+      openUrlWith(activeUrl, m);
+    });
   });
+  const flashItem = (btn, ok, okText) => {
+    btn.classList.add(ok ? 'is-done' : 'is-failed');
+    const label = btn.querySelector('.ctx-label');
+    setIcon(btn.querySelector('svg'), ok ? 'fa-check' : 'fa-triangle-exclamation');
+    if (label) label.textContent = ok ? okText : t('copyFailed');
+    setTimeout(() => { if (btn.isConnected && menu.contains(btn)) closeContextMenu(); }, 700);
+  };
   menu.querySelector('[data-action="copy"]').addEventListener('click', async (e) => {
     const btn = e.currentTarget;
     const ok = activeUrl ? await copyToClipboard(activeUrl) : false;
     sfx.click();
-    btn.innerHTML = `${icon(ok ? 'fa-check' : 'fa-triangle-exclamation')}${escapeHtml(ok ? t('linkCopied') : t('copyFailed'))}`;
-    setTimeout(() => { if (btn.isConnected && menu.contains(btn)) closeContextMenu(); }, 650);
+    flashItem(btn, ok, t('linkCopied'));
+  });
+  menu.querySelector('[data-action="copy-name"]').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const ok = title ? await copyToClipboard(title) : false;
+    sfx.click();
+    flashItem(btn, ok, t('nameCopied'));
+  });
+  menu.querySelector('[data-action="details"]').addEventListener('click', () => {
+    sfx.click();
+    contextMenuReturn = null;
+    closeContextMenu();
+    heroReturnFocus = false;
+    openPalette(title);
   });
   menu.querySelectorAll('[data-variant]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const i = Number(btn.dataset.variant);
       variantChips[i]?.click();
       closeContextMenu();
+    });
+  });
+  menu.querySelectorAll('[data-open-mode]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const m = btn.dataset.openMode;
+      sfx.click();
+      setOpenMode(m);
+      const fresh = document.querySelector(`#appGrid .app-card[data-app-id="${CSS.escape(appId)}"]`) || card;
+      openCardContextMenu(fresh, parseFloat(menu.style.left) || clientX, parseFloat(menu.style.top) || clientY, fromKeyboard);
+      contextMenuEl?.querySelector(`[data-open-mode="${m}"]`)?.focus({ preventScroll: true });
     });
   });
 
@@ -4947,12 +5410,13 @@ const PALETTES = ['vivid', 'curated', 'muted', 'mono'];
 const CORNERS = ['balanced', 'soft', 'crisp'];
 const PALETTE_SWATCHES = {
   curated: ['#6d82ad', '#5f9a94', '#a99563', '#ad7a80'],
-  muted: ['#7c8fc4', '#5aa595', '#b59a5c', '#b27887'],
+  muted: ['#8c95b6', '#7ea198', '#b9a47c', '#b48b94'],
   vivid: ['#7c9bff', '#2dd4bf', '#f5b445', '#f472b6'],
   mono: ['#d7d8db', '#9a9ca2', '#6a6c72', '#3c3e43']
 };
 const CORNER_SAMPLES = { soft: '9px', balanced: '5px', crisp: '1.5px' };
-const ORB_SAT = { curated: 1, muted: 1, vivid: 1.45, mono: 0.12 };
+const ORB_SAT = { curated: 1, muted: 0.5, vivid: 1.45, mono: 0.12 };
+const MUTED_GREY = [140, 133, 124];
 const paletteMode = () => {
   const p = document.documentElement.dataset.palette;
   return PALETTES.includes(p) ? p : 'vivid';
@@ -4963,10 +5427,10 @@ const cornersMode = () => {
 };
 const tone = (hex) => {
   const mode = paletteMode();
-  if ((mode !== 'curated' && mode !== 'mono') || typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return hex;
+  if ((mode !== 'curated' && mode !== 'mono' && mode !== 'muted') || typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return hex;
   const key = mode + hex.toLowerCase();
   if (toneCache.has(key)) return toneCache.get(key);
-  const out = mode === 'mono' ? hexBlend(curatedTone(hex.toLowerCase()), [128, 132, 140], 0.86) : curatedTone(hex.toLowerCase());
+  const out = mode === 'muted' ? hexBlend(hex.toLowerCase(), MUTED_GREY, 0.42) : mode === 'mono' ? hexBlend(curatedTone(hex.toLowerCase()), [128, 132, 140], 0.86) : curatedTone(hex.toLowerCase());
   toneCache.set(key, out);
   return out;
 };
@@ -5034,6 +5498,30 @@ const setCornersMode = (mode, { silent = false, persist = true } = {}) => {
 };
 
 const cycle = (list, cur) => list[(list.indexOf(cur) + 1) % list.length];
+
+const syncOpenModeUI = () => {
+  const m = openMode();
+  document.documentElement.dataset.openMode = m;
+  document.querySelectorAll('#appGrid .card-link-overlay').forEach((a) => {
+    if (m === 'same') a.removeAttribute('target');
+    else a.setAttribute('target', '_blank');
+    a.dataset.openMode = m;
+  });
+  document.querySelectorAll('#appGrid .open-affordance svg').forEach((s) => setIcon(s, openModeIcon(m)));
+  lastDetailKey = null;
+  const dialog = document.getElementById('lx-palette');
+  if (dialog && dialog.open && typeof renderPaletteDetail === 'function') renderPaletteDetail();
+  updateLookButtonLabel();
+};
+
+const setOpenMode = (mode, { silent = true, persist = true } = {}) => {
+  if (!OPEN_MODES.includes(mode)) return;
+  if (persist) {
+    try { localStorage.setItem('lx-open', mode); } catch (e) { if (LX_DEBUG) console.warn(e); }
+  }
+  syncOpenModeUI();
+  if (!silent) showToast(fmt('openModeSet', { m: t('openMode_' + mode) }));
+};
 
 const updateFavicon = (cat) => {
   const accent = tone((cat && cat.accent) || '#7c9bff');
@@ -5910,9 +6398,12 @@ const syncHeroRestBox = () => {
 
 const getActionsForEntry = (entry) => {
   if (entry && entry.app.command) return [{ id: 'run', icon: 'fa-bolt', label: t('actionRun'), kbd: 'Enter' }];
+  const newTab = { id: 'new-tab', icon: 'fa-arrow-up-right-from-square', label: t('actionNewTab') };
+  const sameTab = { id: 'same-tab', icon: 'fa-arrow-right-to-bracket', label: t('actionSameTab') };
+  const [primary, secondary] = openMode() === 'same' ? [sameTab, newTab] : [newTab, sameTab];
   const actions = [
-    { id: 'new-tab', icon: 'fa-arrow-up-right-from-square', label: t('actionNewTab'), kbd: 'Enter' },
-    { id: 'same-tab', icon: 'fa-arrow-right-to-bracket', label: t('actionSameTab'), kbd: 'Shift+Enter' },
+    { ...primary, kbd: 'Enter' },
+    { ...secondary, kbd: 'Shift+Enter' },
     { id: 'copy-link', icon: 'fa-copy', label: t('actionCopyLink'), kbd: 'Ctrl/Cmd+Enter' },
     { id: 'copy-title', icon: 'fa-font', label: t('actionCopyTitle'), kbd: '' }
   ];
@@ -5937,6 +6428,11 @@ const commandEntries = () => {
     cmd('zen', zen ? STRINGS.zenExit : STRINGS.zenEnter, zen ? 'fa-compress' : 'fa-expand', '#8f7ae8', press('zenToggle'), 'Alt+Z'),
     cmd('sound', sfx.enabled ? STRINGS.soundMute : STRINGS.soundEnable, sfx.enabled ? 'fa-volume-mute' : 'fa-volume-up', '#5e8df0', press('soundToggle')),
   ];
+  const nextOpen = otherOpenMode();
+  list.push(cmd('open-mode', {
+    ar: STRINGS.cmdOpenMode.ar.replace('{m}', STRINGS['openMode_' + nextOpen].ar),
+    en: STRINGS.cmdOpenMode.en.replace('{m}', STRINGS['openMode_' + nextOpen].en)
+  }, openModeIcon(nextOpen), '#5aa9a0', () => setOpenMode(nextOpen, { silent: false }), 'Alt+O'));
   const curP = paletteMode(), curC = cornersMode();
   PALETTES.forEach((p) => {
     if (p === curP) return;
@@ -6569,7 +7065,7 @@ const executeAction = async (actionId) => {
     requestClosePalette();
   } else if (actionId === 'same-tab') {
     sfx.click();
-    window.location.href = entry.app.url;
+    openInSameTab(entry.app.url);
   } else if (actionId === 'copy-link') {
     const ok = await copyToClipboard(entry.app.url);
     sfx.click();
@@ -6586,7 +7082,7 @@ const executeAction = async (actionId) => {
 
 const openPaletteItem = (i) => {
   paletteActiveIndex = i;
-  executeAction('new-tab');
+  executeAction(openModeAction());
 };
 
 const MORPH_OPEN_MS = 340;
@@ -7409,10 +7905,10 @@ const setupInteractions = () => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (paletteActiveIndex === -1) return;
-      if (e.shiftKey) { executeAction('same-tab'); return; }
+      if (e.shiftKey) { executeAction(openModeAction(otherOpenMode())); return; }
       if (e.ctrlKey || e.metaKey) { executeAction('copy-link'); return; }
       if (paletteZone === 'actions') { executeAction(getActionsForEntry(paletteItems[paletteActiveIndex])[paletteActionIndex].id); return; }
-      executeAction('new-tab');
+      executeAction(openModeAction());
       return;
     }
   });
@@ -7507,6 +8003,11 @@ const setupInteractions = () => {
     if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyR', 'r')) {
       e.preventDefault();
       setCornersMode(cycle(CORNERS, cornersMode()));
+      return;
+    }
+    if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyO', 'o')) {
+      e.preventDefault();
+      setOpenMode(otherOpenMode(), { silent: false });
       return;
     }
     if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
@@ -7914,6 +8415,7 @@ const applyImportedPrefs = (p) => {
     if (p.theme === 'light' || p.theme === 'dark') applyTheme(p.theme);
     if (PALETTES.includes(p.palette)) setPaletteMode(p.palette, { silent: true });
     if (CORNERS.includes(p.corners)) setCornersMode(p.corners, { silent: true });
+    if (OPEN_MODES.includes(p.open)) setOpenMode(p.open);
     if (p.zen === '0' || p.zen === '1') {
       localStorage.setItem('lx-zen', p.zen);
       setZenMode(p.zen === '1');
@@ -7972,7 +8474,7 @@ const importUserLinks = async () => {
 const exportUserData = () => {
   const prefs = { variants: {} };
   try {
-    ['theme', 'lang', 'sound', 'zen', 'palette', 'corners'].forEach((k) => { const v = localStorage.getItem('lx-' + k); if (v !== null) prefs[k] = v; });
+    ['theme', 'lang', 'sound', 'zen', 'palette', 'corners', 'open'].forEach((k) => { const v = localStorage.getItem('lx-' + k); if (v !== null) prefs[k] = v; });
   } catch (e) { if (LX_DEBUG) console.warn(e); }
   categories.forEach(c => c.apps.forEach((a) => {
     if (!a.variants) return;
@@ -8071,14 +8573,21 @@ function updateLookButtonLabel() {
   const btn = document.getElementById('lookToggle');
   if (!btn) return;
   btn.setAttribute('aria-label', t('lookMenu'));
-  btn.title = `${t('lookMenu')} · ${t('palette_' + paletteMode())} · ${t('corners_' + cornersMode())}`;
+  btn.title = `${t('lookMenu')} · ${t('palette_' + paletteMode())} · ${t('corners_' + cornersMode())} · ${t('openMode_' + openMode())}`;
 }
 
 const renderLookMenu = (menu, next = {}) => {
-  const p = next.palette || paletteMode(), c = next.corners || cornersMode();
+  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode();
   const row = (kind, id, checked, trail) =>
     `<button type="button" role="menuitemradio" aria-checked="${checked}" class="${checked ? 'is-active' : ''}" data-look-${kind}="${id}">${icon(checked ? 'fa-circle-dot' : 'fa-circle')}<span>${escapeHtml(t((kind === 'palette' ? 'palette_' : 'corners_') + id))}</span>${trail}</button>`;
+  const openRow = (id) => {
+    const checked = id === o;
+    return `<button type="button" role="menuitemradio" aria-checked="${checked}" class="look-open-row${checked ? ' is-active' : ''}" data-look-open="${id}">${icon(openModeIcon(id))}<span class="look-open-text"><span>${escapeHtml(t('openMode_' + id))}</span><small>${escapeHtml(t('openModeHint_' + id))}</small></span><span class="ctx-check" aria-hidden="true">${checked ? icon('fa-check') : ''}</span></button>`;
+  };
   menu.innerHTML =
+    `<div class="lx-context-menu-label" role="presentation">${escapeHtml(t('openMode'))}</div>` +
+    OPEN_MODES.map(openRow).join('') +
+    `<div class="lx-context-menu-sep" role="separator"></div>` +
     `<div class="lx-context-menu-label" role="presentation">${escapeHtml(t('lookColors'))}</div>` +
     PALETTES.map(id => row('palette', id, id === p,
       `<span class="look-swatches" aria-hidden="true">${PALETTE_SWATCHES[id].map(sw => `<span style="--sw:${sw}"></span>`).join('')}</span>`)).join('') +
@@ -8103,13 +8612,16 @@ const openLookMenu = (btn, focusFirst) => {
   placeContextMenu(menu, x, y);
   showContextMenu(menu, { anchor: btn, returnTo: btn, focusFirst });
   menu.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-look-palette],[data-look-corners]');
+    const b = e.target.closest('[data-look-palette],[data-look-corners],[data-look-open]');
     if (!b) return;
     sfx.click();
-    const focusKey = b.dataset.lookPalette ? `[data-look-palette="${b.dataset.lookPalette}"]` : `[data-look-corners="${b.dataset.lookCorners}"]`;
+    const focusKey = b.dataset.lookPalette ? `[data-look-palette="${b.dataset.lookPalette}"]`
+      : b.dataset.lookCorners ? `[data-look-corners="${b.dataset.lookCorners}"]`
+      : `[data-look-open="${b.dataset.lookOpen}"]`;
     if (b.dataset.lookPalette) setPaletteMode(b.dataset.lookPalette, { silent: true });
-    else setCornersMode(b.dataset.lookCorners, { silent: true });
-    renderLookMenu(menu, { palette: b.dataset.lookPalette, corners: b.dataset.lookCorners });
+    else if (b.dataset.lookCorners) setCornersMode(b.dataset.lookCorners, { silent: true });
+    else setOpenMode(b.dataset.lookOpen);
+    renderLookMenu(menu, { palette: b.dataset.lookPalette, corners: b.dataset.lookCorners, open: b.dataset.lookOpen });
     menu.querySelector(focusKey)?.focus({ preventScroll: true });
   }, { signal: contextMenuAC.signal });
 };
@@ -8136,6 +8648,7 @@ const initLookMenu = () => {
   window.addEventListener('storage', (e) => {
     if (e.key === 'lx-palette' && PALETTES.includes(e.newValue)) setPaletteMode(e.newValue, { silent: true, persist: false });
     if (e.key === 'lx-corners' && CORNERS.includes(e.newValue)) setCornersMode(e.newValue, { silent: true, persist: false });
+    if (e.key === 'lx-open' || e.key === null) syncOpenModeUI();
   });
 };
 
@@ -8151,6 +8664,7 @@ const boot = async () => {
   setupInteractions();
   initDataMenu();
   initLookMenu();
+  syncOpenModeUI();
   initRefreshButton();
   if (!categories.length) renderEmptyCatalog();
   if (instant) {
