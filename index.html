@@ -2571,67 +2571,6 @@ h1 {
     --tint-ink: oklch(from var(--c1, #8b9099) .32 .008 h);
   }
 }
-@supports (color: oklch(from red calc(l + cos(h * 1deg) * .01) c h)) {
-  :root[data-palette="curated"] .app-card,
-  :root[data-palette="curated"] .palette-item,
-  :root[data-palette="curated"] #paletteDetail,
-  :root[data-palette="curated"] #lx-palette {
-    --tint: oklch(from var(--c1, #6d82ad) calc(.662 + .026 * cos((h - 95) * 1deg)) min(c, calc(.066 + .008 * max(0, cos((h - 80) * 1deg)))) h);
-    --c2: oklch(from var(--tint) calc(l + .068) calc(c * .78) calc(h - 4));
-    --c3: oklch(from var(--tint) calc(l - .168) calc(c * .96) calc(h + 6));
-  }
-  :root[data-palette="curated"][data-theme="light"] .app-card,
-  :root[data-palette="curated"][data-theme="light"] .palette-item,
-  :root[data-palette="curated"][data-theme="light"] #paletteDetail,
-  :root[data-palette="curated"][data-theme="light"] #lx-palette {
-    --tint: oklch(from var(--c1, #6d82ad) calc(.566 + .01 * cos((h - 95) * 1deg)) min(calc(c * 1.25), .09) h);
-    --tint-ink: oklch(from var(--c1, #6d82ad) calc(.425 - .012 * cos((h - 95) * 1deg)) min(c, .085) h);
-  }
-  :root[data-palette="mono"] .app-card,
-  :root[data-palette="mono"] .palette-item,
-  :root[data-palette="mono"] #paletteDetail,
-  :root[data-palette="mono"] #lx-palette {
-    --tint: oklch(from var(--c1, #8b9099) calc(.715 + .045 * cos((h - 95) * 1deg)) .009 255);
-    --c2: oklch(from var(--tint) calc(l + .1) .006 255);
-    --c3: oklch(from var(--tint) calc(l - .3) .009 258);
-    --tint-ink: var(--tint);
-  }
-  :root[data-palette="mono"][data-theme="light"] .app-card,
-  :root[data-palette="mono"][data-theme="light"] .palette-item,
-  :root[data-palette="mono"][data-theme="light"] #paletteDetail,
-  :root[data-palette="mono"][data-theme="light"] #lx-palette {
-    --tint: oklch(from var(--c1, #8b9099) calc(.5 + .04 * cos((h - 95) * 1deg)) .009 255);
-    --c2: oklch(from var(--tint) calc(l + .14) .006 255);
-    --c3: oklch(from var(--tint) calc(l - .2) .009 258);
-    --tint-ink: oklch(from var(--c1, #8b9099) .32 .008 255);
-  }
-}
-:root[data-palette="curated"] { --closed-ink: oklch(76% .085 36); }
-:root[data-palette="curated"][data-theme="light"] { --closed-ink: oklch(50% .1 36); }
-:root[data-palette="mono"] { --closed-ink: oklch(77% .04 30); }
-:root[data-palette="mono"][data-theme="light"] { --closed-ink: oklch(47% .055 30); }
-:root[data-palette="curated"][data-theme="light"] .app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.26)); }
-:root[data-palette="curated"] .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px color-mix(in oklab, var(--c3) 62%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.32)),
-    inset 0 1px 0 rgba(255,255,255,.3),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -10px 16px -12px rgba(0,0,0,.3);
-}
-:root[data-palette="mono"] .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px light-dark(rgba(20,22,28,.4), rgba(0,0,0,.7)),
-    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.34)),
-    inset 0 1px 0 rgba(255,255,255,.34),
-    inset 0 0 0 1px light-dark(rgba(255,255,255,.18), rgba(255,255,255,.07)),
-    inset 0 -10px 16px -12px rgba(0,0,0,.34);
-}
-:root[data-palette="mono"] .app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.28)); }
-:root[data-palette="mono"] .card-meta::before { background: color-mix(in oklab, var(--text) 42%, transparent); }
-:root[data-palette="mono"] .app-card.status-closed .card-meta::before { background: var(--closed-ink); }
-:root[data-palette="mono"] .tab-btn[aria-selected="true"] svg { color: var(--text); filter: none; }
-:root[data-palette="mono"] .lx-bar-search svg.fa-magnifying-glass { color: var(--text-muted); }
 :root[data-palette="vivid"] .card-glyph { color: color-mix(in oklab, var(--tint) 10%, transparent); }
 :root[data-palette="vivid"] .scrim::before { opacity: .55; }
 :root[data-palette="vivid"] .card-aura {
@@ -3442,7 +3381,7 @@ h1 {
   #refreshToggle:hover svg { transform: rotate(40deg); }
 }
 
-.card-meta { color: light-dark(rgba(21,19,15,.66), rgba(246,245,242,.64)); opacity: calc(.88 + .12 * var(--hov, 0)); }
+.card-meta { opacity: calc(.78 + .22 * var(--hov, 0)); }
 .open-affordance { transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring), background-color var(--dur-fast) var(--ease-lux); }
 @media (hover: hover) and (pointer: fine) {
   .app-card:hover .open-affordance { background: color-mix(in oklab, var(--tint) 16%, transparent); border-color: color-mix(in oklab, var(--tint) 30%, transparent); }
@@ -3501,6 +3440,450 @@ h1 {
   .palette-scope.is-active { outline: 1px solid CanvasText; }
   .card-clip::after { display: none; }
   .card-clip, :root[data-theme="dark"] .card-clip { border: 1px solid CanvasText; }
+}
+
+:root {
+  --stage-light: light-dark(rgba(255,255,255,.5), rgba(255,255,255,.035));
+  --stage-floor: light-dark(rgba(28,25,20,.045), rgba(0,0,0,.2));
+}
+.scrim {
+  background:
+    radial-gradient(58% 40% at 50% -8%, var(--stage-light), transparent 72%),
+    linear-gradient(180deg, transparent 64%, var(--stage-floor) 100%),
+    radial-gradient(circle at center, transparent 24%, color-mix(in oklab, var(--tab-accent) 2%, var(--bg)) 120%);
+}
+.scrim::after { opacity: .3; }
+:root[data-theme="light"] .scrim::after { opacity: .16; }
+
+:root[data-theme="dark"]:not([data-palette="muted"]) h1 { filter: drop-shadow(0 8px 22px rgba(0,0,0,.42)); }
+.site-header::before, .site-header::after { opacity: .85; }
+
+.controls-pill button { color: color-mix(in oklab, var(--text) 64%, transparent); font-size: 1.02rem; }
+.controls-pill button[aria-pressed="true"], .controls-pill button[aria-expanded="true"] { color: var(--text); }
+.controls-divider { opacity: .85; }
+
+:root[data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.062); }
+:root[data-theme] .card-shadow {
+  box-shadow:
+    0 1px 1px light-dark(rgba(28,25,20,.035), rgba(0,0,0,.3)),
+    0 10px 26px -18px light-dark(rgba(28,25,20,.16), rgba(0,0,0,.62)),
+    0 1px 0 light-dark(rgba(255,255,255,.55), rgba(255,255,255,.018)),
+    inset 0 1px 0 light-dark(rgba(255,255,255,.96), rgba(255,255,255,.055)),
+    inset 0 -1px 0 light-dark(rgba(20,18,15,.025), rgba(0,0,0,.26)),
+    inset 0 0 0 1px light-dark(rgba(20,18,15,.035), rgba(255,255,255,.028));
+}
+:root[data-theme] .card-shadow::after {
+  box-shadow:
+    0 2px 4px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.3)),
+    0 26px 52px -28px light-dark(rgba(28,25,20,.24), rgba(0,0,0,.84)),
+    0 22px 48px -32px color-mix(in oklab, var(--tint) 36%, transparent),
+    inset 0 0 0 1px color-mix(in oklab, var(--tint) 15%, transparent),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.1)),
+    inset 0 -1px 0 light-dark(rgba(20,18,15,.03), rgba(0,0,0,.3));
+}
+
+.card-meta { color: color-mix(in oklab, var(--text-muted) 72%, var(--text)); opacity: calc(.86 + .14 * var(--hov, 0)); }
+:root[data-theme="light"] .card-meta { color: color-mix(in oklab, var(--text-muted) 66%, var(--text)); }
+:root[data-theme="light"] .variant-chip:not(.is-active) { color: color-mix(in oklab, var(--text-muted) 82%, var(--text)); }
+.card-hero .card-meta, .card-tall .card-meta { opacity: calc(.9 + .1 * var(--hov, 0)); }
+:root[data-palette="muted"] .card-meta { color: var(--text-muted); }
+
+.variant-chips {
+  background: light-dark(rgba(20,18,15,.045), rgba(0,0,0,.3));
+  box-shadow:
+    inset 0 0 0 1px light-dark(rgba(20,18,15,.04), rgba(255,255,255,.04)),
+    inset 0 1px 1px light-dark(rgba(20,18,15,.035), rgba(0,0,0,.3)),
+    0 1px 0 light-dark(rgba(255,255,255,.85), rgba(255,255,255,.035));
+}
+.variant-chip-indicator {
+  box-shadow:
+    0 1px 2px light-dark(rgba(20,18,15,.1), rgba(0,0,0,.42)),
+    0 3px 8px -5px color-mix(in oklab, var(--tint) 45%, transparent),
+    inset 0 0 0 1px light-dark(rgba(20,18,15,.05), rgba(255,255,255,.07)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.1));
+}
+
+.badge { padding: .3rem .58rem; }
+.badge-closed { font-weight: 700; }
+.badge-closed .badge-dot { box-shadow: 0 0 0 2px color-mix(in oklab, var(--closed-ink) 18%, transparent); }
+
+.app-icon-wrapper {
+  --icon-veil: light-dark(rgba(255,255,255,.14), rgba(255,255,255,.18));
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.035) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
+    radial-gradient(70% 55% at calc(50% - var(--tx,0) * 14%) calc(18% - var(--ty,0) * 10%), var(--icon-veil), transparent 70%),
+    linear-gradient(165deg, var(--c2) 0%, var(--tint) 46%, var(--c3) 100%);
+}
+.app-card .app-icon-wrapper {
+  box-shadow:
+    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px color-mix(in oklab, var(--c3) 62%, transparent),
+    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.32)),
+    0 0 0 1px light-dark(rgba(255,255,255,.55), rgba(255,255,255,.03)),
+    inset 0 1px 0 rgba(255,255,255,.32),
+    inset 0 -1px 0 rgba(0,0,0,.2),
+    inset 0 0 0 1px var(--icon-rim),
+    inset 0 -10px 16px -12px rgba(0,0,0,.3);
+}
+.palette-item .app-icon-wrapper,
+.palette-detail .app-icon-wrapper {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.035) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
+    linear-gradient(165deg, var(--c2) 0%, var(--tint) 46%, var(--c3) 100%);
+}
+.app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.26)); }
+
+:root[data-palette="vivid"] .app-icon-wrapper {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.04) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
+    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 16%) calc(28% - var(--ty,0) * 11%), var(--icon-veil), transparent 68%),
+    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
+}
+
+.lx-bar-label { color: color-mix(in oklab, var(--text-muted) 88%, var(--text)); }
+.tab-indicator { transition: background-color var(--dur-base) var(--ease-lux), box-shadow var(--dur-base) var(--ease-lux); }
+
+.palette-item-cat { color: color-mix(in oklab, var(--pal-ink-2) 85%, var(--text)); }
+.palette-detail-host { opacity: .92; }
+#lx-palette::before { opacity: .55; }
+#lx-palette {
+  background-color: light-dark(rgba(251,250,247,.99), rgba(15,16,20,.985));
+  border-color: light-dark(rgba(20,18,15,.1), rgba(255,255,255,.1));
+  box-shadow:
+    0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.4)),
+    0 16px 32px -16px light-dark(rgba(28,25,20,.16), rgba(0,0,0,.6)),
+    0 56px 110px -40px light-dark(rgba(28,25,20,.28), rgba(0,0,0,.88)),
+    0 40px 120px -70px color-mix(in oklab, var(--live-accent) 26%, transparent),
+    0 0 0 1px light-dark(rgba(255,255,255,.5), rgba(0,0,0,.5)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.075));
+}
+.palette-action.is-primary {
+  background:
+    linear-gradient(180deg, light-dark(rgba(255,255,255,.9), rgba(255,255,255,.07)), light-dark(rgba(255,255,255,.5), rgba(255,255,255,.015))),
+    color-mix(in oklab, var(--live-accent) 16%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 34%, transparent),
+    0 8px 20px -14px color-mix(in oklab, var(--live-accent) 55%, transparent),
+    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
+}
+.palette-action.is-primary .palette-action-icon {
+  background: linear-gradient(160deg, color-mix(in oklab, #fff 14%, var(--live-accent)), color-mix(in oklab, #000 16%, var(--live-accent)));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 3px 8px -3px color-mix(in oklab, var(--live-accent) 60%, transparent);
+}
+:root[data-palette="mono"] #lx-palette { background-color: light-dark(rgba(250,250,249,.99), rgba(14,14,15,.985)); border-color: light-dark(rgba(0,0,0,.1), rgba(255,255,255,.1)); }
+:root[data-palette="mono"] .palette-action.is-primary {
+  background: linear-gradient(180deg, light-dark(#fff, rgba(255,255,255,.1)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.03)));
+  box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.12), rgba(255,255,255,.16)), 0 1px 2px light-dark(rgba(0,0,0,.06), rgba(0,0,0,.3));
+}
+
+:root[data-palette="curated"] {
+  --bg: light-dark(#f2efe9, #06070a);
+  --surface: light-dark(rgba(255,255,255,.58), rgba(255,255,255,.03));
+  --surface-hover: light-dark(rgba(255,255,255,.88), rgba(255,255,255,.06));
+  --border: light-dark(rgba(20,18,15,.065), rgba(255,255,255,.075));
+  --hairline: light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08));
+  --hairline-strong: light-dark(rgba(20,18,15,.24), rgba(255,255,255,.22));
+  --closed-ink: light-dark(oklch(50% 0.1 30), oklch(76% 0.085 30));
+  --stage-light: light-dark(rgba(255,252,246,.6), rgba(255,250,240,.03));
+}
+@supports (color: oklch(from red l c h)) {
+  :root[data-palette="curated"] .app-card,
+  :root[data-palette="curated"] .palette-item,
+  :root[data-palette="curated"] #paletteDetail,
+  :root[data-palette="curated"] #lx-palette {
+    --tint: oklch(from var(--c1, #6d82ad) .66 min(c, .07) h);
+    --c2: oklch(from var(--tint) calc(l + .085) calc(c * .78) calc(h + 7));
+    --c3: oklch(from var(--tint) calc(l - .19) calc(c * 1.04) calc(h - 6));
+    --tint-ink: oklch(from var(--c1, #6d82ad) .76 min(c, .07) h);
+  }
+  :root[data-palette="curated"][data-theme="light"] .app-card,
+  :root[data-palette="curated"][data-theme="light"] .palette-item,
+  :root[data-palette="curated"][data-theme="light"] #paletteDetail,
+  :root[data-palette="curated"][data-theme="light"] #lx-palette {
+    --tint: oklch(from var(--c1, #6d82ad) .56 min(calc(c * 1.25), .09) h);
+    --c2: oklch(from var(--tint) calc(l + .1) calc(c * .78) calc(h + 7));
+    --c3: oklch(from var(--tint) calc(l - .16) calc(c * 1.04) calc(h - 6));
+    --tint-ink: oklch(from var(--c1, #6d82ad) .42 min(c, .085) h);
+  }
+}
+@supports (color: oklch(from red calc(l + cos(h * 1deg) * .01) c h)) {
+  :root[data-palette="curated"] .app-card,
+  :root[data-palette="curated"] .palette-item,
+  :root[data-palette="curated"] #paletteDetail,
+  :root[data-palette="curated"] #lx-palette {
+    --tint: oklch(from var(--c1, #6d82ad) calc(.662 + .026 * cos((h - 95) * 1deg)) min(c, calc(.066 + .008 * max(0, cos((h - 80) * 1deg)))) h);
+  }
+  :root[data-palette="curated"][data-theme="light"] .app-card,
+  :root[data-palette="curated"][data-theme="light"] .palette-item,
+  :root[data-palette="curated"][data-theme="light"] #paletteDetail,
+  :root[data-palette="curated"][data-theme="light"] #lx-palette {
+    --tint: oklch(from var(--c1, #6d82ad) calc(.566 + .01 * cos((h - 95) * 1deg)) min(calc(c * 1.25), .09) h);
+    --tint-ink: oklch(from var(--c1, #6d82ad) calc(.425 - .012 * cos((h - 95) * 1deg)) min(c, .085) h);
+  }
+}
+:root[data-palette="curated"] .card-clip { background-color: color-mix(in oklab, var(--tint) 2%, var(--surface)); }
+:root[data-palette="curated"][data-theme="light"] .card-clip { background-color: color-mix(in oklab, var(--tint) 1.4%, var(--surface)); }
+:root[data-palette="curated"] .app-card.is-kb-focus .card-clip { background-color: color-mix(in oklab, var(--tint) 4%, var(--surface-hover)); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette="curated"] .app-card:hover .card-clip { background-color: color-mix(in oklab, var(--tint) 4%, var(--surface-hover)); }
+}
+:root[data-palette="curated"][data-theme] .card-clip {
+  background-image:
+    linear-gradient(90deg, transparent 10%, light-dark(rgba(255,255,255,.96), rgba(255,255,255,.11)) 50%, transparent 90%),
+    linear-gradient(180deg, light-dark(rgba(255,255,255,.42), rgba(255,255,255,.032)), transparent 54%),
+    linear-gradient(0deg, color-mix(in oklab, var(--tint) 3.5%, transparent), transparent 40%);
+  background-size: 100% 1px, 100% 100%, 100% 100%;
+}
+:root[data-palette="curated"] .card-aura {
+  background:
+    radial-gradient(85% 70% at 0% 0%, color-mix(in oklab, var(--tint) 8%, transparent), transparent 64%),
+    radial-gradient(70% 60% at 100% 100%, color-mix(in oklab, var(--c3) 5%, transparent), transparent 72%);
+}
+:root[data-palette="curated"][dir="rtl"] .card-aura {
+  background:
+    radial-gradient(85% 70% at 100% 0%, color-mix(in oklab, var(--tint) 8%, transparent), transparent 64%),
+    radial-gradient(70% 60% at 0% 100%, color-mix(in oklab, var(--c3) 5%, transparent), transparent 72%);
+}
+:root[data-palette="curated"] .card-glyph { color: color-mix(in oklab, var(--tint) 6.5%, transparent); }
+:root[data-palette="curated"][data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 8%, transparent); }
+:root[data-palette="curated"] .badge-new { color: light-dark(#8f6a2a, #cfae66); }
+:root[data-palette="curated"] .badge-variant { color: light-dark(#4f6690, #9fb1d4); }
+:root[data-palette="curated"] h1 {
+  background-image: linear-gradient(180deg,
+    light-dark(#1a1814, #f8f7f4) 26%,
+    color-mix(in oklab, var(--tab-accent) 18%, light-dark(#544f47, #a9a7a1)) 100%);
+}
+:root[data-palette="curated"] .app-title {
+  background-image: linear-gradient(135deg,
+    var(--text) 0%,
+    var(--text) 48%,
+    color-mix(in oklab, var(--tint-ink) 58%, var(--text)) 88%,
+    color-mix(in oklab, var(--tint-ink) 76%, var(--text)) 100%);
+}
+:root[data-palette="curated"] .lx-bar::before { opacity: .38; }
+:root[data-palette="curated"] .tab-indicator {
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 30%, var(--hairline)),
+    inset 0 -8px 14px -12px color-mix(in oklab, var(--tab-accent) 36%, transparent),
+    0 1px 2px light-dark(rgba(28,25,20,.08), rgba(0,0,0,.35));
+}
+:root[data-palette="curated"] #lx-palette { background-color: light-dark(rgba(251,250,247,.99), rgba(11,12,15,.985)); }
+:root[data-palette="curated"] .lx-context-menu { background: light-dark(rgba(253,252,250,.9), rgba(18,19,23,.88)); }
+
+:root[data-palette="mono"] {
+  --bg: light-dark(#f1f1f0, #060607);
+  --text: light-dark(#161616, #f3f3f2);
+  --text-muted: light-dark(rgba(22,22,22,.58), rgba(243,243,242,.52));
+  --surface: light-dark(rgba(255,255,255,.6), rgba(255,255,255,.04));
+  --surface-hover: light-dark(rgba(255,255,255,.9), rgba(255,255,255,.072));
+  --border: light-dark(rgba(0,0,0,.085), rgba(255,255,255,.08));
+  --border-highlight: light-dark(rgba(0,0,0,.2), rgba(255,255,255,.3));
+  --hairline: light-dark(rgba(0,0,0,.1), rgba(255,255,255,.088));
+  --hairline-strong: light-dark(rgba(0,0,0,.24), rgba(255,255,255,.24));
+  --closed-ink: light-dark(oklch(46% 0.055 28), oklch(76% 0.05 28));
+  --stage-light: light-dark(rgba(255,255,255,.55), rgba(255,255,255,.04));
+  --stage-floor: light-dark(rgba(0,0,0,.045), rgba(0,0,0,.2));
+}
+:root[data-palette="mono"] .scrim {
+  background:
+    radial-gradient(58% 40% at 50% -8%, var(--stage-light), transparent 72%),
+    linear-gradient(180deg, transparent 60%, var(--stage-floor) 100%),
+    radial-gradient(circle at center, transparent 22%, light-dark(#eaeae9, #000) 128%);
+}
+:root[data-palette="mono"] .scrim::after { opacity: .36; }
+:root[data-palette="mono"][data-theme="light"] .scrim::after { opacity: .2; }
+:root[data-palette="mono"] .scrim::before { opacity: .5; }
+@supports (color: oklch(from red l c h)) {
+  :root[data-palette="mono"] .app-card,
+  :root[data-palette="mono"] .palette-item,
+  :root[data-palette="mono"] #paletteDetail,
+  :root[data-palette="mono"] #lx-palette {
+    --tint: oklch(from var(--c1, #8b9099) .68 .006 h);
+    --c2: oklch(from var(--tint) .87 .004 h);
+    --c3: oklch(from var(--tint) .35 .006 h);
+    --tint-ink: oklch(from var(--tint) .82 .005 h);
+  }
+  :root[data-palette="mono"][data-theme="light"] .app-card,
+  :root[data-palette="mono"][data-theme="light"] .palette-item,
+  :root[data-palette="mono"][data-theme="light"] #paletteDetail,
+  :root[data-palette="mono"][data-theme="light"] #lx-palette {
+    --tint: oklch(from var(--c1, #8b9099) .6 .006 h);
+    --c2: oklch(from var(--tint) .78 .004 h);
+    --c3: oklch(from var(--tint) .4 .006 h);
+    --tint-ink: oklch(from var(--tint) .34 .005 h);
+  }
+}
+:root[data-palette="mono"] .app-icon-wrapper {
+  --icon-veil: light-dark(rgba(255,255,255,.24), rgba(255,255,255,.22));
+  --icon-rim: light-dark(rgba(255,255,255,.3), rgba(255,255,255,.15));
+  background:
+    var(--noise) 0 0 / 96px 96px repeat,
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04) 42%, rgba(255,255,255,0) 62%, rgba(0,0,0,.05) 100%),
+    linear-gradient(115deg, transparent 36%, rgba(255,255,255,.045) 50%, transparent 64%),
+    radial-gradient(70% 55% at calc(50% - var(--tx,0) * 14%) calc(18% - var(--ty,0) * 10%), var(--icon-veil), transparent 70%),
+    linear-gradient(160deg, var(--c2) 0%, var(--tint) 48%, var(--c3) 100%);
+}
+:root[data-palette="mono"] .palette-item .app-icon-wrapper,
+:root[data-palette="mono"] .palette-detail .app-icon-wrapper {
+  background:
+    var(--noise) 0 0 / 96px 96px repeat,
+    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04) 42%, rgba(255,255,255,0) 62%, rgba(0,0,0,.05) 100%),
+    linear-gradient(115deg, transparent 36%, rgba(255,255,255,.045) 50%, transparent 64%),
+    linear-gradient(160deg, var(--c2) 0%, var(--tint) 48%, var(--c3) 100%);
+}
+:root[data-palette="mono"] .app-card .app-icon-wrapper {
+  box-shadow:
+    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px rgba(0,0,0,.55),
+    0 1px 2px light-dark(rgba(0,0,0,.16), rgba(0,0,0,.36)),
+    0 0 0 1px light-dark(rgba(255,255,255,.55), rgba(255,255,255,.035)),
+    inset 0 1px 0 rgba(255,255,255,.38),
+    inset 0 -1px 0 rgba(0,0,0,.26),
+    inset 0 0 0 1px var(--icon-rim),
+    inset 0 -10px 16px -12px rgba(0,0,0,.34);
+}
+:root[data-palette="mono"] .app-icon { color: light-dark(#fff, rgba(255,255,255,.94)); filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.38)); }
+:root[data-palette="mono"][data-theme="light"] .app-card .app-icon-wrapper {
+  box-shadow:
+    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px rgba(0,0,0,.42),
+    0 1px 2px rgba(0,0,0,.14),
+    0 0 0 1px rgba(255,255,255,.6),
+    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 0 -1px 0 rgba(0,0,0,.18),
+    inset 0 0 0 1px rgba(255,255,255,.22),
+    inset 0 -10px 16px -12px rgba(0,0,0,.26);
+}
+:root[data-palette="mono"][data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.068); }
+:root[data-palette="mono"][data-theme] .card-clip {
+  background-image:
+    linear-gradient(90deg, transparent 10%, light-dark(rgba(255,255,255,.98), rgba(255,255,255,.13)) 50%, transparent 90%),
+    linear-gradient(180deg, light-dark(rgba(255,255,255,.46), rgba(255,255,255,.036)), transparent 54%);
+  background-size: 100% 1px, 100% 100%;
+}
+:root[data-palette="mono"][data-theme] .card-shadow::after {
+  box-shadow:
+    0 2px 4px light-dark(rgba(0,0,0,.05), rgba(0,0,0,.3)),
+    0 26px 52px -28px light-dark(rgba(0,0,0,.22), rgba(0,0,0,.86)),
+    inset 0 0 0 1px light-dark(rgba(0,0,0,.08), rgba(255,255,255,.1)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.12)),
+    inset 0 -1px 0 light-dark(rgba(0,0,0,.03), rgba(0,0,0,.3));
+}
+:root[data-palette="mono"] .card-aura {
+  background:
+    radial-gradient(85% 70% at 0% 0%, light-dark(rgba(255,255,255,.5), rgba(255,255,255,.035)), transparent 64%),
+    radial-gradient(70% 60% at 100% 100%, light-dark(rgba(0,0,0,.025), rgba(0,0,0,.18)), transparent 72%);
+  opacity: calc(.5 + .4 * var(--hov, 0));
+}
+:root[data-palette="mono"][dir="rtl"] .card-aura {
+  background:
+    radial-gradient(85% 70% at 100% 0%, light-dark(rgba(255,255,255,.5), rgba(255,255,255,.035)), transparent 64%),
+    radial-gradient(70% 60% at 0% 100%, light-dark(rgba(0,0,0,.025), rgba(0,0,0,.18)), transparent 72%);
+}
+:root[data-palette="mono"] .card-sheen { box-shadow: inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.22)); }
+:root[data-palette="mono"] .card-glyph { color: color-mix(in oklab, var(--text) 5.5%, transparent); }
+:root[data-palette="mono"] .app-card.is-kb-focus .card-clip { border-color: light-dark(rgba(0,0,0,.2), rgba(255,255,255,.2)); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette="mono"] .app-card:hover .card-clip { border-color: light-dark(rgba(0,0,0,.2), rgba(255,255,255,.2)); }
+  :root[data-palette="mono"] .app-card:hover .card-glow { opacity: .035; }
+}
+:root[data-palette="mono"] .card-glow { background: radial-gradient(closest-side, light-dark(#fff, #fff), transparent 62%); }
+:root[data-palette="mono"] h1 {
+  background-image: linear-gradient(180deg, light-dark(#101010, #fbfbfa) 28%, light-dark(#5c5c5a, #9c9c9a) 100%);
+}
+:root[data-palette="mono"] .app-title {
+  background-image: linear-gradient(135deg, var(--text) 0%, var(--text) 52%, color-mix(in oklab, var(--text) 78%, transparent) 100%);
+}
+:root[data-palette="mono"] .card-meta::before { background: color-mix(in oklab, var(--text) 42%, transparent); }
+:root[data-palette="mono"] .app-card.status-closed .card-meta::before { background: var(--closed-ink); }
+:root[data-palette="mono"] .open-affordance { color: color-mix(in oklab, var(--text) 82%, transparent); }
+:root[data-palette="mono"] .badge-closed { color: var(--closed-ink); }
+:root[data-palette="mono"] .variant-chip:not(.is-active) { color: color-mix(in oklab, var(--text-muted) 80%, var(--text)); }
+:root[data-palette="mono"] .variant-chip-indicator {
+  background: light-dark(#fff, rgba(255,255,255,.15));
+  box-shadow:
+    0 1px 2px light-dark(rgba(0,0,0,.1), rgba(0,0,0,.45)),
+    inset 0 0 0 1px light-dark(rgba(0,0,0,.06), rgba(255,255,255,.09)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.12));
+}
+:root[data-palette="mono"] .lx-bar,
+:root[data-palette="mono"] .controls-pill {
+  background: linear-gradient(180deg, light-dark(rgba(255,255,255,.82), rgba(255,255,255,.05)), light-dark(rgba(255,255,255,.62), rgba(255,255,255,.018)));
+}
+:root[data-palette="mono"] .lx-bar::before {
+  background: linear-gradient(90deg, transparent, light-dark(rgba(0,0,0,.35), rgba(255,255,255,.6)), transparent);
+  opacity: .22;
+}
+:root[data-palette="mono"] .lx-bar.is-focused {
+  border-color: light-dark(rgba(0,0,0,.2), rgba(255,255,255,.22));
+  box-shadow:
+    0 1px 1px light-dark(rgba(0,0,0,.04), rgba(0,0,0,.3)),
+    0 20px 44px -26px light-dark(rgba(0,0,0,.26), rgba(0,0,0,.85)),
+    0 0 0 3px light-dark(rgba(0,0,0,.05), rgba(255,255,255,.06)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
+}
+:root[data-palette="mono"] .tab-indicator {
+  background: linear-gradient(180deg, light-dark(#fff, rgba(255,255,255,.1)), light-dark(rgba(255,255,255,.8), rgba(255,255,255,.04)));
+  box-shadow:
+    inset 0 0 0 1px light-dark(rgba(0,0,0,.1), rgba(255,255,255,.14)),
+    0 1px 2px light-dark(rgba(0,0,0,.08), rgba(0,0,0,.4));
+}
+:root[data-palette="mono"] .tab-btn[aria-selected="true"] svg { color: var(--text); filter: none; }
+:root[data-palette="mono"] .lx-bar-search svg.fa-magnifying-glass { color: var(--text-muted); }
+:root[data-palette="mono"] .lx-bar-search:hover svg.fa-magnifying-glass,
+:root[data-palette="mono"] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); }
+:root[data-palette="mono"] .controls-pill button { color: color-mix(in oklab, var(--text) 72%, transparent); }
+:root[data-palette="mono"] .controls-pill button[aria-pressed="true"] svg,
+:root[data-palette="mono"] .controls-pill button[aria-expanded="true"] svg { color: var(--text); }
+:root[data-palette="mono"] .controls-pill button::after { background: var(--text); }
+:root[data-palette="mono"] .controls-pill button[aria-pressed="true"],
+:root[data-palette="mono"] .controls-pill button[aria-expanded="true"] {
+  background: light-dark(rgba(0,0,0,.06), rgba(255,255,255,.08));
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+:root[data-palette="mono"] #lx-palette {
+  background-color: light-dark(rgba(250,250,249,.99), rgba(11,11,12,.985));
+  background-image: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.035)), transparent 140px);
+  box-shadow:
+    0 1px 1px light-dark(rgba(0,0,0,.04), rgba(0,0,0,.4)),
+    0 16px 32px -16px light-dark(rgba(0,0,0,.16), rgba(0,0,0,.6)),
+    0 56px 110px -40px light-dark(rgba(0,0,0,.28), rgba(0,0,0,.88)),
+    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
+}
+:root[data-palette="mono"] #lx-palette::before { background: linear-gradient(90deg, transparent, light-dark(rgba(0,0,0,.3), rgba(255,255,255,.6)), transparent); opacity: .4; }
+:root[data-palette="mono"] #lx-palette::backdrop { background: light-dark(rgba(20,20,20,.28), rgba(0,0,0,.7)); }
+:root[data-palette="mono"] .palette-cursor::before { background: var(--text); }
+:root[data-palette="mono"] .palette-item-title mark { box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--text) 60%, transparent); }
+:root[data-palette="mono"] .palette-action.is-primary .palette-action-icon {
+  background: linear-gradient(160deg, light-dark(#4a4a4a, #d8d8d6), light-dark(#242424, #9a9a98));
+  color: light-dark(#fff, #111);
+}
+:root[data-palette="mono"] .ctx-head-icon {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 52%),
+    linear-gradient(160deg, light-dark(#8e9196, #b7babf), light-dark(#5c5f66, #74777e) 52%, light-dark(#3a3c42, #43454b));
+  box-shadow: 0 6px 14px -8px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.12);
+}
+:root[data-palette="mono"] .lx-context-menu { background: light-dark(rgba(252,252,251,.92), rgba(16,16,17,.9)); }
+:root[data-palette="mono"] .lx-toast { background: light-dark(rgba(252,252,251,.96), rgba(16,16,17,.95)); }
+:root[data-palette="mono"] .lx-toast::before { background: var(--text); box-shadow: 0 0 0 3px color-mix(in oklab, var(--text) 14%, transparent); }
+:root[data-palette="mono"] .palette-detail-eyebrow { color: var(--pal-ink-2); }
+:root[data-palette="mono"] :focus-visible { outline-color: color-mix(in oklab, var(--text) 70%, transparent); }
+
+.bento-footer { gap: .9rem; }
+.title-stack { flex: 1 1 auto; min-width: 0; }
+.card-meta { max-width: 100%; }
+.variant-chips { flex-shrink: 0; }
+@media (min-width: 641px) {
+  .app-card:not(.card-hero):not(.card-wide) .bento-footer:has(.variant-chips) .card-meta { max-width: 100%; }
+  .app-card:not(.card-hero):not(.card-wide):not(.card-tall) .bento-footer:has(.variant-chips) .variant-chip { padding-inline: .55rem; }
+}
+
+:root[data-palette="vivid"] .scrim::after { opacity: .28; }
+:root[data-palette="vivid"][data-theme="light"] .scrim::after { opacity: .14; }
+
+@media (prefers-reduced-transparency: reduce) {
+  .scrim::after { display: none; }
+}
+@media (forced-colors: active) {
+  .scrim, .scrim::before, .scrim::after { display: none; }
 }
 </style>
 </head>
@@ -5473,10 +5856,10 @@ const PALETTE_SWATCHES = {
   curated: ['#6d82ad', '#5f9a94', '#a99563', '#ad7a80'],
   muted: ['#8c95b6', '#7ea198', '#b9a47c', '#b48b94'],
   vivid: ['#7c9bff', '#2dd4bf', '#f5b445', '#f472b6'],
-  mono: ['#d7d8db', '#9a9ca2', '#6a6c72', '#3c3e43']
+  mono: ['#dcdcdb', '#9c9d9f', '#67686b', '#3a3b3d']
 };
 const CORNER_SAMPLES = { soft: '9px', balanced: '5px', crisp: '1.5px' };
-const ORB_SAT = { curated: 1, muted: 0.5, vivid: 1.45, mono: 0.12 };
+const ORB_SAT = { curated: 0.88, muted: 0.5, vivid: 1.45, mono: 0.04 };
 const MUTED_GREY = [140, 133, 124];
 const paletteMode = () => {
   const p = document.documentElement.dataset.palette;
@@ -5491,7 +5874,7 @@ const tone = (hex) => {
   if ((mode !== 'curated' && mode !== 'mono' && mode !== 'muted') || typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return hex;
   const key = mode + hex.toLowerCase();
   if (toneCache.has(key)) return toneCache.get(key);
-  const out = mode === 'muted' ? hexBlend(hex.toLowerCase(), MUTED_GREY, 0.42) : mode === 'mono' ? hexBlend(curatedTone(hex.toLowerCase()), [128, 132, 140], 0.86) : curatedTone(hex.toLowerCase());
+  const out = mode === 'muted' ? hexBlend(hex.toLowerCase(), MUTED_GREY, 0.42) : mode === 'mono' ? hexBlend(curatedTone(hex.toLowerCase()), [134, 135, 138], 0.9) : curatedTone(hex.toLowerCase());
   toneCache.set(key, out);
   return out;
 };
