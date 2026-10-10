@@ -27,6 +27,10 @@
     var storedCorners = localStorage.getItem('lx-corners');
     root.dataset.corners = cornersParam || (/^(soft|balanced|crisp)$/.test(storedCorners || '') ? storedCorners : 'balanced');
     if (cornersParam) root.dataset.cornersLocked = '1';
+    var viewParam = (location.search.match(/[?&]view=(bento|icons)\b/) || [])[1];
+    var storedView = localStorage.getItem('lx-view');
+    root.dataset.view = viewParam || (/^(bento|icons)$/.test(storedView || '') ? storedView : 'bento');
+    if (viewParam) root.dataset.viewLocked = '1';
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
     if (/^https?:$/.test(location.protocol) && window.fetch) {
@@ -4335,6 +4339,422 @@ h1 {
 :root[data-palette] .card-meta { opacity: calc(.86 + .14 * var(--hov, 0)); }
 .site-header::before, .site-header::after { align-self: center; translate: 0 .06em; }
 :root[data-palette] .badge { line-height: 1; }
+:root .app-grid[data-ic-size="6"] { --ic-plate-d: 88px; --ic-cols-d: 6; --ic-lbl-d: .9rem; }
+:root .app-grid[data-ic-size="12"] { --ic-plate-d: 76px; --ic-cols-d: 6; --ic-lbl-d: .84rem; }
+:root .app-grid[data-ic-size="24"] { --ic-plate-d: 66px; --ic-cols-d: 8; --ic-lbl-d: .8rem; }
+:root .app-grid[data-ic-size] {
+  --ic-plate: var(--ic-plate-d);
+  --ic-cols: var(--ic-cols-d);
+  --ic-lbl: var(--ic-lbl-d);
+  --ic-cell: calc(var(--ic-plate) + 40px);
+  --ic-r: calc(var(--ic-plate) * var(--r-icon));
+  --ic-pad: 10px;
+  --ic-wash: 22%;
+  --ic-spring: var(--ease-spring);
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  :root .app-grid[data-ic-size] { --ic-spring: linear(0, 0.42 9%, 0.9 20%, 1.06 33%, 1.03 46%, 0.995 62%, 1); }
+}
+:root[data-palette="mono"] .app-grid[data-ic-size] { --ic-wash: 0%; }
+@media (max-width: 640px) {
+  :root .app-grid[data-ic-size] {
+    --ic-plate: clamp(56px, 15vw, 60px);
+    --ic-cell: clamp(84px, 26vw, 104px);
+    --ic-lbl: .8rem;
+    --ic-cols: 4;
+  }
+}
+
+:root .app-grid[data-ic-size]:has(> .app-card--icon) {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, var(--ic-cell)) !important;
+  grid-template-rows: none !important;
+  grid-auto-rows: auto !important;
+  grid-auto-flow: row;
+  justify-content: center;
+  align-content: center;
+  align-content: safe center;
+  column-gap: var(--gap);
+  row-gap: calc(var(--gap) * .8);
+  inline-size: 100%;
+  max-inline-size: calc(var(--ic-cols) * var(--ic-cell) + (var(--ic-cols) - 1) * var(--gap));
+  margin-inline: auto;
+  padding-block: .6rem 1rem;
+}
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  inline-size: var(--ic-cell);
+  min-inline-size: 0;
+  justify-self: center;
+  border-radius: 0;
+  grid-column: auto !important;
+  grid-row: auto !important;
+  transform: none !important;
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-clip {
+  position: relative;
+  inset: auto;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  min-height: 0;
+  inline-size: 100%;
+  padding: var(--ic-pad) .2rem 0;
+  background: none;
+  border: 0;
+  border-radius: var(--ic-r);
+  box-shadow: none;
+  overflow: visible;
+  contain: none;
+  container-type: normal;
+  perspective: 480px;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: none;
+  animation-delay: inherit;
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-clip::before,
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-clip::after,
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-shadow::before,
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-shadow::after { display: none; }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-shadow {
+  position: absolute;
+  inset: auto;
+  inset-inline: 0;
+  inset-block-start: calc(var(--ic-pad) + var(--ic-plate) - 12px);
+  margin-inline: auto;
+  inline-size: calc(var(--ic-plate) * .8);
+  block-size: 16px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, light-dark(rgba(20, 18, 15, .22), rgba(0, 0, 0, .6)), transparent);
+  box-shadow: none;
+  opacity: .75;
+  transform-origin: 50% 0;
+  transition: transform 180ms var(--ease-lux);
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-link-overlay { z-index: 1; }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-stage {
+  position: relative;
+  z-index: 2;
+  flex: none;
+  inline-size: var(--ic-plate);
+  block-size: var(--ic-plate);
+  pointer-events: none;
+  transform: rotateX(calc(var(--ty, 0) * -2deg)) rotateY(calc(var(--tx, 0) * 2deg));
+  transition: translate 180ms var(--ease-lux), scale 320ms var(--ic-spring);
+  animation: icStageIn var(--dur-story) var(--ease-lux) backwards;
+  animation-delay: inherit;
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-aura {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: var(--ic-r);
+  background: var(--tint);
+  filter: blur(14px);
+  opacity: 0;
+  translate: 0 2px;
+  pointer-events: none;
+  transition: opacity 180ms var(--ease-lux), translate 180ms var(--ease-lux);
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  border-radius: var(--ic-r);
+  background-color: light-dark(rgba(255, 255, 255, .92), color-mix(in oklab, var(--bg) 70%, white 6%));
+  background-image:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--c1) var(--ic-wash), transparent), transparent 65%),
+    linear-gradient(180deg, light-dark(rgba(255, 255, 255, .5), rgba(255, 255, 255, .055)), transparent 44%),
+    linear-gradient(var(--surface), var(--surface));
+  box-shadow:
+    inset 0 1px 0 light-dark(rgba(255, 255, 255, .9), rgba(255, 255, 255, .10)),
+    inset 0 -1px 0 light-dark(rgba(0, 0, 0, .04), rgba(0, 0, 0, .35)),
+    0 0 0 1px var(--border),
+    0 1px 2px light-dark(rgba(20, 18, 15, .06), rgba(0, 0, 0, .5)),
+    0 8px 20px -8px light-dark(rgba(20, 18, 15, .14), rgba(0, 0, 0, .6));
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1.5px color-mix(in oklab, var(--tint) 55%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-lux);
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--hov, 0);
+  background: radial-gradient(circle at calc(var(--gx, 50%) - (var(--ic-cell) - var(--ic-plate)) / 2) calc(var(--gy, 50%) - var(--ic-pad)), light-dark(rgba(255, 255, 255, .55), rgba(255, 255, 255, .22)), transparent 62%);
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph {
+  position: relative;
+  font-size: calc(var(--ic-plate) * .44);
+  color: color-mix(in oklab, var(--tint) 85%, white);
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .25));
+}
+:root[data-theme="light"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph {
+  color: var(--tint);
+  filter: none;
+}
+:root[data-palette="mono"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph { color: var(--text); }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-new {
+  position: absolute;
+  inset-block-start: -6px;
+  inset-inline-end: -6px;
+  z-index: 3;
+  gap: 0;
+  padding: .16rem .42rem;
+  border-radius: var(--r-badge);
+  font-size: .56rem;
+  line-height: 1;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  background: color-mix(in oklab, currentColor 14%, var(--bg));
+  pointer-events: none;
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-dot {
+  position: absolute;
+  inset-block-start: -3px;
+  inset-inline-start: -3px;
+  z-index: 3;
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 50%;
+  background: var(--closed-ink);
+  box-shadow: 0 0 0 2px var(--bg);
+  pointer-events: none;
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-var {
+  position: absolute;
+  inset-block-end: -5px;
+  inset-inline-end: -5px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  inline-size: 20px;
+  block-size: 20px;
+  border-radius: calc(20px * var(--r-icon) + 2px);
+  background: light-dark(rgba(255, 255, 255, .96), color-mix(in oklab, var(--bg) 82%, white 12%));
+  box-shadow: 0 0 0 1px var(--border-highlight, var(--border)), 0 2px 5px -2px rgba(0, 0, 0, .35);
+  pointer-events: none;
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-var .app-icon {
+  font-size: 10px;
+  color: color-mix(in oklab, var(--tint) 85%, white);
+  text-shadow: none;
+  filter: none;
+  transition: opacity var(--dur-micro) var(--ease-lux);
+}
+:root[data-theme="light"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-var .app-icon { color: var(--tint); }
+:root[data-palette="mono"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-var .app-icon { color: var(--text); }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-text {
+  position: relative;
+  z-index: 2;
+  inline-size: 100%;
+  margin-block-start: .6rem;
+  padding-block-end: 1.05rem;
+  pointer-events: none;
+  animation: icTextIn calc(var(--dur-story) + 40ms) var(--ease-lux) backwards;
+  animation-delay: inherit;
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-label {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  margin: 0;
+  padding: .06em .08em .18em;
+  font-family: var(--ui-font);
+  font-size: var(--ic-lbl);
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: 0;
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: none;
+  color: var(--lux-ink-soft);
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  -webkit-text-fill-color: currentColor;
+  transform: none;
+  transition: color 180ms var(--ease-lux), opacity 180ms var(--ease-lux);
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-sub {
+  position: absolute;
+  inset-inline: -.4rem;
+  inset-block: auto .12rem;
+  max-width: none;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ui-font);
+  font-size: .68rem;
+  line-height: 1.4;
+  color: var(--lux-ink-soft);
+  opacity: 0;
+  translate: 0 2px;
+  pointer-events: none;
+  transition: opacity 120ms var(--ease-lux), translate 120ms var(--ease-lux);
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-sub::before { display: none; }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.status-closed .ic-plate { filter: saturate(.25); }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.status-closed .ic-label { opacity: .7; }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon:active .ic-stage {
+  scale: .94;
+  transition: translate 180ms var(--ease-lux), scale 90ms var(--ease-lux);
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-keylaunched .ic-stage {
+  scale: .94;
+  transition: translate 180ms var(--ease-lux), scale 90ms var(--ease-lux);
+}
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-keylaunched .ic-aura { opacity: .45; }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-stage { translate: 0 -4px; transition: translate 260ms var(--ease-lux), scale 320ms var(--ic-spring); }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-aura { opacity: .45; translate: 0 7px; transition: opacity 320ms var(--ease-lux), translate 320ms var(--ease-lux); }
+:root[data-theme="light"] .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-aura { opacity: .28; }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-plate::before { opacity: 1; }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .card-shadow { transform: scale(1.1, 1.3); }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-label,
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-sub { color: var(--text); }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-sub { opacity: .86; translate: 0 0; transition: opacity 200ms var(--ease-lux) 60ms, translate 200ms var(--ease-lux) 60ms; }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.status-closed.is-kb-focus .ic-label { opacity: .9; }
+
+@media (hover: hover) and (pointer: fine) {
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover .ic-stage { translate: 0 -4px; transition: translate 260ms var(--ease-lux), scale 320ms var(--ic-spring); }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover:active .ic-stage { scale: .94; transition: translate 260ms var(--ease-lux), scale 90ms var(--ease-lux); }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover .ic-aura { opacity: .45; translate: 0 7px; transition: opacity 320ms var(--ease-lux), translate 320ms var(--ease-lux); }
+  :root[data-theme="light"] .app-grid[data-ic-size] > .app-card.app-card--icon:hover .ic-aura { opacity: .28; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover .card-shadow { transform: scale(1.1, 1.3); }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover .ic-label { color: var(--text); }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover .ic-sub { color: var(--lux-ink-soft); opacity: .86; translate: 0 0; transition: opacity 200ms var(--ease-lux) 60ms, translate 200ms var(--ease-lux) 60ms; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon.status-closed:hover .ic-label { opacity: .9; }
+}
+
+@keyframes icStageIn { from { opacity: 0; scale: .92; } to { opacity: 1; scale: 1; } }
+@keyframes icTextIn { 0%, 12% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes icAuraPulse { 0% { opacity: 0; } 30% { opacity: .45; } 100% { opacity: 0; } }
+@keyframes icHold { from { --ic-hold: 0; } to { --ic-hold: 1; } }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.no-enter:not(.is-revealed):not(.is-returned) .ic-stage,
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.no-enter:not(.is-revealed):not(.is-returned) .ic-text,
+:root .app-grid[data-ic-size].is-switching > .app-card.app-card--icon .ic-stage,
+:root .app-grid[data-ic-size].is-switching > .app-card.app-card--icon .ic-text { animation: none; }
+
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-revealed { animation: icHold 1.1s var(--ease-lux); }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-returned { animation: icHold 1.4s var(--ease-lux); }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-revealed .ic-aura { animation: icAuraPulse 1.1s var(--ease-lux); }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon.is-returned .ic-aura { animation: icAuraPulse 1.4s var(--ease-lux); }
+
+@media (max-width: 1024px) {
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-stage,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-text { animation: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-stage,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover .ic-stage,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:active .ic-stage,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-stage,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon.is-keylaunched .ic-stage {
+    transform: none;
+    translate: none !important;
+    scale: none !important;
+    transition: none;
+    animation: none;
+  }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-text { animation: none; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-aura,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover .ic-aura,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .ic-aura {
+    translate: 0 4px;
+    transition: none;
+    animation: none;
+  }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate::before,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-label,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-sub,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .card-shadow { transition: none; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon:hover .card-shadow,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon.is-kb-focus .card-shadow { transform: none; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-sub { translate: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate {
+    background-color: light-dark(#fff, color-mix(in oklab, var(--bg) 90%, white 8%));
+    background-image:
+      radial-gradient(120% 90% at 50% 0%, color-mix(in oklab, var(--c1) var(--ic-wash), transparent), transparent 65%),
+      linear-gradient(180deg, light-dark(rgba(255, 255, 255, .5), rgba(255, 255, 255, .055)), transparent 44%);
+  }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-var { background: light-dark(#fff, color-mix(in oklab, var(--bg) 82%, white 12%)); }
+}
+
+@media (prefers-contrast: more) {
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate { box-shadow: 0 0 0 1.5px var(--border); }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-label,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-sub { color: var(--text); }
+}
+
+@media (forced-colors: active) {
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate {
+    background: Canvas;
+    border: 1px solid CanvasText;
+    box-shadow: none;
+  }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-aura,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate::before,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate::after,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .card-shadow { display: none; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-var .app-icon { color: CanvasText; filter: none; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-label,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-sub { color: CanvasText; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-var,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-new { background: Canvas; border: 1px solid CanvasText; box-shadow: none; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-dot { background: CanvasText; box-shadow: none; }
+}
+
+.look-view {
+  display: inline-grid;
+  flex-shrink: 0;
+  gap: 2px;
+  margin-inline-start: auto;
+  margin-inline-end: 1px;
+  opacity: .55;
+}
+.lx-context-menu button.is-active .look-view { opacity: .95; }
+.look-view i { display: block; background: currentColor; }
+.look-view[data-view="bento"] { grid-template: 6px 6px / 9px 6px 6px; }
+.look-view[data-view="bento"] i { border-radius: 1.5px; }
+.look-view[data-view="bento"] i:nth-child(1) { grid-row: 1 / 3; }
+.look-view[data-view="bento"] i:nth-child(4) { grid-column: 2 / 4; }
+.look-view[data-view="icons"] { grid-template: 5px 5px / 5px 5px 5px; gap: 2px; }
+.look-view[data-view="icons"] i { border-radius: 1.6px; }
 </style>
 </head>
 <body>
@@ -4997,6 +5417,11 @@ const STRINGS = {
   corners_soft: { ar: 'ناعمة', en: 'Soft' },
   corners_balanced: { ar: 'متوازنة', en: 'Balanced' },
   corners_crisp: { ar: 'حادة', en: 'Crisp' },
+  lookLayout: { ar: 'التخطيط', en: 'Layout' },
+  view_bento: { ar: 'بطاقات', en: 'Bento' },
+  view_icons: { ar: 'أيقونات', en: 'Icons' },
+  cmdSwitchView: { ar: 'تبديل التخطيط', en: 'Switch layout' },
+  viewChanged: { ar: 'تم تغيير التخطيط إلى {m}', en: 'Layout changed to {m}' },
   cmdNextColors: { ar: 'الألوان التالية', en: 'Next colors' },
   cmdNextCorners: { ar: 'الزوايا التالية', en: 'Next corners' }
 };
@@ -5323,6 +5748,8 @@ const createCard = (app, idx, placement, cat) => {
   const activeLabel = activeVariant ? `${title} — ${loc(activeVariant.label)}` : title;
   el.classList.add('app-card');
   el.dataset.appId = app.id;
+  const iconsView = viewMode() === 'icons';
+  if (iconsView) el.classList.add('app-card--icon');
 
   let octave = 0;
   let variant = null;
@@ -5373,7 +5800,26 @@ const createCard = (app, idx, placement, cat) => {
   const overlayTarget = openMode() === 'same' ? '' : ' target="_blank"';
   const overlayAttrs = `href="${escapeHtml(activeUrl)}"${overlayTarget} rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
 
-  el.innerHTML = `
+  const iconCardHtml = iconsView ? `
+    <div class="card-shadow" aria-hidden="true"></div>
+    <div class="card-clip">
+      <a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${idx < 9 ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>
+      <div class="ic-stage">
+        <div class="ic-aura" aria-hidden="true"></div>
+        <div class="ic-plate">${icon(app.icon, 'ic-glyph')}</div>
+        ${isFresh(app) ? `<span class="badge badge-new ic-new">${escapeHtml(t('badgeNew'))}</span>` : ''}
+        ${app.closed ? '<span class="ic-dot" aria-hidden="true"></span>' : ''}
+        ${app.variants ? `<span class="ic-var" aria-hidden="true">${icon(iconClass, 'app-icon')}</span>` : ''}
+      </div>
+      <div class="ic-text">
+        <h3 class="app-title ic-label">${escapeHtml(title)}</h3>
+        ${host ? `<span class="card-meta ic-sub" dir="ltr" aria-hidden="true">${escapeHtml(host)}</span>` : ''}
+      </div>
+      ${chipsHtml ? `<div class="ic-chips" hidden>${chipsHtml}</div>` : ''}
+    </div>
+  ` : '';
+
+  el.innerHTML = iconsView ? iconCardHtml : `
     <div class="card-shadow" aria-hidden="true"></div>
     <div class="card-clip">
       <a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"></a>
@@ -5828,6 +6274,7 @@ const renderCards = (grid, categoryId) => {
     grid.classList.remove('is-auto-flow');
     grid.style.gridTemplateColumns = '';
     grid.style.gridTemplateRows = '';
+    grid.removeAttribute('data-ic-size');
     grid.innerHTML = `<div class="grid-empty">${icon('fa-box-open')}<span>${escapeHtml(t('emptyCategory'))}</span></div>`;
     pointerFieldDirty = true;
     if (hadFocusInGrid) document.getElementById(`tab-${categoryId}`)?.focus({ preventScroll: true });
@@ -5835,10 +6282,13 @@ const renderCards = (grid, categoryId) => {
   }
 
   const n = cat.apps.length;
-  const curated = LAYOUTS[n];
-  const generated = curated ? null : BentoSolver.generate(n);
+  const iconsView = viewMode() === 'icons';
+  const curated = iconsView ? null : LAYOUTS[n];
+  const generated = curated || iconsView ? null : BentoSolver.generate(n);
 
   grid.classList.toggle('is-auto-flow', !curated && !generated);
+  if (iconsView) grid.dataset.icSize = n <= 6 ? '6' : n <= 12 ? '12' : '24';
+  else grid.removeAttribute('data-ic-size');
 
   if (curated) {
     grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
@@ -5864,7 +6314,7 @@ const renderCards = (grid, categoryId) => {
     }
     const card = createCard(app, i, placement, cat);
     if (isBootBatch) card.classList.add('is-boot-card');
-    if (!curated && !generated && i === 0) card.classList.add('card-wide');
+    if (!curated && !generated && !iconsView && i === 0) card.classList.add('card-wide');
     frag.appendChild(card);
   });
   grid.innerHTML = '';
@@ -6396,6 +6846,8 @@ let curatedHues = null;
 const toneCache = new Map();
 const PALETTES = ['vivid', 'curated', 'muted', 'mono'];
 const CORNERS = ['balanced', 'soft', 'crisp'];
+const VIEWS = ['bento', 'icons'];
+const VIEW_ICONS = { bento: 'fa-table-cells-large', icons: 'fa-grip' };
 const PALETTE_SWATCHES = {
   curated: ['#6d82ad', '#5f9a94', '#a99563', '#ad7a80'],
   muted: ['#8c95b6', '#7ea198', '#b9a47c', '#b48b94'],
@@ -6413,6 +6865,7 @@ const cornersMode = () => {
   const c = document.documentElement.dataset.corners;
   return CORNERS.includes(c) ? c : 'balanced';
 };
+const viewMode = () => (document.documentElement.dataset.view === 'icons' ? 'icons' : 'bento');
 const tone = (hex) => {
   const mode = paletteMode();
   if ((mode !== 'curated' && mode !== 'mono' && mode !== 'muted') || typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return hex;
@@ -6508,6 +6961,40 @@ const setCornersMode = (mode, { silent = false, persist = true } = {}) => {
     try { localStorage.setItem('lx-corners', mode); } catch (e) { if (LX_DEBUG) console.warn(e); }
   }
   if (!silent) showToast(`${t('lookCorners')}: ${t('corners_' + mode)}`);
+};
+
+const setViewMode = (mode, { silent = false, persist = true } = {}) => {
+  const root = document.documentElement;
+  if (!VIEWS.includes(mode) || viewMode() === mode) return;
+  if (contextMenuEl && contextMenuEl.dataset.owner === 'card') closeContextMenu();
+  const grid = document.getElementById('appGrid');
+  const focusedCard = grid && grid.contains(document.activeElement) ? document.activeElement.closest('.app-card') : null;
+  const focusedId = focusedCard ? focusedCard.dataset.appId : null;
+  const run = () => {
+    root.dataset.view = mode;
+    const rendered = currentTabId ? renderCards(grid, currentTabId) : false;
+    if (focusedId) {
+      const next = Array.from(grid.querySelectorAll('.app-card')).find((c) => c.dataset.appId === focusedId);
+      next?.querySelector('.card-link-overlay')?.focus({ preventScroll: true });
+    }
+    return rendered;
+  };
+  if (!grid || !currentTabId) {
+    root.dataset.view = mode;
+  } else if (MQ.reducedMotion || typeof grid.animate !== 'function') {
+    settleGridSwitch();
+    run();
+    grid.querySelectorAll('.app-card').forEach((c) => c.classList.add('no-enter'));
+    if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
+  } else {
+    runGridSwitch(grid, run, 0);
+  }
+  pointerFieldDirty = true;
+  Motion.wake();
+  if (persist && !root.dataset.viewLocked) {
+    try { localStorage.setItem('lx-view', mode); } catch (e) { if (LX_DEBUG) console.warn(e); }
+  }
+  if (!silent) showToast(fmt('viewChanged', { m: t('view_' + mode) }));
 };
 
 const cycle = (list, cur) => list[(list.indexOf(cur) + 1) % list.length];
@@ -7446,7 +7933,7 @@ const commandEntries = () => {
     ar: STRINGS.cmdOpenMode.ar.replace('{m}', STRINGS['openMode_' + nextOpen].ar),
     en: STRINGS.cmdOpenMode.en.replace('{m}', STRINGS['openMode_' + nextOpen].en)
   }, openModeIcon(nextOpen), '#5aa9a0', () => setOpenMode(nextOpen, { silent: false }), 'Alt+O'));
-  const curP = paletteMode(), curC = cornersMode();
+  const curP = paletteMode(), curC = cornersMode(), curV = viewMode();
   PALETTES.forEach((p) => {
     if (p === curP) return;
     list.push(cmd('palette-' + p, {
@@ -7461,6 +7948,8 @@ const commandEntries = () => {
       en: `${STRINGS.lookCorners.en}: ${STRINGS['corners_' + c].en}`
     }, 'fa-clone', '#8a93a6', () => setCornersMode(c), c === cycle(CORNERS, curC) ? 'Alt+R' : ''));
   });
+  const nextView = cycle(VIEWS, curV);
+  list.push(cmd('view', STRINGS.cmdSwitchView, VIEW_ICONS[nextView], '#8a93a6', () => setViewMode(nextView, { silent: false }), 'Alt+V'));
   categories.forEach((c) => {
     if (c.id === currentTabId) return;
     const label = c.label || {};
@@ -9019,6 +9508,11 @@ const setupInteractions = () => {
       setCornersMode(cycle(CORNERS, cornersMode()));
       return;
     }
+    if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyV', 'v')) {
+      e.preventDefault();
+      setViewMode(cycle(VIEWS, viewMode()));
+      return;
+    }
     if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyO', 'o')) {
       e.preventDefault();
       setOpenMode(otherOpenMode(), { silent: false });
@@ -9598,7 +10092,11 @@ function updateLookButtonLabel() {
 }
 
 const renderLookMenu = (menu, next = {}) => {
-  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode();
+  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode(), v = next.view || viewMode();
+  const viewRow = (id) => {
+    const checked = id === v;
+    return `<button type="button" role="menuitemradio" aria-checked="${checked}" class="${checked ? 'is-active' : ''}" data-look-view="${id}">${icon(VIEW_ICONS[id])}<span>${escapeHtml(t('view_' + id))}</span><span class="look-view" aria-hidden="true" data-view="${id}">${'<i></i>'.repeat(id === 'bento' ? 4 : 6)}</span></button>`;
+  };
   const row = (kind, id, checked, trail) =>
     `<button type="button" role="menuitemradio" aria-checked="${checked}" class="${checked ? 'is-active' : ''}" data-look-${kind}="${id}">${icon(checked ? 'fa-circle-dot' : 'fa-circle')}<span>${escapeHtml(t((kind === 'palette' ? 'palette_' : 'corners_') + id))}</span>${trail}</button>`;
   const openRow = (id) => {
@@ -9615,11 +10113,14 @@ const renderLookMenu = (menu, next = {}) => {
     `<div class="lx-context-menu-sep" role="separator"></div>` +
     `<div class="lx-context-menu-label" role="presentation">${escapeHtml(t('lookCorners'))}</div>` +
     CORNERS.map(id => row('corners', id, id === c,
-      `<span class="look-corner" aria-hidden="true" style="--cr:${CORNER_SAMPLES[id]}"></span>`)).join('');
+      `<span class="look-corner" aria-hidden="true" style="--cr:${CORNER_SAMPLES[id]}"></span>`)).join('') +
+    `<div class="lx-context-menu-sep" role="separator"></div>` +
+    `<div class="lx-context-menu-label" role="presentation">${escapeHtml(t('lookLayout'))}</div>` +
+    VIEWS.map(viewRow).join('');
 };
 
 const syncLookMenu = (menu, next = {}) => {
-  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode();
+  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode(), v = next.view || viewMode();
   const mark = (b, on) => {
     if (b.getAttribute('aria-checked') === String(on)) return;
     b.setAttribute('aria-checked', String(on));
@@ -9635,6 +10136,7 @@ const syncLookMenu = (menu, next = {}) => {
     if (b.getAttribute('aria-checked') !== String(on)) setIcon(b.querySelector('svg'), on ? 'fa-circle-dot' : 'fa-circle');
     mark(b, on);
   });
+  menu.querySelectorAll('[data-look-view]').forEach((b) => mark(b, b.dataset.lookView === v));
   menu.querySelectorAll('[data-look-open]').forEach((b) => {
     const on = b.dataset.lookOpen === o;
     if (b.getAttribute('aria-checked') !== String(on)) {
@@ -9660,16 +10162,18 @@ const openLookMenu = (btn, focusFirst) => {
   placeContextMenu(menu, x, y);
   showContextMenu(menu, { anchor: btn, returnTo: btn, focusFirst });
   menu.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-look-palette],[data-look-corners],[data-look-open]');
+    const b = e.target.closest('[data-look-palette],[data-look-corners],[data-look-open],[data-look-view]');
     if (!b) return;
     sfx.click();
     const focusKey = b.dataset.lookPalette ? `[data-look-palette="${b.dataset.lookPalette}"]`
       : b.dataset.lookCorners ? `[data-look-corners="${b.dataset.lookCorners}"]`
+      : b.dataset.lookView ? `[data-look-view="${b.dataset.lookView}"]`
       : `[data-look-open="${b.dataset.lookOpen}"]`;
     if (b.dataset.lookPalette) setPaletteMode(b.dataset.lookPalette, { silent: true });
     else if (b.dataset.lookCorners) setCornersMode(b.dataset.lookCorners, { silent: true });
+    else if (b.dataset.lookView) setViewMode(b.dataset.lookView, { silent: true });
     else setOpenMode(b.dataset.lookOpen);
-    syncLookMenu(menu, { palette: b.dataset.lookPalette, corners: b.dataset.lookCorners, open: b.dataset.lookOpen });
+    syncLookMenu(menu, { palette: b.dataset.lookPalette, corners: b.dataset.lookCorners, open: b.dataset.lookOpen, view: b.dataset.lookView });
     menu.querySelector(focusKey)?.focus({ preventScroll: true });
   }, { signal: contextMenuAC.signal });
 };
