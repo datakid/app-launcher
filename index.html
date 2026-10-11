@@ -4361,14 +4361,9 @@ h1 {
 .look-view[data-view="list"] { grid-template: 3px 3px 3px / 3px 12px; gap: 2px; }
 .look-view[data-view="list"] i { border-radius: 1px; }
 .look-view[data-view="list"] i:nth-child(odd) { border-radius: 50%; }
-:root .app-grid[data-layout="list"] { display: grid; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: none !important; grid-auto-rows: auto !important; grid-auto-flow: row; align-content: start; gap: 6px; inline-size: 100%; max-inline-size: 720px; margin-inline: auto; padding-block: .5rem 1rem; padding-inline: 2px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--border-highlight) transparent; scroll-padding-block: .5rem; }
-:root .app-grid[data-layout="list"][data-list-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-inline-size: 1120px; column-gap: 10px; }
-@media (max-width: 900px) { :root .app-grid[data-layout="list"][data-list-cols="2"] { grid-template-columns: minmax(0, 1fr) !important; max-inline-size: 720px; } }
 :root .app-grid[data-layout="list"] > .app-card.app-card--row { grid-column: auto !important; grid-row: auto !important; transform: none !important; inline-size: auto; min-inline-size: 0; block-size: auto; min-block-size: 60px; }
-:root .app-grid[data-layout="list"] > .app-card--row .card-clip { position: relative; inset: auto; display: grid; grid-template-columns: 38px minmax(0, 1fr) auto auto 16px; grid-template-areas: "icon text chips badges go"; align-items: center; column-gap: 14px; padding: 10px 14px; min-block-size: 60px; block-size: auto; border: 1px solid var(--border); border-radius: calc(var(--radius) * .67); background: color-mix(in oklab, var(--surface) 72%, transparent); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; transform: none !important; container-type: normal; perspective: none; transition: background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux); }
 :root .app-grid[data-layout="list"] > .app-card--row .card-clip::before, :root .app-grid[data-layout="list"] > .app-card--row .card-clip::after, :root .app-grid[data-layout="list"] > .app-card--row .card-shadow, :root .app-grid[data-layout="list"] > .app-card--row .card-aura, :root .app-grid[data-layout="list"] > .app-card--row .card-glow, :root .app-grid[data-layout="list"] > .app-card--row .card-sheen { display: none; }
-.row-icon { grid-area: icon; position: relative; z-index: 2; inline-size: 38px; block-size: 38px; pointer-events: none; }
-:root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { --icon-size: 38px; --icon-radius: calc(38px * var(--r-icon, .27)); position: absolute; inset: 0; margin: 0; transform: none; translate: none; scale: none; rotate: none; }
+.row-icon { grid-area: icon; position: relative; z-index: 2; inline-size: var(--lx-row-icon, 40px); block-size: var(--lx-row-icon, 40px); pointer-events: none; }
 :root .app-grid[data-layout="list"] > .app-card--row .digit-badge { inset-block-start: auto; inset-inline-start: auto; inset-block-end: -4px; inset-inline-end: -4px; }
 .row-text { grid-area: text; position: relative; z-index: 2; min-inline-size: 0; display: flex; flex-direction: column; pointer-events: none; }
 :root .app-grid[data-layout="list"] > .app-card--row .app-title { margin: 0; font: 600 .98rem/1.3 var(--ui-font); font-style: normal; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; text-shadow: none; transform: none; }
@@ -4379,25 +4374,218 @@ h1 {
 .row-badges { grid-area: badges; position: relative; z-index: 2; display: flex; gap: 6px; pointer-events: none; transform: none; }
 .row-go { grid-area: go; position: relative; z-index: 2; }
 :root .app-grid[data-layout="list"] > .app-card--row .row-chips .variant-chips { transform: none; }
-@media (hover: hover) and (pointer: fine) { :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { background: var(--surface-hover); border-color: color-mix(in oklab, var(--tint) 30%, var(--border)); } }
-:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: var(--surface-hover); border-color: color-mix(in oklab, var(--tint) 55%, var(--border)); }
 :root .app-grid[data-layout="list"] > .app-card--row.status-closed .row-icon { filter: saturate(.25); }
 :root .app-grid[data-layout="list"] > .app-card--row.status-closed .app-title { opacity: .7; }
 @media (max-width: 640px) {
-  :root .app-grid[data-layout="list"] > .app-card--row .card-clip { grid-template-columns: 34px minmax(0, 1fr) auto; grid-template-areas: "icon text badges" "icon chips chips"; row-gap: 8px; padding: 10px 12px; }
-  :root .app-grid[data-layout="list"] > .app-card--row:not(:has(.row-chips)) .card-clip { grid-template-areas: "icon text badges"; row-gap: 0; }
-  .row-icon { inline-size: 34px; block-size: 34px; }
-  :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { --icon-size: 34px; --icon-radius: calc(34px * var(--r-icon, .27)); }
   .row-chips { justify-self: start; }
   .row-go { display: none; }
 }
 @keyframes lxRowIn { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
-@media (prefers-reduced-motion: reduce) { :root .app-grid[data-layout="list"] > .app-card--row .card-clip { transition: none; } }
-@media (forced-colors: active) { :root .app-grid[data-layout="list"] > .app-card--row .card-clip { background: Canvas; border: 1px solid CanvasText; } }
 @media (max-width: 1024px) { @supports (animation-timeline: view()) { :root .app-grid[data-layout="list"] > .app-card--row { animation: none; } } }
 body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; }
 body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: lxRowIn 380ms var(--ease-lux) backwards; animation-delay: calc(120ms + min(var(--row, 0), 8) * 24ms); animation-timeline: auto; }
 @media (prefers-reduced-motion: reduce) { body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; } }
+:root .app-grid[data-layout="list"] {
+  --lx-panel-pad: 6px;
+  --lx-row-icon: 40px;
+  --lx-row-px: 14px;
+  --lx-row-gap: 14px;
+  --lx-row-ring: 35%;
+  --lx-panel-r: min(var(--r-bar), var(--r-card));
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
+  --lx-panel-shadow: 0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)), 0 14px 34px -28px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.72)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
+  --lx-row-hover: var(--surface-hover);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: none !important;
+  grid-auto-rows: auto !important;
+  grid-auto-flow: row;
+  align-content: start;
+  flex: 0 1 auto;
+  align-self: center;
+  inline-size: var(--lx-panel-w);
+  max-inline-size: none;
+  margin-inline: 0;
+  gap: 0;
+  padding: var(--lx-panel-pad);
+  border: 1px solid var(--hairline);
+  border-radius: var(--lx-panel-r);
+  background-color: transparent;
+  background-image: var(--lx-col-line, none), var(--lx-panel-glass);
+  background-size: 1px calc(100% - 28px), auto;
+  background-position: center, 0 0;
+  background-repeat: no-repeat;
+  -webkit-backdrop-filter: blur(22px) saturate(175%);
+  backdrop-filter: blur(22px) saturate(175%);
+  box-shadow: var(--lx-panel-shadow);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-highlight) transparent;
+  scroll-padding-block: var(--lx-panel-pad);
+}
+:root[data-palette="vivid"] .app-grid[data-layout="list"] {
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.84), rgba(255,255,255,.062)), light-dark(rgba(255,255,255,.56), rgba(255,255,255,.018)));
+  --lx-panel-shadow: 0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.35)), 0 16px 38px -28px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.78)), 0 20px 44px -34px color-mix(in oklab, var(--tab-accent) 40%, transparent), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.09));
+  background-color: color-mix(in oklab, var(--tab-accent) 4%, transparent);
+}
+:root[data-palette="muted"] .app-grid[data-layout="list"] {
+  --lx-panel-glass: linear-gradient(light-dark(rgba(255,253,249,.7), rgba(255,248,240,.035)), light-dark(rgba(255,253,249,.7), rgba(255,248,240,.035)));
+  --lx-panel-shadow: 0 1px 2px light-dark(rgba(60,48,36,.05), rgba(0,0,0,.3)), 0 12px 30px -22px light-dark(rgba(60,48,36,.2), rgba(0,0,0,.7)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.05));
+  --lx-row-hover: light-dark(rgba(255,253,249,.92), rgba(255,248,240,.065));
+  --lx-row-ring: 26%;
+}
+:root[data-palette="mono"] .app-grid[data-layout="list"] {
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.82), rgba(255,255,255,.05)), light-dark(rgba(255,255,255,.62), rgba(255,255,255,.018)));
+  --lx-row-hover: light-dark(rgba(0,0,0,.045), rgba(255,255,255,.06));
+}
+@media (min-width: 915px) {
+  :root .app-grid[data-layout="list"][data-list-cols="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 12px;
+    --lx-col-line: linear-gradient(var(--hairline), var(--hairline));
+  }
+}
+:root .app-grid[data-layout="list"] > .app-card--row .card-clip {
+  position: relative;
+  inset: auto;
+  display: grid;
+  grid-template-columns: var(--lx-row-icon) minmax(0, 1fr) auto auto 16px;
+  grid-template-areas: "icon text chips badges go";
+  align-items: center;
+  column-gap: var(--lx-row-gap);
+  padding: 10px var(--lx-row-px);
+  min-block-size: 60px;
+  block-size: auto;
+  border: 0;
+  border-radius: calc(var(--lx-panel-r) - var(--lx-panel-pad));
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none !important;
+  container-type: normal;
+  perspective: none;
+  transition: background-color var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux);
+}
+:root .app-grid[data-layout="list"] > .app-card--row .closed-tint { display: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .card-meta { transform: none; translate: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper {
+  --icon-size: var(--lx-row-icon);
+  --icon-radius: calc(var(--lx-row-icon) * var(--r-icon, .27));
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  transform: none;
+  translate: none;
+  scale: none;
+  rotate: none;
+}
+:root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: calc(var(--lx-row-px) + var(--lx-row-icon) + var(--lx-row-gap)) var(--lx-row-px);
+  block-size: 1px;
+  background: var(--hairline, var(--border));
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity var(--dur-fast) var(--ease-lux);
+}
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus::before,
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus + .app-card--row::before { opacity: 0; }
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip {
+  background: var(--lx-row-hover);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent);
+}
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .row-go { opacity: 1; translate: 2px 0; }
+:root[dir="rtl"] .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .row-go { translate: -2px 0; }
+@media (hover: hover) and (pointer: fine) {
+  :root .app-grid[data-layout="list"] > .app-card--row:hover::before,
+  :root .app-grid[data-layout="list"] > .app-card--row:hover + .app-card--row::before { opacity: 0; }
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+    background: var(--lx-row-hover);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent);
+  }
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .row-go { opacity: 1; translate: 2px 0; }
+  :root[dir="rtl"] .app-grid[data-layout="list"] > .app-card--row:hover .row-go { translate: -2px 0; }
+  :root[data-palette="vivid"] .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent), 0 8px 20px -14px color-mix(in oklab, var(--tint) 45%, transparent);
+  }
+  :root[data-palette="mono"] .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+    box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.16), rgba(255,255,255,.2));
+  }
+}
+:root[data-palette="mono"] .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip {
+  box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.16), rgba(255,255,255,.2));
+}
+:root .app-grid[data-layout="list"] > .app-card--row .row-go {
+  inline-size: 16px;
+  block-size: 16px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-size: .8rem;
+  color: var(--lux-ink-soft);
+  opacity: .45;
+  transform: none;
+  translate: 0 0;
+  transition: opacity var(--dur-fast) var(--ease-lux), translate var(--dur-fast) var(--ease-lux);
+}
+@media (min-width: 915px) {
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(-n+2)::before { content: none; }
+  @media (hover: hover) and (pointer: fine) {
+    :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:hover + .app-card--row::before { opacity: 1; }
+    :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:hover + .app-card--row + .app-card--row::before { opacity: 0; }
+  }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row.is-kb-focus + .app-card--row::before { opacity: 1; }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row.is-kb-focus + .app-card--row + .app-card--row::before { opacity: 0; }
+}
+@media (max-width: 640px) {
+  :root .app-grid[data-layout="list"] {
+    --lx-panel-pad: 4px;
+    --lx-row-icon: 36px;
+    --lx-row-px: 12px;
+    inline-size: 100%;
+  }
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip {
+    grid-template-columns: var(--lx-row-icon) minmax(0, 1fr) auto;
+    grid-template-areas: "icon text badges" "icon chips chips";
+    row-gap: 8px;
+  }
+  :root .app-grid[data-layout="list"] > .app-card--row:not(:has(.row-chips)) .card-clip {
+    grid-template-areas: "icon text badges";
+    row-gap: 0;
+  }
+}
+@media (prefers-contrast: more) {
+  :root .app-grid[data-layout="list"] { border-color: var(--border); }
+  :root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: var(--border); }
+  :root .app-grid[data-layout="list"] { --lx-row-ring: 70%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip,
+  :root .app-grid[data-layout="list"] > .app-card--row::before,
+  :root .app-grid[data-layout="list"] > .app-card--row .row-go { transition: none; }
+}
+@media (forced-colors: active) {
+  :root .app-grid[data-layout="list"] {
+    background-color: Canvas;
+    background-image: none;
+    border: 1px solid CanvasText;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip,
+  :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip,
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { background: transparent; box-shadow: none; }
+  :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip,
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { outline: 2px solid Highlight; outline-offset: -2px; }
+  :root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: GrayText; }
+}
 </style>
 </head>
 <body>
