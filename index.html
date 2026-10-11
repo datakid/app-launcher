@@ -27,9 +27,14 @@
     var storedCorners = localStorage.getItem('lx-corners');
     root.dataset.corners = cornersParam || (/^(soft|balanced|crisp)$/.test(storedCorners || '') ? storedCorners : 'balanced');
     if (cornersParam) root.dataset.cornersLocked = '1';
-    var viewParam = (location.search.match(/[?&]view=(bento|icons)\b/) || [])[1];
+    var viewParam = (location.search.match(/[?&]view=(bento|list|icons)\b/) || [])[1];
+    if (viewParam === 'icons') viewParam = 'list';
     var storedView = localStorage.getItem('lx-view');
-    root.dataset.view = viewParam || (/^(bento|icons)$/.test(storedView || '') ? storedView : 'bento');
+    if (storedView === 'icons') {
+      storedView = 'list';
+      localStorage.setItem('lx-view', 'list');
+    }
+    root.dataset.view = viewParam || (/^(bento|list)$/.test(storedView || '') ? storedView : 'bento');
     if (viewParam) root.dataset.viewLocked = '1';
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
@@ -2672,7 +2677,6 @@ h1 {
 }
 :root[data-palette="vivid"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 34%, var(--border-highlight)); }
 :root[data-palette="vivid"][data-theme="dark"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 30%, rgba(255,255,255,.22)); }
-:root[data-palette="vivid"] .ic-switch,
 :root[data-palette="vivid"] .variant-chip-indicator {
   background: linear-gradient(180deg, light-dark(#ffffff, rgba(255,255,255,.2)), light-dark(rgba(255,255,255,.88), rgba(255,255,255,.1)));
   box-shadow:
@@ -3184,7 +3188,6 @@ h1 {
 :root[data-palette="muted"] .badge-variant { color: light-dark(#5d6a86, #a3adc6); }
 :root[data-palette="muted"] .badge .badge-dot { animation: none; }
 
-:root[data-palette="muted"] .ic-switch,
 :root[data-palette="muted"] .variant-chip-indicator {
   background: light-dark(#fffdf9, rgba(255,248,240,.1));
   box-shadow: 0 1px 2px light-dark(rgba(60,48,36,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--tint) 26%, transparent);
@@ -3802,7 +3805,6 @@ h1 {
 :root[data-palette="mono"] .open-affordance { color: color-mix(in oklab, var(--text) 82%, transparent); }
 :root[data-palette="mono"] .badge-closed { color: var(--closed-ink); }
 :root[data-palette="mono"] .variant-chip:not(.is-active) { color: color-mix(in oklab, var(--text-muted) 80%, var(--text)); }
-:root[data-palette="mono"] .ic-switch,
 :root[data-palette="mono"] .variant-chip-indicator {
   background: light-dark(#fff, rgba(255,255,255,.15));
   box-shadow:
@@ -4197,7 +4199,6 @@ body.is-booted .app-card.is-boot-card { animation-duration: 900ms; }
   background: light-dark(rgba(24,20,14,.04), rgba(0,0,0,.26));
   box-shadow: inset 0 0 0 1px light-dark(rgba(24,20,14,.04), rgba(255,255,255,.035));
 }
-:root[data-palette] .ic-switch,
 :root[data-palette] .variant-chip-indicator {
   background: light-dark(#fff, rgba(255,255,255,.1));
   box-shadow:
@@ -4343,229 +4344,6 @@ h1 {
 :root[data-palette] .card-meta { opacity: calc(.86 + .14 * var(--hov, 0)); }
 .site-header::before, .site-header::after { align-self: center; translate: 0 .06em; }
 :root[data-palette] .badge { line-height: 1; }
-:root .app-grid[data-ic-size="lg"] { --ic-plate-d: 80px; --ic-cw-d: 196px; --ic-lbl-d: 1.3rem;  --ic-cols-d: 6; }
-:root .app-grid[data-ic-size="md"] { --ic-plate-d: 62px; --ic-cw-d: 152px; --ic-lbl-d: 1.08rem; --ic-cols-d: 6; }
-:root .app-grid[data-ic-size="sm"] { --ic-plate-d: 54px; --ic-cw-d: 130px; --ic-lbl-d: .98rem;  --ic-cols-d: 8; }
-:root .app-grid[data-ic-size] {
-  --ic-plate: var(--ic-plate-d);
-  --ic-cols: var(--ic-cols-bal, var(--ic-cols-d));
-  --ic-lbl: var(--ic-lbl-d);
-  --ic-cw: var(--ic-cw-d);
-  --ic-ch: calc(var(--ic-plate) + 3.65rem + var(--ic-lbl) * 1.3 + 20px);
-  --ic-gap: var(--gap);
-  --ic-glyph: calc(var(--ic-plate) * .44);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: stretch;
-  align-content: center;
-  align-content: safe center;
-  column-gap: var(--ic-gap);
-  row-gap: var(--ic-gap);
-  inline-size: 100%;
-  max-inline-size: calc(var(--ic-cols) * var(--ic-cw) + (var(--ic-cols) - 1) * var(--ic-gap));
-  margin-inline: auto;
-  padding-block: .6rem 1rem;
-}
-@media (max-width: 900px) {
-  :root .app-grid[data-ic-size] {
-    --ic-cols: var(--ic-cols-bal-m, 4);
-    --ic-plate: 62px;
-    --ic-cw: 150px;
-    --ic-lbl: 1.05rem;
-  }
-}
-@media (max-width: 640px) {
-  :root .app-grid[data-ic-size] {
-    --ic-cols: var(--ic-cols-bal-p, 3);
-    --ic-plate: clamp(50px, 14vw, 58px);
-    --ic-cw: clamp(96px, calc((100vw - 3.25rem) / 3), 150px);
-    --ic-lbl: .9rem;
-    --ic-gap: .5rem;
-  }
-}
-
-:root .app-grid[data-ic-size] > .app-card.app-card--icon {
-  display: flex;
-  flex: 0 0 auto;
-  inline-size: min(var(--ic-cw), calc((100% - (var(--ic-cols) - 1) * var(--ic-gap)) / var(--ic-cols) - .5px));
-  min-block-size: var(--ic-ch);
-  min-inline-size: 0;
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-clip {
-  position: relative;
-  inset: auto;
-  flex: 1 1 auto;
-  inline-size: 100%;
-  min-block-size: 0;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 0;
-  padding: 1.25rem .55rem 1rem;
-}
-
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-stage {
-  position: relative;
-  z-index: 5;
-  flex: none;
-  inline-size: var(--ic-plate);
-  block-size: var(--ic-plate);
-  pointer-events: none;
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate.app-icon-wrapper {
-  --icon-size: var(--ic-plate);
-  --icon-radius: calc(var(--ic-plate) * var(--r-icon, .27));
-  position: absolute;
-  inset: 0;
-  margin: 0;
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph { font-size: var(--ic-glyph); }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate .digit-badge {
-  inset-block-start: auto;
-  inset-block-end: -6px;
-}
-
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-new {
-  position: absolute;
-  inset-block-start: -7px;
-  inset-inline-end: -10px;
-  z-index: 3;
-  gap: 0;
-  padding: .16rem .46rem;
-  border-radius: var(--r-badge);
-  font-size: .58rem;
-  line-height: 1;
-  letter-spacing: .02em;
-  white-space: nowrap;
-  background: color-mix(in oklab, currentColor 14%, var(--bg));
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  pointer-events: none;
-}
-:root[data-palette="muted"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-new { background: var(--bg); }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-dot {
-  position: absolute;
-  inset-block-start: -3px;
-  inset-inline-start: -3px;
-  z-index: 3;
-  inline-size: 10px;
-  block-size: 10px;
-  border-radius: 50%;
-  background: var(--closed-ink);
-  box-shadow: 0 0 0 2px var(--bg);
-  pointer-events: none;
-}
-
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-text {
-  position: relative;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  inline-size: 100%;
-  margin-block-start: .9rem;
-  pointer-events: none;
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-label {
-  align-self: stretch;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: var(--ic-lbl);
-  line-height: 1.3;
-  text-align: center;
-  padding-block-end: .1em;
-}
-:root:lang(ar) .app-grid[data-ic-size] > .app-card.app-card--icon .ic-label {
-  line-height: 1.55;
-  padding-block-end: .12em;
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-host {
-  align-self: stretch;
-  margin-block-start: .5rem;
-  block-size: 20px;
-  line-height: 20px;
-  display: block;
-  text-align: center;
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-host::before { display: none; }
-
-:where(.app-card--icon .ic-switch) { background: var(--surface-hover); }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch {
-  position: relative;
-  z-index: 3;
-  pointer-events: auto;
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  max-inline-size: 100%;
-  block-size: 20px;
-  margin-block-start: .5rem;
-  padding: 0 .55rem;
-  border: 0;
-  border-radius: var(--r-chip-in, 7px);
-  font: 600 .66rem/1 var(--ui-font);
-  letter-spacing: .01em;
-  color: color-mix(in oklab, var(--text) 82%, transparent);
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: color var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux);
-}
-:root:lang(ar) .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch { letter-spacing: 0; }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch:active { opacity: .7; transition-duration: var(--dur-tap); }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch:focus-visible {
-  outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text));
-  outline-offset: 2px;
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-label {
-  min-inline-size: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots { display: inline-flex; gap: 3px; flex: none; }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i {
-  inline-size: 4px;
-  block-size: 4px;
-  border-radius: 50%;
-  background: var(--hairline-strong, var(--border-highlight));
-  transition: background-color var(--dur-fast) var(--ease-lux);
-}
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i.is-on {
-  background: color-mix(in oklab, var(--tint-ink) 70%, var(--text));
-}
-@media (hover: hover) and (pointer: fine) {
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch:hover { color: var(--text); }
-}
-@media (pointer: coarse) {
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch::after {
-    content: '';
-    position: absolute;
-    inset: -10px -6px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch,
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i { transition: none; }
-}
-@media (prefers-contrast: more) {
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate { outline: 1.5px solid var(--border); outline-offset: 0; }
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch { color: var(--text); }
-}
-@media (forced-colors: active) {
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate { background: Canvas; border: 1px solid CanvasText; box-shadow: none; filter: none; }
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate::before,
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate::after { display: none; }
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph { color: CanvasText; filter: none; }
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-new { background: Canvas; border: 1px solid CanvasText; box-shadow: none; }
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-dot { background: CanvasText; box-shadow: none; }
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch { background: ButtonFace; color: ButtonText; border: 1px solid ButtonText; box-shadow: none; }
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i { background: ButtonText; }
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i.is-on { background: Highlight; }
-}
-
 .look-view {
   display: inline-grid;
   flex-shrink: 0;
@@ -4580,8 +4358,46 @@ h1 {
 .look-view[data-view="bento"] i { border-radius: 1.5px; }
 .look-view[data-view="bento"] i:nth-child(1) { grid-row: 1 / 3; }
 .look-view[data-view="bento"] i:nth-child(4) { grid-column: 2 / 4; }
-.look-view[data-view="icons"] { grid-template: 5px 5px / 5px 5px 5px; gap: 2px; }
-.look-view[data-view="icons"] i { border-radius: 1.6px; }
+.look-view[data-view="list"] { grid-template: 3px 3px 3px / 3px 12px; gap: 2px; }
+.look-view[data-view="list"] i { border-radius: 1px; }
+.look-view[data-view="list"] i:nth-child(odd) { border-radius: 50%; }
+:root .app-grid[data-layout="list"] { display: grid; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: none !important; grid-auto-rows: auto !important; grid-auto-flow: row; align-content: start; gap: 6px; inline-size: 100%; max-inline-size: 720px; margin-inline: auto; padding-block: .5rem 1rem; padding-inline: 2px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--border-highlight) transparent; scroll-padding-block: .5rem; }
+:root .app-grid[data-layout="list"][data-list-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-inline-size: 1120px; column-gap: 10px; }
+@media (max-width: 900px) { :root .app-grid[data-layout="list"][data-list-cols="2"] { grid-template-columns: minmax(0, 1fr) !important; max-inline-size: 720px; } }
+:root .app-grid[data-layout="list"] > .app-card.app-card--row { grid-column: auto !important; grid-row: auto !important; transform: none !important; inline-size: auto; min-inline-size: 0; block-size: auto; min-block-size: 60px; }
+:root .app-grid[data-layout="list"] > .app-card--row .card-clip { position: relative; inset: auto; display: grid; grid-template-columns: 38px minmax(0, 1fr) auto auto 16px; grid-template-areas: "icon text chips badges go"; align-items: center; column-gap: 14px; padding: 10px 14px; min-block-size: 60px; block-size: auto; border: 1px solid var(--border); border-radius: calc(var(--radius) * .67); background: color-mix(in oklab, var(--surface) 72%, transparent); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; transform: none !important; container-type: normal; perspective: none; transition: background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux); }
+:root .app-grid[data-layout="list"] > .app-card--row .card-clip::before, :root .app-grid[data-layout="list"] > .app-card--row .card-clip::after, :root .app-grid[data-layout="list"] > .app-card--row .card-shadow, :root .app-grid[data-layout="list"] > .app-card--row .card-aura, :root .app-grid[data-layout="list"] > .app-card--row .card-glow, :root .app-grid[data-layout="list"] > .app-card--row .card-sheen { display: none; }
+.row-icon { grid-area: icon; position: relative; z-index: 2; inline-size: 38px; block-size: 38px; pointer-events: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { --icon-size: 38px; --icon-radius: calc(38px * var(--r-icon, .27)); position: absolute; inset: 0; margin: 0; transform: none; translate: none; scale: none; rotate: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .digit-badge { inset-block-start: auto; inset-inline-start: auto; inset-block-end: -4px; inset-inline-end: -4px; }
+.row-text { grid-area: text; position: relative; z-index: 2; min-inline-size: 0; display: flex; flex-direction: column; pointer-events: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .app-title { margin: 0; font: 600 .98rem/1.3 var(--ui-font); font-style: normal; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; text-shadow: none; transform: none; }
+:root:lang(ar) .app-grid[data-layout="list"] > .app-card--row .app-title { line-height: 1.55; }
+:root .app-grid[data-layout="list"] > .app-card--row .card-meta { margin-block-start: 2px; font: 400 .74rem/1.35 var(--ui-font); color: var(--lux-ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 1; }
+:root .app-grid[data-layout="list"] > .app-card--row .card-meta::before { display: none; }
+.row-chips { grid-area: chips; position: relative; z-index: 3; }
+.row-badges { grid-area: badges; position: relative; z-index: 2; display: flex; gap: 6px; pointer-events: none; transform: none; }
+.row-go { grid-area: go; position: relative; z-index: 2; }
+:root .app-grid[data-layout="list"] > .app-card--row .row-chips .variant-chips { transform: none; }
+@media (hover: hover) and (pointer: fine) { :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { background: var(--surface-hover); border-color: color-mix(in oklab, var(--tint) 30%, var(--border)); } }
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: var(--surface-hover); border-color: color-mix(in oklab, var(--tint) 55%, var(--border)); }
+:root .app-grid[data-layout="list"] > .app-card--row.status-closed .row-icon { filter: saturate(.25); }
+:root .app-grid[data-layout="list"] > .app-card--row.status-closed .app-title { opacity: .7; }
+@media (max-width: 640px) {
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip { grid-template-columns: 34px minmax(0, 1fr) auto; grid-template-areas: "icon text badges" "icon chips chips"; row-gap: 8px; padding: 10px 12px; }
+  :root .app-grid[data-layout="list"] > .app-card--row:not(:has(.row-chips)) .card-clip { grid-template-areas: "icon text badges"; row-gap: 0; }
+  .row-icon { inline-size: 34px; block-size: 34px; }
+  :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { --icon-size: 34px; --icon-radius: calc(34px * var(--r-icon, .27)); }
+  .row-chips { justify-self: start; }
+  .row-go { display: none; }
+}
+@keyframes lxRowIn { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) { :root .app-grid[data-layout="list"] > .app-card--row .card-clip { transition: none; } }
+@media (forced-colors: active) { :root .app-grid[data-layout="list"] > .app-card--row .card-clip { background: Canvas; border: 1px solid CanvasText; } }
+@media (max-width: 1024px) { @supports (animation-timeline: view()) { :root .app-grid[data-layout="list"] > .app-card--row { animation: none; } } }
+body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; }
+body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: lxRowIn 380ms var(--ease-lux) backwards; animation-delay: calc(120ms + min(var(--row, 0), 8) * 24ms); animation-timeline: auto; }
+@media (prefers-reduced-motion: reduce) { body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; } }
 </style>
 </head>
 <body>
@@ -5246,7 +5062,7 @@ const STRINGS = {
   corners_crisp: { ar: 'حادة', en: 'Crisp' },
   lookLayout: { ar: 'التخطيط', en: 'Layout' },
   view_bento: { ar: 'بطاقات', en: 'Bento' },
-  view_icons: { ar: 'أيقونات', en: 'Icons' },
+  view_list: { ar: 'قائمة', en: 'List' },
   cmdSwitchView: { ar: 'تبديل التخطيط', en: 'Switch layout' },
   viewChanged: { ar: 'تم تغيير التخطيط إلى {m}', en: 'Layout changed to {m}' },
   cmdNextColors: { ar: 'الألوان التالية', en: 'Next colors' },
@@ -5381,6 +5197,7 @@ const MQ = (() => {
 const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
 const GRID_SWITCH = { outMs: 190, outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', inMs: 620, delayBase: 60, delaySpread: 150 };
 const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
+const LIST_SWITCH = { outMs: 110, outEase: EASE_ACCEL, inMs: 320, delayBase: 110, delayStep: 22, delayCap: 8, travelPx: 8, liftPx: 6 };
 
 class Spring {
   constructor(k = 190, c = 24, v = 0, scale = 1, px = false) {
@@ -5576,8 +5393,11 @@ const createCard = (app, idx, placement, cat) => {
   const activeLabel = activeVariant ? `${title} — ${loc(activeVariant.label)}` : title;
   el.classList.add('app-card');
   el.dataset.appId = app.id;
-  const iconsView = viewMode() === 'icons';
-  if (iconsView) el.classList.add('app-card--icon');
+  const listView = viewMode() === 'list';
+  if (listView) {
+    el.classList.add('app-card--row');
+    el.style.setProperty('--row', String(idx));
+  }
 
   let octave = 0;
   let variant = null;
@@ -5610,7 +5430,6 @@ const createCard = (app, idx, placement, cat) => {
   if (fresh) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>${escapeHtml(t('badgeNew'))}</div>`;
   if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>${escapeHtml(t('badgeClosed'))}</div>`;
   if (app.variantBadge) badgesHtml += `<div class="badge badge-variant">${icon('fa-clone')}${escapeHtml(app.variantBadge)}</div>`;
-  const markersHtml = (fresh ? `<span class="badge badge-new ic-new">${escapeHtml(t('badgeNew'))}</span>` : '') + (app.closed ? '<span class="ic-dot" aria-hidden="true"></span>' : '');
 
   const iconClass = activeVariant ? activeVariant.icon : app.icon;
   const digitHtml = idx < 9 ? `<span class="digit-badge" aria-hidden="true" title="${escapeHtml(t('altShortcutHint').replace('{n}', String(idx + 1)))}">${idx + 1}</span>` : '';
@@ -5633,14 +5452,13 @@ const createCard = (app, idx, placement, cat) => {
   const overlayHtml = `<a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${idx < 9 ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>`;
   const surfaceHtml = `
       <div class="card-aura" aria-hidden="true"></div>
-      ${iconsView ? '' : `<div class="card-glyph" aria-hidden="true">${icon(iconClass)}</div>`}
+      ${listView ? '' : `<div class="card-glyph" aria-hidden="true">${icon(iconClass)}</div>`}
       <div class="card-glow"></div>
       <div class="card-sheen" aria-hidden="true"></div>
       ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}`;
-  const iconHtml = `<div class="app-icon-wrapper${iconsView ? ' ic-plate' : ''}">${icon(iconClass, iconsView ? 'app-icon ic-glyph' : 'app-icon')}${digitHtml}</div>`;
-  const titleHtml = `<h3 class="app-title${iconsView ? ' ic-label' : ''}">${escapeHtml(title)}</h3>`;
-  const hostHtml = host ? `<span class="card-meta${iconsView ? ' ic-host' : ''}" dir="ltr">${escapeHtml(host)}</span>` : '';
-  const switchHtml = activeVariant ? `<button type="button" class="ic-switch" aria-label="${escapeHtml(t('chooseVersionOf'))} ${escapeHtml(title)}: ${escapeHtml(loc(activeVariant.label))}"><span class="ic-switch-label">${escapeHtml(loc(activeVariant.label))}</span>${app.variants.length <= 5 ? `<span class="ic-switch-dots" aria-hidden="true">${app.variants.map((_, vi) => `<i${vi === variantIndex ? ' class="is-on"' : ''}></i>`).join('')}</span>` : ''}</button>` : '';
+  const iconHtml = `<div class="app-icon-wrapper">${icon(iconClass, 'app-icon')}${digitHtml}</div>`;
+  const titleHtml = `<h3 class="app-title">${escapeHtml(title)}</h3>`;
+  const hostHtml = host ? `<span class="card-meta" dir="ltr">${escapeHtml(host)}</span>` : '';
 
   const bentoBody = `
       <div class="bento-header">
@@ -5657,15 +5475,17 @@ const createCard = (app, idx, placement, cat) => {
         </div>
         ${chipsHtml}
       </div>`;
-  const iconsBody = `
-      <div class="ic-stage">${iconHtml}${markersHtml}</div>
-      <div class="ic-text">${titleHtml}${activeVariant ? switchHtml : hostHtml}</div>
-      ${chipsHtml ? `<div class="ic-chips" hidden>${chipsHtml}</div>` : ''}`;
+  const listBody = `
+      <div class="row-icon">${iconHtml}</div>
+      <div class="row-text">${titleHtml}${hostHtml}</div>
+      ${chipsHtml ? `<div class="row-chips">${chipsHtml}</div>` : ''}
+      ${badgesHtml ? `<div class="badges row-badges">${badgesHtml}</div>` : ''}
+      <span class="open-affordance row-go" aria-hidden="true">${icon(openModeIcon())}</span>`;
 
   el.innerHTML = `
     <div class="card-shadow" aria-hidden="true"></div>
     <div class="card-clip">
-      ${overlayHtml}${surfaceHtml}${iconsView ? iconsBody : bentoBody}
+      ${overlayHtml}${surfaceHtml}${listView ? listBody : bentoBody}
     </div>
   `;
 
@@ -5730,26 +5550,11 @@ const createCard = (app, idx, placement, cat) => {
       const glyphEl = el.querySelector('.card-glyph svg');
       const vLabel = loc(v.label);
       linkEl.setAttribute('aria-label', app.closed ? `${title} — ${vLabel} — ${t('badgeClosed')}` : `${title} — ${vLabel}`);
-      const swEl = el.querySelector('.ic-switch');
-      if (swEl) {
-        const swLabel = swEl.querySelector('.ic-switch-label');
-        swLabel.textContent = vLabel;
-        swEl.setAttribute('aria-label', `${t('chooseVersionOf')} ${title}: ${vLabel}`);
-        swEl.querySelectorAll('.ic-switch-dots > i').forEach((d, di) => d.classList.toggle('is-on', di === i));
-        if (!MQ.reducedMotion && typeof swLabel.animate === 'function') {
-          const rtl = document.documentElement.dir === 'rtl';
-          const dx = (chipsEl.dataset.dir === 'back' ? -4 : 4) * (rtl ? -1 : 1);
-          swLabel.animate(
-            [{ opacity: 0, transform: `translateX(${dx}px)` }, { opacity: 1, transform: 'none' }],
-            { duration: 180, easing: 'cubic-bezier(.2,.7,.2,1)' }
-          );
-        }
-      }
       chipsEl.querySelectorAll('.variant-chip').forEach((chip, ci) => {
         chip.classList.toggle('is-active', ci === i);
         chip.setAttribute('aria-checked', String(ci === i));
       });
-      if (!supportsAnchor && !iconsView) moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
+      if (!supportsAnchor) moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
       clearTimeout(el._iconTimer);
       iconEl.style.opacity = '0';
       el._iconTimer = setTimeout(() => {
@@ -5769,18 +5574,8 @@ const createCard = (app, idx, placement, cat) => {
       });
     });
 
-    if (!supportsAnchor && !iconsView) {
+    if (!supportsAnchor) {
       requestAnimationFrame(() => moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), true));
-    }
-
-    const swBtn = el.querySelector('.ic-switch');
-    if (swBtn) {
-      swBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        applyVariant((currentVariantIndex + 1) % app.variants.length);
-      });
-      swBtn.addEventListener('pointerdown', (e) => e.stopPropagation(), { passive: true });
     }
   }
 
@@ -6123,10 +5918,8 @@ const renderCards = (grid, categoryId) => {
     grid.classList.remove('is-auto-flow');
     grid.style.gridTemplateColumns = '';
     grid.style.gridTemplateRows = '';
-    grid.removeAttribute('data-ic-size');
-    grid.style.removeProperty('--ic-cols-bal');
-    grid.style.removeProperty('--ic-cols-bal-m');
-    grid.style.removeProperty('--ic-cols-bal-p');
+    delete grid.dataset.layout;
+    delete grid.dataset.listCols;
     grid.innerHTML = `<div class="grid-empty">${icon('fa-box-open')}<span>${escapeHtml(t('emptyCategory'))}</span></div>`;
     pointerFieldDirty = true;
     if (hadFocusInGrid) document.getElementById(`tab-${categoryId}`)?.focus({ preventScroll: true });
@@ -6134,22 +5927,17 @@ const renderCards = (grid, categoryId) => {
   }
 
   const n = cat.apps.length;
-  const iconsView = viewMode() === 'icons';
-  const curated = iconsView ? null : LAYOUTS[n];
-  const generated = curated || iconsView ? null : BentoSolver.generate(n);
+  const listView = viewMode() === 'list';
+  const curated = listView ? null : LAYOUTS[n];
+  const generated = curated || listView ? null : BentoSolver.generate(n);
 
-  grid.classList.toggle('is-auto-flow', !iconsView && !curated && !generated);
-  if (iconsView) {
-    grid.dataset.icSize = n <= 8 ? 'lg' : n <= 16 ? 'md' : 'sm';
-    const balance = (max) => Math.ceil(n / Math.ceil(n / max));
-    grid.style.setProperty('--ic-cols-bal', String(balance(n <= 12 ? 6 : 8)));
-    grid.style.setProperty('--ic-cols-bal-m', String(balance(4)));
-    grid.style.setProperty('--ic-cols-bal-p', String(balance(3)));
+  grid.classList.toggle('is-auto-flow', !listView && !curated && !generated);
+  if (listView) {
+    grid.dataset.layout = 'list';
+    grid.dataset.listCols = n > 10 ? '2' : '1';
   } else {
-    grid.removeAttribute('data-ic-size');
-    grid.style.removeProperty('--ic-cols-bal');
-    grid.style.removeProperty('--ic-cols-bal-m');
-    grid.style.removeProperty('--ic-cols-bal-p');
+    delete grid.dataset.layout;
+    delete grid.dataset.listCols;
   }
 
   if (curated) {
@@ -6176,7 +5964,7 @@ const renderCards = (grid, categoryId) => {
     }
     const card = createCard(app, i, placement, cat);
     if (isBootBatch) card.classList.add('is-boot-card');
-    if (!curated && !generated && !iconsView && i === 0) card.classList.add('card-wide');
+    if (!curated && !generated && !listView && i === 0) card.classList.add('card-wide');
     frag.appendChild(card);
   });
   grid.innerHTML = '';
@@ -6206,9 +5994,11 @@ const staggerCardEntry = (grid, isBootBatch) => {
   if (isAutoFlow) grid.classList.toggle('has-overflow', overflowAmount > 4);
   cards.forEach((c, i) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
-    c.style.animationDelay = scrollDriven
-      ? '0s'
-      : `${bootOffset + Math.round((dists[i] / max) * 260)}ms`;
+    if (!c.classList.contains('app-card--row')) {
+      c.style.animationDelay = scrollDriven
+        ? '0s'
+        : `${bootOffset + Math.round((dists[i] / max) * 260)}ms`;
+    }
     if (!skipEntryAnim) {
       c.style.willChange = 'transform, opacity';
       c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
@@ -6345,8 +6135,9 @@ const initPointerField = () => {
         setFocal(kb, now);
       }
       computeFalloff();
-      const engaged = !!focal && !zenTransitioning && !gridSwitch && cards.length > 1 && (kb === focal || now - focalSince >= DIM_INTENT_MS);
-      intentPending = !!focal && !engaged && !zenTransitioning && cards.length > 1;
+      const listMode = viewMode() === 'list';
+      const engaged = !!focal && !zenTransitioning && !gridSwitch && !listMode && cards.length > 1 && (kb === focal || now - focalSince >= DIM_INTENT_MS);
+      intentPending = !!focal && !engaged && !zenTransitioning && !listMode && cards.length > 1;
       engage.to = engaged ? 1 : 0;
       if (zenTransitioning) engage.snap(); else engage.fixed(dt);
       if (engaged !== cardHoverFlag) {
@@ -6708,8 +6499,8 @@ let curatedHues = null;
 const toneCache = new Map();
 const PALETTES = ['vivid', 'curated', 'muted', 'mono'];
 const CORNERS = ['balanced', 'soft', 'crisp'];
-const VIEWS = ['bento', 'icons'];
-const VIEW_ICONS = { bento: 'fa-table-cells-large', icons: 'fa-grip' };
+const VIEWS = ['bento', 'list'];
+const VIEW_ICONS = { bento: 'fa-table-cells-large', list: 'fa-list' };
 const PALETTE_SWATCHES = {
   curated: ['#6d82ad', '#5f9a94', '#a99563', '#ad7a80'],
   muted: ['#8c95b6', '#7ea198', '#b9a47c', '#b48b94'],
@@ -6727,7 +6518,7 @@ const cornersMode = () => {
   const c = document.documentElement.dataset.corners;
   return CORNERS.includes(c) ? c : 'balanced';
 };
-const viewMode = () => (document.documentElement.dataset.view === 'icons' ? 'icons' : 'bento');
+const viewMode = () => (document.documentElement.dataset.view === 'list' ? 'list' : 'bento');
 const tone = (hex) => {
   const mode = paletteMode();
   if ((mode !== 'curated' && mode !== 'mono' && mode !== 'muted') || typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return hex;
@@ -6849,7 +6640,7 @@ const setViewMode = (mode, { silent = false, persist = true } = {}) => {
     grid.querySelectorAll('.app-card').forEach((c) => c.classList.add('no-enter'));
     if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
   } else {
-    runGridSwitch(grid, run, 0);
+    runGridSwitch(grid, run, 0, mode);
   }
   pointerFieldDirty = true;
   Motion.wake();
@@ -7409,8 +7200,11 @@ const settleGridSwitch = () => {
   s.cards.forEach((c) => { c.style.willChange = ''; });
 };
 
-const runGridSwitch = (g, run, travel) => {
+const runGridSwitch = (g, run, travel, nextView = viewMode()) => {
   settleGridSwitch();
+  const outList = g.dataset.layout === 'list';
+  const inList = nextView === 'list';
+  const listMotion = outList || inList;
   const container = g.parentElement;
   const hadCards = g.querySelector('.app-card, .grid-empty');
   let ghost = null;
@@ -7432,15 +7226,23 @@ const runGridSwitch = (g, run, travel) => {
     ghost.style.cssText += `;position:absolute;left:${g.offsetLeft}px;top:${g.offsetTop}px;width:${g.offsetWidth}px;height:${g.offsetHeight}px;margin:0;pointer-events:none;z-index:0;overflow:hidden;`;
     ghost.scrollTop = g.scrollTop;
     container.insertBefore(ghost, g);
-    const out = ghost.animate(
-      [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * 10}px,0,0) scale(.988)` }],
-      { duration: GRID_SWITCH.outMs, easing: GRID_SWITCH.outEase, fill: 'forwards' }
-    );
+    let out;
+    if (listMotion) {
+      out = ghost.animate(
+        [{ opacity: 1 }, { opacity: 0 }],
+        { duration: LIST_SWITCH.outMs, easing: LIST_SWITCH.outEase, fill: 'forwards' }
+      );
+    } else {
+      out = ghost.animate(
+        [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * 10}px,0,0) scale(.988)` }],
+        { duration: GRID_SWITCH.outMs, easing: GRID_SWITCH.outEase, fill: 'forwards' }
+      );
+    }
     anims.push(out);
   }
 
   const wasBoot = run();
-  const scrollDriven = supportsViewTimeline && isNarrowViewport();
+  const scrollDriven = !listMotion && supportsViewTimeline && isNarrowViewport();
   const cards = [...g.querySelectorAll('.app-card, .grid-empty')];
   const origin = lastInteractionPoint ?? railCenter();
   const gr = g.getBoundingClientRect();
@@ -7459,10 +7261,18 @@ const runGridSwitch = (g, run, travel) => {
     cards.forEach((c, i) => {
       c.classList.add('no-enter');
       c.style.willChange = 'opacity, translate, scale';
-      const a = c.animate(
-        [{ opacity: 0, translate: `${travel * 14}px 0`, scale: '.982' }, { opacity: 1, translate: '0 0', scale: '1' }],
-        { duration: GRID_SWITCH.inMs, delay: GRID_SWITCH.delayBase + Math.round((dists[i] / max) * GRID_SWITCH.delaySpread), easing: EASE_LUX, fill: 'backwards' }
-      );
+      let a;
+      if (inList) {
+        a = c.animate(
+          [{ opacity: 0, translate: travel ? `${travel * LIST_SWITCH.travelPx}px 0` : `0 ${LIST_SWITCH.liftPx}px` }, { opacity: 1, translate: '0 0' }],
+          { duration: LIST_SWITCH.inMs, delay: LIST_SWITCH.delayBase + Math.min(i, LIST_SWITCH.delayCap) * LIST_SWITCH.delayStep, easing: EASE_LUX, fill: 'backwards' }
+        );
+      } else {
+        a = c.animate(
+          [{ opacity: 0, translate: `${travel * 14}px 0`, scale: '.982' }, { opacity: 1, translate: '0 0', scale: '1' }],
+          { duration: GRID_SWITCH.inMs, delay: (outList ? Math.max(GRID_SWITCH.delayBase, LIST_SWITCH.outMs) : GRID_SWITCH.delayBase) + Math.round((dists[i] / max) * GRID_SWITCH.delaySpread), easing: EASE_LUX, fill: 'backwards' }
+        );
+      }
       anims.push(a);
     });
   } else if (wasBoot) {
@@ -9412,6 +9222,16 @@ const setupInteractions = () => {
     if (!from || e.target.closest('.variant-chips')) return;
     const cards = [...appGrid.querySelectorAll('.app-card')];
     if (!cards.length) return;
+    if (viewMode() === 'list' && e.key.startsWith('Arrow')) {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        const neighbour = cards[cards.indexOf(from) + (e.key === 'ArrowDown' ? 1 : -1)];
+        if (neighbour) {
+          e.preventDefault();
+          neighbour.querySelector('.card-link-overlay')?.focus({ preventScroll: false });
+        }
+      }
+      return;
+    }
     let target = null;
     if (e.key === 'Home') target = cards[0];
     else if (e.key === 'End') target = cards[cards.length - 1];
@@ -9792,7 +9612,8 @@ const applyImportedPrefs = (p) => {
     if (p.theme === 'light' || p.theme === 'dark') applyTheme(p.theme);
     if (PALETTES.includes(p.palette)) setPaletteMode(p.palette, { silent: true });
     if (CORNERS.includes(p.corners)) setCornersMode(p.corners, { silent: true });
-    if (VIEWS.includes(p.view) && !document.documentElement.dataset.viewLocked) setViewMode(p.view, { silent: true });
+    const importedView = p.view === 'icons' ? 'list' : p.view;
+    if (VIEWS.includes(importedView) && !document.documentElement.dataset.viewLocked) setViewMode(importedView, { silent: true });
     if (OPEN_MODES.includes(p.open)) setOpenMode(p.open);
     if (p.zen === '0' || p.zen === '1') {
       localStorage.setItem('lx-zen', p.zen);
