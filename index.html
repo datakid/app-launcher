@@ -27,6 +27,15 @@
     var storedCorners = localStorage.getItem('lx-corners');
     root.dataset.corners = cornersParam || (/^(soft|balanced|crisp)$/.test(storedCorners || '') ? storedCorners : 'balanced');
     if (cornersParam) root.dataset.cornersLocked = '1';
+    var viewParam = (location.search.match(/[?&]view=(bento|list|icons)\b/) || [])[1];
+    if (viewParam === 'icons') viewParam = 'list';
+    var storedView = localStorage.getItem('lx-view');
+    if (storedView === 'icons') {
+      storedView = 'list';
+      localStorage.setItem('lx-view', 'list');
+    }
+    root.dataset.view = viewParam || (/^(bento|list)$/.test(storedView || '') ? storedView : 'bento');
+    if (viewParam) root.dataset.viewLocked = '1';
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
     if (/^https?:$/.test(location.protocol) && window.fetch) {
@@ -4335,6 +4344,60 @@ h1 {
 :root[data-palette] .card-meta { opacity: calc(.86 + .14 * var(--hov, 0)); }
 .site-header::before, .site-header::after { align-self: center; translate: 0 .06em; }
 :root[data-palette] .badge { line-height: 1; }
+.look-view {
+  display: inline-grid;
+  flex-shrink: 0;
+  gap: 2px;
+  margin-inline-start: auto;
+  margin-inline-end: 1px;
+  opacity: .55;
+}
+.lx-context-menu button.is-active .look-view { opacity: .95; }
+.look-view i { display: block; background: currentColor; }
+.look-view[data-view="bento"] { grid-template: 6px 6px / 9px 6px 6px; }
+.look-view[data-view="bento"] i { border-radius: 1.5px; }
+.look-view[data-view="bento"] i:nth-child(1) { grid-row: 1 / 3; }
+.look-view[data-view="bento"] i:nth-child(4) { grid-column: 2 / 4; }
+.look-view[data-view="list"] { grid-template: 3px 3px 3px / 3px 12px; gap: 2px; }
+.look-view[data-view="list"] i { border-radius: 1px; }
+.look-view[data-view="list"] i:nth-child(odd) { border-radius: 50%; }
+:root .app-grid[data-layout="list"] { display: grid; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: none !important; grid-auto-rows: auto !important; grid-auto-flow: row; align-content: start; gap: 6px; inline-size: 100%; max-inline-size: 720px; margin-inline: auto; padding-block: .5rem 1rem; padding-inline: 2px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--border-highlight) transparent; scroll-padding-block: .5rem; }
+:root .app-grid[data-layout="list"][data-list-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-inline-size: 1120px; column-gap: 10px; }
+@media (max-width: 900px) { :root .app-grid[data-layout="list"][data-list-cols="2"] { grid-template-columns: minmax(0, 1fr) !important; max-inline-size: 720px; } }
+:root .app-grid[data-layout="list"] > .app-card.app-card--row { grid-column: auto !important; grid-row: auto !important; transform: none !important; inline-size: auto; min-inline-size: 0; block-size: auto; min-block-size: 60px; }
+:root .app-grid[data-layout="list"] > .app-card--row .card-clip { position: relative; inset: auto; display: grid; grid-template-columns: 38px minmax(0, 1fr) auto auto 16px; grid-template-areas: "icon text chips badges go"; align-items: center; column-gap: 14px; padding: 10px 14px; min-block-size: 60px; block-size: auto; border: 1px solid var(--border); border-radius: calc(var(--radius) * .67); background: color-mix(in oklab, var(--surface) 72%, transparent); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; transform: none !important; container-type: normal; perspective: none; transition: background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux); }
+:root .app-grid[data-layout="list"] > .app-card--row .card-clip::before, :root .app-grid[data-layout="list"] > .app-card--row .card-clip::after, :root .app-grid[data-layout="list"] > .app-card--row .card-shadow, :root .app-grid[data-layout="list"] > .app-card--row .card-aura, :root .app-grid[data-layout="list"] > .app-card--row .card-glow, :root .app-grid[data-layout="list"] > .app-card--row .card-sheen { display: none; }
+.row-icon { grid-area: icon; position: relative; z-index: 2; inline-size: 38px; block-size: 38px; pointer-events: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { --icon-size: 38px; --icon-radius: calc(38px * var(--r-icon, .27)); position: absolute; inset: 0; margin: 0; transform: none; translate: none; scale: none; rotate: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .digit-badge { inset-block-start: auto; inset-inline-start: auto; inset-block-end: -4px; inset-inline-end: -4px; }
+.row-text { grid-area: text; position: relative; z-index: 2; min-inline-size: 0; display: flex; flex-direction: column; pointer-events: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .app-title { margin: 0; font: 600 .98rem/1.3 var(--ui-font); font-style: normal; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; text-shadow: none; transform: none; }
+:root:lang(ar) .app-grid[data-layout="list"] > .app-card--row .app-title { line-height: 1.55; }
+:root .app-grid[data-layout="list"] > .app-card--row .card-meta { margin-block-start: 2px; font: 400 .74rem/1.35 var(--ui-font); color: var(--lux-ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 1; }
+:root .app-grid[data-layout="list"] > .app-card--row .card-meta::before { display: none; }
+.row-chips { grid-area: chips; position: relative; z-index: 3; }
+.row-badges { grid-area: badges; position: relative; z-index: 2; display: flex; gap: 6px; pointer-events: none; transform: none; }
+.row-go { grid-area: go; position: relative; z-index: 2; }
+:root .app-grid[data-layout="list"] > .app-card--row .row-chips .variant-chips { transform: none; }
+@media (hover: hover) and (pointer: fine) { :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { background: var(--surface-hover); border-color: color-mix(in oklab, var(--tint) 30%, var(--border)); } }
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: var(--surface-hover); border-color: color-mix(in oklab, var(--tint) 55%, var(--border)); }
+:root .app-grid[data-layout="list"] > .app-card--row.status-closed .row-icon { filter: saturate(.25); }
+:root .app-grid[data-layout="list"] > .app-card--row.status-closed .app-title { opacity: .7; }
+@media (max-width: 640px) {
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip { grid-template-columns: 34px minmax(0, 1fr) auto; grid-template-areas: "icon text badges" "icon chips chips"; row-gap: 8px; padding: 10px 12px; }
+  :root .app-grid[data-layout="list"] > .app-card--row:not(:has(.row-chips)) .card-clip { grid-template-areas: "icon text badges"; row-gap: 0; }
+  .row-icon { inline-size: 34px; block-size: 34px; }
+  :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { --icon-size: 34px; --icon-radius: calc(34px * var(--r-icon, .27)); }
+  .row-chips { justify-self: start; }
+  .row-go { display: none; }
+}
+@keyframes lxRowIn { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
+@media (prefers-reduced-motion: reduce) { :root .app-grid[data-layout="list"] > .app-card--row .card-clip { transition: none; } }
+@media (forced-colors: active) { :root .app-grid[data-layout="list"] > .app-card--row .card-clip { background: Canvas; border: 1px solid CanvasText; } }
+@media (max-width: 1024px) { @supports (animation-timeline: view()) { :root .app-grid[data-layout="list"] > .app-card--row { animation: none; } } }
+body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; }
+body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: lxRowIn 380ms var(--ease-lux) backwards; animation-delay: calc(120ms + min(var(--row, 0), 8) * 24ms); animation-timeline: auto; }
+@media (prefers-reduced-motion: reduce) { body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; } }
 </style>
 </head>
 <body>
@@ -4997,6 +5060,11 @@ const STRINGS = {
   corners_soft: { ar: 'ناعمة', en: 'Soft' },
   corners_balanced: { ar: 'متوازنة', en: 'Balanced' },
   corners_crisp: { ar: 'حادة', en: 'Crisp' },
+  lookLayout: { ar: 'التخطيط', en: 'Layout' },
+  view_bento: { ar: 'بطاقات', en: 'Bento' },
+  view_list: { ar: 'قائمة', en: 'List' },
+  cmdSwitchView: { ar: 'تبديل التخطيط', en: 'Switch layout' },
+  viewChanged: { ar: 'تم تغيير التخطيط إلى {m}', en: 'Layout changed to {m}' },
   cmdNextColors: { ar: 'الألوان التالية', en: 'Next colors' },
   cmdNextCorners: { ar: 'الزوايا التالية', en: 'Next corners' }
 };
@@ -5127,7 +5195,9 @@ const MQ = (() => {
 })();
 
 const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const GRID_SWITCH = { outMs: 190, outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', inMs: 620, delayBase: 60, delaySpread: 150 };
 const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
+const LIST_SWITCH = { outMs: 110, outEase: EASE_ACCEL, inMs: 320, delayBase: 110, delayStep: 22, delayCap: 8, travelPx: 8, liftPx: 6 };
 
 class Spring {
   constructor(k = 190, c = 24, v = 0, scale = 1, px = false) {
@@ -5323,6 +5393,11 @@ const createCard = (app, idx, placement, cat) => {
   const activeLabel = activeVariant ? `${title} — ${loc(activeVariant.label)}` : title;
   el.classList.add('app-card');
   el.dataset.appId = app.id;
+  const listView = viewMode() === 'list';
+  if (listView) {
+    el.classList.add('app-card--row');
+    el.style.setProperty('--row', String(idx));
+  }
 
   let octave = 0;
   let variant = null;
@@ -5350,8 +5425,9 @@ const createCard = (app, idx, placement, cat) => {
   if (variant) el.classList.add(variant);
   if (app.closed) el.classList.add('status-closed');
 
+  const fresh = isFresh(app);
   let badgesHtml = '';
-  if (isFresh(app)) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>${escapeHtml(t('badgeNew'))}</div>`;
+  if (fresh) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>${escapeHtml(t('badgeNew'))}</div>`;
   if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>${escapeHtml(t('badgeClosed'))}</div>`;
   if (app.variantBadge) badgesHtml += `<div class="badge badge-variant">${icon('fa-clone')}${escapeHtml(app.variantBadge)}</div>`;
 
@@ -5373,29 +5449,43 @@ const createCard = (app, idx, placement, cat) => {
   const overlayTarget = openMode() === 'same' ? '' : ' target="_blank"';
   const overlayAttrs = `href="${escapeHtml(activeUrl)}"${overlayTarget} rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
 
-  el.innerHTML = `
-    <div class="card-shadow" aria-hidden="true"></div>
-    <div class="card-clip">
-      <a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"></a>
+  const overlayHtml = `<a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${idx < 9 ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>`;
+  const surfaceHtml = `
       <div class="card-aura" aria-hidden="true"></div>
-      <div class="card-glyph" aria-hidden="true">${icon(iconClass)}</div>
+      ${listView ? '' : `<div class="card-glyph" aria-hidden="true">${icon(iconClass)}</div>`}
       <div class="card-glow"></div>
       <div class="card-sheen" aria-hidden="true"></div>
-      ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}
+      ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}`;
+  const iconHtml = `<div class="app-icon-wrapper">${icon(iconClass, 'app-icon')}${digitHtml}</div>`;
+  const titleHtml = `<h3 class="app-title">${escapeHtml(title)}</h3>`;
+  const hostHtml = host ? `<span class="card-meta" dir="ltr">${escapeHtml(host)}</span>` : '';
+
+  const bentoBody = `
       <div class="bento-header">
-        <div class="app-icon-wrapper">${icon(iconClass, 'app-icon')}${digitHtml}</div>
+        ${iconHtml}
         ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
       </div>
       <div class="bento-footer">
         <div class="title-stack">
           <div class="title-row">
-            <h3 class="app-title">${escapeHtml(title)}</h3>
+            ${titleHtml}
             <span class="open-affordance" aria-hidden="true">${icon(openModeIcon())}</span>
           </div>
-          ${host ? `<span class="card-meta" dir="ltr">${escapeHtml(host)}</span>` : ''}
+          ${hostHtml}
         </div>
         ${chipsHtml}
-      </div>
+      </div>`;
+  const listBody = `
+      <div class="row-icon">${iconHtml}</div>
+      <div class="row-text">${titleHtml}${hostHtml}</div>
+      ${chipsHtml ? `<div class="row-chips">${chipsHtml}</div>` : ''}
+      ${badgesHtml ? `<div class="badges row-badges">${badgesHtml}</div>` : ''}
+      <span class="open-affordance row-go" aria-hidden="true">${icon(openModeIcon())}</span>`;
+
+  el.innerHTML = `
+    <div class="card-shadow" aria-hidden="true"></div>
+    <div class="card-clip">
+      ${overlayHtml}${surfaceHtml}${listView ? listBody : bentoBody}
     </div>
   `;
 
@@ -5828,6 +5918,8 @@ const renderCards = (grid, categoryId) => {
     grid.classList.remove('is-auto-flow');
     grid.style.gridTemplateColumns = '';
     grid.style.gridTemplateRows = '';
+    delete grid.dataset.layout;
+    delete grid.dataset.listCols;
     grid.innerHTML = `<div class="grid-empty">${icon('fa-box-open')}<span>${escapeHtml(t('emptyCategory'))}</span></div>`;
     pointerFieldDirty = true;
     if (hadFocusInGrid) document.getElementById(`tab-${categoryId}`)?.focus({ preventScroll: true });
@@ -5835,10 +5927,18 @@ const renderCards = (grid, categoryId) => {
   }
 
   const n = cat.apps.length;
-  const curated = LAYOUTS[n];
-  const generated = curated ? null : BentoSolver.generate(n);
+  const listView = viewMode() === 'list';
+  const curated = listView ? null : LAYOUTS[n];
+  const generated = curated || listView ? null : BentoSolver.generate(n);
 
-  grid.classList.toggle('is-auto-flow', !curated && !generated);
+  grid.classList.toggle('is-auto-flow', !listView && !curated && !generated);
+  if (listView) {
+    grid.dataset.layout = 'list';
+    grid.dataset.listCols = n > 10 ? '2' : '1';
+  } else {
+    delete grid.dataset.layout;
+    delete grid.dataset.listCols;
+  }
 
   if (curated) {
     grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
@@ -5864,7 +5964,7 @@ const renderCards = (grid, categoryId) => {
     }
     const card = createCard(app, i, placement, cat);
     if (isBootBatch) card.classList.add('is-boot-card');
-    if (!curated && !generated && i === 0) card.classList.add('card-wide');
+    if (!curated && !generated && !listView && i === 0) card.classList.add('card-wide');
     frag.appendChild(card);
   });
   grid.innerHTML = '';
@@ -5894,9 +5994,11 @@ const staggerCardEntry = (grid, isBootBatch) => {
   if (isAutoFlow) grid.classList.toggle('has-overflow', overflowAmount > 4);
   cards.forEach((c, i) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
-    c.style.animationDelay = scrollDriven
-      ? '0s'
-      : `${bootOffset + Math.round((dists[i] / max) * 260)}ms`;
+    if (!c.classList.contains('app-card--row')) {
+      c.style.animationDelay = scrollDriven
+        ? '0s'
+        : `${bootOffset + Math.round((dists[i] / max) * 260)}ms`;
+    }
     if (!skipEntryAnim) {
       c.style.willChange = 'transform, opacity';
       c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
@@ -6033,8 +6135,9 @@ const initPointerField = () => {
         setFocal(kb, now);
       }
       computeFalloff();
-      const engaged = !!focal && !zenTransitioning && !gridSwitch && cards.length > 1 && (kb === focal || now - focalSince >= DIM_INTENT_MS);
-      intentPending = !!focal && !engaged && !zenTransitioning && cards.length > 1;
+      const listMode = viewMode() === 'list';
+      const engaged = !!focal && !zenTransitioning && !gridSwitch && !listMode && cards.length > 1 && (kb === focal || now - focalSince >= DIM_INTENT_MS);
+      intentPending = !!focal && !engaged && !zenTransitioning && !listMode && cards.length > 1;
       engage.to = engaged ? 1 : 0;
       if (zenTransitioning) engage.snap(); else engage.fixed(dt);
       if (engaged !== cardHoverFlag) {
@@ -6396,6 +6499,8 @@ let curatedHues = null;
 const toneCache = new Map();
 const PALETTES = ['vivid', 'curated', 'muted', 'mono'];
 const CORNERS = ['balanced', 'soft', 'crisp'];
+const VIEWS = ['bento', 'list'];
+const VIEW_ICONS = { bento: 'fa-table-cells-large', list: 'fa-list' };
 const PALETTE_SWATCHES = {
   curated: ['#6d82ad', '#5f9a94', '#a99563', '#ad7a80'],
   muted: ['#8c95b6', '#7ea198', '#b9a47c', '#b48b94'],
@@ -6413,6 +6518,7 @@ const cornersMode = () => {
   const c = document.documentElement.dataset.corners;
   return CORNERS.includes(c) ? c : 'balanced';
 };
+const viewMode = () => (document.documentElement.dataset.view === 'list' ? 'list' : 'bento');
 const tone = (hex) => {
   const mode = paletteMode();
   if ((mode !== 'curated' && mode !== 'mono' && mode !== 'muted') || typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return hex;
@@ -6508,6 +6614,40 @@ const setCornersMode = (mode, { silent = false, persist = true } = {}) => {
     try { localStorage.setItem('lx-corners', mode); } catch (e) { if (LX_DEBUG) console.warn(e); }
   }
   if (!silent) showToast(`${t('lookCorners')}: ${t('corners_' + mode)}`);
+};
+
+const setViewMode = (mode, { silent = false, persist = true } = {}) => {
+  const root = document.documentElement;
+  if (!VIEWS.includes(mode) || viewMode() === mode) return;
+  if (contextMenuEl && contextMenuEl.dataset.owner === 'card') closeContextMenu();
+  const grid = document.getElementById('appGrid');
+  const focusedCard = grid && grid.contains(document.activeElement) ? document.activeElement.closest('.app-card') : null;
+  const focusedId = focusedCard ? focusedCard.dataset.appId : null;
+  const run = () => {
+    root.dataset.view = mode;
+    const rendered = currentTabId ? renderCards(grid, currentTabId) : false;
+    if (focusedId) {
+      const next = Array.from(grid.querySelectorAll('.app-card')).find((c) => c.dataset.appId === focusedId);
+      next?.querySelector('.card-link-overlay')?.focus({ preventScroll: true });
+    }
+    return rendered;
+  };
+  if (!grid || !currentTabId) {
+    root.dataset.view = mode;
+  } else if (MQ.reducedMotion || typeof grid.animate !== 'function') {
+    settleGridSwitch();
+    run();
+    grid.querySelectorAll('.app-card').forEach((c) => c.classList.add('no-enter'));
+    if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
+  } else {
+    runGridSwitch(grid, run, 0, mode);
+  }
+  pointerFieldDirty = true;
+  Motion.wake();
+  if (persist && !root.dataset.viewLocked) {
+    try { localStorage.setItem('lx-view', mode); } catch (e) { if (LX_DEBUG) console.warn(e); }
+  }
+  if (!silent) showToast(fmt('viewChanged', { m: t('view_' + mode) }));
 };
 
 const cycle = (list, cur) => list[(list.indexOf(cur) + 1) % list.length];
@@ -7060,8 +7200,11 @@ const settleGridSwitch = () => {
   s.cards.forEach((c) => { c.style.willChange = ''; });
 };
 
-const runGridSwitch = (g, run, travel) => {
+const runGridSwitch = (g, run, travel, nextView = viewMode()) => {
   settleGridSwitch();
+  const outList = g.dataset.layout === 'list';
+  const inList = nextView === 'list';
+  const listMotion = outList || inList;
   const container = g.parentElement;
   const hadCards = g.querySelector('.app-card, .grid-empty');
   let ghost = null;
@@ -7083,15 +7226,23 @@ const runGridSwitch = (g, run, travel) => {
     ghost.style.cssText += `;position:absolute;left:${g.offsetLeft}px;top:${g.offsetTop}px;width:${g.offsetWidth}px;height:${g.offsetHeight}px;margin:0;pointer-events:none;z-index:0;overflow:hidden;`;
     ghost.scrollTop = g.scrollTop;
     container.insertBefore(ghost, g);
-    const out = ghost.animate(
-      [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * 10}px,0,0) scale(.988)` }],
-      { duration: 190, easing: 'cubic-bezier(0.4, 0, 0.7, 0.2)', fill: 'forwards' }
-    );
+    let out;
+    if (listMotion) {
+      out = ghost.animate(
+        [{ opacity: 1 }, { opacity: 0 }],
+        { duration: LIST_SWITCH.outMs, easing: LIST_SWITCH.outEase, fill: 'forwards' }
+      );
+    } else {
+      out = ghost.animate(
+        [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * 10}px,0,0) scale(.988)` }],
+        { duration: GRID_SWITCH.outMs, easing: GRID_SWITCH.outEase, fill: 'forwards' }
+      );
+    }
     anims.push(out);
   }
 
   const wasBoot = run();
-  const scrollDriven = supportsViewTimeline && isNarrowViewport();
+  const scrollDriven = !listMotion && supportsViewTimeline && isNarrowViewport();
   const cards = [...g.querySelectorAll('.app-card, .grid-empty')];
   const origin = lastInteractionPoint ?? railCenter();
   const gr = g.getBoundingClientRect();
@@ -7110,10 +7261,18 @@ const runGridSwitch = (g, run, travel) => {
     cards.forEach((c, i) => {
       c.classList.add('no-enter');
       c.style.willChange = 'opacity, translate, scale';
-      const a = c.animate(
-        [{ opacity: 0, translate: `${travel * 14}px 0`, scale: '.982' }, { opacity: 1, translate: '0 0', scale: '1' }],
-        { duration: 620, delay: 60 + Math.round((dists[i] / max) * 150), easing: EASE_LUX, fill: 'backwards' }
-      );
+      let a;
+      if (inList) {
+        a = c.animate(
+          [{ opacity: 0, translate: travel ? `${travel * LIST_SWITCH.travelPx}px 0` : `0 ${LIST_SWITCH.liftPx}px` }, { opacity: 1, translate: '0 0' }],
+          { duration: LIST_SWITCH.inMs, delay: LIST_SWITCH.delayBase + Math.min(i, LIST_SWITCH.delayCap) * LIST_SWITCH.delayStep, easing: EASE_LUX, fill: 'backwards' }
+        );
+      } else {
+        a = c.animate(
+          [{ opacity: 0, translate: `${travel * 14}px 0`, scale: '.982' }, { opacity: 1, translate: '0 0', scale: '1' }],
+          { duration: GRID_SWITCH.inMs, delay: (outList ? Math.max(GRID_SWITCH.delayBase, LIST_SWITCH.outMs) : GRID_SWITCH.delayBase) + Math.round((dists[i] / max) * GRID_SWITCH.delaySpread), easing: EASE_LUX, fill: 'backwards' }
+        );
+      }
       anims.push(a);
     });
   } else if (wasBoot) {
@@ -7446,7 +7605,7 @@ const commandEntries = () => {
     ar: STRINGS.cmdOpenMode.ar.replace('{m}', STRINGS['openMode_' + nextOpen].ar),
     en: STRINGS.cmdOpenMode.en.replace('{m}', STRINGS['openMode_' + nextOpen].en)
   }, openModeIcon(nextOpen), '#5aa9a0', () => setOpenMode(nextOpen, { silent: false }), 'Alt+O'));
-  const curP = paletteMode(), curC = cornersMode();
+  const curP = paletteMode(), curC = cornersMode(), curV = viewMode();
   PALETTES.forEach((p) => {
     if (p === curP) return;
     list.push(cmd('palette-' + p, {
@@ -7461,6 +7620,8 @@ const commandEntries = () => {
       en: `${STRINGS.lookCorners.en}: ${STRINGS['corners_' + c].en}`
     }, 'fa-clone', '#8a93a6', () => setCornersMode(c), c === cycle(CORNERS, curC) ? 'Alt+R' : ''));
   });
+  const nextView = cycle(VIEWS, curV);
+  list.push(cmd('view', STRINGS.cmdSwitchView, VIEW_ICONS[nextView], '#8a93a6', () => setViewMode(nextView, { silent: false }), 'Alt+V'));
   categories.forEach((c) => {
     if (c.id === currentTabId) return;
     const label = c.label || {};
@@ -9019,6 +9180,11 @@ const setupInteractions = () => {
       setCornersMode(cycle(CORNERS, cornersMode()));
       return;
     }
+    if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyV', 'v')) {
+      e.preventDefault();
+      setViewMode(cycle(VIEWS, viewMode()));
+      return;
+    }
     if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyO', 'o')) {
       e.preventDefault();
       setOpenMode(otherOpenMode(), { silent: false });
@@ -9056,6 +9222,16 @@ const setupInteractions = () => {
     if (!from || e.target.closest('.variant-chips')) return;
     const cards = [...appGrid.querySelectorAll('.app-card')];
     if (!cards.length) return;
+    if (viewMode() === 'list' && e.key.startsWith('Arrow')) {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        const neighbour = cards[cards.indexOf(from) + (e.key === 'ArrowDown' ? 1 : -1)];
+        if (neighbour) {
+          e.preventDefault();
+          neighbour.querySelector('.card-link-overlay')?.focus({ preventScroll: false });
+        }
+      }
+      return;
+    }
     let target = null;
     if (e.key === 'Home') target = cards[0];
     else if (e.key === 'End') target = cards[cards.length - 1];
@@ -9436,6 +9612,8 @@ const applyImportedPrefs = (p) => {
     if (p.theme === 'light' || p.theme === 'dark') applyTheme(p.theme);
     if (PALETTES.includes(p.palette)) setPaletteMode(p.palette, { silent: true });
     if (CORNERS.includes(p.corners)) setCornersMode(p.corners, { silent: true });
+    const importedView = p.view === 'icons' ? 'list' : p.view;
+    if (VIEWS.includes(importedView) && !document.documentElement.dataset.viewLocked) setViewMode(importedView, { silent: true });
     if (OPEN_MODES.includes(p.open)) setOpenMode(p.open);
     if (p.zen === '0' || p.zen === '1') {
       localStorage.setItem('lx-zen', p.zen);
@@ -9495,7 +9673,7 @@ const importUserLinks = async () => {
 const exportUserData = () => {
   const prefs = { variants: {} };
   try {
-    ['theme', 'lang', 'sound', 'zen', 'palette', 'corners', 'open'].forEach((k) => { const v = localStorage.getItem('lx-' + k); if (v !== null) prefs[k] = v; });
+    ['theme', 'lang', 'sound', 'zen', 'palette', 'corners', 'view', 'open'].forEach((k) => { const v = localStorage.getItem('lx-' + k); if (v !== null) prefs[k] = v; });
   } catch (e) { if (LX_DEBUG) console.warn(e); }
   categories.forEach(c => c.apps.forEach((a) => {
     if (!a.variants) return;
@@ -9598,7 +9776,11 @@ function updateLookButtonLabel() {
 }
 
 const renderLookMenu = (menu, next = {}) => {
-  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode();
+  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode(), v = next.view || viewMode();
+  const viewRow = (id) => {
+    const checked = id === v;
+    return `<button type="button" role="menuitemradio" aria-checked="${checked}" class="${checked ? 'is-active' : ''}" data-look-view="${id}">${icon(VIEW_ICONS[id])}<span>${escapeHtml(t('view_' + id))}</span><span class="look-view" aria-hidden="true" data-view="${id}">${'<i></i>'.repeat(id === 'bento' ? 4 : 6)}</span></button>`;
+  };
   const row = (kind, id, checked, trail) =>
     `<button type="button" role="menuitemradio" aria-checked="${checked}" class="${checked ? 'is-active' : ''}" data-look-${kind}="${id}">${icon(checked ? 'fa-circle-dot' : 'fa-circle')}<span>${escapeHtml(t((kind === 'palette' ? 'palette_' : 'corners_') + id))}</span>${trail}</button>`;
   const openRow = (id) => {
@@ -9615,11 +9797,14 @@ const renderLookMenu = (menu, next = {}) => {
     `<div class="lx-context-menu-sep" role="separator"></div>` +
     `<div class="lx-context-menu-label" role="presentation">${escapeHtml(t('lookCorners'))}</div>` +
     CORNERS.map(id => row('corners', id, id === c,
-      `<span class="look-corner" aria-hidden="true" style="--cr:${CORNER_SAMPLES[id]}"></span>`)).join('');
+      `<span class="look-corner" aria-hidden="true" style="--cr:${CORNER_SAMPLES[id]}"></span>`)).join('') +
+    `<div class="lx-context-menu-sep" role="separator"></div>` +
+    `<div class="lx-context-menu-label" role="presentation">${escapeHtml(t('lookLayout'))}</div>` +
+    VIEWS.map(viewRow).join('');
 };
 
 const syncLookMenu = (menu, next = {}) => {
-  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode();
+  const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode(), v = next.view || viewMode();
   const mark = (b, on) => {
     if (b.getAttribute('aria-checked') === String(on)) return;
     b.setAttribute('aria-checked', String(on));
@@ -9635,6 +9820,7 @@ const syncLookMenu = (menu, next = {}) => {
     if (b.getAttribute('aria-checked') !== String(on)) setIcon(b.querySelector('svg'), on ? 'fa-circle-dot' : 'fa-circle');
     mark(b, on);
   });
+  menu.querySelectorAll('[data-look-view]').forEach((b) => mark(b, b.dataset.lookView === v));
   menu.querySelectorAll('[data-look-open]').forEach((b) => {
     const on = b.dataset.lookOpen === o;
     if (b.getAttribute('aria-checked') !== String(on)) {
@@ -9660,16 +9846,18 @@ const openLookMenu = (btn, focusFirst) => {
   placeContextMenu(menu, x, y);
   showContextMenu(menu, { anchor: btn, returnTo: btn, focusFirst });
   menu.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-look-palette],[data-look-corners],[data-look-open]');
+    const b = e.target.closest('[data-look-palette],[data-look-corners],[data-look-open],[data-look-view]');
     if (!b) return;
     sfx.click();
     const focusKey = b.dataset.lookPalette ? `[data-look-palette="${b.dataset.lookPalette}"]`
       : b.dataset.lookCorners ? `[data-look-corners="${b.dataset.lookCorners}"]`
+      : b.dataset.lookView ? `[data-look-view="${b.dataset.lookView}"]`
       : `[data-look-open="${b.dataset.lookOpen}"]`;
     if (b.dataset.lookPalette) setPaletteMode(b.dataset.lookPalette, { silent: true });
     else if (b.dataset.lookCorners) setCornersMode(b.dataset.lookCorners, { silent: true });
+    else if (b.dataset.lookView) setViewMode(b.dataset.lookView, { silent: true });
     else setOpenMode(b.dataset.lookOpen);
-    syncLookMenu(menu, { palette: b.dataset.lookPalette, corners: b.dataset.lookCorners, open: b.dataset.lookOpen });
+    syncLookMenu(menu, { palette: b.dataset.lookPalette, corners: b.dataset.lookCorners, open: b.dataset.lookOpen, view: b.dataset.lookView });
     menu.querySelector(focusKey)?.focus({ preventScroll: true });
   }, { signal: contextMenuAC.signal });
 };
@@ -9696,6 +9884,7 @@ const initLookMenu = () => {
   window.addEventListener('storage', (e) => {
     if (e.key === 'lx-palette' && PALETTES.includes(e.newValue)) setPaletteMode(e.newValue, { silent: true, persist: false });
     if (e.key === 'lx-corners' && CORNERS.includes(e.newValue)) setCornersMode(e.newValue, { silent: true, persist: false });
+    if (e.key === 'lx-view' && VIEWS.includes(e.newValue) && !document.documentElement.dataset.viewLocked) setViewMode(e.newValue, { silent: true, persist: false });
     if (e.key === 'lx-open' || e.key === null) syncOpenModeUI();
   });
 };
