@@ -2672,6 +2672,7 @@ h1 {
 }
 :root[data-palette="vivid"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 34%, var(--border-highlight)); }
 :root[data-palette="vivid"][data-theme="dark"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 30%, rgba(255,255,255,.22)); }
+:root[data-palette="vivid"] .ic-switch,
 :root[data-palette="vivid"] .variant-chip-indicator {
   background: linear-gradient(180deg, light-dark(#ffffff, rgba(255,255,255,.2)), light-dark(rgba(255,255,255,.88), rgba(255,255,255,.1)));
   box-shadow:
@@ -3183,6 +3184,7 @@ h1 {
 :root[data-palette="muted"] .badge-variant { color: light-dark(#5d6a86, #a3adc6); }
 :root[data-palette="muted"] .badge .badge-dot { animation: none; }
 
+:root[data-palette="muted"] .ic-switch,
 :root[data-palette="muted"] .variant-chip-indicator {
   background: light-dark(#fffdf9, rgba(255,248,240,.1));
   box-shadow: 0 1px 2px light-dark(rgba(60,48,36,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--tint) 26%, transparent);
@@ -3800,6 +3802,7 @@ h1 {
 :root[data-palette="mono"] .open-affordance { color: color-mix(in oklab, var(--text) 82%, transparent); }
 :root[data-palette="mono"] .badge-closed { color: var(--closed-ink); }
 :root[data-palette="mono"] .variant-chip:not(.is-active) { color: color-mix(in oklab, var(--text-muted) 80%, var(--text)); }
+:root[data-palette="mono"] .ic-switch,
 :root[data-palette="mono"] .variant-chip-indicator {
   background: light-dark(#fff, rgba(255,255,255,.15));
   box-shadow:
@@ -4194,6 +4197,7 @@ body.is-booted .app-card.is-boot-card { animation-duration: 900ms; }
   background: light-dark(rgba(24,20,14,.04), rgba(0,0,0,.26));
   box-shadow: inset 0 0 0 1px light-dark(rgba(24,20,14,.04), rgba(255,255,255,.035));
 }
+:root[data-palette] .ic-switch,
 :root[data-palette] .variant-chip-indicator {
   background: light-dark(#fff, rgba(255,255,255,.1));
   box-shadow:
@@ -4339,16 +4343,15 @@ h1 {
 :root[data-palette] .card-meta { opacity: calc(.86 + .14 * var(--hov, 0)); }
 .site-header::before, .site-header::after { align-self: center; translate: 0 .06em; }
 :root[data-palette] .badge { line-height: 1; }
-:root .app-grid[data-ic-size="6"]  { --ic-plate-d: 80px; --ic-cw-d: 196px; --ic-lbl-d: 1.3rem;  --ic-cols-d: 6; }
-:root .app-grid[data-ic-size="12"] { --ic-plate-d: 62px; --ic-cw-d: 152px; --ic-lbl-d: 1.08rem; --ic-cols-d: 6; }
-:root .app-grid[data-ic-size="24"] { --ic-plate-d: 54px; --ic-cw-d: 130px; --ic-lbl-d: .98rem;  --ic-cols-d: 8; }
+:root .app-grid[data-ic-size="lg"] { --ic-plate-d: 80px; --ic-cw-d: 196px; --ic-lbl-d: 1.3rem;  --ic-cols-d: 6; }
+:root .app-grid[data-ic-size="md"] { --ic-plate-d: 62px; --ic-cw-d: 152px; --ic-lbl-d: 1.08rem; --ic-cols-d: 6; }
+:root .app-grid[data-ic-size="sm"] { --ic-plate-d: 54px; --ic-cw-d: 130px; --ic-lbl-d: .98rem;  --ic-cols-d: 8; }
 :root .app-grid[data-ic-size] {
   --ic-plate: var(--ic-plate-d);
   --ic-cols: var(--ic-cols-bal, var(--ic-cols-d));
   --ic-lbl: var(--ic-lbl-d);
   --ic-cw: var(--ic-cw-d);
-  --ic-ch: calc(var(--ic-plate) + 3.65rem + var(--ic-lbl) * 1.25 + 20px);
-  --ic-r: calc(var(--ic-plate) * var(--r-icon));
+  --ic-ch: calc(var(--ic-plate) + 3.65rem + var(--ic-lbl) * 1.3 + 20px);
   --ic-gap: var(--gap);
   --ic-glyph: calc(var(--ic-plate) * .44);
   display: flex;
@@ -4383,6 +4386,7 @@ h1 {
 }
 
 :root .app-grid[data-ic-size] > .app-card.app-card--icon {
+  display: flex;
   flex: 0 0 auto;
   inline-size: min(var(--ic-cw), calc((100% - (var(--ic-cols) - 1) * var(--ic-gap)) / var(--ic-cols) - .5px));
   min-block-size: var(--ic-ch);
@@ -4391,23 +4395,19 @@ h1 {
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .card-clip {
   position: relative;
   inset: auto;
+  flex: 1 1 auto;
   inline-size: 100%;
-  block-size: 100%;
   min-block-size: 0;
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   gap: 0;
   padding: 1.25rem .55rem 1rem;
-  container-type: normal;
-  perspective: 480px;
 }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .card-link-overlay { z-index: 1; }
 
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-stage {
   position: relative;
-  z-index: 2;
+  z-index: 5;
   flex: none;
   inline-size: var(--ic-plate);
   block-size: var(--ic-plate);
@@ -4415,26 +4415,15 @@ h1 {
 }
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate.app-icon-wrapper {
   --icon-size: var(--ic-plate);
-  --icon-radius: var(--ic-r);
+  --icon-radius: calc(var(--ic-plate) * var(--r-icon, .27));
   position: absolute;
   inset: 0;
-  z-index: 1;
-  inline-size: 100%;
-  block-size: 100%;
-  min-inline-size: 0;
-  min-block-size: 0;
   margin: 0;
-  padding: 0;
-  display: grid;
-  place-items: center;
-  border-radius: var(--ic-r);
 }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate.app-icon-wrapper > svg.app-icon.ic-glyph {
-  position: relative;
-  font-size: var(--ic-glyph);
-  inline-size: var(--ic-glyph);
-  block-size: var(--ic-glyph);
-  transition: opacity var(--dur-micro) var(--ease-lux);
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph { font-size: var(--ic-glyph); }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate .digit-badge {
+  inset-block-start: auto;
+  inset-block-end: -6px;
 }
 
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-new {
@@ -4450,6 +4439,8 @@ h1 {
   letter-spacing: .02em;
   white-space: nowrap;
   background: color-mix(in oklab, currentColor 14%, var(--bg));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   pointer-events: none;
 }
 :root[data-palette="muted"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-new { background: var(--bg); }
@@ -4465,14 +4456,10 @@ h1 {
   box-shadow: 0 0 0 2px var(--bg);
   pointer-events: none;
 }
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-plate .digit-badge {
-  inset-block-start: auto;
-  inset-block-end: -6px;
-}
 
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-text {
   position: relative;
-  z-index: 2;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -4486,9 +4473,13 @@ h1 {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: var(--ic-lbl);
-  line-height: 1.25;
+  line-height: 1.3;
   text-align: center;
   padding-block-end: .1em;
+}
+:root:lang(ar) .app-grid[data-ic-size] > .app-card.app-card--icon .ic-label {
+  line-height: 1.55;
+  padding-block-end: .12em;
 }
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-host {
   align-self: stretch;
@@ -4500,6 +4491,7 @@ h1 {
 }
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-host::before { display: none; }
 
+:where(.app-card--icon .ic-switch) { background: var(--surface-hover); }
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch {
   position: relative;
   z-index: 3;
@@ -4512,39 +4504,16 @@ h1 {
   margin-block-start: .5rem;
   padding: 0 .55rem;
   border: 0;
-  border-radius: 7px;
+  border-radius: var(--r-chip-in, 7px);
   font: 600 .66rem/1 var(--ui-font);
   letter-spacing: .01em;
-  color: var(--text);
-  background: light-dark(#fff, rgba(255,255,255,.1));
-  box-shadow:
-    0 1px 2px light-dark(rgba(30,24,16,.08), rgba(0,0,0,.4)),
-    0 4px 10px -6px light-dark(rgba(30,24,16,.18), rgba(0,0,0,.6)),
-    inset 0 0 0 .5px light-dark(rgba(24,20,14,.06), rgba(255,255,255,.08));
+  color: color-mix(in oklab, var(--text) 82%, transparent);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-}
-:root[data-palette="vivid"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch {
-  background: linear-gradient(180deg, light-dark(#ffffff, rgba(255,255,255,.2)), light-dark(rgba(255,255,255,.88), rgba(255,255,255,.1)));
-  box-shadow:
-    0 1px 2px light-dark(rgba(20,18,15,.14), rgba(0,0,0,.4)),
-    0 4px 10px -6px color-mix(in oklab, var(--tint) 70%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 28%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.16));
-}
-:root[data-palette="muted"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch {
-  color: var(--text-muted);
-  background: light-dark(#fffdf9, rgba(255,248,240,.1));
-  box-shadow: 0 1px 2px light-dark(rgba(60,48,36,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--tint) 26%, transparent);
-}
-:root[data-palette="mono"] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch {
-  background: light-dark(#fff, rgba(255,255,255,.15));
-  box-shadow:
-    0 1px 2px light-dark(rgba(0,0,0,.1), rgba(0,0,0,.45)),
-    inset 0 0 0 1px light-dark(rgba(0,0,0,.06), rgba(255,255,255,.09)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.12));
+  transition: color var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux);
 }
 :root:lang(ar) .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch { letter-spacing: 0; }
+:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch:active { opacity: .7; transition-duration: var(--dur-tap); }
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch:focus-visible {
   outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text));
   outline-offset: 2px;
@@ -4561,10 +4530,13 @@ h1 {
   block-size: 4px;
   border-radius: 50%;
   background: var(--hairline-strong, var(--border-highlight));
-  transition: background-color 180ms var(--ease-lux);
+  transition: background-color var(--dur-fast) var(--ease-lux);
 }
 :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i.is-on {
   background: color-mix(in oklab, var(--tint-ink) 70%, var(--text));
+}
+@media (hover: hover) and (pointer: fine) {
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch:hover { color: var(--text); }
 }
 @media (pointer: coarse) {
   :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch::after {
@@ -4574,10 +4546,8 @@ h1 {
   }
 }
 
-:root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch:hover { color: var(--text); }
-
 @media (prefers-reduced-motion: reduce) {
-  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph,
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch,
   :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i { transition: none; }
 }
 @media (prefers-contrast: more) {
@@ -4591,7 +4561,7 @@ h1 {
   :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-glyph { color: CanvasText; filter: none; }
   :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-new { background: Canvas; border: 1px solid CanvasText; box-shadow: none; }
   :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-dot { background: CanvasText; box-shadow: none; }
-  :root[data-palette] .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch { background: ButtonFace; color: ButtonText; border: 1px solid ButtonText; box-shadow: none; }
+  :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch { background: ButtonFace; color: ButtonText; border: 1px solid ButtonText; box-shadow: none; }
   :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i { background: ButtonText; }
   :root .app-grid[data-ic-size] > .app-card.app-card--icon .ic-switch-dots > i.is-on { background: Highlight; }
 }
@@ -5409,7 +5379,7 @@ const MQ = (() => {
 })();
 
 const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
-const GRID_MOTION = { outMs: 190, outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', inMs: 620, delayBase: 60, delaySpread: 150 };
+const GRID_SWITCH = { outMs: 190, outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', inMs: 620, delayBase: 60, delaySpread: 150 };
 const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
 
 class Spring {
@@ -5635,10 +5605,12 @@ const createCard = (app, idx, placement, cat) => {
   if (variant) el.classList.add(variant);
   if (app.closed) el.classList.add('status-closed');
 
+  const fresh = isFresh(app);
   let badgesHtml = '';
-  if (isFresh(app)) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>${escapeHtml(t('badgeNew'))}</div>`;
+  if (fresh) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>${escapeHtml(t('badgeNew'))}</div>`;
   if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>${escapeHtml(t('badgeClosed'))}</div>`;
   if (app.variantBadge) badgesHtml += `<div class="badge badge-variant">${icon('fa-clone')}${escapeHtml(app.variantBadge)}</div>`;
+  const markersHtml = (fresh ? `<span class="badge badge-new ic-new">${escapeHtml(t('badgeNew'))}</span>` : '') + (app.closed ? '<span class="ic-dot" aria-hidden="true"></span>' : '');
 
   const iconClass = activeVariant ? activeVariant.icon : app.icon;
   const digitHtml = idx < 9 ? `<span class="digit-badge" aria-hidden="true" title="${escapeHtml(t('altShortcutHint').replace('{n}', String(idx + 1)))}">${idx + 1}</span>` : '';
@@ -5658,67 +5630,44 @@ const createCard = (app, idx, placement, cat) => {
   const overlayTarget = openMode() === 'same' ? '' : ' target="_blank"';
   const overlayAttrs = `href="${escapeHtml(activeUrl)}"${overlayTarget} rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
 
-  const frag = {
-    shadow: '<div class="card-shadow" aria-hidden="true"></div>',
-    overlay: `<a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${idx < 9 ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>`,
-    aura: '<div class="card-aura" aria-hidden="true"></div>',
-    glyph: `<div class="card-glyph" aria-hidden="true">${icon(iconClass)}</div>`,
-    glow: '<div class="card-glow"></div>',
-    sheen: '<div class="card-sheen" aria-hidden="true"></div>',
-    closedTint: app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : '',
-    tile: (wrapperClass, glyphClass) => `<div class="app-icon-wrapper${wrapperClass}">${icon(iconClass, glyphClass)}${digitHtml}</div>`,
-    title: (extraClass) => `<h3 class="app-title${extraClass}">${escapeHtml(title)}</h3>`,
-    meta: (extraClass) => (host ? `<span class="card-meta${extraClass}" dir="ltr">${escapeHtml(host)}</span>` : ''),
-  };
+  const overlayHtml = `<a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${idx < 9 ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>`;
+  const surfaceHtml = `
+      <div class="card-aura" aria-hidden="true"></div>
+      ${iconsView ? '' : `<div class="card-glyph" aria-hidden="true">${icon(iconClass)}</div>`}
+      <div class="card-glow"></div>
+      <div class="card-sheen" aria-hidden="true"></div>
+      ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}`;
+  const iconHtml = `<div class="app-icon-wrapper${iconsView ? ' ic-plate' : ''}">${icon(iconClass, iconsView ? 'app-icon ic-glyph' : 'app-icon')}${digitHtml}</div>`;
+  const titleHtml = `<h3 class="app-title${iconsView ? ' ic-label' : ''}">${escapeHtml(title)}</h3>`;
+  const hostHtml = host ? `<span class="card-meta${iconsView ? ' ic-host' : ''}" dir="ltr">${escapeHtml(host)}</span>` : '';
+  const switchHtml = activeVariant ? `<button type="button" class="ic-switch" aria-label="${escapeHtml(t('chooseVersionOf'))} ${escapeHtml(title)}: ${escapeHtml(loc(activeVariant.label))}"><span class="ic-switch-label">${escapeHtml(loc(activeVariant.label))}</span>${app.variants.length <= 5 ? `<span class="ic-switch-dots" aria-hidden="true">${app.variants.map((_, vi) => `<i${vi === variantIndex ? ' class="is-on"' : ''}></i>`).join('')}</span>` : ''}</button>` : '';
 
-  const bentoCardHtml = () => `
-    ${frag.shadow}
-    <div class="card-clip">
-      ${frag.overlay}
-      ${frag.aura}
-      ${frag.glyph}
-      ${frag.glow}
-      ${frag.sheen}
-      ${frag.closedTint}
+  const bentoBody = `
       <div class="bento-header">
-        ${frag.tile('', 'app-icon')}
+        ${iconHtml}
         ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
       </div>
       <div class="bento-footer">
         <div class="title-stack">
           <div class="title-row">
-            ${frag.title('')}
+            ${titleHtml}
             <span class="open-affordance" aria-hidden="true">${icon(openModeIcon())}</span>
           </div>
-          ${frag.meta('')}
+          ${hostHtml}
         </div>
         ${chipsHtml}
-      </div>
-    </div>
-  `;
+      </div>`;
+  const iconsBody = `
+      <div class="ic-stage">${iconHtml}${markersHtml}</div>
+      <div class="ic-text">${titleHtml}${activeVariant ? switchHtml : hostHtml}</div>
+      ${chipsHtml ? `<div class="ic-chips" hidden>${chipsHtml}</div>` : ''}`;
 
-  const iconCardHtml = () => `
-    ${frag.shadow}
+  el.innerHTML = `
+    <div class="card-shadow" aria-hidden="true"></div>
     <div class="card-clip">
-      ${frag.overlay}
-      ${frag.aura}
-      ${frag.glow}
-      ${frag.sheen}
-      ${frag.closedTint}
-      <div class="ic-stage">
-        ${frag.tile(' ic-plate', 'app-icon ic-glyph')}
-        ${isFresh(app) ? `<span class="badge badge-new ic-new">${escapeHtml(t('badgeNew'))}</span>` : ''}
-        ${app.closed ? '<span class="ic-dot" aria-hidden="true"></span>' : ''}
-      </div>
-      <div class="ic-text">
-        ${frag.title(' ic-label')}
-        ${activeVariant ? `<button type="button" class="ic-switch" aria-label="${escapeHtml(t('chooseVersionOf'))} ${escapeHtml(title)}: ${escapeHtml(loc(activeVariant.label))}"><span class="ic-switch-label">${escapeHtml(loc(activeVariant.label))}</span>${app.variants.length <= 5 ? `<span class="ic-switch-dots" aria-hidden="true">${app.variants.map((_, vi) => `<i${vi === variantIndex ? ' class="is-on"' : ''}></i>`).join('')}</span>` : ''}</button>` : frag.meta(' ic-host')}
-      </div>
-      ${chipsHtml ? `<div class="ic-chips" hidden>${chipsHtml}</div>` : ''}
+      ${overlayHtml}${surfaceHtml}${iconsView ? iconsBody : bentoBody}
     </div>
   `;
-
-  el.innerHTML = iconsView ? iconCardHtml() : bentoCardHtml();
 
   const recordLaunch = () => {
     const vi = getSelectedVariantIndex(app);
@@ -6191,7 +6140,7 @@ const renderCards = (grid, categoryId) => {
 
   grid.classList.toggle('is-auto-flow', !iconsView && !curated && !generated);
   if (iconsView) {
-    grid.dataset.icSize = n <= 8 ? '6' : n <= 16 ? '12' : '24';
+    grid.dataset.icSize = n <= 8 ? 'lg' : n <= 16 ? 'md' : 'sm';
     const balance = (max) => Math.ceil(n / Math.ceil(n / max));
     grid.style.setProperty('--ic-cols-bal', String(balance(n <= 12 ? 6 : 8)));
     grid.style.setProperty('--ic-cols-bal-m', String(balance(4)));
@@ -7485,7 +7434,7 @@ const runGridSwitch = (g, run, travel) => {
     container.insertBefore(ghost, g);
     const out = ghost.animate(
       [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * 10}px,0,0) scale(.988)` }],
-      { duration: GRID_MOTION.outMs, easing: GRID_MOTION.outEase, fill: 'forwards' }
+      { duration: GRID_SWITCH.outMs, easing: GRID_SWITCH.outEase, fill: 'forwards' }
     );
     anims.push(out);
   }
@@ -7512,7 +7461,7 @@ const runGridSwitch = (g, run, travel) => {
       c.style.willChange = 'opacity, translate, scale';
       const a = c.animate(
         [{ opacity: 0, translate: `${travel * 14}px 0`, scale: '.982' }, { opacity: 1, translate: '0 0', scale: '1' }],
-        { duration: GRID_MOTION.inMs, delay: GRID_MOTION.delayBase + Math.round((dists[i] / max) * GRID_MOTION.delaySpread), easing: EASE_LUX, fill: 'backwards' }
+        { duration: GRID_SWITCH.inMs, delay: GRID_SWITCH.delayBase + Math.round((dists[i] / max) * GRID_SWITCH.delaySpread), easing: EASE_LUX, fill: 'backwards' }
       );
       anims.push(a);
     });
