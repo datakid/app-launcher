@@ -4411,10 +4411,7 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
   border: 1px solid var(--hairline);
   border-radius: var(--lx-panel-r);
   background-color: transparent;
-  background-image: var(--lx-col-line, none), var(--lx-panel-glass);
-  background-size: 1px calc(100% - 28px), auto;
-  background-position: center, 0 0;
-  background-repeat: no-repeat;
+  background-image: var(--lx-panel-glass);
   -webkit-backdrop-filter: blur(22px) saturate(175%);
   backdrop-filter: blur(22px) saturate(175%);
   box-shadow: var(--lx-panel-shadow);
@@ -4443,9 +4440,20 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
 @media (min-width: 915px) {
   :root .app-grid[data-layout="list"][data-list-cols="2"] {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    column-gap: 12px;
-    --lx-col-line: linear-gradient(var(--hairline), var(--hairline));
+    column-gap: 13px;
   }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: -7px;
+    inline-size: 1px;
+    background: var(--hairline, var(--border));
+    pointer-events: none;
+    z-index: 5;
+  }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:first-child::after { inset-block-start: 10px; }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd):nth-last-child(-n+2)::after { inset-block-end: 10px; }
 }
 :root .app-grid[data-layout="list"] > .app-card--row .card-clip {
   position: relative;
@@ -4470,6 +4478,14 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
   transition: background-color var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux);
 }
 :root .app-grid[data-layout="list"] > .app-card--row .closed-tint { display: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .digit-badge {
+  inset-block-end: -5px;
+  inset-inline-end: -5px;
+  inline-size: 17px;
+  block-size: 17px;
+  border-radius: min(var(--r-badge), 6px);
+  font-size: .62rem;
+}
 :root .app-grid[data-layout="list"] > .app-card--row .card-meta { transform: none; translate: none; }
 :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper {
   --icon-size: var(--lx-row-icon);
@@ -4563,6 +4579,7 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
 @media (prefers-contrast: more) {
   :root .app-grid[data-layout="list"] { border-color: var(--border); }
   :root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: var(--border); }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after { background: var(--border); }
   :root .app-grid[data-layout="list"] { --lx-row-ring: 70%; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4585,6 +4602,7 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
   :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip,
   :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { outline: 2px solid Highlight; outline-offset: -2px; }
   :root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: GrayText; }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after { background: GrayText; }
 }
 </style>
 </head>
