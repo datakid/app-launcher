@@ -28,13 +28,8 @@
     root.dataset.corners = cornersParam || (/^(soft|balanced|crisp)$/.test(storedCorners || '') ? storedCorners : 'balanced');
     if (cornersParam) root.dataset.cornersLocked = '1';
     var viewParam = (location.search.match(/[?&]view=(bento|list|icons)\b/) || [])[1];
-    if (viewParam === 'icons') viewParam = 'list';
     var storedView = localStorage.getItem('lx-view');
-    if (storedView === 'icons') {
-      storedView = 'list';
-      localStorage.setItem('lx-view', 'list');
-    }
-    root.dataset.view = viewParam || (/^(bento|list)$/.test(storedView || '') ? storedView : 'bento');
+    root.dataset.view = viewParam || (/^(bento|list|icons)$/.test(storedView || '') ? storedView : 'bento');
     if (viewParam) root.dataset.viewLocked = '1';
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
@@ -4361,14 +4356,9 @@ h1 {
 .look-view[data-view="list"] { grid-template: 3px 3px 3px / 3px 12px; gap: 2px; }
 .look-view[data-view="list"] i { border-radius: 1px; }
 .look-view[data-view="list"] i:nth-child(odd) { border-radius: 50%; }
-:root .app-grid[data-layout="list"] { display: grid; grid-template-columns: minmax(0, 1fr) !important; grid-template-rows: none !important; grid-auto-rows: auto !important; grid-auto-flow: row; align-content: start; gap: 6px; inline-size: 100%; max-inline-size: 720px; margin-inline: auto; padding-block: .5rem 1rem; padding-inline: 2px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--border-highlight) transparent; scroll-padding-block: .5rem; }
-:root .app-grid[data-layout="list"][data-list-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; max-inline-size: 1120px; column-gap: 10px; }
-@media (max-width: 900px) { :root .app-grid[data-layout="list"][data-list-cols="2"] { grid-template-columns: minmax(0, 1fr) !important; max-inline-size: 720px; } }
 :root .app-grid[data-layout="list"] > .app-card.app-card--row { grid-column: auto !important; grid-row: auto !important; transform: none !important; inline-size: auto; min-inline-size: 0; block-size: auto; min-block-size: 60px; }
-:root .app-grid[data-layout="list"] > .app-card--row .card-clip { position: relative; inset: auto; display: grid; grid-template-columns: 38px minmax(0, 1fr) auto auto 16px; grid-template-areas: "icon text chips badges go"; align-items: center; column-gap: 14px; padding: 10px 14px; min-block-size: 60px; block-size: auto; border: 1px solid var(--border); border-radius: calc(var(--radius) * .67); background: color-mix(in oklab, var(--surface) 72%, transparent); box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; transform: none !important; container-type: normal; perspective: none; transition: background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux); }
 :root .app-grid[data-layout="list"] > .app-card--row .card-clip::before, :root .app-grid[data-layout="list"] > .app-card--row .card-clip::after, :root .app-grid[data-layout="list"] > .app-card--row .card-shadow, :root .app-grid[data-layout="list"] > .app-card--row .card-aura, :root .app-grid[data-layout="list"] > .app-card--row .card-glow, :root .app-grid[data-layout="list"] > .app-card--row .card-sheen { display: none; }
-.row-icon { grid-area: icon; position: relative; z-index: 2; inline-size: 38px; block-size: 38px; pointer-events: none; }
-:root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { --icon-size: 38px; --icon-radius: calc(38px * var(--r-icon, .27)); position: absolute; inset: 0; margin: 0; transform: none; translate: none; scale: none; rotate: none; }
+.row-icon { grid-area: icon; position: relative; z-index: 2; inline-size: var(--lx-row-icon, 40px); block-size: var(--lx-row-icon, 40px); pointer-events: none; }
 :root .app-grid[data-layout="list"] > .app-card--row .digit-badge { inset-block-start: auto; inset-inline-start: auto; inset-block-end: -4px; inset-inline-end: -4px; }
 .row-text { grid-area: text; position: relative; z-index: 2; min-inline-size: 0; display: flex; flex-direction: column; pointer-events: none; }
 :root .app-grid[data-layout="list"] > .app-card--row .app-title { margin: 0; font: 600 .98rem/1.3 var(--ui-font); font-style: normal; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; text-shadow: none; transform: none; }
@@ -4379,25 +4369,343 @@ h1 {
 .row-badges { grid-area: badges; position: relative; z-index: 2; display: flex; gap: 6px; pointer-events: none; transform: none; }
 .row-go { grid-area: go; position: relative; z-index: 2; }
 :root .app-grid[data-layout="list"] > .app-card--row .row-chips .variant-chips { transform: none; }
-@media (hover: hover) and (pointer: fine) { :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { background: var(--surface-hover); border-color: color-mix(in oklab, var(--tint) 30%, var(--border)); } }
-:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: var(--surface-hover); border-color: color-mix(in oklab, var(--tint) 55%, var(--border)); }
 :root .app-grid[data-layout="list"] > .app-card--row.status-closed .row-icon { filter: saturate(.25); }
 :root .app-grid[data-layout="list"] > .app-card--row.status-closed .app-title { opacity: .7; }
 @media (max-width: 640px) {
-  :root .app-grid[data-layout="list"] > .app-card--row .card-clip { grid-template-columns: 34px minmax(0, 1fr) auto; grid-template-areas: "icon text badges" "icon chips chips"; row-gap: 8px; padding: 10px 12px; }
-  :root .app-grid[data-layout="list"] > .app-card--row:not(:has(.row-chips)) .card-clip { grid-template-areas: "icon text badges"; row-gap: 0; }
-  .row-icon { inline-size: 34px; block-size: 34px; }
-  :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { --icon-size: 34px; --icon-radius: calc(34px * var(--r-icon, .27)); }
   .row-chips { justify-self: start; }
   .row-go { display: none; }
 }
 @keyframes lxRowIn { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
-@media (prefers-reduced-motion: reduce) { :root .app-grid[data-layout="list"] > .app-card--row .card-clip { transition: none; } }
-@media (forced-colors: active) { :root .app-grid[data-layout="list"] > .app-card--row .card-clip { background: Canvas; border: 1px solid CanvasText; } }
 @media (max-width: 1024px) { @supports (animation-timeline: view()) { :root .app-grid[data-layout="list"] > .app-card--row { animation: none; } } }
 body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; }
 body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: lxRowIn 380ms var(--ease-lux) backwards; animation-delay: calc(120ms + min(var(--row, 0), 8) * 24ms); animation-timeline: auto; }
 @media (prefers-reduced-motion: reduce) { body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; } }
+:root .app-grid[data-layout="list"] {
+  --lx-panel-pad: 6px;
+  --lx-row-icon: 40px;
+  --lx-row-px: 14px;
+  --lx-row-gap: 14px;
+  --lx-row-ring: 35%;
+  --lx-panel-r: min(var(--r-bar), var(--r-card));
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
+  --lx-panel-shadow: 0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)), 0 14px 34px -28px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.72)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
+  --lx-row-hover: var(--surface-hover);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: none !important;
+  grid-auto-rows: auto !important;
+  grid-auto-flow: row;
+  align-content: start;
+  flex: 0 1 auto;
+  align-self: center;
+  inline-size: var(--lx-panel-w);
+  max-inline-size: none;
+  margin-inline: 0;
+  gap: 0;
+  padding: var(--lx-panel-pad);
+  border: 1px solid var(--hairline);
+  border-radius: var(--lx-panel-r);
+  background-color: transparent;
+  background-image: var(--lx-panel-glass);
+  -webkit-backdrop-filter: blur(22px) saturate(175%);
+  backdrop-filter: blur(22px) saturate(175%);
+  box-shadow: var(--lx-panel-shadow);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-highlight) transparent;
+  scroll-padding-block: var(--lx-panel-pad);
+}
+:root[data-palette="vivid"] .app-grid[data-layout="list"] {
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.84), rgba(255,255,255,.062)), light-dark(rgba(255,255,255,.56), rgba(255,255,255,.018)));
+  --lx-panel-shadow: 0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.35)), 0 16px 38px -28px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.78)), 0 20px 44px -34px color-mix(in oklab, var(--tab-accent) 40%, transparent), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.09));
+  background-color: color-mix(in oklab, var(--tab-accent) 4%, transparent);
+}
+:root[data-palette="muted"] .app-grid[data-layout="list"] {
+  --lx-panel-glass: linear-gradient(light-dark(rgba(255,253,249,.7), rgba(255,248,240,.035)), light-dark(rgba(255,253,249,.7), rgba(255,248,240,.035)));
+  --lx-panel-shadow: 0 1px 2px light-dark(rgba(60,48,36,.05), rgba(0,0,0,.3)), 0 12px 30px -22px light-dark(rgba(60,48,36,.2), rgba(0,0,0,.7)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.05));
+  --lx-row-hover: light-dark(rgba(255,253,249,.92), rgba(255,248,240,.065));
+  --lx-row-ring: 26%;
+}
+:root[data-palette="mono"] .app-grid[data-layout="list"] {
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.82), rgba(255,255,255,.05)), light-dark(rgba(255,255,255,.62), rgba(255,255,255,.018)));
+  --lx-row-hover: light-dark(rgba(0,0,0,.045), rgba(255,255,255,.06));
+}
+@media (min-width: 915px) {
+  :root .app-grid[data-layout="list"][data-list-cols="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 13px;
+  }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: -7px;
+    inline-size: 1px;
+    background: var(--hairline, var(--border));
+    pointer-events: none;
+    z-index: 5;
+  }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:first-child::after { inset-block-start: 10px; }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd):nth-last-child(-n+2)::after { inset-block-end: 10px; }
+}
+:root .app-grid[data-layout="list"] > .app-card--row .card-clip {
+  position: relative;
+  inset: auto;
+  display: grid;
+  grid-template-columns: var(--lx-row-icon) minmax(0, 1fr) auto auto 16px;
+  grid-template-areas: "icon text badges chips go";
+  align-items: center;
+  column-gap: var(--lx-row-gap);
+  padding: 10px var(--lx-row-px);
+  min-block-size: 60px;
+  block-size: auto;
+  border: 0;
+  border-radius: calc(var(--lx-panel-r) - var(--lx-panel-pad));
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: none !important;
+  container-type: normal;
+  perspective: none;
+  transition: background-color var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux);
+}
+:root .app-grid[data-layout="list"] > .app-card--row .closed-tint { display: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .digit-badge {
+  inset-block-end: -5px;
+  inset-inline-end: -5px;
+  inline-size: 17px;
+  block-size: 17px;
+  border-radius: min(var(--r-badge), 6px);
+  font-size: .62rem;
+}
+:root .app-grid[data-layout="list"] > .app-card--row .card-meta { transform: none; translate: none; }
+:root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper {
+  --icon-size: var(--lx-row-icon);
+  --icon-radius: calc(var(--lx-row-icon) * var(--r-icon, .27));
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  transform: none;
+  translate: none;
+  scale: none;
+  rotate: none;
+}
+:root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: calc(var(--lx-row-px) + var(--lx-row-icon) + var(--lx-row-gap)) var(--lx-row-px);
+  block-size: 1px;
+  background: var(--hairline, var(--border));
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity var(--dur-fast) var(--ease-lux);
+}
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus::before,
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus + .app-card--row::before { opacity: 0; }
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip {
+  background: var(--lx-row-hover);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent);
+}
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .row-go { opacity: 1; translate: 2px 0; }
+:root[dir="rtl"] .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .row-go { translate: -2px 0; }
+@media (hover: hover) and (pointer: fine) {
+  :root .app-grid[data-layout="list"] > .app-card--row:hover::before,
+  :root .app-grid[data-layout="list"] > .app-card--row:hover + .app-card--row::before { opacity: 0; }
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+    background: var(--lx-row-hover);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent);
+  }
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .row-go { opacity: 1; translate: 2px 0; }
+  :root[dir="rtl"] .app-grid[data-layout="list"] > .app-card--row:hover .row-go { translate: -2px 0; }
+  :root[data-palette="vivid"] .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent), 0 8px 20px -14px color-mix(in oklab, var(--tint) 45%, transparent);
+  }
+  :root[data-palette="mono"] .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+    box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.16), rgba(255,255,255,.2));
+  }
+}
+:root[data-palette="mono"] .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip {
+  box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.16), rgba(255,255,255,.2));
+}
+:root .app-grid[data-layout="list"] > .app-card--row .row-go {
+  inline-size: 16px;
+  block-size: 16px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  font-size: .8rem;
+  color: var(--lux-ink-soft);
+  opacity: .45;
+  transform: none;
+  translate: 0 0;
+  transition: opacity var(--dur-fast) var(--ease-lux), translate var(--dur-fast) var(--ease-lux);
+}
+@media (min-width: 915px) {
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(-n+2)::before { content: none; }
+  @media (hover: hover) and (pointer: fine) {
+    :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:hover + .app-card--row::before { opacity: 1; }
+    :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:hover + .app-card--row + .app-card--row::before { opacity: 0; }
+  }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row.is-kb-focus + .app-card--row::before { opacity: 1; }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row.is-kb-focus + .app-card--row + .app-card--row::before { opacity: 0; }
+}
+@media (max-width: 640px) {
+  :root .app-grid[data-layout="list"] {
+    --lx-panel-pad: 4px;
+    --lx-row-icon: 36px;
+    --lx-row-px: 12px;
+    inline-size: 100%;
+  }
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip {
+    grid-template-columns: var(--lx-row-icon) minmax(0, 1fr) auto;
+    grid-template-areas: "icon text badges" "icon chips chips";
+    row-gap: 8px;
+  }
+  :root .app-grid[data-layout="list"] > .app-card--row:not(:has(.row-chips)) .card-clip {
+    grid-template-areas: "icon text badges";
+    row-gap: 0;
+  }
+}
+@media (prefers-contrast: more) {
+  :root .app-grid[data-layout="list"] { border-color: var(--border); }
+  :root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: var(--border); }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after { background: var(--border); }
+  :root .app-grid[data-layout="list"] { --lx-row-ring: 70%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip,
+  :root .app-grid[data-layout="list"] > .app-card--row::before,
+  :root .app-grid[data-layout="list"] > .app-card--row .row-go { transition: none; }
+}
+@media (forced-colors: active) {
+  :root .app-grid[data-layout="list"] {
+    background-color: Canvas;
+    background-image: none;
+    border: 1px solid CanvasText;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip,
+  :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip,
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { background: transparent; box-shadow: none; }
+  :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip,
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { outline: 2px solid Highlight; outline-offset: -2px; }
+  :root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: GrayText; }
+  :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after { background: GrayText; }
+}
+
+:root[data-theme][data-palette][data-corners] .app-icon-wrapper.has-fav {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+}
+:root[data-theme="dark"][data-palette][data-corners] .app-icon-wrapper.has-fav {
+  background: #1b1d22;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+:root[data-theme="light"][data-palette="vivid"][data-corners] .app-icon-wrapper.has-fav {
+  background: color-mix(in oklch, var(--c1) 10%, #ffffff);
+}
+:root[data-theme="dark"][data-palette="vivid"][data-corners] .app-icon-wrapper.has-fav {
+  background: color-mix(in oklch, var(--c1) 10%, #1b1d22);
+}
+:root[data-theme][data-palette="muted"][data-corners] .app-icon-wrapper.has-fav {
+  background: var(--tile, color-mix(in oklab, var(--tint) 18%, var(--bg)));
+}
+.app-icon-wrapper.has-fav::before,
+.app-icon-wrapper.has-fav::after { display: none; }
+.app-icon-wrapper.has-fav > .app-icon { display: none; }
+.lx-fav {
+  width: 64%; height: 64%;
+  object-fit: contain; display: block; margin: auto;
+  position: relative; z-index: 1;
+  pointer-events: none; user-select: none; -webkit-user-drag: none;
+  transition: opacity var(--dur-micro) var(--ease-lux);
+}
+:root[data-palette="muted"] .lx-fav { filter: saturate(.6); }
+:root[data-palette="mono"] .lx-fav { filter: grayscale(1) contrast(1.05); }
+.look-view[data-view="icons"] { grid-template: 4px 4px 4px / 4px 4px 4px; gap: 2px; }
+.look-view[data-view="icons"] i { border-radius: 1.5px; }
+:root .app-grid[data-layout="icons"] {
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  grid-template-rows: none;
+  grid-auto-rows: max-content;
+  align-content: start;
+  gap: 20px 8px;
+  padding: 6px 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-highlight) transparent;
+}
+:root .app-grid[data-layout="icons"] > .app-card--icon {
+  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  grid-column: auto; grid-row: auto;
+  min-inline-size: 0; inline-size: auto;
+  padding: 4px 2px 2px;
+  border-radius: 14px;
+  cursor: pointer;
+  opacity: 1 !important;
+  transform: none !important;
+}
+:root .app-grid[data-layout="icons"] > .app-card--icon.status-closed { opacity: .5 !important; }
+:root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper {
+  --icon-size: 64px;
+  --icon-lift: 0;
+  flex-shrink: 0;
+  opacity: 1;
+  transform: none;
+  transition: transform 160ms ease-out;
+}
+:root .app-grid[data-layout="icons"] > .app-card--icon .app-icon { font-size: 1.7rem; }
+:root .app-grid[data-layout="icons"] > .app-card--icon.status-closed .app-icon-wrapper { filter: grayscale(1); }
+@media (hover: hover) and (pointer: fine) {
+  :root .app-grid[data-layout="icons"] > .app-card--icon:hover .app-icon-wrapper { transform: translateY(-2px); }
+}
+:root .app-grid[data-layout="icons"] > .app-card--icon .icon-label {
+  position: relative; z-index: 2;
+  max-inline-size: 100%;
+  font: 500 12px/1.3 var(--ui-font);
+  text-align: center;
+  color: var(--text-muted);
+  overflow: hidden;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  transition: color 160ms ease-out;
+}
+:root .app-grid[data-layout="icons"] > .app-card--icon:hover .icon-label,
+:root .app-grid[data-layout="icons"] > .app-card--icon:has(.card-link-overlay:focus-visible) .icon-label { color: var(--text); }
+:root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper { pointer-events: none; }
+.icon-new-dot {
+  position: absolute; inset-block-start: -2px; inset-inline-end: -2px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: light-dark(#a8720f, #d9a83e);
+  box-shadow: 0 0 0 2px var(--bg);
+  z-index: 3;
+}
+@media (max-width: 360px) {
+  :root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper { --icon-size: 56px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper,
+  :root .app-grid[data-layout="icons"] > .app-card--icon .icon-label { transition: none; }
+  :root .app-grid[data-layout="icons"] > .app-card--icon:hover .app-icon-wrapper { transform: none; }
+}
+@media (max-width: 1024px) {
+  @supports (overflow: clip) {
+    :root .app-grid[data-layout="list"],
+    :root .app-grid[data-layout="icons"] {
+      overflow: clip;
+      overscroll-behavior: auto;
+    }
+  }
+}
 </style>
 </head>
 <body>
@@ -4502,69 +4810,76 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
         {
           "id": "ledger-form", "title": { "ar": "نموذج", "en": "Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
           "variants": [
-            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt" },
-            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders" }
+            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt", "favicon": "icons/ledger-form--tally.png?v=44ec5894" },
+            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders", "favicon": "icons/ledger-form--folio.png?v=2aa7ce23" }
           ],
           "defaultVariant": 0
         },
-        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"] },
-        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"] },
+        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"], "favicon": "icons/parser.png?v=392badec" },
+        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"], "favicon": "icons/workspace.png?v=28ed3b79" },
         {
           "id": "drug-list", "title": { "ar": "قائمة الأدوية", "en": "Drug List" }, "icon": "fa-search", "gradient": ["#5e8df0", "#7dd3fc", "#075985"],
           "variants": [
-            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders" }
+            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt", "favicon": "icons/drug-list--free.png?v=eb76dca4" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders", "favicon": "icons/drug-list--full.png?v=5f81fc0a" }
           ],
           "defaultVariant": 0
         },
         {
           "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid" }, "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"],
           "variants": [
-            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign" },
-            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book" }
+            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "favicon": "icons/paid-calculator--calc.png?v=c0757d01" },
+            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book", "favicon": "icons/paid-calculator--daleel.png?v=78f3e2fe" }
           ],
           "defaultVariant": 0
         },
-        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"] },
-        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11" },
-        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" }
+        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"], "favicon": "icons/protocols.png?v=7d18d40f" },
+        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11", "favicon": "icons/index-builder.png?v=b454dc9c" },
+        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11", "favicon": "icons/dafter.png?v=12ded8fd" }
       ]
     },
     {
       "id": "tools", "label": { "ar": "أدوات", "en": "Tools" }, "icon": "fa-calculator", "accent": "#22c1a4", "key": 4,
       "apps": [
-        { "id": "id-dates", "title": { "ar": "الرقم القومي والتاريخ", "en": "ID and Dates" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11" },
+        {
+          "id": "id-dates", "title": { "ar": "الأرقام", "en": "Numbers" }, "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11",
+          "variants": [
+            { "id": "id", "label": { "ar": "الرقم القومي", "en": "ID" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "favicon": "icons/id-dates--id.png?v=10f7301b" },
+            { "id": "contacts", "label": { "ar": "جهات الاتصال", "en": "Contacts" }, "url": "https://contact-flow-web-orpin.vercel.app/", "icon": "fa-address-book", "favicon": "icons/id-dates--contacts.png?v=b19f93a7" }
+          ],
+          "defaultVariant": 0
+        },
         {
           "id": "roi", "title": { "ar": "عائد الاستثمار", "en": "ROI Calculator" }, "icon": "fa-chart-line", "gradient": ["#42a374", "#bbf7d0", "#14532d"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders" }
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt", "favicon": "icons/roi--express.png?v=3177b49e" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders", "favicon": "icons/roi--full.png?v=4ba4c5cc" }
           ],
           "defaultVariant": 0
         },
-        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25" },
+        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25", "favicon": "icons/survival-mirror.png?v=539e16a8" },
         {
           "id": "qisma-mizan", "title": { "ar": "قسمة العوائد", "en": "Qisma / Mizan" }, "icon": "fa-scale-balanced", "gradient": ["#ab8a4f", "#fef08a", "#713f12"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt" },
-            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders" }
+            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/qisma-mizan--express.png?v=2b0bd76d" },
+            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders", "favicon": "icons/qisma-mizan--full.png?v=24c05296" }
           ],
           "defaultVariant": 0
         },
-        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26" },
+        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26", "favicon": "icons/solver.png?v=f73a61e3" },
         {
           "id": "plan-maker", "title": { "ar": "الخطة", "en": "Planner" }, "icon": "fa-calendar-days", "gradient": ["#9c6fa8", "#e5c3ef", "#5b2f66"], "isNew": true, "since": "2026-08-30",
           "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders" }
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/plan-maker--express.png?v=4b23b22f" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders", "favicon": "icons/plan-maker--full.png?v=484147c8" }
           ],
           "defaultVariant": 0
         },
         {
           "id": "criteria-builder", "title": { "ar": "بناء المعايير", "en": "Criteria Builder" }, "icon": "fa-compass", "gradient": ["#d0785a", "#ffc8a8", "#7a2e17"], "isNew": true, "since": "2026-09-26",
           "variants": [
-            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass" },
-            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star" }
+            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass", "favicon": "icons/criteria-builder--meridian.png?v=c69de6b0" },
+            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star", "favicon": "icons/criteria-builder--rubric.png?v=ed7ebbb0" }
           ],
           "defaultVariant": 0
         }
@@ -4576,30 +4891,30 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
         {
           "id": "prep", "title": { "ar": "تجهيز البيانات", "en": "Data Prep" }, "icon": "fa-chart-column", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-09-27",
           "variants": [
-            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column" },
-            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group" }
+            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column", "favicon": "icons/prep--prep.png?v=ef2e4c06" },
+            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group", "favicon": "icons/prep--floe.png?v=bcec1d75" }
           ],
           "defaultVariant": 0
         },
         {
           "id": "text-tools", "title": { "ar": "أدوات النصوص", "en": "Text Tools" }, "icon": "fa-font", "gradient": ["#c08a3e", "#f6d9a8", "#6b4513"], "isNew": true, "since": "2026-09-27",
           "variants": [
-            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter" },
-            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font" }
+            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter", "favicon": "icons/text-tools--weft.png?v=621e397e" },
+            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font", "favicon": "icons/text-tools--text.png?v=3eb7c8ed" }
           ],
           "defaultVariant": 0
         },
-        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
+        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11", "favicon": "icons/to-do.png?v=7a55d0d6" },
         {
           "id": "pharmacy-tools", "title": { "ar": "أدوات الصيدلية", "en": "Pharmacy Tools" }, "icon": "fa-pills", "gradient": ["#5fa05a", "#c9f0c0", "#1f4d1c"], "isNew": true, "since": "2026-10-02",
           "variants": [
-            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check" },
-            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator" }
+            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check", "favicon": "icons/pharmacy-tools--pillbug.png?v=719f37db" },
+            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator", "favicon": "icons/pharmacy-tools--bugvert.png?v=8a10109e" }
           ],
           "defaultVariant": 0
         },
-        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11" },
-        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18" }
+        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11", "favicon": "icons/entity-tracker.png?v=09f60e0b" },
+        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18", "favicon": "icons/draw.png?v=b8f15262" }
       ]
     }
   ]
@@ -5063,6 +5378,7 @@ const STRINGS = {
   lookLayout: { ar: 'التخطيط', en: 'Layout' },
   view_bento: { ar: 'بطاقات', en: 'Bento' },
   view_list: { ar: 'قائمة', en: 'List' },
+  view_icons: { ar: 'أيقونات', en: 'Icons' },
   cmdSwitchView: { ar: 'تبديل التخطيط', en: 'Switch layout' },
   viewChanged: { ar: 'تم تغيير التخطيط إلى {m}', en: 'Layout changed to {m}' },
   cmdNextColors: { ar: 'الألوان التالية', en: 'Next colors' },
@@ -5384,6 +5700,40 @@ const isFresh = (app) => {
 let pointerFieldDirty = true;
 let pointerVX = 0;
 
+const setFavicon = (tile, path) => {
+  if (!tile) return;
+  let img = tile.querySelector(':scope > .lx-fav');
+  if (!path) {
+    if (img) img.remove();
+    tile.classList.remove('has-fav');
+    return;
+  }
+  if (!img) {
+    img = document.createElement('img');
+    img.className = 'lx-fav';
+    img.alt = '';
+    img.width = 192;
+    img.height = 192;
+    img.decoding = 'async';
+    img.draggable = false;
+    img.addEventListener('error', () => {
+      img.remove();
+      tile.classList.remove('has-fav');
+    });
+    tile.appendChild(img);
+  }
+  if (img.getAttribute('src') !== path) img.src = path;
+  tile.classList.add('has-fav');
+};
+
+const faviconOf = (app, variantIndex) => {
+  if (app.variants) {
+    const v = app.variants[variantIndex === undefined ? getSelectedVariantIndex(app) : variantIndex];
+    return v && v.favicon ? v.favicon : '';
+  }
+  return app.favicon || '';
+};
+
 const createCard = (app, idx, placement, cat) => {
   const el = document.createElement('div');
   const variantIndex = getSelectedVariantIndex(app);
@@ -5394,10 +5744,12 @@ const createCard = (app, idx, placement, cat) => {
   el.classList.add('app-card');
   el.dataset.appId = app.id;
   const listView = viewMode() === 'list';
+  const iconsView = viewMode() === 'icons';
   if (listView) {
     el.classList.add('app-card--row');
     el.style.setProperty('--row', String(idx));
   }
+  if (iconsView) el.classList.add('app-card--icon');
 
   let octave = 0;
   let variant = null;
@@ -5482,12 +5834,22 @@ const createCard = (app, idx, placement, cat) => {
       ${badgesHtml ? `<div class="badges row-badges">${badgesHtml}</div>` : ''}
       <span class="open-affordance row-go" aria-hidden="true">${icon(openModeIcon())}</span>`;
 
-  el.innerHTML = `
+  const iconsBody = `
+      <div class="app-icon-wrapper">${icon(iconClass, 'app-icon')}${digitHtml}${fresh ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
+      <span class="icon-label">${escapeHtml(title)}</span>`;
+
+  if (iconsView) {
+    el.innerHTML = `${overlayHtml}${iconsBody}`;
+    if (app.closed) el.title = app.closedReason ? `${t('badgeClosed')} — ${loc(app.closedReason)}` : t('badgeClosed');
+  } else {
+    el.innerHTML = `
     <div class="card-shadow" aria-hidden="true"></div>
     <div class="card-clip">
       ${overlayHtml}${surfaceHtml}${listView ? listBody : bentoBody}
     </div>
   `;
+  }
+  setFavicon(el.querySelector('.app-icon-wrapper'), faviconOf(app, variantIndex));
 
   const recordLaunch = () => {
     const vi = getSelectedVariantIndex(app);
@@ -5532,10 +5894,14 @@ const createCard = (app, idx, placement, cat) => {
     openCardContextMenu(el, kb ? r.left + r.width / 2 : e.clientX, kb ? r.top + r.height / 2 : e.clientY, kb);
   });
 
-  if (app.variants) {
+  if (app.variants && !iconsView) {
     const chipsEl = el.querySelector('.variant-chips');
     const iconEl = el.querySelector('.app-icon');
+    const tileEl = el.querySelector('.app-icon-wrapper');
     const linkEl = el.querySelector('.card-link-overlay');
+    app.variants.forEach((v) => {
+      if (v.favicon) new Image().src = v.favicon;
+    });
 
     let currentVariantIndex = variantIndex;
     const applyVariant = (i) => {
@@ -5557,10 +5923,15 @@ const createCard = (app, idx, placement, cat) => {
       if (!supportsAnchor) moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
       clearTimeout(el._iconTimer);
       iconEl.style.opacity = '0';
+      const favEl = tileEl.querySelector('.lx-fav');
+      if (favEl) favEl.style.opacity = '0';
       el._iconTimer = setTimeout(() => {
         setIcon(iconEl, v.icon);
         if (glyphEl) setIcon(glyphEl, v.icon);
         iconEl.style.opacity = '1';
+        setFavicon(tileEl, faviconOf(app, i));
+        const nextFav = tileEl.querySelector('.lx-fav');
+        if (nextFav) nextFav.style.opacity = '1';
       }, 120);
       try { localStorage.setItem('lx-variant-' + app.id, String(i)); } catch (e) { if (LX_DEBUG) console.warn(e); }
       sfx.click();
@@ -5928,13 +6299,17 @@ const renderCards = (grid, categoryId) => {
 
   const n = cat.apps.length;
   const listView = viewMode() === 'list';
-  const curated = listView ? null : LAYOUTS[n];
-  const generated = curated || listView ? null : BentoSolver.generate(n);
+  const iconsView = viewMode() === 'icons';
+  const curated = listView || iconsView ? null : LAYOUTS[n];
+  const generated = curated || listView || iconsView ? null : BentoSolver.generate(n);
 
-  grid.classList.toggle('is-auto-flow', !listView && !curated && !generated);
+  grid.classList.toggle('is-auto-flow', !listView && !iconsView && !curated && !generated);
   if (listView) {
     grid.dataset.layout = 'list';
     grid.dataset.listCols = n > 10 ? '2' : '1';
+  } else if (iconsView) {
+    grid.dataset.layout = 'icons';
+    delete grid.dataset.listCols;
   } else {
     delete grid.dataset.layout;
     delete grid.dataset.listCols;
@@ -5964,7 +6339,7 @@ const renderCards = (grid, categoryId) => {
     }
     const card = createCard(app, i, placement, cat);
     if (isBootBatch) card.classList.add('is-boot-card');
-    if (!curated && !generated && !listView && i === 0) card.classList.add('card-wide');
+    if (!curated && !generated && !listView && !iconsView && i === 0) card.classList.add('card-wide');
     frag.appendChild(card);
   });
   grid.innerHTML = '';
@@ -6037,7 +6412,7 @@ const initPointerField = () => {
   grid.classList.add('has-dim-engine');
 
   const measure = () => {
-    cards = Array.from(grid.querySelectorAll('.app-card'));
+    cards = viewMode() === 'icons' ? [] : Array.from(grid.querySelectorAll('.app-card'));
     if (LX_DEBUG) window.__lxDebugPointerFieldCount = cards.length;
     const gr = grid.getBoundingClientRect();
     gridRect = gr;
@@ -6499,8 +6874,8 @@ let curatedHues = null;
 const toneCache = new Map();
 const PALETTES = ['vivid', 'curated', 'muted', 'mono'];
 const CORNERS = ['balanced', 'soft', 'crisp'];
-const VIEWS = ['bento', 'list'];
-const VIEW_ICONS = { bento: 'fa-table-cells-large', list: 'fa-list' };
+const VIEWS = ['bento', 'list', 'icons'];
+const VIEW_ICONS = { bento: 'fa-table-cells-large', list: 'fa-list', icons: 'fa-grip' };
 const PALETTE_SWATCHES = {
   curated: ['#6d82ad', '#5f9a94', '#a99563', '#ad7a80'],
   muted: ['#8c95b6', '#7ea198', '#b9a47c', '#b48b94'],
@@ -6518,7 +6893,7 @@ const cornersMode = () => {
   const c = document.documentElement.dataset.corners;
   return CORNERS.includes(c) ? c : 'balanced';
 };
-const viewMode = () => (document.documentElement.dataset.view === 'list' ? 'list' : 'bento');
+const viewMode = () => (VIEWS.includes(document.documentElement.dataset.view) ? document.documentElement.dataset.view : 'bento');
 const tone = (hex) => {
   const mode = paletteMode();
   if ((mode !== 'curated' && mode !== 'mono' && mode !== 'muted') || typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return hex;
@@ -7462,7 +7837,7 @@ const fuzzyScore = (query, target) => {
 
 const EXTRA_CAT = { id: '_extra', label: { ar: 'مشغّل بديل', en: 'Alt launcher' } };
 const extraEntries = [
-  { app: { id: 'alt', title: { ar: 'الحساب البديل', en: 'Alt Account' }, url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }, cat: EXTRA_CAT }
+  { app: { id: 'alt', title: { ar: 'الحساب البديل', en: 'Alt Account' }, url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', favicon: 'icons/alt.png', gradient: ['#334155', '#94a3b8', '#0f172a'] }, cat: EXTRA_CAT }
 ];
 try { localStorage.removeItem('lx-unlocked-secrets'); } catch (e) { if (LX_DEBUG) console.warn(e); }
 
@@ -7475,6 +7850,7 @@ const allPaletteEntries = () => {
           title: { ar: `${app.title.ar} · ${v.label.ar}`, en: `${app.title.en} · ${v.label.en}` },
           url: v.url,
           icon: v.icon,
+          favicon: v.favicon,
           gradient: app.gradient,
           isNew: app.isNew,
           since: app.since,
@@ -7726,6 +8102,7 @@ const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   li.dataset.index = String(globalIndex);
   li.setAttribute('style', `${gradVars(e.app.gradient)}--n:${globalIndex};`);
   li.innerHTML = paletteItemContentHtml(e, query);
+  setFavicon(li.querySelector('.app-icon-wrapper'), e.app.favicon);
   return li;
 };
 
@@ -8107,6 +8484,7 @@ const renderPaletteDetail = () => {
     <dl class="palette-facts">${facts.join('')}</dl>
     ${actionsHtml}
   `;
+  setFavicon(detail.querySelector('.app-icon-wrapper'), app.favicon);
 
   detail.querySelectorAll('.palette-action').forEach((btn) => {
     const actionId = btn.dataset.action;
@@ -9333,6 +9711,8 @@ const cleanLoc = (v) => {
   return ar || en ? { ar: ar || en, en: en || ar } : null;
 };
 const cleanIcon = (v) => (typeof v === 'string' && ICON_RE.test(v) ? v : DEFAULT_ICON);
+const FAVICON_RE = /^icons\/[a-z0-9-]+\.png(\?v=[0-9a-f]{8})?$/;
+const cleanFavicon = (v) => (typeof v === 'string' && v.length <= 120 && FAVICON_RE.test(v) ? v : '');
 const cleanHex = (v, fb) => (typeof v === 'string' && HEX_RE.test(v) ? v.toLowerCase() : fb);
 const cleanGradient = (g, color) => {
   const c = cleanHex(color, null);
@@ -9355,7 +9735,10 @@ const cleanApp = (a, { allowHttp, allowVariants }) => {
       const url = safeUrl(v.url, allowHttp), label = cleanLoc(v.label);
       if (!url || !label) return null;
       seen.add(v.id);
-      return { id: v.id, label, url, icon: cleanIcon(v.icon) };
+      const variant = { id: v.id, label, url, icon: cleanIcon(v.icon) };
+      const variantFavicon = cleanFavicon(v.favicon);
+      if (variantFavicon) variant.favicon = variantFavicon;
+      return variant;
     }).filter(Boolean);
     if (!variants.length) return null;
     app.variants = variants;
@@ -9374,6 +9757,10 @@ const cleanApp = (a, { allowHttp, allowVariants }) => {
   if (typeof a.since === 'string' && DATE_RE.test(a.since) && !Number.isNaN(Date.parse(a.since))) app.since = a.since;
   const badge = cleanText(a.variantBadge, 24);
   if (badge) app.variantBadge = badge;
+  if (allowVariants) {
+    const favicon = cleanFavicon(a.favicon);
+    if (favicon) app.favicon = favicon;
+  }
   return app;
 };
 
@@ -9612,7 +9999,7 @@ const applyImportedPrefs = (p) => {
     if (p.theme === 'light' || p.theme === 'dark') applyTheme(p.theme);
     if (PALETTES.includes(p.palette)) setPaletteMode(p.palette, { silent: true });
     if (CORNERS.includes(p.corners)) setCornersMode(p.corners, { silent: true });
-    const importedView = p.view === 'icons' ? 'list' : p.view;
+    const importedView = p.view;
     if (VIEWS.includes(importedView) && !document.documentElement.dataset.viewLocked) setViewMode(importedView, { silent: true });
     if (OPEN_MODES.includes(p.open)) setOpenMode(p.open);
     if (p.zen === '0' || p.zen === '1') {
@@ -9779,7 +10166,7 @@ const renderLookMenu = (menu, next = {}) => {
   const p = next.palette || paletteMode(), c = next.corners || cornersMode(), o = next.open || openMode(), v = next.view || viewMode();
   const viewRow = (id) => {
     const checked = id === v;
-    return `<button type="button" role="menuitemradio" aria-checked="${checked}" class="${checked ? 'is-active' : ''}" data-look-view="${id}">${icon(VIEW_ICONS[id])}<span>${escapeHtml(t('view_' + id))}</span><span class="look-view" aria-hidden="true" data-view="${id}">${'<i></i>'.repeat(id === 'bento' ? 4 : 6)}</span></button>`;
+    return `<button type="button" role="menuitemradio" aria-checked="${checked}" class="${checked ? 'is-active' : ''}" data-look-view="${id}">${icon(VIEW_ICONS[id])}<span>${escapeHtml(t('view_' + id))}</span><span class="look-view" aria-hidden="true" data-view="${id}">${'<i></i>'.repeat(id === 'bento' ? 4 : id === 'icons' ? 9 : 6)}</span></button>`;
   };
   const row = (kind, id, checked, trail) =>
     `<button type="button" role="menuitemradio" aria-checked="${checked}" class="${checked ? 'is-active' : ''}" data-look-${kind}="${id}">${icon(checked ? 'fa-circle-dot' : 'fa-circle')}<span>${escapeHtml(t((kind === 'palette' ? 'palette_' : 'corners_') + id))}</span>${trail}</button>`;

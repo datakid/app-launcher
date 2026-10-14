@@ -1,0 +1,341 @@
+{
+  "summary": {
+    "total": 33,
+    "found": 33,
+    "override": 0,
+    "notfound": 0
+  },
+  "suspectedDefault": [],
+  "items": [
+    {
+      "key": "ledger-form--tally",
+      "url": "https://slippery-form-2-2.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "ledger-form--tally.jpg"
+      },
+      "error": null
+    },
+    {
+      "key": "ledger-form--folio",
+      "url": "https://slippery-form.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "ledger-form--folio.ico"
+      },
+      "error": null
+    },
+    {
+      "key": "parser",
+      "url": "https://lx-parser.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "parser.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "workspace",
+      "url": "https://desktop-ru4x.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "workspace.png"
+      },
+      "error": null
+    },
+    {
+      "key": "drug-list--free",
+      "url": "https://searchbar-five-beta.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "drug-list--free.png"
+      },
+      "error": null
+    },
+    {
+      "key": "drug-list--full",
+      "url": "https://lx-search-kappa.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "drug-list--full.jpg"
+      },
+      "error": null
+    },
+    {
+      "key": "paid-calculator--calc",
+      "url": "https://newlist-eta.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "paid-calculator--calc.jpg"
+      },
+      "error": null
+    },
+    {
+      "key": "paid-calculator--daleel",
+      "url": "https://460-prices.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "paid-calculator--daleel.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "protocols",
+      "url": "https://strong-snickerdoodle-02a92f.netlify.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "protocols.ico"
+      },
+      "error": null
+    },
+    {
+      "key": "index-builder",
+      "url": "https://lx-index.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "index-builder.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "dafter",
+      "url": "https://daftar-psi-two.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "dafter.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "id-dates--id",
+      "url": "https://lx-id.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "id-dates--id.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "id-dates--contacts",
+      "url": "https://contact-flow-web-orpin.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "id-dates--contacts.png"
+      },
+      "error": null
+    },
+    {
+      "key": "roi--express",
+      "url": "https://roi-calc-express.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "roi--express.ico"
+      },
+      "error": null
+    },
+    {
+      "key": "roi--full",
+      "url": "https://roi-calculator-eight-omega.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "roi--full.jpg"
+      },
+      "error": null
+    },
+    {
+      "key": "survival-mirror",
+      "url": "https://survival-mirror.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "survival-mirror.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "qisma-mizan--express",
+      "url": "https://m-izan.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "qisma-mizan--express.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "qisma-mizan--full",
+      "url": "https://shareholders-coral.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "qisma-mizan--full.png"
+      },
+      "error": null
+    },
+    {
+      "key": "solver",
+      "url": "https://solver-clone.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "solver.png"
+      },
+      "error": null
+    },
+    {
+      "key": "plan-maker--express",
+      "url": "https://rushed-plan.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "plan-maker--express.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "plan-maker--full",
+      "url": "https://plan-maker-tan.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "plan-maker--full.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "criteria-builder--meridian",
+      "url": "https://facilities-demo-tau.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "criteria-builder--meridian.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "criteria-builder--rubric",
+      "url": "https://ranking-builder-demo.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "criteria-builder--rubric.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "prep--prep",
+      "url": "https://duckbench2.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "prep--prep.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "prep--floe",
+      "url": "https://polars-desktop-demo.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "prep--floe.jpg"
+      },
+      "error": null
+    },
+    {
+      "key": "text-tools--weft",
+      "url": "https://data-cleaner-coral.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "text-tools--weft.jpg"
+      },
+      "error": null
+    },
+    {
+      "key": "text-tools--text",
+      "url": "https://text-tools-kohl.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "text-tools--text.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "to-do",
+      "url": "https://to-do-cyan-theta.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "to-do.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "pharmacy-tools--pillbug",
+      "url": "https://pillbug.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "pharmacy-tools--pillbug.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "pharmacy-tools--bugvert",
+      "url": "https://bugvert.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "pharmacy-tools--bugvert.jpg"
+      },
+      "error": null
+    },
+    {
+      "key": "entity-tracker",
+      "url": "https://entity-tracker-pi.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "entity-tracker.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "draw",
+      "url": "https://draw-gold.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "draw.svg"
+      },
+      "error": null
+    },
+    {
+      "key": "alt",
+      "url": "https://alt-app-lanucher.vercel.app/",
+      "status": "found",
+      "source": {
+        "type": "local",
+        "href": "alt.svg"
+      },
+      "error": null
+    }
+  ]
+}
