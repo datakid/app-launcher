@@ -155,6 +155,22 @@
           "pattern": "^icons/[a-z0-9-]+\\.png(\\?v=[0-9a-f]{8})?$",
           "maxLength": 120,
           "description": "Self-hosted favicon written by tools/fetch-icons.mjs."
+        },
+        "favGlyph": {
+          "type": "string",
+          "pattern": "^icons/[a-z0-9-]+\\.glyph\\.png\\?v=[0-9a-f]{8}$",
+          "maxLength": 120,
+          "description": "Single-shape cut-out of the favicon written by tools/fetch-icons.mjs and drawn in the Font Awesome tile style."
+        },
+        "favGradient": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "pattern": "^#[0-9a-f]{6}$"
+          },
+          "description": "Three-stop palette taken from the favicon by tools/fetch-icons.mjs."
         }
       },
       "required": [
@@ -304,6 +320,22 @@
           "pattern": "^icons/[a-z0-9-]+\\.png(\\?v=[0-9a-f]{8})?$",
           "maxLength": 120,
           "description": "Self-hosted favicon written by tools/fetch-icons.mjs."
+        },
+        "favGlyph": {
+          "type": "string",
+          "pattern": "^icons/[a-z0-9-]+\\.glyph\\.png\\?v=[0-9a-f]{8}$",
+          "maxLength": 120,
+          "description": "Single-shape cut-out of the favicon written by tools/fetch-icons.mjs and drawn in the Font Awesome tile style."
+        },
+        "favGradient": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "pattern": "^#[0-9a-f]{6}$"
+          },
+          "description": "Three-stop palette taken from the favicon by tools/fetch-icons.mjs."
         }
       },
       "required": [

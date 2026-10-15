@@ -1700,7 +1700,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   opacity: calc(.7 + .3 * var(--hov, 0));
 }
 :root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 13%, transparent); }
-.card-glyph svg { display: block; }
+.card-glyph svg, .card-glyph .lx-glyph { display: block; }
 .card-tall .card-glyph, .card-hero .card-glyph { font-size: clamp(9rem, 24vh, 15rem); }
 .app-card.status-closed .card-glyph { color: color-mix(in oklab, var(--text) 5%, transparent); }
 
@@ -1948,7 +1948,7 @@ h1 {
           mask-image: linear-gradient(to top, rgba(0,0,0,.95) 10%, rgba(0,0,0,.35) 70%, transparent 100%);
   opacity: calc(.55 + .45 * var(--hov, 0));
 }
-.card-glyph svg { filter: drop-shadow(0 0 1px color-mix(in oklab, var(--tint) 30%, transparent)); }
+.card-glyph svg, .card-glyph .lx-glyph { filter: drop-shadow(0 0 1px color-mix(in oklab, var(--tint) 30%, transparent)); }
 :root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 12%, transparent); }
 .app-card.status-closed .card-glyph { color: color-mix(in oklab, var(--text) 6%, transparent); }
 .card-sheen { box-shadow: inset 0 1px 0 color-mix(in oklab, var(--tint) 45%, rgba(255,255,255,.35)); }
@@ -2293,7 +2293,7 @@ h1 {
   background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,.34) 48%, rgba(255,255,255,.1) 54%, transparent 64%);
 }
 .card-glyph { color: color-mix(in oklab, var(--tint) 6%, transparent); opacity: calc(.5 + .5 * var(--hov, 0)); }
-.card-glyph svg { filter: none; }
+.card-glyph svg, .card-glyph .lx-glyph { filter: none; }
 :root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 7%, transparent); }
 .app-card.status-closed .card-glyph { color: color-mix(in oklab, var(--text) 4%, transparent); }
 
@@ -4380,6 +4380,10 @@ h1 {
 body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; }
 body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: lxRowIn 380ms var(--ease-lux) backwards; animation-delay: calc(120ms + min(var(--row, 0), 8) * 24ms); animation-timeline: auto; }
 @media (prefers-reduced-motion: reduce) { body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; } }
+@media (max-width: 1024px) { @supports (animation-timeline: view()) { :root .app-grid[data-layout="icons"] > .app-card--icon { animation: none; } } }
+body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { animation: none; }
+body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { animation: lxRowIn 380ms var(--ease-lux) backwards; animation-delay: calc(120ms + min(var(--row, 0), 8) * 24ms); animation-timeline: auto; }
+@media (prefers-reduced-motion: reduce) { body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { animation: none; } }
 :root .app-grid[data-layout="list"] {
   --lx-panel-pad: 6px;
   --lx-row-icon: 40px;
@@ -4600,35 +4604,16 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
   :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after { background: GrayText; }
 }
 
-:root[data-theme][data-palette][data-corners] .app-icon-wrapper.has-fav {
-  background: #ffffff;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+.lx-glyph { display: inline-block; inline-size: 1.2em; block-size: 1.2em; position: relative; }
+.lx-glyph::before {
+  content: ''; position: absolute; inset: 0; background: currentColor;
+  -webkit-mask: var(--glyph) center / contain no-repeat;
+          mask: var(--glyph) center / contain no-repeat;
 }
-:root[data-theme="dark"][data-palette][data-corners] .app-icon-wrapper.has-fav {
-  background: #1b1d22;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+@media (forced-colors: active) {
+  .lx-glyph { forced-color-adjust: none; }
+  .lx-glyph::before { background: CanvasText; }
 }
-:root[data-theme="light"][data-palette="vivid"][data-corners] .app-icon-wrapper.has-fav {
-  background: color-mix(in oklch, var(--c1) 10%, #ffffff);
-}
-:root[data-theme="dark"][data-palette="vivid"][data-corners] .app-icon-wrapper.has-fav {
-  background: color-mix(in oklch, var(--c1) 10%, #1b1d22);
-}
-:root[data-theme][data-palette="muted"][data-corners] .app-icon-wrapper.has-fav {
-  background: var(--tile, color-mix(in oklab, var(--tint) 18%, var(--bg)));
-}
-.app-icon-wrapper.has-fav::before,
-.app-icon-wrapper.has-fav::after { display: none; }
-.app-icon-wrapper.has-fav > .app-icon { display: none; }
-.lx-fav {
-  width: 64%; height: 64%;
-  object-fit: contain; display: block; margin: auto;
-  position: relative; z-index: 1;
-  pointer-events: none; user-select: none; -webkit-user-drag: none;
-  transition: opacity var(--dur-micro) var(--ease-lux);
-}
-:root[data-palette="muted"] .lx-fav { filter: saturate(.6); }
-:root[data-palette="mono"] .lx-fav { filter: grayscale(1) contrast(1.05); }
 .look-view[data-view="icons"] { grid-template: 4px 4px 4px / 4px 4px 4px; gap: 2px; }
 .look-view[data-view="icons"] i { border-radius: 1.5px; }
 :root .app-grid[data-layout="icons"] {
@@ -4650,10 +4635,9 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
   padding: 4px 2px 2px;
   border-radius: 14px;
   cursor: pointer;
-  opacity: 1 !important;
-  transform: none !important;
 }
-:root .app-grid[data-layout="icons"] > .app-card--icon.status-closed { opacity: .5 !important; }
+:root .app-grid[data-layout="icons"] > .app-card--icon.status-closed .app-icon-wrapper,
+:root .app-grid[data-layout="icons"] > .app-card--icon.status-closed .icon-label { opacity: .5; }
 :root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper {
   --icon-size: 64px;
   --icon-lift: 0;
@@ -4810,32 +4794,32 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
         {
           "id": "ledger-form", "title": { "ar": "نموذج", "en": "Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
           "variants": [
-            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt", "favicon": "icons/ledger-form--tally.png?v=44ec5894" },
-            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders", "favicon": "icons/ledger-form--folio.png?v=2aa7ce23" }
+            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt", "favicon": "icons/ledger-form--tally.png?v=44ec5894", "favGlyph": "icons/ledger-form--tally.glyph.png?v=d92d318b", "favGradient": ["#d77250", "#fdc1ad", "#742301"] },
+            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders", "favicon": "icons/ledger-form--folio.png?v=2aa7ce23", "favGlyph": "icons/ledger-form--folio.glyph.png?v=ee7a29d5" }
           ],
           "defaultVariant": 0
         },
-        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"], "favicon": "icons/parser.png?v=392badec" },
-        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"], "favicon": "icons/workspace.png?v=28ed3b79" },
+        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"], "favicon": "icons/parser.png?v=392badec", "favGlyph": "icons/parser.glyph.png?v=2cd27218", "favGradient": ["#bc73be", "#f4baf4", "#612664"] },
+        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"], "favicon": "icons/workspace.png?v=28ed3b79", "favGlyph": "icons/workspace.glyph.png?v=27896169", "favGradient": ["#c18412", "#fbc77c", "#5b3b00"] },
         {
           "id": "drug-list", "title": { "ar": "قائمة الأدوية", "en": "Drug List" }, "icon": "fa-search", "gradient": ["#5e8df0", "#7dd3fc", "#075985"],
           "variants": [
-            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt", "favicon": "icons/drug-list--free.png?v=eb76dca4" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders", "favicon": "icons/drug-list--full.png?v=5f81fc0a" }
+            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt", "favicon": "icons/drug-list--free.png?v=eb76dca4", "favGlyph": "icons/drug-list--free.glyph.png?v=b48bc00e", "favGradient": ["#de6e39", "#ffc1a7", "#702900"] },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders", "favicon": "icons/drug-list--full.png?v=5f81fc0a", "favGradient": ["#928bba", "#d1ccf0", "#433b65"] }
           ],
           "defaultVariant": 0
         },
         {
           "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid" }, "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"],
           "variants": [
-            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "favicon": "icons/paid-calculator--calc.png?v=c0757d01" },
-            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book", "favicon": "icons/paid-calculator--daleel.png?v=78f3e2fe" }
+            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "favicon": "icons/paid-calculator--calc.png?v=c0757d01", "favGlyph": "icons/paid-calculator--calc.glyph.png?v=2804fbe1", "favGradient": ["#8092b8", "#c3d1ef", "#334263"] },
+            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book", "favicon": "icons/paid-calculator--daleel.png?v=78f3e2fe", "favGlyph": "icons/paid-calculator--daleel.glyph.png?v=3cf229df" }
           ],
           "defaultVariant": 0
         },
-        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"], "favicon": "icons/protocols.png?v=7d18d40f" },
-        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11", "favicon": "icons/index-builder.png?v=b454dc9c" },
-        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11", "favicon": "icons/dafter.png?v=12ded8fd" }
+        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"], "favicon": "icons/protocols.png?v=7d18d40f", "favGlyph": "icons/protocols.glyph.png?v=d6852eae" },
+        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11", "favicon": "icons/index-builder.png?v=b454dc9c", "favGlyph": "icons/index-builder.glyph.png?v=b6283202", "favGradient": ["#6b9f8f", "#b4dbce", "#184d3f"] },
+        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11", "favicon": "icons/dafter.png?v=12ded8fd", "favGlyph": "icons/dafter.glyph.png?v=50040b9b", "favGradient": ["#698cf0", "#bed0fd", "#273c81"] }
       ]
     },
     {
@@ -4844,42 +4828,42 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
         {
           "id": "id-dates", "title": { "ar": "الأرقام", "en": "Numbers" }, "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "id", "label": { "ar": "الرقم القومي", "en": "ID" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "favicon": "icons/id-dates--id.png?v=10f7301b" },
-            { "id": "contacts", "label": { "ar": "جهات الاتصال", "en": "Contacts" }, "url": "https://contact-flow-web-orpin.vercel.app/", "icon": "fa-address-book", "favicon": "icons/id-dates--contacts.png?v=b19f93a7" }
+            { "id": "id", "label": { "ar": "الرقم القومي", "en": "ID" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "favicon": "icons/id-dates--id.png?v=10f7301b", "favGlyph": "icons/id-dates--id.glyph.png?v=dc56d42b", "favGradient": ["#cc7b49", "#fcc3a2", "#693005"] },
+            { "id": "contacts", "label": { "ar": "جهات الاتصال", "en": "Contacts" }, "url": "https://contact-flow-web-orpin.vercel.app/", "icon": "fa-address-book", "favicon": "icons/id-dates--contacts.png?v=b19f93a7", "favGlyph": "icons/id-dates--contacts.glyph.png?v=21a5c924", "favGradient": ["#e3674b", "#fec0b1", "#75220f"] }
           ],
           "defaultVariant": 0
         },
         {
           "id": "roi", "title": { "ar": "عائد الاستثمار", "en": "ROI Calculator" }, "icon": "fa-chart-line", "gradient": ["#42a374", "#bbf7d0", "#14532d"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt", "favicon": "icons/roi--express.png?v=3177b49e" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders", "favicon": "icons/roi--full.png?v=4ba4c5cc" }
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt", "favicon": "icons/roi--express.png?v=3177b49e", "favGlyph": "icons/roi--express.glyph.png?v=a257751f", "favGradient": ["#d27556", "#fdc1ad", "#742301"] },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders", "favicon": "icons/roi--full.png?v=4ba4c5cc", "favGlyph": "icons/roi--full.glyph.png?v=49607f31", "favGradient": ["#cb7a5b", "#fdc1ab", "#702805"] }
           ],
           "defaultVariant": 0
         },
-        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25", "favicon": "icons/survival-mirror.png?v=539e16a8" },
+        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25", "favicon": "icons/survival-mirror.png?v=539e16a8", "favGlyph": "icons/survival-mirror.glyph.png?v=48d3043a", "favGradient": ["#8a8dbd", "#cacdf5", "#3c3d67"] },
         {
           "id": "qisma-mizan", "title": { "ar": "قسمة العوائد", "en": "Qisma / Mizan" }, "icon": "fa-scale-balanced", "gradient": ["#ab8a4f", "#fef08a", "#713f12"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/qisma-mizan--express.png?v=2b0bd76d" },
-            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders", "favicon": "icons/qisma-mizan--full.png?v=24c05296" }
+            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/qisma-mizan--express.png?v=2b0bd76d", "favGlyph": "icons/qisma-mizan--express.glyph.png?v=cb8776de", "favGradient": ["#d47452", "#fdc1ac", "#722604"] },
+            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders", "favicon": "icons/qisma-mizan--full.png?v=24c05296", "favGlyph": "icons/qisma-mizan--full.glyph.png?v=6edb4b5d", "favGradient": ["#d47354", "#fdc1ad", "#742302"] }
           ],
           "defaultVariant": 0
         },
-        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26", "favicon": "icons/solver.png?v=f73a61e3" },
+        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26", "favicon": "icons/solver.png?v=f73a61e3", "favGlyph": "icons/solver.glyph.png?v=5e380607", "favGradient": ["#66a091", "#afdcd0", "#0e4d41"] },
         {
           "id": "plan-maker", "title": { "ar": "الخطة", "en": "Planner" }, "icon": "fa-calendar-days", "gradient": ["#9c6fa8", "#e5c3ef", "#5b2f66"], "isNew": true, "since": "2026-08-30",
           "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/plan-maker--express.png?v=4b23b22f" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders", "favicon": "icons/plan-maker--full.png?v=484147c8" }
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/plan-maker--express.png?v=4b23b22f", "favGlyph": "icons/plan-maker--express.glyph.png?v=29871bd4", "favGradient": ["#5c9eac", "#acdae4", "#034b57"] },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders", "favicon": "icons/plan-maker--full.png?v=484147c8", "favGlyph": "icons/plan-maker--full.glyph.png?v=fc0770e1", "favGradient": ["#af82a1", "#eac4dd", "#5a334f"] }
           ],
           "defaultVariant": 0
         },
         {
           "id": "criteria-builder", "title": { "ar": "بناء المعايير", "en": "Criteria Builder" }, "icon": "fa-compass", "gradient": ["#d0785a", "#ffc8a8", "#7a2e17"], "isNew": true, "since": "2026-09-26",
           "variants": [
-            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass", "favicon": "icons/criteria-builder--meridian.png?v=c69de6b0" },
-            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star", "favicon": "icons/criteria-builder--rubric.png?v=ed7ebbb0" }
+            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass", "favicon": "icons/criteria-builder--meridian.png?v=c69de6b0", "favGlyph": "icons/criteria-builder--meridian.glyph.png?v=6ace0c9e", "favGradient": ["#9889b7", "#d6caee", "#483962"] },
+            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star", "favicon": "icons/criteria-builder--rubric.png?v=ed7ebbb0", "favGlyph": "icons/criteria-builder--rubric.glyph.png?v=75c4fb82", "favGradient": ["#9884ce", "#d5c8fd", "#493375"] }
           ],
           "defaultVariant": 0
         }
@@ -4891,30 +4875,30 @@ body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { ani
         {
           "id": "prep", "title": { "ar": "تجهيز البيانات", "en": "Data Prep" }, "icon": "fa-chart-column", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-09-27",
           "variants": [
-            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column", "favicon": "icons/prep--prep.png?v=ef2e4c06" },
-            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group", "favicon": "icons/prep--floe.png?v=bcec1d75" }
+            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column", "favicon": "icons/prep--prep.png?v=ef2e4c06", "favGlyph": "icons/prep--prep.glyph.png?v=a570622e", "favGradient": ["#e36462", "#ffbeba", "#751f22"] },
+            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group", "favicon": "icons/prep--floe.png?v=bcec1d75", "favGlyph": "icons/prep--floe.glyph.png?v=1ddd6166", "favGradient": ["#c47f59", "#fac3a6", "#6b2e01"] }
           ],
           "defaultVariant": 0
         },
         {
           "id": "text-tools", "title": { "ar": "أدوات النصوص", "en": "Text Tools" }, "icon": "fa-font", "gradient": ["#c08a3e", "#f6d9a8", "#6b4513"], "isNew": true, "since": "2026-09-27",
           "variants": [
-            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter", "favicon": "icons/text-tools--weft.png?v=621e397e" },
-            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font", "favicon": "icons/text-tools--text.png?v=3eb7c8ed" }
+            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter", "favicon": "icons/text-tools--weft.png?v=621e397e", "favGlyph": "icons/text-tools--weft.glyph.png?v=63434c12", "favGradient": ["#d47354", "#fdc1ad", "#742302"] },
+            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font", "favicon": "icons/text-tools--text.png?v=3eb7c8ed", "favGlyph": "icons/text-tools--text.glyph.png?v=bbd0509f", "favGradient": ["#c18510", "#f9c880", "#5a3b00"] }
           ],
           "defaultVariant": 0
         },
-        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11", "favicon": "icons/to-do.png?v=7a55d0d6" },
+        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11", "favicon": "icons/to-do.png?v=7a55d0d6", "favGlyph": "icons/to-do.glyph.png?v=7de4a905" },
         {
           "id": "pharmacy-tools", "title": { "ar": "أدوات الصيدلية", "en": "Pharmacy Tools" }, "icon": "fa-pills", "gradient": ["#5fa05a", "#c9f0c0", "#1f4d1c"], "isNew": true, "since": "2026-10-02",
           "variants": [
-            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check", "favicon": "icons/pharmacy-tools--pillbug.png?v=719f37db" },
-            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator", "favicon": "icons/pharmacy-tools--bugvert.png?v=8a10109e" }
+            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check", "favicon": "icons/pharmacy-tools--pillbug.png?v=719f37db", "favGlyph": "icons/pharmacy-tools--pillbug.glyph.png?v=888a6cda", "favGradient": ["#d27556", "#fdc1ad", "#742301"] },
+            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator", "favicon": "icons/pharmacy-tools--bugvert.png?v=8a10109e", "favGradient": ["#c97a64", "#fec0af", "#6f2914"] }
           ],
           "defaultVariant": 0
         },
-        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11", "favicon": "icons/entity-tracker.png?v=09f60e0b" },
-        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18", "favicon": "icons/draw.png?v=b8f15262" }
+        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11", "favicon": "icons/entity-tracker.png?v=09f60e0b", "favGradient": ["#569db6", "#a6daee", "#014a5d"] },
+        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18", "favicon": "icons/draw.png?v=b8f15262", "favGlyph": "icons/draw.glyph.png?v=30ab41cd" }
       ]
     }
   ]
@@ -5218,6 +5202,29 @@ const setIcon = (element, name) => {
   const kept = (element.getAttribute('class') || '').split(/\s+/).filter((c) => c && !c.startsWith('fa-'));
   kept.push(safe);
   element.setAttribute('class', kept.join(' '));
+};
+
+const GLYPH_RE = /^icons\/[a-z0-9-]+\.glyph\.png\?v=[0-9a-f]{8}$/;
+const HEX6 = /^#[0-9a-f]{6}$/i;
+const glyphOf = (app, variant) => { if (location.protocol === 'file:') return null; const g = (variant || app).favGlyph; return typeof g === 'string' && GLYPH_RE.test(g) ? g : null; };
+const gradientOf = (app, variant) => { const g = (variant || app).favGradient; return Array.isArray(g) && g.length === 3 && g.every((c) => HEX6.test(c)) ? g : app.gradient; };
+const glyphHtml = (url, cls) => `<span class="${cls ? cls + ' ' : ''}lx-glyph" style="--glyph:url(${url})" aria-hidden="true"></span>`;
+const tileIconHtml = (app, variant, iconName, cls) => {
+  const url = glyphOf(app, variant);
+  return url ? glyphHtml(url, cls) : icon(iconName, cls);
+};
+const retileIcon = (host, app, variant, iconName, cls = 'app-icon') => {
+  const cur = host.querySelector(cls ? '.' + cls : ':scope > svg, :scope > .lx-glyph');
+  const url = glyphOf(app, variant);
+  const isGlyph = !!cur && cur.classList.contains('lx-glyph');
+  if (cur && url && isGlyph) { cur.style.setProperty('--glyph', `url(${url})`); return cur; }
+  if (cur && !url && !isGlyph) { setIcon(cur, iconName); return cur; }
+  const html = tileIconHtml(app, variant, iconName, cls);
+  if (!cur) { host.insertAdjacentHTML('afterbegin', html); return host.firstElementChild; }
+  cur.insertAdjacentHTML('afterend', html);
+  const next = cur.nextElementSibling;
+  cur.remove();
+  return next;
 };
 
 const warmedOrigins = new Set();
@@ -5700,40 +5707,6 @@ const isFresh = (app) => {
 let pointerFieldDirty = true;
 let pointerVX = 0;
 
-const setFavicon = (tile, path) => {
-  if (!tile) return;
-  let img = tile.querySelector(':scope > .lx-fav');
-  if (!path) {
-    if (img) img.remove();
-    tile.classList.remove('has-fav');
-    return;
-  }
-  if (!img) {
-    img = document.createElement('img');
-    img.className = 'lx-fav';
-    img.alt = '';
-    img.width = 192;
-    img.height = 192;
-    img.decoding = 'async';
-    img.draggable = false;
-    img.addEventListener('error', () => {
-      img.remove();
-      tile.classList.remove('has-fav');
-    });
-    tile.appendChild(img);
-  }
-  if (img.getAttribute('src') !== path) img.src = path;
-  tile.classList.add('has-fav');
-};
-
-const faviconOf = (app, variantIndex) => {
-  if (app.variants) {
-    const v = app.variants[variantIndex === undefined ? getSelectedVariantIndex(app) : variantIndex];
-    return v && v.favicon ? v.favicon : '';
-  }
-  return app.favicon || '';
-};
-
 const createCard = (app, idx, placement, cat) => {
   const el = document.createElement('div');
   const variantIndex = getSelectedVariantIndex(app);
@@ -5749,7 +5722,10 @@ const createCard = (app, idx, placement, cat) => {
     el.classList.add('app-card--row');
     el.style.setProperty('--row', String(idx));
   }
-  if (iconsView) el.classList.add('app-card--icon');
+  if (iconsView) {
+    el.classList.add('app-card--icon');
+    el.style.setProperty('--row', String(idx));
+  }
 
   let octave = 0;
   let variant = null;
@@ -5769,7 +5745,8 @@ const createCard = (app, idx, placement, cat) => {
     el.style.gridRow = '';
   }
 
-  el.style.setProperty('--c1', tone(app.gradient[0]));
+  el.style.setProperty('--c1', tone(gradientOf(app, activeVariant)[0]));
+  if (app.variants) el.dataset.variantIndex = String(variantIndex);
   el.style.setProperty('--i', idx);
 
   const soundIndex = cat ? cat.key + idx : idx;
@@ -5804,11 +5781,11 @@ const createCard = (app, idx, placement, cat) => {
   const overlayHtml = `<a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${idx < 9 ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>`;
   const surfaceHtml = `
       <div class="card-aura" aria-hidden="true"></div>
-      ${listView ? '' : `<div class="card-glyph" aria-hidden="true">${icon(iconClass)}</div>`}
+      ${listView ? '' : `<div class="card-glyph" aria-hidden="true">${tileIconHtml(app, activeVariant, iconClass, '')}</div>`}
       <div class="card-glow"></div>
       <div class="card-sheen" aria-hidden="true"></div>
       ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}`;
-  const iconHtml = `<div class="app-icon-wrapper">${icon(iconClass, 'app-icon')}${digitHtml}</div>`;
+  const iconHtml = `<div class="app-icon-wrapper">${tileIconHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}</div>`;
   const titleHtml = `<h3 class="app-title">${escapeHtml(title)}</h3>`;
   const hostHtml = host ? `<span class="card-meta" dir="ltr">${escapeHtml(host)}</span>` : '';
 
@@ -5835,7 +5812,7 @@ const createCard = (app, idx, placement, cat) => {
       <span class="open-affordance row-go" aria-hidden="true">${icon(openModeIcon())}</span>`;
 
   const iconsBody = `
-      <div class="app-icon-wrapper">${icon(iconClass, 'app-icon')}${digitHtml}${fresh ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
+      <div class="app-icon-wrapper">${tileIconHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
       <span class="icon-label">${escapeHtml(title)}</span>`;
 
   if (iconsView) {
@@ -5849,7 +5826,6 @@ const createCard = (app, idx, placement, cat) => {
     </div>
   `;
   }
-  setFavicon(el.querySelector('.app-icon-wrapper'), faviconOf(app, variantIndex));
 
   const recordLaunch = () => {
     const vi = getSelectedVariantIndex(app);
@@ -5896,24 +5872,21 @@ const createCard = (app, idx, placement, cat) => {
 
   if (app.variants && !iconsView) {
     const chipsEl = el.querySelector('.variant-chips');
-    const iconEl = el.querySelector('.app-icon');
     const tileEl = el.querySelector('.app-icon-wrapper');
     const linkEl = el.querySelector('.card-link-overlay');
-    app.variants.forEach((v) => {
-      if (v.favicon) new Image().src = v.favicon;
-    });
 
     let currentVariantIndex = variantIndex;
     const applyVariant = (i) => {
       if (i === currentVariantIndex) return;
       chipsEl.dataset.dir = i > currentVariantIndex ? 'fwd' : 'back';
       currentVariantIndex = i;
+      el.dataset.variantIndex = String(i);
       const v = app.variants[i];
       if (!v) return;
       linkEl.href = v.url;
       const metaEl = el.querySelector('.card-meta');
       if (metaEl) metaEl.textContent = hostOf(v.url);
-      const glyphEl = el.querySelector('.card-glyph svg');
+      const markEl = el.querySelector('.card-glyph');
       const vLabel = loc(v.label);
       linkEl.setAttribute('aria-label', app.closed ? `${title} — ${vLabel} — ${t('badgeClosed')}` : `${title} — ${vLabel}`);
       chipsEl.querySelectorAll('.variant-chip').forEach((chip, ci) => {
@@ -5922,16 +5895,21 @@ const createCard = (app, idx, placement, cat) => {
       });
       if (!supportsAnchor) moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
       clearTimeout(el._iconTimer);
-      iconEl.style.opacity = '0';
-      const favEl = tileEl.querySelector('.lx-fav');
-      if (favEl) favEl.style.opacity = '0';
+      cancelAnimationFrame(el._iconRaf);
+      const outgoing = tileEl.querySelector('.app-icon');
+      if (outgoing) outgoing.style.opacity = '0';
       el._iconTimer = setTimeout(() => {
-        setIcon(iconEl, v.icon);
-        if (glyphEl) setIcon(glyphEl, v.icon);
-        iconEl.style.opacity = '1';
-        setFavicon(tileEl, faviconOf(app, i));
-        const nextFav = tileEl.querySelector('.lx-fav');
-        if (nextFav) nextFav.style.opacity = '1';
+        const incoming = retileIcon(tileEl, app, v, v.icon);
+        if (markEl) retileIcon(markEl, app, v, v.icon, '');
+        el.style.setProperty('--c1', tone(gradientOf(app, v)[0]));
+        if (incoming === outgoing) {
+          incoming.style.opacity = '1';
+        } else {
+          incoming.style.opacity = '0';
+          el._iconRaf = requestAnimationFrame(() => {
+            el._iconRaf = requestAnimationFrame(() => { incoming.style.opacity = '1'; });
+          });
+        }
       }, 120);
       try { localStorage.setItem('lx-variant-' + app.id, String(i)); } catch (e) { if (LX_DEBUG) console.warn(e); }
       sfx.click();
@@ -6121,7 +6099,7 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   let host = '';
   try { host = new URL(activeUrl).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
   const mode = openMode();
-  if (app) menu.style.setProperty('--menu-accent', tone(app.gradient[0]));
+  if (app) menu.style.setProperty('--menu-accent', tone(gradientOf(app, activeVariant)[0]));
   const kbdHint = (txt) => `<span class="ctx-kbd" aria-hidden="true">${escapeHtml(txt)}</span>`;
   const defaultTag = `<span class="ctx-tag">${escapeHtml(t('ctxDefault'))}</span>`;
   const openRow = (m) => `<button type="button" data-action="open-${m}" role="menuitem" class="ctx-item${m === mode ? ' is-default' : ''}">${icon(openModeIcon(m))}<span class="ctx-label">${escapeHtml(t(m === 'new' ? 'actionNewTab' : 'actionSameTab'))}</span>${m === mode ? defaultTag : ''}</button>`;
@@ -6142,7 +6120,7 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
     : `<div class="ctx-group" role="group">${openRow(mode)}${openRow(otherMode)}</div>`;
 
   let itemsHtml = `
-    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? app.gradient[0] : '#7c9bff'))}">
+    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? gradientOf(app, activeVariant)[0] : '#7c9bff'))}">
       <span class="ctx-head-icon">${icon(iconName)}</span>
       <span class="ctx-head-text">
         <span class="ctx-head-title">${escapeHtml(title)}${activeVariant ? `<span class="ctx-head-variant">${escapeHtml(loc(activeVariant.label))}</span>` : ''}</span>
@@ -6369,7 +6347,7 @@ const staggerCardEntry = (grid, isBootBatch) => {
   if (isAutoFlow) grid.classList.toggle('has-overflow', overflowAmount > 4);
   cards.forEach((c, i) => {
     const scrollDriven = supportsViewTimeline && isNarrowViewport();
-    if (!c.classList.contains('app-card--row')) {
+    if (!c.classList.contains('app-card--row') && !c.classList.contains('app-card--icon')) {
       c.style.animationDelay = scrollDriven
         ? '0s'
         : `${bootOffset + Math.round((dists[i] / max) * 260)}ms`;
@@ -6510,7 +6488,7 @@ const initPointerField = () => {
         setFocal(kb, now);
       }
       computeFalloff();
-      const listMode = viewMode() === 'list';
+      const listMode = isFlatView();
       const engaged = !!focal && !zenTransitioning && !gridSwitch && !listMode && cards.length > 1 && (kb === focal || now - focalSince >= DIM_INTENT_MS);
       intentPending = !!focal && !engaged && !zenTransitioning && !listMode && cards.length > 1;
       engage.to = engaged ? 1 : 0;
@@ -6894,6 +6872,7 @@ const cornersMode = () => {
   return CORNERS.includes(c) ? c : 'balanced';
 };
 const viewMode = () => (VIEWS.includes(document.documentElement.dataset.view) ? document.documentElement.dataset.view : 'bento');
+const isFlatView = (v = viewMode()) => v === 'list' || v === 'icons';
 const tone = (hex) => {
   const mode = paletteMode();
   if ((mode !== 'curated' && mode !== 'mono' && mode !== 'muted') || typeof hex !== 'string' || !/^#[0-9a-f]{6}$/i.test(hex)) return hex;
@@ -6939,7 +6918,10 @@ const retintUI = () => {
   categories.forEach(c => c.apps.forEach(a => appById.set(a.id, a)));
   document.querySelectorAll('#appGrid .app-card[data-app-id]').forEach((el) => {
     const app = appById.get(el.dataset.appId);
-    if (app && app.gradient) el.style.setProperty('--c1', tone(app.gradient[0]));
+    if (!app || !app.gradient) return;
+    const vi = el.dataset.variantIndex;
+    const variant = app.variants && vi !== undefined ? app.variants[Number(vi)] : null;
+    el.style.setProperty('--c1', tone(gradientOf(app, variant)[0]));
   });
   if (contextMenuEl && contextMenuEl.dataset.owner === 'card') closeContextMenu();
   const activeCat = categories.find(c => c.id === currentTabId);
@@ -6957,7 +6939,7 @@ const retintUI = () => {
     renderPaletteResults(document.getElementById('paletteInput')?.value || '');
     const entry = paletteItems[paletteActiveIndex];
     const detail = document.getElementById('paletteDetail');
-    if (detail && entry) detail.style.setProperty('--c1', tone(entry.app.gradient[0]));
+    if (detail && entry) detail.style.setProperty('--c1', tone(gradientOf(entry.app)[0]));
   }
 };
 
@@ -7577,9 +7559,9 @@ const settleGridSwitch = () => {
 
 const runGridSwitch = (g, run, travel, nextView = viewMode()) => {
   settleGridSwitch();
-  const outList = g.dataset.layout === 'list';
-  const inList = nextView === 'list';
-  const listMotion = outList || inList;
+  const outFlat = isFlatView(g.dataset.layout || 'bento');
+  const inFlat = isFlatView(nextView);
+  const listMotion = outFlat || inFlat;
   const container = g.parentElement;
   const hadCards = g.querySelector('.app-card, .grid-empty');
   let ghost = null;
@@ -7637,7 +7619,7 @@ const runGridSwitch = (g, run, travel, nextView = viewMode()) => {
       c.classList.add('no-enter');
       c.style.willChange = 'opacity, translate, scale';
       let a;
-      if (inList) {
+      if (inFlat) {
         a = c.animate(
           [{ opacity: 0, translate: travel ? `${travel * LIST_SWITCH.travelPx}px 0` : `0 ${LIST_SWITCH.liftPx}px` }, { opacity: 1, translate: '0 0' }],
           { duration: LIST_SWITCH.inMs, delay: LIST_SWITCH.delayBase + Math.min(i, LIST_SWITCH.delayCap) * LIST_SWITCH.delayStep, easing: EASE_LUX, fill: 'backwards' }
@@ -7645,7 +7627,7 @@ const runGridSwitch = (g, run, travel, nextView = viewMode()) => {
       } else {
         a = c.animate(
           [{ opacity: 0, translate: `${travel * 14}px 0`, scale: '.982' }, { opacity: 1, translate: '0 0', scale: '1' }],
-          { duration: GRID_SWITCH.inMs, delay: (outList ? Math.max(GRID_SWITCH.delayBase, LIST_SWITCH.outMs) : GRID_SWITCH.delayBase) + Math.round((dists[i] / max) * GRID_SWITCH.delaySpread), easing: EASE_LUX, fill: 'backwards' }
+          { duration: GRID_SWITCH.inMs, delay: (outFlat ? Math.max(GRID_SWITCH.delayBase, LIST_SWITCH.outMs) : GRID_SWITCH.delayBase) + Math.round((dists[i] / max) * GRID_SWITCH.delaySpread), easing: EASE_LUX, fill: 'backwards' }
         );
       }
       anims.push(a);
@@ -7851,6 +7833,8 @@ const allPaletteEntries = () => {
           url: v.url,
           icon: v.icon,
           favicon: v.favicon,
+          favGlyph: v.favGlyph,
+          favGradient: v.favGradient,
           gradient: app.gradient,
           isNew: app.isNew,
           since: app.since,
@@ -8090,7 +8074,7 @@ const sanitizeDomId = (key) => String(key).replace(/[^a-zA-Z0-9_-]/g, '-');
 const paletteTrailHtml = (e) => e.app.command && e.app.kbd ? keycapsHtml(e.app.kbd) : '<kbd>↵</kbd>';
 const paletteTrailClass = (e) => 'palette-item-trail' + (e.app.command && e.app.kbd ? ' is-persistent' : '');
 
-const paletteItemContentHtml = (e, query) => `<div class="app-icon-wrapper">${icon(e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span>`;
+const paletteItemContentHtml = (e, query) => `<div class="app-icon-wrapper">${tileIconHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span>`;
 
 const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   const li = document.createElement('li');
@@ -8100,9 +8084,8 @@ const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   li.setAttribute('aria-selected', String(isActive));
   li.dataset.key = paletteEntryKey(e);
   li.dataset.index = String(globalIndex);
-  li.setAttribute('style', `${gradVars(e.app.gradient)}--n:${globalIndex};`);
+  li.setAttribute('style', `${gradVars(gradientOf(e.app))}--n:${globalIndex};`);
   li.innerHTML = paletteItemContentHtml(e, query);
-  setFavicon(li.querySelector('.app-icon-wrapper'), e.app.favicon);
   return li;
 };
 
@@ -8111,9 +8094,9 @@ const updatePaletteItemNode = (li, e, globalIndex, query, isActive) => {
   li.setAttribute('aria-selected', String(isActive));
   li.dataset.index = String(globalIndex);
   li.style.setProperty('--n', globalIndex);
-  if (e.app.gradient) li.style.setProperty('--c1', tone(e.app.gradient[0]));
-  const iconEl = li.querySelector('svg');
-  if (iconEl) setIcon(iconEl, e.app.icon);
+  if (e.app.gradient) li.style.setProperty('--c1', tone(gradientOf(e.app)[0]));
+  const tileEl = li.querySelector('.app-icon-wrapper');
+  if (tileEl) retileIcon(tileEl, e.app, null, e.app.icon);
   const titleEl = li.querySelector('.palette-item-title');
   if (titleEl) titleEl.innerHTML = highlightTitle(loc(e.app.title), query);
   const catEl = li.querySelector('.palette-item-cat');
@@ -8406,7 +8389,7 @@ const renderPaletteDetail = () => {
   }
 
   const { app, cat } = entry;
-  detail.setAttribute('style', gradVars(app.gradient));
+  detail.setAttribute('style', gradVars(gradientOf(app)));
 
   const actionsHtml = `
     <div class="palette-actions" role="group" aria-label="${escapeHtml(t('actionsLabel'))}">
@@ -8472,7 +8455,7 @@ const renderPaletteDetail = () => {
     ${slabHtml}
     <div class="palette-detail-header">
       <div class="app-icon-wrapper">
-        ${icon(app.icon, 'app-icon')}
+        ${tileIconHtml(app, null, app.icon, 'app-icon')}
       </div>
       <div class="palette-detail-title-wrap">
         <span class="palette-detail-eyebrow">${escapeHtml(loc(cat.label))}</span>
@@ -8484,7 +8467,6 @@ const renderPaletteDetail = () => {
     <dl class="palette-facts">${facts.join('')}</dl>
     ${actionsHtml}
   `;
-  setFavicon(detail.querySelector('.app-icon-wrapper'), app.favicon);
 
   detail.querySelectorAll('.palette-action').forEach((btn) => {
     const actionId = btn.dataset.action;
@@ -8527,7 +8509,7 @@ const updateLiveAccent = () => {
   const entry = paletteItems[paletteActiveIndex];
   const palette = document.getElementById('lx-palette');
   if (!palette) return;
-  palette.style.setProperty('--c1', tone(entry ? entry.app.gradient[0] : '#7c9bff'));
+  palette.style.setProperty('--c1', tone(entry ? gradientOf(entry.app)[0] : '#7c9bff'));
 };
 
 const copyToClipboard = async (text) => {
@@ -9713,6 +9695,8 @@ const cleanLoc = (v) => {
 const cleanIcon = (v) => (typeof v === 'string' && ICON_RE.test(v) ? v : DEFAULT_ICON);
 const FAVICON_RE = /^icons\/[a-z0-9-]+\.png(\?v=[0-9a-f]{8})?$/;
 const cleanFavicon = (v) => (typeof v === 'string' && v.length <= 120 && FAVICON_RE.test(v) ? v : '');
+const cleanFavGlyph = (v) => (typeof v === 'string' && v.length <= 120 && GLYPH_RE.test(v) ? v : '');
+const cleanFavGradient = (v) => (Array.isArray(v) && v.length === 3 && v.every((c) => typeof c === 'string' && HEX_RE.test(c)) ? v.slice() : null);
 const cleanHex = (v, fb) => (typeof v === 'string' && HEX_RE.test(v) ? v.toLowerCase() : fb);
 const cleanGradient = (g, color) => {
   const c = cleanHex(color, null);
@@ -9738,6 +9722,10 @@ const cleanApp = (a, { allowHttp, allowVariants }) => {
       const variant = { id: v.id, label, url, icon: cleanIcon(v.icon) };
       const variantFavicon = cleanFavicon(v.favicon);
       if (variantFavicon) variant.favicon = variantFavicon;
+      const variantGlyph = cleanFavGlyph(v.favGlyph);
+      if (variantGlyph) variant.favGlyph = variantGlyph;
+      const variantGradient = cleanFavGradient(v.favGradient);
+      if (variantGradient) variant.favGradient = variantGradient;
       return variant;
     }).filter(Boolean);
     if (!variants.length) return null;
@@ -9760,6 +9748,10 @@ const cleanApp = (a, { allowHttp, allowVariants }) => {
   if (allowVariants) {
     const favicon = cleanFavicon(a.favicon);
     if (favicon) app.favicon = favicon;
+    const favGlyph = cleanFavGlyph(a.favGlyph);
+    if (favGlyph) app.favGlyph = favGlyph;
+    const favGradient = cleanFavGradient(a.favGradient);
+    if (favGradient) app.favGradient = favGradient;
   }
   return app;
 };
@@ -9906,12 +9898,30 @@ const rebuildCatalogUI = (preferId) => {
 
 const sameCatalog = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
+const warmedGlyphs = new Set();
+const warmGlyphs = () => {
+  const queue = [];
+  const add = (u) => { if (u && !warmedGlyphs.has(u) && !queue.includes(u)) queue.push(u); };
+  categories.forEach((cat) => cat.apps.forEach((app) => {
+    add(glyphOf(app));
+    if (app.variants) app.variants.forEach((v) => add(glyphOf(app, v)));
+  }));
+  if (!queue.length) return;
+  const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
+  const step = () => {
+    queue.splice(0, 4).forEach((u) => { warmedGlyphs.add(u); fetch(u).catch(() => {}); });
+    if (queue.length) idle(step);
+  };
+  idle(step);
+};
+
 const setBaseCatalog = (next) => {
   if (sameCatalog(next, baseCatalog)) return;
   baseCatalog = next;
   composeCategories();
   if (firstCardBatchDone && document.visibilityState === 'visible' && !activeViewTransition && !gridSwitch) lookSwap(() => rebuildCatalogUI());
   else rebuildCatalogUI();
+  warmGlyphs();
 };
 
 const renderEmptyCatalog = () => {
@@ -10291,6 +10301,7 @@ const boot = async () => {
   syncOpenModeUI();
   initRefreshButton();
   if (!categories.length) renderEmptyCatalog();
+  warmGlyphs();
   if (instant) {
     const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 400));
     idle(() => refreshCatalog(), { timeout: 1500 });

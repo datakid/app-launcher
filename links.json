@@ -6,32 +6,32 @@
         {
           "id": "ledger-form", "title": { "ar": "نموذج", "en": "Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
           "variants": [
-            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt", "favicon": "icons/ledger-form--tally.png?v=44ec5894" },
-            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders", "favicon": "icons/ledger-form--folio.png?v=2aa7ce23" }
+            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt", "favicon": "icons/ledger-form--tally.png?v=44ec5894", "favGlyph": "icons/ledger-form--tally.glyph.png?v=d92d318b", "favGradient": ["#d77250", "#fdc1ad", "#742301"] },
+            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders", "favicon": "icons/ledger-form--folio.png?v=2aa7ce23", "favGlyph": "icons/ledger-form--folio.glyph.png?v=ee7a29d5" }
           ],
           "defaultVariant": 0
         },
-        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"], "favicon": "icons/parser.png?v=392badec" },
-        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"], "favicon": "icons/workspace.png?v=28ed3b79" },
+        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"], "favicon": "icons/parser.png?v=392badec", "favGlyph": "icons/parser.glyph.png?v=2cd27218", "favGradient": ["#bc73be", "#f4baf4", "#612664"] },
+        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"], "favicon": "icons/workspace.png?v=28ed3b79", "favGlyph": "icons/workspace.glyph.png?v=27896169", "favGradient": ["#c18412", "#fbc77c", "#5b3b00"] },
         {
           "id": "drug-list", "title": { "ar": "قائمة الأدوية", "en": "Drug List" }, "icon": "fa-search", "gradient": ["#5e8df0", "#7dd3fc", "#075985"],
           "variants": [
-            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt", "favicon": "icons/drug-list--free.png?v=eb76dca4" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders", "favicon": "icons/drug-list--full.png?v=5f81fc0a" }
+            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt", "favicon": "icons/drug-list--free.png?v=eb76dca4", "favGlyph": "icons/drug-list--free.glyph.png?v=b48bc00e", "favGradient": ["#de6e39", "#ffc1a7", "#702900"] },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders", "favicon": "icons/drug-list--full.png?v=5f81fc0a", "favGradient": ["#928bba", "#d1ccf0", "#433b65"] }
           ],
           "defaultVariant": 0
         },
         {
           "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid" }, "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"],
           "variants": [
-            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "favicon": "icons/paid-calculator--calc.png?v=c0757d01" },
-            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book", "favicon": "icons/paid-calculator--daleel.png?v=78f3e2fe" }
+            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "favicon": "icons/paid-calculator--calc.png?v=c0757d01", "favGlyph": "icons/paid-calculator--calc.glyph.png?v=2804fbe1", "favGradient": ["#8092b8", "#c3d1ef", "#334263"] },
+            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book", "favicon": "icons/paid-calculator--daleel.png?v=78f3e2fe", "favGlyph": "icons/paid-calculator--daleel.glyph.png?v=3cf229df" }
           ],
           "defaultVariant": 0
         },
-        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"], "favicon": "icons/protocols.png?v=7d18d40f" },
-        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11", "favicon": "icons/index-builder.png?v=b454dc9c" },
-        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11", "favicon": "icons/dafter.png?v=12ded8fd" }
+        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"], "favicon": "icons/protocols.png?v=7d18d40f", "favGlyph": "icons/protocols.glyph.png?v=d6852eae" },
+        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11", "favicon": "icons/index-builder.png?v=b454dc9c", "favGlyph": "icons/index-builder.glyph.png?v=b6283202", "favGradient": ["#6b9f8f", "#b4dbce", "#184d3f"] },
+        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11", "favicon": "icons/dafter.png?v=12ded8fd", "favGlyph": "icons/dafter.glyph.png?v=50040b9b", "favGradient": ["#698cf0", "#bed0fd", "#273c81"] }
       ]
     },
     {
@@ -40,42 +40,42 @@
         {
           "id": "id-dates", "title": { "ar": "الأرقام", "en": "Numbers" }, "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "id", "label": { "ar": "الرقم القومي", "en": "ID" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "favicon": "icons/id-dates--id.png?v=10f7301b" },
-            { "id": "contacts", "label": { "ar": "جهات الاتصال", "en": "Contacts" }, "url": "https://contact-flow-web-orpin.vercel.app/", "icon": "fa-address-book", "favicon": "icons/id-dates--contacts.png?v=b19f93a7" }
+            { "id": "id", "label": { "ar": "الرقم القومي", "en": "ID" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "favicon": "icons/id-dates--id.png?v=10f7301b", "favGlyph": "icons/id-dates--id.glyph.png?v=dc56d42b", "favGradient": ["#cc7b49", "#fcc3a2", "#693005"] },
+            { "id": "contacts", "label": { "ar": "جهات الاتصال", "en": "Contacts" }, "url": "https://contact-flow-web-orpin.vercel.app/", "icon": "fa-address-book", "favicon": "icons/id-dates--contacts.png?v=b19f93a7", "favGlyph": "icons/id-dates--contacts.glyph.png?v=21a5c924", "favGradient": ["#e3674b", "#fec0b1", "#75220f"] }
           ],
           "defaultVariant": 0
         },
         {
           "id": "roi", "title": { "ar": "عائد الاستثمار", "en": "ROI Calculator" }, "icon": "fa-chart-line", "gradient": ["#42a374", "#bbf7d0", "#14532d"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt", "favicon": "icons/roi--express.png?v=3177b49e" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders", "favicon": "icons/roi--full.png?v=4ba4c5cc" }
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt", "favicon": "icons/roi--express.png?v=3177b49e", "favGlyph": "icons/roi--express.glyph.png?v=a257751f", "favGradient": ["#d27556", "#fdc1ad", "#742301"] },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders", "favicon": "icons/roi--full.png?v=4ba4c5cc", "favGlyph": "icons/roi--full.glyph.png?v=49607f31", "favGradient": ["#cb7a5b", "#fdc1ab", "#702805"] }
           ],
           "defaultVariant": 0
         },
-        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25", "favicon": "icons/survival-mirror.png?v=539e16a8" },
+        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25", "favicon": "icons/survival-mirror.png?v=539e16a8", "favGlyph": "icons/survival-mirror.glyph.png?v=48d3043a", "favGradient": ["#8a8dbd", "#cacdf5", "#3c3d67"] },
         {
           "id": "qisma-mizan", "title": { "ar": "قسمة العوائد", "en": "Qisma / Mizan" }, "icon": "fa-scale-balanced", "gradient": ["#ab8a4f", "#fef08a", "#713f12"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/qisma-mizan--express.png?v=2b0bd76d" },
-            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders", "favicon": "icons/qisma-mizan--full.png?v=24c05296" }
+            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/qisma-mizan--express.png?v=2b0bd76d", "favGlyph": "icons/qisma-mizan--express.glyph.png?v=cb8776de", "favGradient": ["#d47452", "#fdc1ac", "#722604"] },
+            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders", "favicon": "icons/qisma-mizan--full.png?v=24c05296", "favGlyph": "icons/qisma-mizan--full.glyph.png?v=6edb4b5d", "favGradient": ["#d47354", "#fdc1ad", "#742302"] }
           ],
           "defaultVariant": 0
         },
-        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26", "favicon": "icons/solver.png?v=f73a61e3" },
+        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26", "favicon": "icons/solver.png?v=f73a61e3", "favGlyph": "icons/solver.glyph.png?v=5e380607", "favGradient": ["#66a091", "#afdcd0", "#0e4d41"] },
         {
           "id": "plan-maker", "title": { "ar": "الخطة", "en": "Planner" }, "icon": "fa-calendar-days", "gradient": ["#9c6fa8", "#e5c3ef", "#5b2f66"], "isNew": true, "since": "2026-08-30",
           "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/plan-maker--express.png?v=4b23b22f" },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders", "favicon": "icons/plan-maker--full.png?v=484147c8" }
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/plan-maker--express.png?v=4b23b22f", "favGlyph": "icons/plan-maker--express.glyph.png?v=29871bd4", "favGradient": ["#5c9eac", "#acdae4", "#034b57"] },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders", "favicon": "icons/plan-maker--full.png?v=484147c8", "favGlyph": "icons/plan-maker--full.glyph.png?v=fc0770e1", "favGradient": ["#af82a1", "#eac4dd", "#5a334f"] }
           ],
           "defaultVariant": 0
         },
         {
           "id": "criteria-builder", "title": { "ar": "بناء المعايير", "en": "Criteria Builder" }, "icon": "fa-compass", "gradient": ["#d0785a", "#ffc8a8", "#7a2e17"], "isNew": true, "since": "2026-09-26",
           "variants": [
-            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass", "favicon": "icons/criteria-builder--meridian.png?v=c69de6b0" },
-            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star", "favicon": "icons/criteria-builder--rubric.png?v=ed7ebbb0" }
+            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass", "favicon": "icons/criteria-builder--meridian.png?v=c69de6b0", "favGlyph": "icons/criteria-builder--meridian.glyph.png?v=6ace0c9e", "favGradient": ["#9889b7", "#d6caee", "#483962"] },
+            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star", "favicon": "icons/criteria-builder--rubric.png?v=ed7ebbb0", "favGlyph": "icons/criteria-builder--rubric.glyph.png?v=75c4fb82", "favGradient": ["#9884ce", "#d5c8fd", "#493375"] }
           ],
           "defaultVariant": 0
         }
@@ -87,30 +87,30 @@
         {
           "id": "prep", "title": { "ar": "تجهيز البيانات", "en": "Data Prep" }, "icon": "fa-chart-column", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-09-27",
           "variants": [
-            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column", "favicon": "icons/prep--prep.png?v=ef2e4c06" },
-            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group", "favicon": "icons/prep--floe.png?v=bcec1d75" }
+            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column", "favicon": "icons/prep--prep.png?v=ef2e4c06", "favGlyph": "icons/prep--prep.glyph.png?v=a570622e", "favGradient": ["#e36462", "#ffbeba", "#751f22"] },
+            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group", "favicon": "icons/prep--floe.png?v=bcec1d75", "favGlyph": "icons/prep--floe.glyph.png?v=1ddd6166", "favGradient": ["#c47f59", "#fac3a6", "#6b2e01"] }
           ],
           "defaultVariant": 0
         },
         {
           "id": "text-tools", "title": { "ar": "أدوات النصوص", "en": "Text Tools" }, "icon": "fa-font", "gradient": ["#c08a3e", "#f6d9a8", "#6b4513"], "isNew": true, "since": "2026-09-27",
           "variants": [
-            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter", "favicon": "icons/text-tools--weft.png?v=621e397e" },
-            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font", "favicon": "icons/text-tools--text.png?v=3eb7c8ed" }
+            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter", "favicon": "icons/text-tools--weft.png?v=621e397e", "favGlyph": "icons/text-tools--weft.glyph.png?v=63434c12", "favGradient": ["#d47354", "#fdc1ad", "#742302"] },
+            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font", "favicon": "icons/text-tools--text.png?v=3eb7c8ed", "favGlyph": "icons/text-tools--text.glyph.png?v=bbd0509f", "favGradient": ["#c18510", "#f9c880", "#5a3b00"] }
           ],
           "defaultVariant": 0
         },
-        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11", "favicon": "icons/to-do.png?v=7a55d0d6" },
+        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11", "favicon": "icons/to-do.png?v=7a55d0d6", "favGlyph": "icons/to-do.glyph.png?v=7de4a905" },
         {
           "id": "pharmacy-tools", "title": { "ar": "أدوات الصيدلية", "en": "Pharmacy Tools" }, "icon": "fa-pills", "gradient": ["#5fa05a", "#c9f0c0", "#1f4d1c"], "isNew": true, "since": "2026-10-02",
           "variants": [
-            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check", "favicon": "icons/pharmacy-tools--pillbug.png?v=719f37db" },
-            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator", "favicon": "icons/pharmacy-tools--bugvert.png?v=8a10109e" }
+            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check", "favicon": "icons/pharmacy-tools--pillbug.png?v=719f37db", "favGlyph": "icons/pharmacy-tools--pillbug.glyph.png?v=888a6cda", "favGradient": ["#d27556", "#fdc1ad", "#742301"] },
+            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator", "favicon": "icons/pharmacy-tools--bugvert.png?v=8a10109e", "favGradient": ["#c97a64", "#fec0af", "#6f2914"] }
           ],
           "defaultVariant": 0
         },
-        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11", "favicon": "icons/entity-tracker.png?v=09f60e0b" },
-        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18", "favicon": "icons/draw.png?v=b8f15262" }
+        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11", "favicon": "icons/entity-tracker.png?v=09f60e0b", "favGradient": ["#569db6", "#a6daee", "#014a5d"] },
+        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18", "favicon": "icons/draw.png?v=b8f15262", "favGlyph": "icons/draw.glyph.png?v=30ab41cd" }
       ]
     }
   ]

@@ -15,7 +15,13 @@
         "type": "local",
         "href": "ledger-form--tally.jpg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#d77250",
+        "#fdc1ad",
+        "#742301"
+      ],
+      "glyph": true
     },
     {
       "key": "ledger-form--folio",
@@ -25,7 +31,9 @@
         "type": "local",
         "href": "ledger-form--folio.ico"
       },
-      "error": null
+      "error": null,
+      "gradient": null,
+      "glyph": true
     },
     {
       "key": "parser",
@@ -35,7 +43,13 @@
         "type": "local",
         "href": "parser.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#bc73be",
+        "#f4baf4",
+        "#612664"
+      ],
+      "glyph": true
     },
     {
       "key": "workspace",
@@ -45,7 +59,13 @@
         "type": "local",
         "href": "workspace.png"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#c18412",
+        "#fbc77c",
+        "#5b3b00"
+      ],
+      "glyph": true
     },
     {
       "key": "drug-list--free",
@@ -55,7 +75,13 @@
         "type": "local",
         "href": "drug-list--free.png"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#de6e39",
+        "#ffc1a7",
+        "#702900"
+      ],
+      "glyph": true
     },
     {
       "key": "drug-list--full",
@@ -65,7 +91,13 @@
         "type": "local",
         "href": "drug-list--full.jpg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#928bba",
+        "#d1ccf0",
+        "#433b65"
+      ],
+      "glyph": false
     },
     {
       "key": "paid-calculator--calc",
@@ -75,7 +107,13 @@
         "type": "local",
         "href": "paid-calculator--calc.jpg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#8092b8",
+        "#c3d1ef",
+        "#334263"
+      ],
+      "glyph": true
     },
     {
       "key": "paid-calculator--daleel",
@@ -85,7 +123,9 @@
         "type": "local",
         "href": "paid-calculator--daleel.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": null,
+      "glyph": true
     },
     {
       "key": "protocols",
@@ -95,7 +135,9 @@
         "type": "local",
         "href": "protocols.ico"
       },
-      "error": null
+      "error": null,
+      "gradient": null,
+      "glyph": true
     },
     {
       "key": "index-builder",
@@ -105,7 +147,13 @@
         "type": "local",
         "href": "index-builder.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#6b9f8f",
+        "#b4dbce",
+        "#184d3f"
+      ],
+      "glyph": true
     },
     {
       "key": "dafter",
@@ -115,7 +163,13 @@
         "type": "local",
         "href": "dafter.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#698cf0",
+        "#bed0fd",
+        "#273c81"
+      ],
+      "glyph": true
     },
     {
       "key": "id-dates--id",
@@ -125,7 +179,13 @@
         "type": "local",
         "href": "id-dates--id.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#cc7b49",
+        "#fcc3a2",
+        "#693005"
+      ],
+      "glyph": true
     },
     {
       "key": "id-dates--contacts",
@@ -135,7 +195,13 @@
         "type": "local",
         "href": "id-dates--contacts.png"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#e3674b",
+        "#fec0b1",
+        "#75220f"
+      ],
+      "glyph": true
     },
     {
       "key": "roi--express",
@@ -145,7 +211,13 @@
         "type": "local",
         "href": "roi--express.ico"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#d27556",
+        "#fdc1ad",
+        "#742301"
+      ],
+      "glyph": true
     },
     {
       "key": "roi--full",
@@ -155,7 +227,13 @@
         "type": "local",
         "href": "roi--full.jpg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#cb7a5b",
+        "#fdc1ab",
+        "#702805"
+      ],
+      "glyph": true
     },
     {
       "key": "survival-mirror",
@@ -165,7 +243,13 @@
         "type": "local",
         "href": "survival-mirror.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#8a8dbd",
+        "#cacdf5",
+        "#3c3d67"
+      ],
+      "glyph": true
     },
     {
       "key": "qisma-mizan--express",
@@ -175,7 +259,13 @@
         "type": "local",
         "href": "qisma-mizan--express.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#d47452",
+        "#fdc1ac",
+        "#722604"
+      ],
+      "glyph": true
     },
     {
       "key": "qisma-mizan--full",
@@ -185,7 +275,13 @@
         "type": "local",
         "href": "qisma-mizan--full.png"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#d47354",
+        "#fdc1ad",
+        "#742302"
+      ],
+      "glyph": true
     },
     {
       "key": "solver",
@@ -195,7 +291,13 @@
         "type": "local",
         "href": "solver.png"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#66a091",
+        "#afdcd0",
+        "#0e4d41"
+      ],
+      "glyph": true
     },
     {
       "key": "plan-maker--express",
@@ -205,7 +307,13 @@
         "type": "local",
         "href": "plan-maker--express.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#5c9eac",
+        "#acdae4",
+        "#034b57"
+      ],
+      "glyph": true
     },
     {
       "key": "plan-maker--full",
@@ -215,7 +323,13 @@
         "type": "local",
         "href": "plan-maker--full.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#af82a1",
+        "#eac4dd",
+        "#5a334f"
+      ],
+      "glyph": true
     },
     {
       "key": "criteria-builder--meridian",
@@ -225,7 +339,13 @@
         "type": "local",
         "href": "criteria-builder--meridian.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#9889b7",
+        "#d6caee",
+        "#483962"
+      ],
+      "glyph": true
     },
     {
       "key": "criteria-builder--rubric",
@@ -235,7 +355,13 @@
         "type": "local",
         "href": "criteria-builder--rubric.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#9884ce",
+        "#d5c8fd",
+        "#493375"
+      ],
+      "glyph": true
     },
     {
       "key": "prep--prep",
@@ -245,7 +371,13 @@
         "type": "local",
         "href": "prep--prep.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#e36462",
+        "#ffbeba",
+        "#751f22"
+      ],
+      "glyph": true
     },
     {
       "key": "prep--floe",
@@ -255,7 +387,13 @@
         "type": "local",
         "href": "prep--floe.jpg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#c47f59",
+        "#fac3a6",
+        "#6b2e01"
+      ],
+      "glyph": true
     },
     {
       "key": "text-tools--weft",
@@ -265,7 +403,13 @@
         "type": "local",
         "href": "text-tools--weft.jpg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#d47354",
+        "#fdc1ad",
+        "#742302"
+      ],
+      "glyph": true
     },
     {
       "key": "text-tools--text",
@@ -275,7 +419,13 @@
         "type": "local",
         "href": "text-tools--text.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#c18510",
+        "#f9c880",
+        "#5a3b00"
+      ],
+      "glyph": true
     },
     {
       "key": "to-do",
@@ -285,7 +435,9 @@
         "type": "local",
         "href": "to-do.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": null,
+      "glyph": true
     },
     {
       "key": "pharmacy-tools--pillbug",
@@ -295,7 +447,13 @@
         "type": "local",
         "href": "pharmacy-tools--pillbug.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#d27556",
+        "#fdc1ad",
+        "#742301"
+      ],
+      "glyph": true
     },
     {
       "key": "pharmacy-tools--bugvert",
@@ -305,7 +463,13 @@
         "type": "local",
         "href": "pharmacy-tools--bugvert.jpg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#c97a64",
+        "#fec0af",
+        "#6f2914"
+      ],
+      "glyph": false
     },
     {
       "key": "entity-tracker",
@@ -315,7 +479,13 @@
         "type": "local",
         "href": "entity-tracker.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": [
+        "#569db6",
+        "#a6daee",
+        "#014a5d"
+      ],
+      "glyph": false
     },
     {
       "key": "draw",
@@ -325,7 +495,9 @@
         "type": "local",
         "href": "draw.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": null,
+      "glyph": true
     },
     {
       "key": "alt",
@@ -335,7 +507,9 @@
         "type": "local",
         "href": "alt.svg"
       },
-      "error": null
+      "error": null,
+      "gradient": null,
+      "glyph": true
     }
   ]
 }

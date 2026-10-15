@@ -271,6 +271,121 @@ const gate = async (png, srcWidth) => {
   return null;
 };
 
+const srgbToLin = (c) => { c /= 255; return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+const linToSrgb = (c) => { const v = c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055; return Math.round(Math.min(1, Math.max(0, v)) * 255); };
+const toOklab = (r, g, b) => {
+  const R = srgbToLin(r), G = srgbToLin(g), B = srgbToLin(b);
+  const l = Math.cbrt(0.4122214708 * R + 0.5363325363 * G + 0.0514459929 * B);
+  const m = Math.cbrt(0.2119034982 * R + 0.6806995451 * G + 0.1073969566 * B);
+  const s = Math.cbrt(0.0883024619 * R + 0.2817188376 * G + 0.6299787005 * B);
+  return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s];
+};
+const fromOklab = (L, a, b) => {
+  const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+  const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+  const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+  return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s];
+};
+const oklchHex = (L, C, h) => {
+  for (let i = Math.round(C / 0.005); i >= 0; i--) {
+    const c = i * 0.005;
+    const rgb = fromOklab(L, c * Math.cos(h), c * Math.sin(h));
+    if (rgb.every((v) => v >= -1e-4 && v <= 1.0001)) return '#' + rgb.map((v) => linToSrgb(v).toString(16).padStart(2, '0')).join('');
+  }
+  return '#808080';
+};
+const smooth = (e0, e1, x) => { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+
+const extractGradient = (data, lab, n) => {
+  const bins = Array.from({ length: 24 }, () => ({ w: 0, L: 0, a: 0, b: 0 }));
+  let opaque = 0, chromatic = 0;
+  for (let p = 0; p < n; p++) {
+    if (data[p * 4 + 3] < 200) continue;
+    opaque++;
+    const L = lab[p * 3], a = lab[p * 3 + 1], b = lab[p * 3 + 2], C = Math.hypot(a, b);
+    if (C < 0.04 || L < 0.2 || L > 0.95) continue;
+    chromatic++;
+    const h = (Math.atan2(b, a) + 2 * Math.PI) % (2 * Math.PI);
+    const bin = bins[Math.floor((h / (2 * Math.PI)) * 24) % 24];
+    bin.w += C; bin.L += L * C; bin.a += a * C; bin.b += b * C;
+  }
+  if (!opaque || chromatic / opaque < 0.03) return null;
+  let best = 0, bestW = -1;
+  for (let i = 0; i < 24; i++) {
+    const w = bins[(i + 23) % 24].w + bins[i].w + bins[(i + 1) % 24].w;
+    if (w > bestW) { bestW = w; best = i; }
+  }
+  let sw = 0, sa = 0, sb = 0;
+  for (const j of [(best + 23) % 24, best, (best + 1) % 24]) { sw += bins[j].w; sa += bins[j].a; sb += bins[j].b; }
+  const a = sa / sw, b = sb / sw, h = Math.atan2(b, a);
+  const c = Math.min(Math.max(Math.hypot(a, b), 0.06), 0.16);
+  return [oklchHex(0.66, c, h), oklchHex(0.86, Math.min(c * 0.75, 0.11), h), oklchHex(0.38, Math.min(c, 0.12), h)];
+};
+
+const extractGlyph = async (data, lab, w, h) => {
+  const n = w * h;
+  let minX = w, minY = h, maxX = -1, maxY = -1, solid = 0;
+  for (let p = 0; p < n; p++) {
+    if (data[p * 4 + 3] < 128) continue;
+    const x = p % w, y = (p - x) / w;
+    solid++;
+    if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y;
+  }
+  if (!solid) return null;
+  const fill = solid / ((maxX - minX + 1) * (maxY - minY + 1));
+  const alpha = new Float32Array(n);
+  if (fill >= 0.7) {
+    const clear = (x, y) => x < 0 || y < 0 || x >= w || y >= h || data[(y * w + x) * 4 + 3] < 128;
+    const band = [];
+    for (let p = 0; p < n; p++) {
+      if (data[p * 4 + 3] < 200) continue;
+      const x = p % w, y = (p - x) / w;
+      if (clear(x - 3, y) || clear(x + 3, y) || clear(x, y - 3) || clear(x, y + 3)) band.push(p);
+    }
+    if (!band.length) return null;
+    let L = 0, A = 0, B = 0;
+    for (const p of band) { L += lab[p * 3]; A += lab[p * 3 + 1]; B += lab[p * 3 + 2]; }
+    L /= band.length; A /= band.length; B /= band.length;
+    let spread = 0;
+    for (const p of band) spread += Math.hypot(lab[p * 3] - L, lab[p * 3 + 1] - A, lab[p * 3 + 2] - B);
+    if (spread / band.length > 0.06) return null;
+    for (let p = 0; p < n; p++) alpha[p] = (data[p * 4 + 3] / 255) * smooth(0.08, 0.22, Math.hypot(lab[p * 3] - L, lab[p * 3 + 1] - A, lab[p * 3 + 2] - B));
+  } else {
+    for (let p = 0; p < n; p++) alpha[p] = data[p * 4 + 3] / 255;
+  }
+  let gx0 = w, gy0 = h, gx1 = -1, gy1 = -1, on = 0;
+  for (let p = 0; p < n; p++) {
+    if (alpha[p] < 0.5) continue;
+    const x = p % w, y = (p - x) / w;
+    on++;
+    if (x < gx0) gx0 = x; if (x > gx1) gx1 = x; if (y < gy0) gy0 = y; if (y > gy1) gy1 = y;
+  }
+  if (!on) return null;
+  const cover = on / n;
+  const gfill = on / ((gx1 - gx0 + 1) * (gy1 - gy0 + 1));
+  if (cover < 0.02 || cover > 0.6 || gfill > 0.85) return null;
+  const out = Buffer.alloc(n * 4);
+  for (let p = 0; p < n; p++) { out[p * 4] = 255; out[p * 4 + 1] = 255; out[p * 4 + 2] = 255; out[p * 4 + 3] = Math.round(alpha[p] * 255); }
+  const clearBg = { r: 255, g: 255, b: 255, alpha: 0 };
+  return sharp(out, { raw: { width: w, height: h, channels: 4 } })
+    .extract({ left: gx0, top: gy0, width: gx1 - gx0 + 1, height: gy1 - gy0 + 1 })
+    .resize(104, 104, { fit: 'contain', background: clearBg })
+    .extend({ top: 12, bottom: 12, left: 12, right: 12, background: clearBg })
+    .png({ compressionLevel: 9 })
+    .toBuffer();
+};
+
+const analyzeIcon = async (png) => {
+  const { data, info } = await sharp(png).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const n = info.width * info.height;
+  const lab = new Float32Array(n * 3);
+  for (let p = 0; p < n; p++) {
+    const [L, a, b] = toOklab(data[p * 4], data[p * 4 + 1], data[p * 4 + 2]);
+    lab[p * 3] = L; lab[p * 3 + 1] = a; lab[p * 3 + 2] = b;
+  }
+  return { gradient: extractGradient(data, lab, n), glyph: await extractGlyph(data, lab, info.width, info.height) };
+};
+
 const buildTargets = (catalog) => {
   const out = [];
   for (const cat of catalog.categories) {
@@ -410,14 +525,21 @@ const pool = async (items, n, fn) => {
   return out;
 };
 
-const STRIP_RE = /, "favicon": "[^"]*"/;
-const stripFavicons = (text) => text.split('\n').map((l) => l.replace(STRIP_RE, '')).join('\n');
+const STRIP_RES = [
+  /, "favicon": "[^"]*"/,
+  /, "favGlyph": "[^"]*"/,
+  /, "favGradient": \["#[0-9a-f]{6}", "#[0-9a-f]{6}", "#[0-9a-f]{6}"\]/
+];
+const stripFavicons = (text) => text.split('\n').map((l) => STRIP_RES.reduce((acc, re) => acc.replace(re, ''), l)).join('\n');
 
 const patchLinks = (text, catalog, favicons) => {
   const lines = stripFavicons(text).split('\n');
-  const addTo = (idx, value) => {
+  const addTo = (idx, entry) => {
     if (!/ \}(,?)$/.test(lines[idx])) throw new Error('unexpected links.json line shape at ' + (idx + 1));
-    lines[idx] = lines[idx].replace(/ \}(,?)$/, ', "favicon": "' + value + '" }$1');
+    let insert = ', "favicon": "' + entry.favicon + '"';
+    if (entry.glyph) insert += ', "favGlyph": "' + entry.glyph + '"';
+    if (entry.gradient) insert += ', "favGradient": ["' + entry.gradient.join('", "') + '"]';
+    lines[idx] = lines[idx].replace(/ \}(,?)$/, (m, comma) => insert + ' }' + comma);
   };
   let cursor = 0;
   for (const cat of catalog.categories) {
@@ -431,13 +553,13 @@ const patchLinks = (text, catalog, favicons) => {
         for (const v of app.variants) {
           const vIdx = lines.findIndex((l, i) => i > appIdx && l.includes('{ "id": "' + v.id + '", "label"'));
           if (vIdx < 0) throw new Error('could not locate variant ' + app.id + '/' + v.id + ' in links.json');
-          const value = favicons.get(app.id + '--' + v.id);
-          if (value) addTo(vIdx, value);
+          const entry = favicons.get(app.id + '--' + v.id);
+          if (entry) addTo(vIdx, entry);
           cursor = vIdx;
         }
       } else {
-        const value = favicons.get(app.id);
-        if (value) addTo(appIdx, value);
+        const entry = favicons.get(app.id);
+        if (entry) addTo(appIdx, entry);
       }
     }
   }
@@ -484,7 +606,21 @@ const main = async () => {
     r.hash = hash;
     await fs.writeFile(path.join(iconsDir, r.key + '.png'), r.png);
     written.add(r.key + '.png');
-    if (!targets[i].extra) favicons.set(r.key, 'icons/' + r.key + '.png?v=' + hash.slice(0, 8));
+    let analysis = { gradient: null, glyph: null };
+    try {
+      analysis = await analyzeIcon(r.png);
+    } catch (e) {
+      r.analysisError = errText(e);
+    }
+    r.gradient = analysis.gradient;
+    r.glyph = analysis.glyph;
+    let glyphPath = null;
+    if (analysis.glyph) {
+      await fs.writeFile(path.join(iconsDir, r.key + '.glyph.png'), analysis.glyph);
+      written.add(r.key + '.glyph.png');
+      glyphPath = 'icons/' + r.key + '.glyph.png?v=' + sha(analysis.glyph).slice(0, 8);
+    }
+    if (!targets[i].extra) favicons.set(r.key, { favicon: 'icons/' + r.key + '.png?v=' + hash.slice(0, 8), glyph: glyphPath, gradient: analysis.gradient });
   }
 
   const byHash = new Map();
@@ -517,13 +653,14 @@ const main = async () => {
       notfound: results.filter((r) => r.status === 'notfound').length
     },
     suspectedDefault,
-    items: results.map((r) => ({ key: r.key, url: r.url, status: r.status, source: r.source, error: r.error }))
+    items: results.map((r) => ({ key: r.key, url: r.url, status: r.status, source: r.source, error: r.error, gradient: r.gradient || null, glyph: !!r.glyph }))
   };
   await fs.writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
 
   for (const r of results) {
     const how = r.source ? r.source.type + ' ' + r.source.href : '-';
-    console.log(r.status.padEnd(9) + r.key.padEnd(30) + how + (r.error ? '  ' + r.error : ''));
+    const look = r.png ? '  glyph:' + (r.glyph ? 'yes' : 'no') + ' ' + (r.gradient ? r.gradient[0] : '-') + (r.analysisError ? ' analysis:' + r.analysisError : '') : '';
+    console.log(r.status.padEnd(9) + r.key.padEnd(30) + how + look + (r.error ? '  ' + r.error : ''));
   }
   console.log('');
   console.log(report.summary.found + report.summary.override + ' of ' + report.summary.total + ' icons written, ' + report.summary.notfound + ' not found, ' + suspectedDefault.length + ' suspected default group(s)');
