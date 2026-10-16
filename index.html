@@ -35,6 +35,7 @@
     if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
     if (/^https?:$/.test(location.protocol) && window.fetch) {
       window.__lxCatalog = fetch('links.json', { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).catch(function () { return null; });
+      window.__lxIcons = fetch('icons/manifest.json', { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
     }
   } catch (e) {
     if (location.search.indexOf('lxdebug=1') !== -1) console.warn(e);
@@ -232,7 +233,7 @@
   --shadow-soft: light-dark(0 1px 2px rgba(28,25,20,.05), 0 1px 2px rgba(0,0,0,.3)), light-dark(0 10px 28px -14px rgba(28,25,20,.14), 0 10px 30px -14px rgba(0,0,0,.6));
   --shadow-deep: light-dark(0 2px 8px rgba(28,25,20,.07), 0 2px 6px rgba(0,0,0,.34)), light-dark(0 30px 60px -22px rgba(28,25,20,.18), 0 30px 64px -22px rgba(0,0,0,.72));
   --radius: 22px;
-  --gap: clamp(0.7rem, 1.6vh, 1.15rem);
+  --gap: clamp(0.7rem, 1.6dvh, 1.15rem);
   --lx-panel-w: min(880px, 94vw);
   --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out: var(--ease-lux);
@@ -360,7 +361,7 @@ a, button { cursor: pointer; }
   position: fixed; left: 0; top: 0; z-index: 2; pointer-events: none;
   width: 1800px; height: 1800px; margin: -900px 0 0 -900px;
   border-radius: 50%;
-  transform: translate3d(50vw, 15vh, 0);
+  transform: translate3d(50vw, 15dvh, 0);
   will-change: transform, opacity;
   contain: strict;
   background: radial-gradient(closest-side, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03)), transparent 70%);
@@ -386,9 +387,9 @@ body.is-cinema .controls-pill { opacity: .5; }
 
 .container {
   width: 100%; max-width: 1400px; height: 100dvh;
-  padding: clamp(2.25rem, 3.6vh, 3.25rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3vh, 2.5rem);
+  padding: clamp(2.25rem, 3.6dvh, 3.25rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3dvh, 2.5rem);
   position: relative; z-index: 3;
-  display: flex; flex-direction: column; gap: clamp(1rem, 2.2vh, 1.6rem);
+  display: flex; flex-direction: column; gap: clamp(1rem, 2.2dvh, 1.6rem);
   transition: transform var(--dur-base) var(--ease-lux), max-width var(--dur-base) var(--ease-lux), padding-inline var(--dur-base) var(--ease-lux), padding-block-start var(--dur-base) var(--ease-lux), padding-block-end var(--dur-base) var(--ease-lux), gap var(--dur-base) var(--ease-lux);
 }
 
@@ -398,18 +399,18 @@ body.is-cinema .controls-pill { opacity: .5; }
 }
 
 body.is-zen .container {
-  padding-block-start: clamp(1rem, 1.8vh, 1.5rem);
-  padding-block-end: clamp(1rem, 2vh, 1.6rem);
-  gap: clamp(0.75rem, 1.4vh, 1rem);
+  padding-block-start: clamp(1rem, 1.8dvh, 1.5rem);
+  padding-block-end: clamp(1rem, 2dvh, 1.6rem);
+  gap: clamp(0.75rem, 1.4dvh, 1rem);
 }
 
 @media (min-width: 1025px) {
   body.is-zen .container {
-    --zen-stack-gap: clamp(0.85rem, 2vh, 1.4rem);
+    --zen-stack-gap: clamp(0.85rem, 2dvh, 1.4rem);
     max-width: 1480px;
     padding-inline: clamp(1rem, 3vw, 2.4rem);
-    padding-block-start: clamp(1rem, 2.2vh, 1.6rem);
-    padding-block-end: clamp(1rem, 2.4vh, 1.8rem);
+    padding-block-start: clamp(1rem, 2.2dvh, 1.6rem);
+    padding-block-end: clamp(1rem, 2.4dvh, 1.8rem);
     gap: var(--zen-stack-gap);
   }
   body.is-zen .site-header {
@@ -500,13 +501,21 @@ h1 {
 }
 .controls-pill button:active { opacity: 0.65; transition-duration: var(--dur-tap); }
 
-.controls-pill:not(.is-magnetic) button:hover {
-  background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)); color: var(--text);
-  transform: scale(1.06);
+@media (hover: hover) and (pointer: fine) {
+  .controls-pill:not(.is-magnetic) button:hover {
+    background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08));
+    color: var(--text);
+    transform: scale(1.06);
+  }
 }
 
 .controls-pill.is-magnetic button { transition: background-color var(--dur-base) var(--ease-lux), color var(--dur-base) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux); }
-.controls-pill.is-magnetic button:hover { background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08)); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .controls-pill.is-magnetic button:hover {
+    background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08));
+    color: var(--text);
+  }
+}
 
 .controls-pill button[aria-pressed="true"] { color: var(--text); background: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.1)); box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08)); }
 .controls-pill button[aria-pressed="true"] svg { color: color-mix(in oklab, var(--tab-accent) 70%, var(--text)); }
@@ -548,8 +557,19 @@ h1 {
   touch-action: manipulation;
   transition: opacity var(--dur-micro) var(--ease-lux), background-color var(--dur-micro) var(--ease-lux);
 }
-.lx-context-menu button:hover, .lx-context-menu button:focus-visible { background: color-mix(in oklab, var(--tab-accent) 10%, light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05))); outline: none; }
-.lx-context-menu button:hover svg, .lx-context-menu button:focus-visible svg { color: color-mix(in oklab, var(--tab-accent) 70%, var(--text)); }
+.lx-context-menu button:focus-visible { background: color-mix(in oklab, var(--tab-accent) 10%, light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05))); outline: none; }
+@media (hover: hover) and (pointer: fine) {
+  .lx-context-menu button:hover {
+    background: color-mix(in oklab, var(--tab-accent) 10%, light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05)));
+    outline: none;
+  }
+}
+.lx-context-menu button:focus-visible svg { color: color-mix(in oklab, var(--tab-accent) 70%, var(--text)); }
+@media (hover: hover) and (pointer: fine) {
+  .lx-context-menu button:hover svg {
+    color: color-mix(in oklab, var(--tab-accent) 70%, var(--text));
+  }
+}
 .lx-context-menu button svg { width: 16px; text-align: center; color: var(--text-muted); font-size: 0.82rem; flex-shrink: 0; }
 .lx-context-menu button.is-active svg { color: var(--tab-accent); }
 .lx-context-menu button:active { opacity: 0.7; transition-duration: var(--dur-tap); }
@@ -586,7 +606,12 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   background: none; border: 0; text-align: start; cursor: pointer;
   outline: none;
 }
-.lx-bar-search:hover .lx-bar-label, .lx-bar-search:focus-visible .lx-bar-label { color: var(--text); }
+.lx-bar-search:focus-visible .lx-bar-label { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .lx-bar-search:hover .lx-bar-label {
+    color: var(--text);
+  }
+}
 .lx-bar-search svg.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; }
 .lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.2rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color var(--dur-micro) var(--ease-lux); }
 .lx-bar-label-short { display: none; }
@@ -615,7 +640,12 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
   box-shadow: 0 1px 0 light-dark(rgba(20,18,15,0.08), rgba(0,0,0,0.5)), inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,0.06));
   transition: color var(--dur-micro) var(--ease-lux), transform var(--dur-micro) var(--ease-lux);
 }
-.lx-bar-search:hover .lx-bar-kbd, .lx-bar-search:focus-visible .lx-bar-kbd { color: var(--text); }
+.lx-bar-search:focus-visible .lx-bar-kbd { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .lx-bar-search:hover .lx-bar-kbd {
+    color: var(--text);
+  }
+}
 .lx-bar-search:active .lx-bar-kbd { transform: translateY(1px); }
 kbd {
   font-family: var(--ui-font);
@@ -709,14 +739,14 @@ kbd {
   --depth: 7px;
   animation: cardEnter var(--dur-story) var(--ease-lux) backwards;
   animation-delay: 0s;
-  transition: opacity var(--dur-base) var(--ease-lux);
+  transition: opacity var(--dur-base) var(--ease-lux), scale var(--dur-fast) var(--ease-lux);
   -webkit-tap-highlight-color: transparent;
 }
 .app-grid.has-dim-engine .app-card { transition: none; will-change: transform, opacity; }
 .app-card.is-live .app-icon-wrapper,
 .app-card.is-live .app-title { will-change: transform; }
 @media not ((hover: hover) and (pointer: fine)) {
-  .app-card { transition: opacity var(--dur-fast) var(--ease-lux), transform 420ms var(--ease-spring); }
+  .app-card { transition: opacity var(--dur-fast) var(--ease-lux), transform 420ms var(--ease-spring), scale var(--dur-fast) var(--ease-lux); }
   .app-card:active { transform: scale(.982); transition-duration: var(--dur-tap), 90ms; }
   .app-card:active .card-clip { border-color: var(--border-highlight); }
 }
@@ -764,7 +794,7 @@ kbd {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: 1px solid var(--border);
-  padding: clamp(1.2rem, 2.5vh, 1.8rem);
+  padding: clamp(1.2rem, 2.5dvh, 1.8rem);
   overflow: hidden;
   contain: layout paint;
   transition:
@@ -916,7 +946,11 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   outline-offset: -3px;
   transition: outline-offset var(--dur-micro) var(--ease-out);
 }
-.card-link-overlay:focus-visible:not(:hover) { animation: focusSettle var(--dur-fast) var(--ease-out); }
+@media (hover: hover) and (pointer: fine) {
+  .card-link-overlay:focus-visible:not(:hover) {
+    animation: focusSettle var(--dur-fast) var(--ease-out);
+  }
+}
 @keyframes focusSettle { from { outline-offset: -8px; } }
 
 .variant-chips, .variant-chip { pointer-events: auto; }
@@ -948,7 +982,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 }
 
 .app-icon-wrapper {
-  --icon-size: clamp(46px, 6.4vh, 56px);
+  --icon-size: clamp(46px, 6.4dvh, 56px);
   --icon-radius: 13px;
   --icon-veil: light-dark(rgba(255,255,255,.28), rgba(255,255,255,.42));
   --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.10));
@@ -978,9 +1012,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .app-card .app-icon-wrapper { --icon-lift: var(--hov, 0); }
 .palette-item .app-icon-wrapper,
 .palette-detail .app-icon-wrapper { transition: --icon-lift var(--dur-fast) var(--ease-lux); }
-.palette-item:hover .app-icon-wrapper,
-.palette-item.is-active .app-icon-wrapper,
-.palette-detail .app-icon-wrapper { --icon-lift: 1; }
+.palette-item.is-active .app-icon-wrapper, .palette-detail .app-icon-wrapper { --icon-lift: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .palette-item:hover .app-icon-wrapper {
+    --icon-lift: 1;
+  }
+}
 
 .app-icon-wrapper::before {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
@@ -1007,13 +1044,25 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .fa-svg, svg.fas { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; flex-shrink: 0; overflow: visible; }
 
 .app-icon {
-  font-size: clamp(1.1rem, 2.5vh, 1.4rem);
+  font-size: clamp(1.1rem, 2.5dvh, 1.4rem);
   color: rgba(255,255,255,.96); text-shadow: 0 1px 2px rgba(0,0,0,.35);
   filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
   position: relative; z-index: 1;
   transition: opacity var(--dur-micro) var(--ease-lux);
 }
 
+.lx-fav { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; border-radius: inherit; position: relative; z-index: 1; }
+.app-icon-wrapper > .lx-fav.app-icon { filter: none; text-shadow: none; }
+.app-icon-wrapper[data-mark="favicon"] {
+  background: light-dark(#ffffff, #171a21);
+  box-shadow:
+    0 2px 6px -2px rgba(0,0,0,.35),
+    inset 0 0 0 1px light-dark(rgba(15,23,42,.16), rgba(255,255,255,.18));
+}
+.app-icon-wrapper[data-mark="favicon"]::before { display: none; }
+.card-glyph .lx-fav { inline-size: 1em; block-size: 1em; object-fit: contain; opacity: .14; filter: grayscale(1); border-radius: 22%; }
+.ctx-head-icon .lx-fav { inline-size: 100%; block-size: 100%; border-radius: inherit; object-fit: cover; }
+.ctx-head-icon[data-mark="favicon"] { background: light-dark(#ffffff, #171a21); box-shadow: inset 0 0 0 1px light-dark(rgba(15,23,42,.16), rgba(255,255,255,.18)); }
 .badges { display: flex; gap: 0.5rem; flex-direction: row; transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 1.3), calc(var(--ty, 0) * var(--depth, 0px) * 1.3), 0); }
 
 .badge {
@@ -1052,7 +1101,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .app-title {
   font-family: var(--display-font);
-  font-size: clamp(1.15rem, 2.6vh, 1.45rem); font-weight: 600;
+  font-size: clamp(1.15rem, 2.6dvh, 1.45rem); font-weight: 600;
   color: var(--text);
   line-height: 1.3; margin: 0; padding-bottom: 0.15em;
   letter-spacing: 0;
@@ -1077,7 +1126,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 :where(:root:lang(en)) .app-title {
   font-style: normal;
-  font-size: clamp(1.25rem, 2.85vh, 1.6rem);
+  font-size: clamp(1.25rem, 2.85dvh, 1.6rem);
   letter-spacing: -0.004em;
 }
 
@@ -1149,22 +1198,22 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .variant-chip:active { opacity: 0.7; transition-duration: var(--dur-tap); }
 .variant-chip:focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 1px; }
 
-.card-wide .app-icon-wrapper { --icon-size: clamp(52px, 7.2vh, 62px); --icon-radius: 15px; }
-.card-wide .app-icon { font-size: clamp(1.3rem, 3vh, 1.6rem); }
-.card-wide .app-title { font-size: clamp(1.3rem, 3vh, 1.6rem); }
+.card-wide .app-icon-wrapper { --icon-size: clamp(52px, 7.2dvh, 62px); --icon-radius: 15px; }
+.card-wide .app-icon { font-size: clamp(1.3rem, 3dvh, 1.6rem); }
+.card-wide .app-title { font-size: clamp(1.3rem, 3dvh, 1.6rem); }
 
-.card-hero .card-clip { flex-direction: row; align-items: center; padding: clamp(1.5rem, 3.5vh, 2.5rem); }
-.card-hero .bento-header { width: auto; align-items: center; gap: clamp(1rem, 2.5vh, 2rem); }
-.card-hero .bento-footer { width: auto; flex: 1; justify-content: space-between; align-items: center; gap: clamp(1rem, 2.5vh, 2rem); margin-inline-start: clamp(1rem, 2.5vh, 2rem); }
-.card-hero .app-icon-wrapper { --icon-size: clamp(72px, 9.5vh, 88px); --icon-radius: 18px; }
-.card-hero .app-icon { font-size: clamp(2rem, 4vh, 2.4rem); }
-.card-hero .app-title { font-size: clamp(2.1rem, 4.4vh, 3rem); font-weight: 700; letter-spacing: 0; }
+.card-hero .card-clip { flex-direction: row; align-items: center; padding: clamp(1.5rem, 3.5dvh, 2.5rem); }
+.card-hero .bento-header { width: auto; align-items: center; gap: clamp(1rem, 2.5dvh, 2rem); }
+.card-hero .bento-footer { width: auto; flex: 1; justify-content: space-between; align-items: center; gap: clamp(1rem, 2.5dvh, 2rem); margin-inline-start: clamp(1rem, 2.5dvh, 2rem); }
+.card-hero .app-icon-wrapper { --icon-size: clamp(72px, 9.5dvh, 88px); --icon-radius: 18px; }
+.card-hero .app-icon { font-size: clamp(2rem, 4dvh, 2.4rem); }
+.card-hero .app-title { font-size: clamp(2.1rem, 4.4dvh, 3rem); font-weight: 700; letter-spacing: 0; }
 .card-hero .open-affordance { width: 32px; height: 32px; font-size: 0.75rem; }
 
-.card-tall .card-clip { justify-content: center; gap: clamp(1rem, 3vh, 1.75rem); }
-.card-tall .app-icon-wrapper { --icon-size: clamp(64px, 8.4vh, 84px); --icon-radius: 17px; }
-.card-tall .app-icon { font-size: clamp(1.7rem, 3.6vh, 2.2rem); }
-.card-tall .app-title { font-size: clamp(1.5rem, 3.4vh, 2.2rem); font-weight: 700; }
+.card-tall .card-clip { justify-content: center; gap: clamp(1rem, 3dvh, 1.75rem); }
+.card-tall .app-icon-wrapper { --icon-size: clamp(64px, 8.4dvh, 84px); --icon-radius: 17px; }
+.card-tall .app-icon { font-size: clamp(1.7rem, 3.6dvh, 2.2rem); }
+.card-tall .app-title { font-size: clamp(1.5rem, 3.4dvh, 2.2rem); font-weight: 700; }
 
 .app-card.status-closed .app-icon-wrapper,
 .app-card.status-closed .app-title {
@@ -1322,8 +1371,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   --pal-radius: 24px;
   --pal-line: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.06));
   --pal-ink-2: light-dark(rgba(21,19,15,0.5), rgba(246,245,242,0.42));
-  width: var(--lx-panel-w); max-height: min(76vh, 640px);
-  margin: min(15vh, 140px) auto auto;
+  width: var(--lx-panel-w); max-height: min(76dvh, 640px);
+  margin: min(15dvh, 140px) auto auto;
   display: flex; flex-direction: column;
   background-color: light-dark(rgba(250,249,246,0.985), rgba(13,14,18,0.975));
   background-image:
@@ -1384,7 +1433,12 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 }
 .palette-input-row > svg { color: color-mix(in oklab, var(--live-accent) 45%, var(--text-muted)); font-size: 1.1rem; transition: color var(--dur-base) var(--ease-lux); }
 .palette-close { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-inline-start: auto; min-width: 36px; min-height: 36px; padding: 0; border: 0; border-radius: 10px; background: transparent; color: var(--pal-ink-2); touch-action: manipulation; transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux); }
-.palette-close:hover { background: color-mix(in oklab, var(--live-accent) 10%, transparent); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .palette-close:hover {
+    background: color-mix(in oklab, var(--live-accent) 10%, transparent);
+    color: var(--text);
+  }
+}
 .palette-close-touch { display: none; font-size: 1.35rem; line-height: 1; }
 @media (pointer: coarse) { .palette-close { min-width: 44px; min-height: 44px; } .palette-close-touch { display: block; } .palette-close kbd { display: none !important; } }
 #paletteInput { flex: 1; min-width: 0; height: 100%; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--ui-font); font-size: 1.24rem; font-weight: 400; letter-spacing: -0.012em; caret-color: var(--live-accent); }
@@ -1440,7 +1494,11 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   transition: scrollbar-color var(--dur-base) var(--ease-lux);
   contain: layout paint;
 }
-.palette-results:hover { scrollbar-color: var(--border-highlight) transparent; }
+@media (hover: hover) and (pointer: fine) {
+  .palette-results:hover {
+    scrollbar-color: var(--border-highlight) transparent;
+  }
+}
 
 .palette-group-header {
   padding: 0.9rem 0.8rem 0.35rem;
@@ -1504,11 +1562,19 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-item.is-active .palette-item-trail { opacity: 1; transform: none; }
 .palette-item-trail.is-persistent { opacity: 0.6; transform: none; }
 .palette-item.is-active .palette-item-trail.is-persistent { opacity: 1; }
-.palette-item:not(.is-active):hover { background-color: light-dark(rgba(20,18,15,0.025), rgba(255,255,255,0.022)); }
+@media (hover: hover) and (pointer: fine) {
+  .palette-item:not(.is-active):hover {
+    background-color: light-dark(rgba(20,18,15,0.025), rgba(255,255,255,0.022));
+  }
+}
 .palette-empty { padding: 2.4rem 1.2rem; text-align: center; color: var(--pal-ink-2); font-size: 0.9rem; text-wrap: balance; }
 
 .palette-detail { position: relative; flex: 1; min-width: 0; padding: 1.6rem 1.6rem 1.25rem; display: flex; flex-direction: column; gap: 1.15rem; overflow-y: auto; scrollbar-width: thin; scrollbar-color: transparent transparent; }
-.palette-detail:hover { scrollbar-color: var(--border-highlight) transparent; }
+@media (hover: hover) and (pointer: fine) {
+  .palette-detail:hover {
+    scrollbar-color: var(--border-highlight) transparent;
+  }
+}
 
 .palette-detail-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem; color: var(--pal-ink-2); font-size: 0.9rem; text-align: center; }
 .palette-detail-empty svg { font-size: 1.4rem; opacity: 0.45; }
@@ -1614,7 +1680,12 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   transition: background-color var(--dur-fast) var(--ease-lux), color var(--dur-fast) var(--ease-lux);
 }
 .palette-action-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.palette-action:hover { background-color: light-dark(rgba(20,18,15,0.035), rgba(255,255,255,0.035)); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .palette-action:hover {
+    background-color: light-dark(rgba(20,18,15,0.035), rgba(255,255,255,0.035));
+    color: var(--text);
+  }
+}
 .palette-action:focus-visible { outline-offset: 2px; }
 .palette-action.is-primary {
   color: var(--text); font-weight: 600;
@@ -1689,7 +1760,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .card-glyph {
   position: absolute; z-index: 0; pointer-events: none;
   inset-inline-end: -6%; bottom: -14%;
-  font-size: clamp(7rem, 17vh, 11rem); line-height: 1;
+  font-size: clamp(7rem, 17dvh, 11rem); line-height: 1;
   color: color-mix(in oklab, var(--tint) 11%, transparent);
   -webkit-mask-image: linear-gradient(160deg, #000 20%, transparent 85%);
           mask-image: linear-gradient(160deg, #000 20%, transparent 85%);
@@ -1701,7 +1772,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 }
 :root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 13%, transparent); }
 .card-glyph svg, .card-glyph .lx-glyph { display: block; }
-.card-tall .card-glyph, .card-hero .card-glyph { font-size: clamp(9rem, 24vh, 15rem); }
+.card-tall .card-glyph, .card-hero .card-glyph { font-size: clamp(9rem, 24dvh, 15rem); }
 .app-card.status-closed .card-glyph { color: color-mix(in oklab, var(--text) 5%, transparent); }
 
 .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 34%, var(--border-highlight)); }
@@ -1729,7 +1800,11 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 @keyframes newDot { 50% { box-shadow: 0 0 0 4px color-mix(in oklab, currentColor 18%, transparent); } }
 
 .controls-pill #refreshToggle svg { transition: transform var(--dur-slow) var(--ease-lux), color var(--dur-base) var(--ease-lux); }
-.controls-pill #refreshToggle:hover svg { transform: rotate(60deg); }
+@media (hover: hover) and (pointer: fine) {
+  .controls-pill #refreshToggle:hover svg {
+    transform: rotate(60deg);
+  }
+}
 .controls-pill #refreshToggle.is-spinning svg { animation: lxSpin 700ms linear infinite; color: var(--tab-accent); }
 @keyframes lxSpin { to { transform: rotate(360deg); } }
 
@@ -1760,7 +1835,11 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   transition: color var(--dur-micro) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux);
 }
 .palette-scope svg { font-size: 0.72rem; color: color-mix(in oklab, var(--scope-accent) 55%, var(--pal-ink-2)); }
-.palette-scope:hover { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .palette-scope:hover {
+    color: var(--text);
+  }
+}
 .palette-scope.is-active { color: var(--text); }
 .palette-scope.is-active svg { color: var(--scope-accent); }
 .palette-scope.is-empty:not(.is-active) { opacity: 0.4; }
@@ -1881,8 +1960,13 @@ h1 {
   color: color-mix(in oklab, var(--tab-accent) 60%, var(--text-muted));
   transition: color var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring);
 }
-.lx-bar-search:hover svg.fa-magnifying-glass,
 .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--tab-accent); transform: scale(1.1) rotate(-8deg); }
+@media (hover: hover) and (pointer: fine) {
+  .lx-bar-search:hover svg.fa-magnifying-glass {
+    color: var(--tab-accent);
+    transform: scale(1.1) rotate(-8deg);
+  }
+}
 .lx-bar-search:active svg.fa-magnifying-glass { transform: scale(.94); transition-duration: var(--dur-tap); }
 .lx-bar-label { letter-spacing: -0.01em; }
 .lx-bar-kbd {
@@ -1905,7 +1989,11 @@ h1 {
 .tab-btn { transition: color var(--tab-dur) var(--ease-out), opacity var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
 .tab-btn:active { transform: scale(.96); }
 .tab-btn[aria-selected="true"] svg { filter: drop-shadow(0 0 6px color-mix(in oklab, var(--tab-accent) 65%, transparent)); }
-.tab-btn:not([aria-selected="true"]):hover { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .tab-btn:not([aria-selected="true"]):hover {
+    color: var(--text);
+  }
+}
 
 :root[data-theme] .card-clip {
   background-image:
@@ -2006,7 +2094,11 @@ h1 {
     inset 0 0 0 1px color-mix(in oklab, var(--tint) 28%, transparent),
     inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.16));
 }
-.variant-chip:not(.is-active):hover { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .variant-chip:not(.is-active):hover {
+    color: var(--text);
+  }
+}
 
 #lx-palette {
   --pal-radius: 26px;
@@ -2085,10 +2177,19 @@ h1 {
     0 10px 24px -14px color-mix(in oklab, var(--live-accent) 80%, transparent),
     0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
 }
-.palette-action.is-primary:hover { background-color: color-mix(in oklab, var(--live-accent) 8%, transparent); }
+@media (hover: hover) and (pointer: fine) {
+  .palette-action.is-primary:hover {
+    background-color: color-mix(in oklab, var(--live-accent) 8%, transparent);
+  }
+}
 .palette-action.is-primary .palette-action-icon { width: 30px; height: 30px; border-radius: 9px; }
 .palette-action-icon { transition: background-color var(--dur-fast) var(--ease-lux), color var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
-.palette-action:hover .palette-action-icon, .palette-action.is-active .palette-action-icon { transform: scale(1.06); }
+.palette-action.is-active .palette-action-icon { transform: scale(1.06); }
+@media (hover: hover) and (pointer: fine) {
+  .palette-action:hover .palette-action-icon {
+    transform: scale(1.06);
+  }
+}
 
 .palette-hints { background: light-dark(rgba(20,18,15,.022), rgba(0,0,0,.22)); }
 .palette-status::before { animation: statusPulse 2.6s var(--ease-io) infinite; }
@@ -2186,7 +2287,11 @@ h1 {
   background: light-dark(rgba(20,18,15,.055), rgba(255,255,255,.065));
   box-shadow: inset 0 0 0 1px var(--hairline);
 }
-.controls-pill:not(.is-magnetic) button:hover { transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  .controls-pill:not(.is-magnetic) button:hover {
+    transform: none;
+  }
+}
 
 .lx-bar {
   background: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
@@ -2214,8 +2319,13 @@ h1 {
     inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
 }
 .lx-bar-search svg.fa-magnifying-glass { color: var(--text-muted); }
-.lx-bar-search:hover svg.fa-magnifying-glass,
 .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  .lx-bar-search:hover svg.fa-magnifying-glass {
+    color: var(--text);
+    transform: none;
+  }
+}
 .lx-bar-label { font-size: 1.08rem; letter-spacing: -0.004em; }
 :root:lang(ar) .lx-bar-label { letter-spacing: 0; }
 .lx-bar-kbd {
@@ -2457,7 +2567,12 @@ h1 {
 .palette-facts { border-radius: 10px; }
 .palette-action { border-radius: 9px; }
 .palette-action-icon { border-radius: 7px; }
-.palette-action:hover .palette-action-icon, .palette-action.is-active .palette-action-icon { transform: none; }
+.palette-action.is-active .palette-action-icon { transform: none; }
+@media (hover: hover) and (pointer: fine) {
+  .palette-action:hover .palette-action-icon {
+    transform: none;
+  }
+}
 .palette-action.is-primary {
   border-radius: 11px;
   background:
@@ -2705,8 +2820,12 @@ h1 {
     inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,.09));
 }
 :root[data-palette="vivid"] .lx-bar-search svg.fa-magnifying-glass { color: color-mix(in oklab, var(--tab-accent) 60%, var(--text-muted)); }
-:root[data-palette="vivid"] .lx-bar-search:hover svg.fa-magnifying-glass,
 :root[data-palette="vivid"] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--tab-accent); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette="vivid"] .lx-bar-search:hover svg.fa-magnifying-glass {
+    color: var(--tab-accent);
+  }
+}
 :root[data-palette="vivid"] .tab-indicator {
   background:
     linear-gradient(180deg, light-dark(rgba(255,255,255,.96), rgba(255,255,255,.12)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.025))),
@@ -2866,7 +2985,7 @@ h1 {
   .tab-btn { padding: 0.55rem 0.95rem; }
   .tab-btn[aria-selected="true"] .label > span { max-width: 9ch; text-overflow: ellipsis; overflow: hidden; display: inline-block; padding-block: 0.75em; margin-block: -0.75em; }
   :root:lang(ar) .tab-btn[aria-selected="true"] .label > span { max-width: none; overflow: visible; text-overflow: clip; }
-  #lx-palette { margin-top: 8vh; }
+  #lx-palette { margin-top: 8dvh; }
   .palette-status { display: none; }
   .lx-bar-label { font-size: 1.05rem; }
   .controls-pill { top: calc(1rem + env(safe-area-inset-top, 0px)); inset-inline-start: 1rem; }
@@ -3265,11 +3384,22 @@ h1 {
 }
 :root:lang(ar) .lx-context-menu button { letter-spacing: 0; font-size: .86rem; }
 .lx-context-menu button svg { width: 15px; height: 15px; font-size: .8rem; color: light-dark(rgba(21,19,15,.5), rgba(246,245,242,.48)); transition: color var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
-.lx-context-menu button:hover, .lx-context-menu button:focus-visible {
+.lx-context-menu button:focus-visible {
   background: color-mix(in oklab, var(--menu-accent) 12%, light-dark(rgba(20,18,15,.035), rgba(255,255,255,.045)));
   color: var(--text);
 }
-.lx-context-menu button:hover svg, .lx-context-menu button:focus-visible svg { color: color-mix(in oklab, var(--menu-accent) 78%, var(--text)); }
+@media (hover: hover) and (pointer: fine) {
+  .lx-context-menu button:hover {
+    background: color-mix(in oklab, var(--menu-accent) 12%, light-dark(rgba(20,18,15,.035), rgba(255,255,255,.045)));
+    color: var(--text);
+  }
+}
+.lx-context-menu button:focus-visible svg { color: color-mix(in oklab, var(--menu-accent) 78%, var(--text)); }
+@media (hover: hover) and (pointer: fine) {
+  .lx-context-menu button:hover svg {
+    color: color-mix(in oklab, var(--menu-accent) 78%, var(--text));
+  }
+}
 .lx-context-menu button:focus-visible { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--menu-accent) 40%, transparent); }
 .lx-context-menu-sep { height: 1px; margin: 5px 8px; background: linear-gradient(90deg, transparent, light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08)) 12%, light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08)) 88%, transparent); }
 .lx-context-menu-label { padding: .5rem .7rem .3rem; font-size: .6rem; letter-spacing: .16em; color: light-dark(rgba(21,19,15,.45), rgba(246,245,242,.4)); }
@@ -3831,8 +3961,12 @@ h1 {
 }
 :root[data-palette="mono"] .tab-btn[aria-selected="true"] svg { color: var(--text); filter: none; }
 :root[data-palette="mono"] .lx-bar-search svg.fa-magnifying-glass { color: var(--text-muted); }
-:root[data-palette="mono"] .lx-bar-search:hover svg.fa-magnifying-glass,
 :root[data-palette="mono"] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette="mono"] .lx-bar-search:hover svg.fa-magnifying-glass {
+    color: var(--text);
+  }
+}
 :root[data-palette="mono"] .controls-pill button { color: color-mix(in oklab, var(--text) 72%, transparent); }
 :root[data-palette="mono"] .controls-pill button[aria-pressed="true"] svg,
 :root[data-palette="mono"] .controls-pill button[aria-expanded="true"] svg { color: var(--text); }
@@ -3903,7 +4037,7 @@ h1 {
   --dur-slow: 620ms;
   --dur-story: 820ms;
   --dur-ambient: 700ms;
-  --gap: clamp(0.8rem, 1.8vh, 1.3rem);
+  --gap: clamp(0.8rem, 1.8dvh, 1.3rem);
   --hairline: light-dark(rgba(24,20,14,.085), rgba(255,255,255,.065));
   --hairline-strong: light-dark(rgba(24,20,14,.2), rgba(255,255,255,.18));
   --lux-ink: light-dark(#17140f, #f4f2ee);
@@ -4022,8 +4156,13 @@ body.is-booted .app-card.is-boot-card { animation-duration: 900ms; }
     inset 0 1px 0 light-dark(rgba(255,255,255,.95), rgba(255,255,255,.05));
 }
 :root[data-palette] .lx-bar-search svg.fa-magnifying-glass { color: var(--lux-ink-soft); transition: color var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux); }
-:root[data-palette] .lx-bar-search:hover svg.fa-magnifying-glass,
 :root[data-palette] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); transform: scale(1.05); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette] .lx-bar-search:hover svg.fa-magnifying-glass {
+    color: var(--text);
+    transform: scale(1.05);
+  }
+}
 .lx-bar-label { font-size: 1.04rem; font-weight: 400; transition: color var(--dur-base) var(--ease-lux); }
 :root[data-palette] .lx-bar-kbd {
   font-weight: 500; letter-spacing: .04em;
@@ -4054,7 +4193,7 @@ body.is-booted .app-card.is-boot-card { animation-duration: 900ms; }
     linear-gradient(180deg, light-dark(rgba(255,255,255,.35), rgba(255,255,255,.02)), transparent 50%);
   background-size: 100% 1px, 100% 100%;
   border-color: var(--hairline);
-  padding: clamp(1.3rem, 2.7vh, 1.95rem);
+  padding: clamp(1.3rem, 2.7dvh, 1.95rem);
   transition: border-color var(--dur-base) var(--ease-lux), background-color var(--dur-base) var(--ease-lux);
 }
 :root[data-palette][data-theme] .card-shadow {
@@ -4306,14 +4445,28 @@ body.is-booted .app-card.is-boot-card { animation-duration: 900ms; }
   transition: opacity var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux), color var(--dur-fast) var(--ease-lux);
 }
 .lx-context-menu .ctx-side svg { width: 12px; height: 12px; font-size: .72rem; }
-.ctx-vrow:hover .ctx-side, .ctx-vrow:focus-within .ctx-side { opacity: 1; }
-.lx-context-menu .ctx-side:hover, .lx-context-menu .ctx-side:focus-visible { color: var(--text); }
+.ctx-vrow:focus-within .ctx-side { opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .ctx-vrow:hover .ctx-side {
+    opacity: 1;
+  }
+}
+.lx-context-menu .ctx-side:focus-visible { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .lx-context-menu .ctx-side:hover {
+    color: var(--text);
+  }
+}
 .lx-context-menu .ctx-vrow.is-current .ctx-vopen { color: var(--text); font-weight: 600; }
 .lx-context-menu .ctx-vrow.is-current .ctx-vopen svg { color: color-mix(in oklab, var(--menu-accent) 80%, var(--text)); }
 .lx-context-menu .ctx-pin svg { transition: transform var(--dur-base) var(--ease-spring), color var(--dur-fast) var(--ease-lux); transform: rotate(35deg) scale(.92); }
 .lx-context-menu .ctx-pin.is-pinned { opacity: 1; color: color-mix(in oklab, var(--menu-accent) 85%, var(--text)); }
 .lx-context-menu .ctx-pin.is-pinned svg { transform: none; }
-.lx-context-menu .ctx-pin:not(.is-pinned):hover svg { transform: rotate(12deg) scale(1); }
+@media (hover: hover) and (pointer: fine) {
+  .lx-context-menu .ctx-pin:not(.is-pinned):hover svg {
+    transform: rotate(12deg) scale(1);
+  }
+}
 .lx-context-menu .ctx-pin.is-nudge svg { animation: pinNudge 420ms var(--ease-lux); }
 @keyframes pinNudge { 30% { transform: translateY(-2px) scale(1.08); } }
 @media (hover: none) {
@@ -4375,15 +4528,6 @@ h1 {
   .row-chips { justify-self: start; }
   .row-go { display: none; }
 }
-@keyframes lxRowIn { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
-@media (max-width: 1024px) { @supports (animation-timeline: view()) { :root .app-grid[data-layout="list"] > .app-card--row { animation: none; } } }
-body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; }
-body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: lxRowIn 380ms var(--ease-lux) backwards; animation-delay: calc(120ms + min(var(--row, 0), 8) * 24ms); animation-timeline: auto; }
-@media (prefers-reduced-motion: reduce) { body.is-booted .app-grid[data-layout="list"] > .app-card--row.is-boot-card { animation: none; } }
-@media (max-width: 1024px) { @supports (animation-timeline: view()) { :root .app-grid[data-layout="icons"] > .app-card--icon { animation: none; } } }
-body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { animation: none; }
-body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { animation: lxRowIn 380ms var(--ease-lux) backwards; animation-delay: calc(120ms + min(var(--row, 0), 8) * 24ms); animation-timeline: auto; }
-@media (prefers-reduced-motion: reduce) { body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { animation: none; } }
 :root .app-grid[data-layout="list"] {
   --lx-panel-pad: 6px;
   --lx-row-icon: 40px;
@@ -4595,11 +4739,20 @@ body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { a
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
-  :root .app-grid[data-layout="list"] > .app-card--row .card-clip,
-  :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip,
-  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { background: transparent; box-shadow: none; }
-  :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip,
-  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { outline: 2px solid Highlight; outline-offset: -2px; }
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip, :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: transparent; box-shadow: none; }
+  @media (hover: hover) and (pointer: fine) {
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+    background: transparent;
+    box-shadow: none;
+  }
+}
+  :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { outline: 2px solid Highlight; outline-offset: -2px; }
+  @media (hover: hover) and (pointer: fine) {
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+}
   :root .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: GrayText; }
   :root .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after { background: GrayText; }
 }
@@ -4617,78 +4770,179 @@ body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { a
 .look-view[data-view="icons"] { grid-template: 4px 4px 4px / 4px 4px 4px; gap: 2px; }
 .look-view[data-view="icons"] i { border-radius: 1.5px; }
 :root .app-grid[data-layout="icons"] {
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  --ic-cols: 4;
+  --ic-cap: 18px;
+  --ic-tint: 6%;
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
+  --lx-panel-shadow: 0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)), 0 14px 34px -28px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.72)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
+  display: grid;
+  grid-template-columns: repeat(var(--ic-cols), minmax(0, 1fr));
   grid-template-rows: none;
   grid-auto-rows: max-content;
+  grid-auto-flow: row;
   align-content: start;
-  gap: 20px 8px;
-  padding: 6px 4px;
+  flex: 0 1 auto;
+  align-self: center;
+  inline-size: var(--lx-panel-w);
+  max-inline-size: none;
+  margin-inline: 0;
+  column-gap: 12px;
+  row-gap: calc(var(--ic-cap) + 12px);
+  padding: calc(var(--ic-cap) + 8px) 6px 6px;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--border-highlight) transparent;
 }
-:root .app-grid[data-layout="icons"] > .app-card--icon {
+:root[data-palette="vivid"] .app-grid[data-layout="icons"] {
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.84), rgba(255,255,255,.062)), light-dark(rgba(255,255,255,.56), rgba(255,255,255,.018)));
+  --lx-panel-shadow: 0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.35)), 0 16px 38px -28px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.78)), 0 20px 44px -34px color-mix(in oklab, var(--tab-accent) 40%, transparent), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.09));
+}
+:root[data-palette="muted"] .app-grid[data-layout="icons"] {
+  --lx-panel-glass: linear-gradient(light-dark(rgba(255,253,249,.7), rgba(255,248,240,.035)), light-dark(rgba(255,253,249,.7), rgba(255,248,240,.035)));
+  --lx-panel-shadow: 0 1px 2px light-dark(rgba(60,48,36,.05), rgba(0,0,0,.3)), 0 12px 30px -22px light-dark(rgba(60,48,36,.2), rgba(0,0,0,.7)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.05));
+}
+:root[data-palette="mono"] .app-grid[data-layout="icons"] {
+  --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.82), rgba(255,255,255,.05)), light-dark(rgba(255,255,255,.62), rgba(255,255,255,.018)));
+}
+:root[data-palette="mono"] .app-grid[data-layout="icons"] { --ic-tint: 0%; }
+@media (max-width: 640px) {
+  :root .app-grid[data-layout="icons"] { inline-size: 100%; }
+}
+:root .container .app-grid[data-layout="icons"] {
+  grid-template-columns: repeat(var(--ic-cols, 4), minmax(0, 1fr)) !important;
+  grid-template-rows: none !important;
+  grid-auto-rows: max-content !important;
+}
+.icon-plate {
+  grid-column: span var(--n);
+  display: grid;
+  grid-template-columns: subgrid;
+  position: relative;
+  isolation: isolate;
+  min-inline-size: 0;
+}
+.icon-plate::before {
+  content: '';
+  position: absolute;
+  inset-block: calc(-1 * var(--ic-cap) - 4px) -4px;
+  inset-inline: -4px;
+  z-index: -1;
+  border: 1px solid var(--hairline);
+  border-radius: min(var(--r-card), 16px);
+  background-color: color-mix(in oklab, var(--c1) var(--ic-tint, 6%), transparent);
+  background-image: var(--lx-panel-glass);
+  box-shadow: var(--lx-panel-shadow);
+  -webkit-backdrop-filter: blur(22px) saturate(175%);
+  backdrop-filter: blur(22px) saturate(175%);
+  pointer-events: none;
+}
+.icon-plate.is-closed { opacity: .5; filter: grayscale(1); }
+.icon-plate-cap {
+  position: absolute;
+  inset-block-start: calc(-1 * var(--ic-cap) - 2px);
+  inset-inline: 10px;
+  block-size: var(--ic-cap);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 11px/1 var(--ui-font);
+  font-variant-caps: all-small-caps;
+  letter-spacing: .08em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  pointer-events: none;
+}
+.icon-plate-cap:lang(ar) { letter-spacing: 0; font-variant-caps: normal; font-size: 12px; }
+:root:lang(ar) .icon-plate-cap { letter-spacing: 0; font-variant-caps: normal; font-size: 12px; }
+:root .app-grid[data-layout="icons"] .app-card--icon {
   display: flex; flex-direction: column; align-items: center; gap: 9px;
-  grid-column: auto; grid-row: auto;
+  grid-column: auto !important; grid-row: auto !important;
   min-inline-size: 0; inline-size: auto;
   padding: 4px 2px 2px;
-  border-radius: 14px;
+  border-radius: calc(var(--r-card) * .78);
   cursor: pointer;
 }
 :root .app-grid[data-layout="icons"] > .app-card--icon.status-closed .app-icon-wrapper,
 :root .app-grid[data-layout="icons"] > .app-card--icon.status-closed .icon-label { opacity: .5; }
-:root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper {
+:root .app-grid[data-layout="icons"] > .app-card--icon.status-closed .app-icon-wrapper { filter: grayscale(1); }
+:root .app-grid[data-layout="icons"] .icon-plate > .app-card--icon.status-closed .app-icon-wrapper,
+:root .app-grid[data-layout="icons"] .icon-plate > .app-card--icon.status-closed .icon-label { opacity: 1; filter: none; }
+:root .app-grid[data-layout="icons"] .app-card--icon .app-icon-wrapper {
   --icon-size: 64px;
   --icon-lift: 0;
   flex-shrink: 0;
   opacity: 1;
   transform: none;
-  transition: transform 160ms ease-out;
+  transition: transform var(--dur-fast) var(--ease-lux);
+  pointer-events: none;
 }
-:root .app-grid[data-layout="icons"] > .app-card--icon .app-icon { font-size: 1.7rem; }
-:root .app-grid[data-layout="icons"] > .app-card--icon.status-closed .app-icon-wrapper { filter: grayscale(1); }
+:root .app-grid[data-layout="icons"] .app-card--icon .app-icon { font-size: 1.7rem; }
 @media (hover: hover) and (pointer: fine) {
-  :root .app-grid[data-layout="icons"] > .app-card--icon:hover .app-icon-wrapper { transform: translateY(-2px); }
+  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { transform: translateY(-2px); }
+  :root .app-grid[data-layout="icons"] .app-card--icon:hover .icon-label { color: var(--text); }
 }
-:root .app-grid[data-layout="icons"] > .app-card--icon .icon-label {
+:root .app-grid[data-layout="icons"] .app-card--icon:has(.card-link-overlay:focus-visible) .icon-label { color: var(--text); }
+:root .app-grid[data-layout="icons"] .app-card--icon .icon-label {
   position: relative; z-index: 2;
   max-inline-size: 100%;
   font: 500 12px/1.3 var(--ui-font);
   text-align: center;
+  text-wrap: balance;
   color: var(--text-muted);
-  overflow: hidden;
-  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2;
-  overflow-wrap: anywhere;
   pointer-events: none;
-  transition: color 160ms ease-out;
+  transition: color var(--dur-fast) var(--ease-lux);
 }
-:root .app-grid[data-layout="icons"] > .app-card--icon:hover .icon-label,
-:root .app-grid[data-layout="icons"] > .app-card--icon:has(.card-link-overlay:focus-visible) .icon-label { color: var(--text); }
-:root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper { pointer-events: none; }
+:root .app-grid[data-layout="icons"] .app-card--icon .icon-label.is-tight { font-size: 11px; }
 .icon-new-dot {
   position: absolute; inset-block-start: -2px; inset-inline-end: -2px;
-  width: 8px; height: 8px; border-radius: 50%;
-  background: light-dark(#a8720f, #d9a83e);
+  inline-size: 8px; block-size: 8px; border-radius: 50%;
+  background: var(--tab-accent);
   box-shadow: 0 0 0 2px var(--bg);
   z-index: 3;
 }
+.icon-plate-cap .icon-new-dot { position: static; flex: none; box-shadow: none; }
 @media (max-width: 360px) {
-  :root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper { --icon-size: 56px; }
+  :root .app-grid[data-layout="icons"] .app-card--icon .app-icon-wrapper { --icon-size: 56px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  :root .app-grid[data-layout="icons"] > .app-card--icon .app-icon-wrapper,
-  :root .app-grid[data-layout="icons"] > .app-card--icon .icon-label { transition: none; }
-  :root .app-grid[data-layout="icons"] > .app-card--icon:hover .app-icon-wrapper { transform: none; }
+  :root .app-grid[data-layout="icons"] .app-card--icon .app-icon-wrapper,
+  :root .app-grid[data-layout="icons"] .app-card--icon .icon-label { transition: none; }
+  @media (hover: hover) and (pointer: fine) {
+  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper {
+    transform: none;
+  }
+}
 }
 @media (max-width: 1024px) {
+  :root .app-grid[data-layout="list"],
+  :root .app-grid[data-layout="icons"] {
+    overflow: visible;
+    overscroll-behavior: auto;
+  }
   @supports (overflow: clip) {
     :root .app-grid[data-layout="list"],
     :root .app-grid[data-layout="icons"] {
       overflow: clip;
-      overscroll-behavior: auto;
     }
   }
+}
+.app-grid { touch-action: pan-y pinch-zoom; }
+@media (pointer: coarse), (hover: none) {
+  .app-card:active { scale: .96; }
+  .tab-btn:active, .variant-chip:active, .controls-pill button:active, .lx-bar-search:active {
+    scale: .96;
+    transition: scale var(--dur-fast) var(--ease-lux);
+  }
+}
+@media (pointer: coarse) {
+  .tab-btn { min-block-size: 44px; }
+  .variant-chips { padding: 2px; }
+  .variant-chip { min-block-size: 44px !important; min-inline-size: 44px !important; }
+  .controls-pill button { inline-size: 44px; block-size: 44px; }
+  .lx-bar-search { min-block-size: 44px; }
 }
 </style>
 </head>
@@ -4794,32 +5048,32 @@ body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { a
         {
           "id": "ledger-form", "title": { "ar": "نموذج", "en": "Form" }, "icon": "fa-briefcase", "gradient": ["#707a8c", "#7c9bff", "#1c2f8f"], "closed": true,
           "variants": [
-            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt", "favicon": "icons/ledger-form--tally.png?v=44ec5894", "favGlyph": "icons/ledger-form--tally.glyph.png?v=d92d318b", "favGradient": ["#d77250", "#fdc1ad", "#742301"] },
-            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders", "favicon": "icons/ledger-form--folio.png?v=2aa7ce23", "favGlyph": "icons/ledger-form--folio.glyph.png?v=ee7a29d5" }
+            { "id": "tally", "label": { "ar": "تالي", "en": "Tally" }, "url": "https://slippery-form-2-2.vercel.app/", "icon": "fa-bolt" },
+            { "id": "folio", "label": { "ar": "فوليو", "en": "Folio" }, "url": "https://slippery-form.vercel.app/", "icon": "fa-sliders" }
           ],
           "defaultVariant": 0
         },
-        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"], "favicon": "icons/parser.png?v=392badec", "favGlyph": "icons/parser.glyph.png?v=2cd27218", "favGradient": ["#bc73be", "#f4baf4", "#612664"] },
-        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"], "favicon": "icons/workspace.png?v=28ed3b79", "favGlyph": "icons/workspace.glyph.png?v=27896169", "favGradient": ["#c18412", "#fbc77c", "#5b3b00"] },
+        { "id": "parser", "title": { "ar": "المحلل", "en": "Parser" }, "url": "https://lx-parser.vercel.app/", "icon": "fa-eye", "gradient": ["#3ea88d", "#5eead4", "#075c46"] },
+        { "id": "workspace", "title": { "ar": "مجموعات دوائية", "en": "Workspace" }, "url": "https://desktop-ru4x.vercel.app/", "icon": "fa-pills", "gradient": ["#8f7ae8", "#c4a6ff", "#4c1d95"] },
         {
           "id": "drug-list", "title": { "ar": "قائمة الأدوية", "en": "Drug List" }, "icon": "fa-search", "gradient": ["#5e8df0", "#7dd3fc", "#075985"],
           "variants": [
-            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt", "favicon": "icons/drug-list--free.png?v=eb76dca4", "favGlyph": "icons/drug-list--free.glyph.png?v=b48bc00e", "favGradient": ["#de6e39", "#ffc1a7", "#702900"] },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders", "favicon": "icons/drug-list--full.png?v=5f81fc0a", "favGradient": ["#928bba", "#d1ccf0", "#433b65"] }
+            { "id": "free", "label": { "ar": "مجاني", "en": "Free" }, "url": "https://searchbar-five-beta.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://lx-search-kappa.vercel.app/", "icon": "fa-sliders" }
           ],
           "defaultVariant": 0
         },
         {
           "id": "paid-calculator", "title": { "ar": "المنفذ والتحمل", "en": "Paid" }, "icon": "fa-dollar-sign", "gradient": ["#c96b8b", "#ffb3d9", "#8a1150"],
           "variants": [
-            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign", "favicon": "icons/paid-calculator--calc.png?v=c0757d01", "favGlyph": "icons/paid-calculator--calc.glyph.png?v=2804fbe1", "favGradient": ["#8092b8", "#c3d1ef", "#334263"] },
-            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book", "favicon": "icons/paid-calculator--daleel.png?v=78f3e2fe", "favGlyph": "icons/paid-calculator--daleel.glyph.png?v=3cf229df" }
+            { "id": "calc", "label": { "ar": "الحاسبة", "en": "Calculator" }, "url": "https://newlist-eta.vercel.app/", "icon": "fa-dollar-sign" },
+            { "id": "daleel", "label": { "ar": "دليل 460", "en": "Daleel 460" }, "url": "https://460-prices.vercel.app/", "icon": "fa-book" }
           ],
           "defaultVariant": 0
         },
-        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"], "favicon": "icons/protocols.png?v=7d18d40f", "favGlyph": "icons/protocols.glyph.png?v=d6852eae" },
-        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11", "favicon": "icons/index-builder.png?v=b454dc9c", "favGlyph": "icons/index-builder.glyph.png?v=b6283202", "favGradient": ["#6b9f8f", "#b4dbce", "#184d3f"] },
-        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11", "favicon": "icons/dafter.png?v=12ded8fd", "favGlyph": "icons/dafter.glyph.png?v=50040b9b", "favGradient": ["#698cf0", "#bed0fd", "#273c81"] }
+        { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"] },
+        { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11" },
+        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" }
       ]
     },
     {
@@ -4828,42 +5082,42 @@ body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { a
         {
           "id": "id-dates", "title": { "ar": "الأرقام", "en": "Numbers" }, "icon": "fa-id-card", "gradient": ["#4aa5c5", "#67e8f9", "#083344"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "id", "label": { "ar": "الرقم القومي", "en": "ID" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card", "favicon": "icons/id-dates--id.png?v=10f7301b", "favGlyph": "icons/id-dates--id.glyph.png?v=dc56d42b", "favGradient": ["#cc7b49", "#fcc3a2", "#693005"] },
-            { "id": "contacts", "label": { "ar": "جهات الاتصال", "en": "Contacts" }, "url": "https://contact-flow-web-orpin.vercel.app/", "icon": "fa-address-book", "favicon": "icons/id-dates--contacts.png?v=b19f93a7", "favGlyph": "icons/id-dates--contacts.glyph.png?v=21a5c924", "favGradient": ["#e3674b", "#fec0b1", "#75220f"] }
+            { "id": "id", "label": { "ar": "الرقم القومي", "en": "ID" }, "url": "https://lx-id.vercel.app/", "icon": "fa-id-card" },
+            { "id": "contacts", "label": { "ar": "جهات الاتصال", "en": "Contacts" }, "url": "https://contact-flow-web-orpin.vercel.app/", "icon": "fa-address-book" }
           ],
           "defaultVariant": 0
         },
         {
           "id": "roi", "title": { "ar": "عائد الاستثمار", "en": "ROI Calculator" }, "icon": "fa-chart-line", "gradient": ["#42a374", "#bbf7d0", "#14532d"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt", "favicon": "icons/roi--express.png?v=3177b49e", "favGlyph": "icons/roi--express.glyph.png?v=a257751f", "favGradient": ["#d27556", "#fdc1ad", "#742301"] },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders", "favicon": "icons/roi--full.png?v=4ba4c5cc", "favGlyph": "icons/roi--full.glyph.png?v=49607f31", "favGradient": ["#cb7a5b", "#fdc1ab", "#702805"] }
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://roi-calc-express.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://roi-calculator-eight-omega.vercel.app/", "icon": "fa-sliders" }
           ],
           "defaultVariant": 0
         },
-        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25", "favicon": "icons/survival-mirror.png?v=539e16a8", "favGlyph": "icons/survival-mirror.glyph.png?v=48d3043a", "favGradient": ["#8a8dbd", "#cacdf5", "#3c3d67"] },
+        { "id": "survival-mirror", "title": { "ar": "منحنى البقاء", "en": "Survival Mirror" }, "url": "https://survival-mirror.vercel.app/", "icon": "fa-heart-pulse", "gradient": ["#5b7290", "#a8c5e0", "#1c2b3d"], "isNew": true, "since": "2026-08-25" },
         {
           "id": "qisma-mizan", "title": { "ar": "قسمة العوائد", "en": "Qisma / Mizan" }, "icon": "fa-scale-balanced", "gradient": ["#ab8a4f", "#fef08a", "#713f12"], "isNew": true, "since": "2026-08-11",
           "variants": [
-            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/qisma-mizan--express.png?v=2b0bd76d", "favGlyph": "icons/qisma-mizan--express.glyph.png?v=cb8776de", "favGradient": ["#d47452", "#fdc1ac", "#722604"] },
-            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders", "favicon": "icons/qisma-mizan--full.png?v=24c05296", "favGlyph": "icons/qisma-mizan--full.glyph.png?v=6edb4b5d", "favGradient": ["#d47354", "#fdc1ad", "#742302"] }
+            { "id": "express", "label": { "ar": "ميزان", "en": "Mizan" }, "url": "https://m-izan.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "قسمة", "en": "Qisma" }, "url": "https://shareholders-coral.vercel.app/", "icon": "fa-sliders" }
           ],
           "defaultVariant": 0
         },
-        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26", "favicon": "icons/solver.png?v=f73a61e3", "favGlyph": "icons/solver.glyph.png?v=5e380607", "favGradient": ["#66a091", "#afdcd0", "#0e4d41"] },
+        { "id": "solver", "title": { "ar": "حل المعادلات", "en": "Solver" }, "url": "https://solver-clone.vercel.app/", "icon": "fa-square-root-variable", "gradient": ["#4f7fd9", "#a5c4ff", "#1e3a7a"], "isNew": true, "since": "2026-09-26" },
         {
           "id": "plan-maker", "title": { "ar": "الخطة", "en": "Planner" }, "icon": "fa-calendar-days", "gradient": ["#9c6fa8", "#e5c3ef", "#5b2f66"], "isNew": true, "since": "2026-08-30",
           "variants": [
-            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt", "favicon": "icons/plan-maker--express.png?v=4b23b22f", "favGlyph": "icons/plan-maker--express.glyph.png?v=29871bd4", "favGradient": ["#5c9eac", "#acdae4", "#034b57"] },
-            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders", "favicon": "icons/plan-maker--full.png?v=484147c8", "favGlyph": "icons/plan-maker--full.glyph.png?v=fc0770e1", "favGradient": ["#af82a1", "#eac4dd", "#5a334f"] }
+            { "id": "express", "label": { "ar": "السريع", "en": "Express" }, "url": "https://rushed-plan.vercel.app/", "icon": "fa-bolt" },
+            { "id": "full", "label": { "ar": "الكامل", "en": "Full" }, "url": "https://plan-maker-tan.vercel.app/", "icon": "fa-sliders" }
           ],
           "defaultVariant": 0
         },
         {
           "id": "criteria-builder", "title": { "ar": "بناء المعايير", "en": "Criteria Builder" }, "icon": "fa-compass", "gradient": ["#d0785a", "#ffc8a8", "#7a2e17"], "isNew": true, "since": "2026-09-26",
           "variants": [
-            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass", "favicon": "icons/criteria-builder--meridian.png?v=c69de6b0", "favGlyph": "icons/criteria-builder--meridian.glyph.png?v=6ace0c9e", "favGradient": ["#9889b7", "#d6caee", "#483962"] },
-            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star", "favicon": "icons/criteria-builder--rubric.png?v=ed7ebbb0", "favGlyph": "icons/criteria-builder--rubric.glyph.png?v=75c4fb82", "favGradient": ["#9884ce", "#d5c8fd", "#493375"] }
+            { "id": "meridian", "label": { "ar": "ميريديان", "en": "Meridian" }, "url": "https://facilities-demo-tau.vercel.app/", "icon": "fa-compass" },
+            { "id": "rubric", "label": { "ar": "سلّم التقييم", "en": "Rubric" }, "url": "https://ranking-builder-demo.vercel.app/", "icon": "fa-ranking-star" }
           ],
           "defaultVariant": 0
         }
@@ -4875,30 +5129,30 @@ body.is-booted .app-grid[data-layout="icons"] > .app-card--icon.is-boot-card { a
         {
           "id": "prep", "title": { "ar": "تجهيز البيانات", "en": "Data Prep" }, "icon": "fa-chart-column", "gradient": ["#3f9e8f", "#9ce8d6", "#0f4a40"], "isNew": true, "since": "2026-09-27",
           "variants": [
-            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column", "favicon": "icons/prep--prep.png?v=ef2e4c06", "favGlyph": "icons/prep--prep.glyph.png?v=a570622e", "favGradient": ["#e36462", "#ffbeba", "#751f22"] },
-            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group", "favicon": "icons/prep--floe.png?v=bcec1d75", "favGlyph": "icons/prep--floe.glyph.png?v=1ddd6166", "favGradient": ["#c47f59", "#fac3a6", "#6b2e01"] }
+            { "id": "prep", "label": { "ar": "تجهيز", "en": "DuckBench" }, "url": "https://duckbench2.vercel.app/", "icon": "fa-chart-column" },
+            { "id": "floe", "label": { "ar": "فلو", "en": "Floe" }, "url": "https://polars-desktop-demo.vercel.app/", "icon": "fa-layer-group" }
           ],
           "defaultVariant": 0
         },
         {
           "id": "text-tools", "title": { "ar": "أدوات النصوص", "en": "Text Tools" }, "icon": "fa-font", "gradient": ["#c08a3e", "#f6d9a8", "#6b4513"], "isNew": true, "since": "2026-09-27",
           "variants": [
-            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter", "favicon": "icons/text-tools--weft.png?v=621e397e", "favGlyph": "icons/text-tools--weft.glyph.png?v=63434c12", "favGradient": ["#d47354", "#fdc1ad", "#742302"] },
-            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font", "favicon": "icons/text-tools--text.png?v=3eb7c8ed", "favGlyph": "icons/text-tools--text.glyph.png?v=bbd0509f", "favGradient": ["#c18510", "#f9c880", "#5a3b00"] }
+            { "id": "weft", "label": { "ar": "تنقية", "en": "Weft" }, "url": "https://data-cleaner-coral.vercel.app/", "icon": "fa-filter" },
+            { "id": "text", "label": { "ar": "نصوص", "en": "Text" }, "url": "https://text-tools-kohl.vercel.app/", "icon": "fa-font" }
           ],
           "defaultVariant": 0
         },
-        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11", "favicon": "icons/to-do.png?v=7a55d0d6", "favGlyph": "icons/to-do.glyph.png?v=7de4a905" },
+        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
         {
           "id": "pharmacy-tools", "title": { "ar": "أدوات الصيدلية", "en": "Pharmacy Tools" }, "icon": "fa-pills", "gradient": ["#5fa05a", "#c9f0c0", "#1f4d1c"], "isNew": true, "since": "2026-10-02",
           "variants": [
-            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check", "favicon": "icons/pharmacy-tools--pillbug.png?v=719f37db", "favGlyph": "icons/pharmacy-tools--pillbug.glyph.png?v=888a6cda", "favGradient": ["#d27556", "#fdc1ad", "#742301"] },
-            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator", "favicon": "icons/pharmacy-tools--bugvert.png?v=8a10109e", "favGradient": ["#c97a64", "#fec0af", "#6f2914"] }
+            { "id": "pillbug", "label": { "ar": "إدارة القوائم", "en": "Pillbug" }, "url": "https://pillbug.vercel.app/", "icon": "fa-list-check" },
+            { "id": "bugvert", "label": { "ar": "محول الوحدة", "en": "Bugvert" }, "url": "https://bugvert.vercel.app/", "icon": "fa-calculator" }
           ],
           "defaultVariant": 0
         },
-        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11", "favicon": "icons/entity-tracker.png?v=09f60e0b", "favGradient": ["#569db6", "#a6daee", "#014a5d"] },
-        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18", "favicon": "icons/draw.png?v=b8f15262", "favGlyph": "icons/draw.glyph.png?v=30ab41cd" }
+        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11" },
+        { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18" }
       ]
     }
   ]
@@ -5205,21 +5459,71 @@ const setIcon = (element, name) => {
 };
 
 const GLYPH_RE = /^icons\/[a-z0-9-]+\.glyph\.png\?v=[0-9a-f]{8}$/;
+const FAV_RE = /^icons\/[a-z0-9-]+\.png\?v=[0-9a-f]{8}$/;
 const HEX6 = /^#[0-9a-f]{6}$/i;
-const glyphOf = (app, variant) => { if (location.protocol === 'file:') return null; const g = (variant || app).favGlyph; return typeof g === 'string' && GLYPH_RE.test(g) ? g : null; };
-const gradientOf = (app, variant) => { const g = (variant || app).favGradient; return Array.isArray(g) && g.length === 3 && g.every((c) => HEX6.test(c)) ? g : app.gradient; };
-const glyphHtml = (url, cls) => `<span class="${cls ? cls + ' ' : ''}lx-glyph" style="--glyph:url(${url})" aria-hidden="true"></span>`;
-const tileIconHtml = (app, variant, iconName, cls) => {
-  const url = glyphOf(app, variant);
-  return url ? glyphHtml(url, cls) : icon(iconName, cls);
+const ICONS_KEY = 'lx-icons';
+const validIconManifest = (m) => !!m && typeof m === 'object' && m.version === 1 && !!m.icons && typeof m.icons === 'object' && !Array.isArray(m.icons);
+const readIconsCache = () => {
+  try {
+    const m = JSON.parse(localStorage.getItem(ICONS_KEY) || 'null');
+    return validIconManifest(m) ? m : null;
+  } catch (e) { return null; }
 };
+let iconManifest = readIconsCache();
+const markKey = (app, variant) => (variant ? `${app.id}--${variant.id}` : String(app.id).replace('::', '--'));
+const iconEntry = (key) => {
+  if (location.protocol === 'file:' || !iconManifest || !Object.hasOwn(iconManifest.icons, key)) return null;
+  const e = iconManifest.icons[key];
+  return e && typeof e === 'object' ? e : null;
+};
+const glyphUrlFor = (key) => {
+  const e = iconEntry(key);
+  return e && e.status !== 'default' && typeof e.glyph === 'string' && GLYPH_RE.test(e.glyph) ? e.glyph : null;
+};
+const faviconUrlFor = (key) => {
+  const e = iconEntry(key);
+  return e && e.status !== 'default' && typeof e.favicon === 'string' && FAV_RE.test(e.favicon) ? e.favicon : null;
+};
+const findAppById = (id) => {
+  for (const cat of categories) {
+    const hit = cat.apps.find((a) => a.id === id);
+    if (hit) return hit;
+  }
+  return null;
+};
+const appMark = (app, variant) => {
+  const base = findAppById(app.parentId || app.id) || app;
+  const hasVariants = Array.isArray(base.variants) && base.variants.length > 0;
+  const keys = hasVariants ? base.variants.map((v) => `${base.id}--${v.id}`) : [String(base.id)];
+  const pick = variant || (hasVariants && !app.parentId ? base.variants[Number(base.defaultVariant) || 0] : null);
+  const key = markKey(app, pick);
+  const glyph = keys.every(glyphUrlFor) ? glyphUrlFor(key) : null;
+  if (glyph) return { kind: 'glyph', url: glyph };
+  const fav = keys.every(faviconUrlFor) ? faviconUrlFor(key) : null;
+  if (fav) return { kind: 'favicon', url: fav };
+  return { kind: 'fa', url: null };
+};
+const glyphHtml = (url, cls) => `<span class="${cls ? cls + ' ' : ''}lx-glyph" style="--glyph:url(${url})" aria-hidden="true"></span>`;
+const favHtml = (url, cls) => `<img class="${cls ? cls + ' ' : ''}lx-fav" src="${url}" alt="" decoding="async" draggable="false">`;
+const markHtml = (app, variant, iconName, cls) => {
+  const m = appMark(app, variant);
+  if (m.kind === 'glyph') return glyphHtml(m.url, cls);
+  if (m.kind === 'favicon') return favHtml(m.url, cls);
+  return icon(iconName, cls);
+};
+const wrapOpen = (app, variant) => `<div class="app-icon-wrapper" data-mark="${appMark(app, variant).kind}">`;
+const markKind = (n) => (n.classList.contains('lx-glyph') ? 'glyph' : n.classList.contains('lx-fav') ? 'favicon' : 'fa');
 const retileIcon = (host, app, variant, iconName, cls = 'app-icon') => {
-  const cur = host.querySelector(cls ? '.' + cls : ':scope > svg, :scope > .lx-glyph');
-  const url = glyphOf(app, variant);
-  const isGlyph = !!cur && cur.classList.contains('lx-glyph');
-  if (cur && url && isGlyph) { cur.style.setProperty('--glyph', `url(${url})`); return cur; }
-  if (cur && !url && !isGlyph) { setIcon(cur, iconName); return cur; }
-  const html = tileIconHtml(app, variant, iconName, cls);
+  const m = appMark(app, variant);
+  if (host.classList.contains('app-icon-wrapper') || host.classList.contains('ctx-head-icon')) host.dataset.mark = m.kind;
+  const cur = host.querySelector(cls ? '.' + cls : ':scope > svg, :scope > .lx-glyph, :scope > .lx-fav');
+  if (cur && markKind(cur) === m.kind) {
+    if (m.kind === 'glyph') cur.style.setProperty('--glyph', `url(${m.url})`);
+    else if (m.kind === 'favicon') { if (cur.getAttribute('src') !== m.url) cur.setAttribute('src', m.url); }
+    else setIcon(cur, iconName);
+    return cur;
+  }
+  const html = markHtml(app, variant, iconName, cls);
   if (!cur) { host.insertAdjacentHTML('afterbegin', html); return host.firstElementChild; }
   cur.insertAdjacentHTML('afterend', html);
   const next = cur.nextElementSibling;
@@ -5518,9 +5822,8 @@ const MQ = (() => {
 })();
 
 const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
-const GRID_SWITCH = { outMs: 190, outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', inMs: 620, delayBase: 60, delaySpread: 150 };
+const MOTION = { outMs: 190, outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', inMs: 620, delayBase: 60, delaySpread: 150, bootOffset: 120, bootSpread: 260, travelOut: 10, travelIn: 14, liftIn: 8, scaleOut: 0.988, scaleIn: 0.982 };
 const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
-const LIST_SWITCH = { outMs: 110, outEase: EASE_ACCEL, inMs: 320, delayBase: 110, delayStep: 22, delayCap: 8, travelPx: 8, liftPx: 6 };
 
 class Spring {
   constructor(k = 190, c = 24, v = 0, scale = 1, px = false) {
@@ -5707,9 +6010,12 @@ const isFresh = (app) => {
 let pointerFieldDirty = true;
 let pointerVX = 0;
 
-const createCard = (app, idx, placement, cat) => {
+const createCard = (app, idx, placement, cat, opts = {}) => {
   const el = document.createElement('div');
-  const variantIndex = getSelectedVariantIndex(app);
+  const forcedIndex = Number.isInteger(opts.variantIndex) && app.variants && app.variants[opts.variantIndex] ? opts.variantIndex : -1;
+  const isTile = forcedIndex >= 0;
+  const variantIndex = isTile ? forcedIndex : getSelectedVariantIndex(app);
+  const carriesDigit = idx < 9 && (!isTile || variantIndex === getSelectedVariantIndex(app));
   const activeVariant = app.variants ? app.variants[variantIndex] : null;
   const activeUrl = activeVariant ? activeVariant.url : app.url;
   const title = loc(app.title);
@@ -5745,7 +6051,7 @@ const createCard = (app, idx, placement, cat) => {
     el.style.gridRow = '';
   }
 
-  el.style.setProperty('--c1', tone(gradientOf(app, activeVariant)[0]));
+  el.style.setProperty('--c1', tone(app.gradient[0]));
   if (app.variants) el.dataset.variantIndex = String(variantIndex);
   el.style.setProperty('--i', idx);
 
@@ -5761,7 +6067,7 @@ const createCard = (app, idx, placement, cat) => {
   if (app.variantBadge) badgesHtml += `<div class="badge badge-variant">${icon('fa-clone')}${escapeHtml(app.variantBadge)}</div>`;
 
   const iconClass = activeVariant ? activeVariant.icon : app.icon;
-  const digitHtml = idx < 9 ? `<span class="digit-badge" aria-hidden="true" title="${escapeHtml(t('altShortcutHint').replace('{n}', String(idx + 1)))}">${idx + 1}</span>` : '';
+  const digitHtml = carriesDigit ? `<span class="digit-badge" aria-hidden="true" title="${escapeHtml(t('altShortcutHint').replace('{n}', String(idx + 1)))}">${idx + 1}</span>` : '';
 
   const chipsHtml = app.variants ? `
       <div class="variant-chips" role="radiogroup" aria-label="${escapeHtml(t('chooseVersionOf'))} ${escapeHtml(title)}">
@@ -5778,14 +6084,14 @@ const createCard = (app, idx, placement, cat) => {
   const overlayTarget = openMode() === 'same' ? '' : ' target="_blank"';
   const overlayAttrs = `href="${escapeHtml(activeUrl)}"${overlayTarget} rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
 
-  const overlayHtml = `<a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${idx < 9 ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>`;
+  const overlayHtml = `<a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${carriesDigit ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>`;
   const surfaceHtml = `
       <div class="card-aura" aria-hidden="true"></div>
-      ${listView ? '' : `<div class="card-glyph" aria-hidden="true">${tileIconHtml(app, activeVariant, iconClass, '')}</div>`}
+      ${listView ? '' : `<div class="card-glyph" aria-hidden="true">${markHtml(app, activeVariant, iconClass, '')}</div>`}
       <div class="card-glow"></div>
       <div class="card-sheen" aria-hidden="true"></div>
       ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}`;
-  const iconHtml = `<div class="app-icon-wrapper">${tileIconHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}</div>`;
+  const iconHtml = `${wrapOpen(app, activeVariant)}${markHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}</div>`;
   const titleHtml = `<h3 class="app-title">${escapeHtml(title)}</h3>`;
   const hostHtml = host ? `<span class="card-meta" dir="ltr">${escapeHtml(host)}</span>` : '';
 
@@ -5812,8 +6118,8 @@ const createCard = (app, idx, placement, cat) => {
       <span class="open-affordance row-go" aria-hidden="true">${icon(openModeIcon())}</span>`;
 
   const iconsBody = `
-      <div class="app-icon-wrapper">${tileIconHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
-      <span class="icon-label">${escapeHtml(title)}</span>`;
+      ${wrapOpen(app, activeVariant)}${markHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh && !isTile ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
+      <span class="icon-label">${escapeHtml(isTile ? loc(activeVariant.label) : title)}</span>`;
 
   if (iconsView) {
     el.innerHTML = `${overlayHtml}${iconsBody}`;
@@ -5828,7 +6134,7 @@ const createCard = (app, idx, placement, cat) => {
   }
 
   const recordLaunch = () => {
-    const vi = getSelectedVariantIndex(app);
+    const vi = isTile ? variantIndex : getSelectedVariantIndex(app);
     const recentId = vi >= 0 && app.variants[vi] ? `${app.id}::${app.variants[vi].id}` : app.id;
     pushRecent(recentId);
     bumpFreq(recentId);
@@ -5838,6 +6144,9 @@ const createCard = (app, idx, placement, cat) => {
     setTimeout(() => {
       sfx.click();
       try { localStorage.setItem('lx-last-open', app.id); } catch (err) { if (LX_DEBUG) console.warn(err); }
+      if (launched && isTile) {
+        try { localStorage.setItem('lx-variant-' + app.id, String(variantIndex)); } catch (err) { if (LX_DEBUG) console.warn(err); }
+      }
       if (launched) recordLaunch();
     }, 0);
   });
@@ -5901,7 +6210,7 @@ const createCard = (app, idx, placement, cat) => {
       el._iconTimer = setTimeout(() => {
         const incoming = retileIcon(tileEl, app, v, v.icon);
         if (markEl) retileIcon(markEl, app, v, v.icon, '');
-        el.style.setProperty('--c1', tone(gradientOf(app, v)[0]));
+        el.style.setProperty('--c1', tone(app.gradient[0]));
         if (incoming === outgoing) {
           incoming.style.opacity = '1';
         } else {
@@ -6093,13 +6402,14 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   const cat = categories.find(c => c.apps.some(a => a.id === appId));
   const app = cat ? cat.apps.find(a => a.id === appId) : null;
   const activeChip = card.querySelector('.variant-chip.is-active');
-  const activeVariant = app && app.variants && activeChip ? app.variants[Number(activeChip.dataset.variantIndex)] : null;
+  const chipIndex = activeChip ? Number(activeChip.dataset.variantIndex) : (card.classList.contains('app-card--icon') && card.dataset.variantIndex !== undefined ? Number(card.dataset.variantIndex) : -1);
+  const activeVariant = app && app.variants && app.variants[chipIndex] ? app.variants[chipIndex] : null;
   const title = app ? loc(app.title) : '';
   const iconName = activeVariant ? activeVariant.icon : (app ? app.icon : 'fa-circle');
   let host = '';
   try { host = new URL(activeUrl).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
   const mode = openMode();
-  if (app) menu.style.setProperty('--menu-accent', tone(gradientOf(app, activeVariant)[0]));
+  if (app) menu.style.setProperty('--menu-accent', tone(app.gradient[0]));
   const kbdHint = (txt) => `<span class="ctx-kbd" aria-hidden="true">${escapeHtml(txt)}</span>`;
   const defaultTag = `<span class="ctx-tag">${escapeHtml(t('ctxDefault'))}</span>`;
   const openRow = (m) => `<button type="button" data-action="open-${m}" role="menuitem" class="ctx-item${m === mode ? ' is-default' : ''}">${icon(openModeIcon(m))}<span class="ctx-label">${escapeHtml(t(m === 'new' ? 'actionNewTab' : 'actionSameTab'))}</span>${m === mode ? defaultTag : ''}</button>`;
@@ -6120,8 +6430,8 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
     : `<div class="ctx-group" role="group">${openRow(mode)}${openRow(otherMode)}</div>`;
 
   let itemsHtml = `
-    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? gradientOf(app, activeVariant)[0] : '#7c9bff'))}">
-      <span class="ctx-head-icon">${icon(iconName)}</span>
+    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? app.gradient[0] : '#7c9bff'))}">
+      <span class="ctx-head-icon" data-mark="${app ? appMark(app, activeVariant).kind : 'fa'}">${app ? markHtml(app, activeVariant, iconName, '') : icon(iconName)}</span>
       <span class="ctx-head-text">
         <span class="ctx-head-title">${escapeHtml(title)}${activeVariant ? `<span class="ctx-head-variant">${escapeHtml(loc(activeVariant.label))}</span>` : ''}</span>
         <span class="ctx-head-sub">${host ? `<span dir="ltr">${escapeHtml(host)}</span>` : ''}${app && app.closed ? `<span class="ctx-head-closed">${escapeHtml(t('badgeClosed'))}</span>` : ''}</span>
@@ -6234,8 +6544,8 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
       if (v) {
         const headVar = menu.querySelector('.ctx-head-variant');
         if (headVar) headVar.textContent = loc(v.label);
-        const headIcon = menu.querySelector('.ctx-head-icon svg');
-        if (headIcon) setIcon(headIcon, v.icon);
+        const headIcon = menu.querySelector('.ctx-head-icon');
+        if (headIcon && app) retileIcon(headIcon, app, v, v.icon, '');
         const headHost = menu.querySelector('.ctx-head-sub > span[dir]');
         if (headHost) { try { headHost.textContent = new URL(v.url).hostname.replace(/^www\./, ''); } catch (err) { if (LX_DEBUG) console.warn(err); } }
       }
@@ -6256,6 +6566,107 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   const returnTo = fromKeyboard || card.contains(document.activeElement) ? (linkEl || card) : document.activeElement;
   showContextMenu(menu, { returnTo, focusFirst: fromKeyboard });
 };
+
+const IC_MIN = 104;
+
+const iconItems = (cat) => cat.apps.map((app, i) => ({ app, idx: i, n: Array.isArray(app.variants) && app.variants.length > 1 ? app.variants.length : 1, el: null }));
+
+const packIcons = (items, cols) => {
+  const rest = items.slice();
+  const out = [];
+  let col = 0;
+  while (rest.length) {
+    const it = rest[0];
+    const span = Math.min(it.n, cols);
+    if (col + span <= cols) {
+      out.push(rest.shift());
+      col = (col + span) % cols;
+      continue;
+    }
+    let free = cols - col;
+    let j = 1;
+    while (free > 0 && j < Math.min(rest.length, cols + 1)) {
+      if (rest[j].n === 1) {
+        out.push(rest.splice(j, 1)[0]);
+        free -= 1;
+      } else {
+        j += 1;
+      }
+    }
+    col = 0;
+  }
+  return out;
+};
+
+const iconCols = (grid) => {
+  const cs = getComputedStyle(grid);
+  const w = grid.clientWidth - (parseFloat(cs.paddingInlineStart) || 0) - (parseFloat(cs.paddingInlineEnd) || 0);
+  return Math.max(4, Math.floor(w / IC_MIN));
+};
+
+const fitIconLabels = (grid) => {
+  grid.querySelectorAll('.icon-label').forEach((l) => {
+    l.classList.remove('is-tight');
+    const lh = parseFloat(getComputedStyle(l).lineHeight) || 16;
+    if (l.getBoundingClientRect().height > lh * 2 + 1 || l.scrollWidth > l.clientWidth + 1) l.classList.add('is-tight');
+  });
+};
+
+const buildIconPlate = (it, cat, isBootBatch) => {
+  const { app, idx } = it;
+  const plate = document.createElement('div');
+  plate.className = 'icon-plate' + (app.closed ? ' is-closed' : '');
+  plate.setAttribute('role', 'group');
+  plate.setAttribute('aria-label', loc(app.title));
+  plate.style.setProperty('--n', String(it.n));
+  plate.style.setProperty('--c1', tone(app.gradient[0]));
+  const cap = document.createElement('span');
+  cap.className = 'icon-plate-cap';
+  cap.setAttribute('aria-hidden', 'true');
+  const capText = document.createElement('span');
+  capText.textContent = loc(app.title);
+  cap.appendChild(capText);
+  if (isFresh(app)) {
+    const dot = document.createElement('i');
+    dot.className = 'icon-new-dot';
+    cap.appendChild(dot);
+  }
+  plate.appendChild(cap);
+  app.variants.forEach((v, vi) => {
+    const card = createCard(app, idx, null, cat, { variantIndex: vi });
+    if (isBootBatch) card.classList.add('is-boot-card');
+    plate.appendChild(card);
+  });
+  return plate;
+};
+
+const repackIcons = (grid) => {
+  const items = grid._icItems;
+  if (!items || grid.dataset.layout !== 'icons') return;
+  const cols = iconCols(grid);
+  if (cols === grid._icCols) return;
+  grid._icCols = cols;
+  grid.style.setProperty('--ic-cols', String(cols));
+  grid.querySelectorAll('.app-card').forEach((c) => c.classList.add('no-enter'));
+  const active = document.activeElement;
+  const keep = active && grid.contains(active) ? active : null;
+  const frag = document.createDocumentFragment();
+  packIcons(items, cols).forEach((it) => frag.appendChild(it.el));
+  grid.appendChild(frag);
+  if (keep) keep.focus({ preventScroll: true });
+  fitIconLabels(grid);
+};
+
+let iconsResizeRaf = 0;
+const iconsResizeTargets = new Set();
+const iconsRO = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
+  entries.forEach((e) => iconsResizeTargets.add(e.target));
+  cancelAnimationFrame(iconsResizeRaf);
+  iconsResizeRaf = requestAnimationFrame(() => {
+    iconsResizeTargets.forEach((g) => repackIcons(g));
+    iconsResizeTargets.clear();
+  });
+}) : null;
 
 const renderCards = (grid, categoryId) => {
   const cat = categories.find(c => c.id === categoryId);
@@ -6306,7 +6717,27 @@ const renderCards = (grid, categoryId) => {
 
   const frag = document.createDocumentFragment();
   const isBootBatch = !firstCardBatchDone;
-  cat.apps.forEach((app, i) => {
+  if (iconsView) {
+    const cols = iconCols(grid);
+    grid.style.setProperty('--ic-cols', String(cols));
+    const entries = iconItems(cat);
+    entries.forEach((it) => {
+      if (it.n > 1) {
+        it.el = buildIconPlate(it, cat, isBootBatch);
+      } else {
+        it.el = createCard(it.app, it.idx, null, cat);
+        if (isBootBatch) it.el.classList.add('is-boot-card');
+      }
+    });
+    grid._icItems = entries;
+    grid._icCols = cols;
+    packIcons(entries, cols).forEach((it) => frag.appendChild(it.el));
+    if (iconsRO) iconsRO.observe(grid);
+  } else {
+    grid._icItems = null;
+    grid.style.removeProperty('--ic-cols');
+  }
+  if (!iconsView) cat.apps.forEach((app, i) => {
     let placement = null;
     if (curated) {
       const track = curated[i];
@@ -6322,36 +6753,40 @@ const renderCards = (grid, categoryId) => {
   });
   grid.innerHTML = '';
   grid.appendChild(frag);
+  if (iconsView) requestAnimationFrame(() => fitIconLabels(grid));
   firstCardBatchDone = true;
   pointerFieldDirty = true;
   if (hadFocusInGrid) grid.querySelector('.card-link-overlay')?.focus({ preventScroll: true });
   return isBootBatch;
 };
 
-const staggerCardEntry = (grid, isBootBatch) => {
+const staggerDelay = (dist, max, offset, spread) => offset + Math.round((dist / max) * spread);
+
+const cardDistances = (cards) => {
   const origin = lastInteractionPoint ?? railCenter();
-  const cards = [...grid.children];
+  let max = 1;
+  const dists = cards.map((c) => {
+    const r = c.getBoundingClientRect();
+    const d = Math.hypot(r.left + r.width / 2 - origin.x, r.top + r.height / 2 - origin.y);
+    max = Math.max(max, d);
+    return d;
+  });
+  return { dists, max };
+};
+
+const staggerCardEntry = (grid, isBootBatch) => {
+  const cards = [...grid.querySelectorAll('.app-card')];
   const skipEntryAnim = MQ.reducedMotion;
-  const bootOffset = isBootBatch ? 120 : 0;
+  const offset = isBootBatch ? MOTION.bootOffset : 0;
   const isAutoFlow = grid.classList.contains('is-auto-flow');
+  const scrollDriven = supportsViewTimeline && isNarrowViewport();
 
   const overflowAmount = isAutoFlow ? grid.scrollHeight - grid.clientHeight : 0;
-  let max = 1;
-  const dists = cards.map(c => {
-    const r = c.getBoundingClientRect();
-    const dist = Math.hypot(r.left + r.width / 2 - origin.x, r.top + r.height / 2 - origin.y);
-    max = Math.max(max, dist);
-    return dist;
-  });
+  const { dists, max } = cardDistances(cards);
 
   if (isAutoFlow) grid.classList.toggle('has-overflow', overflowAmount > 4);
   cards.forEach((c, i) => {
-    const scrollDriven = supportsViewTimeline && isNarrowViewport();
-    if (!c.classList.contains('app-card--row') && !c.classList.contains('app-card--icon')) {
-      c.style.animationDelay = scrollDriven
-        ? '0s'
-        : `${bootOffset + Math.round((dists[i] / max) * 260)}ms`;
-    }
+    c.style.animationDelay = scrollDriven ? '0s' : `${staggerDelay(dists[i], max, offset, MOTION.bootSpread)}ms`;
     if (!skipEntryAnim) {
       c.style.willChange = 'transform, opacity';
       c.addEventListener('animationend', () => { c.style.willChange = ''; }, { once: true });
@@ -6921,7 +7356,7 @@ const retintUI = () => {
     if (!app || !app.gradient) return;
     const vi = el.dataset.variantIndex;
     const variant = app.variants && vi !== undefined ? app.variants[Number(vi)] : null;
-    el.style.setProperty('--c1', tone(gradientOf(app, variant)[0]));
+    el.style.setProperty('--c1', tone(app.gradient[0]));
   });
   if (contextMenuEl && contextMenuEl.dataset.owner === 'card') closeContextMenu();
   const activeCat = categories.find(c => c.id === currentTabId);
@@ -6939,7 +7374,7 @@ const retintUI = () => {
     renderPaletteResults(document.getElementById('paletteInput')?.value || '');
     const entry = paletteItems[paletteActiveIndex];
     const detail = document.getElementById('paletteDetail');
-    if (detail && entry) detail.style.setProperty('--c1', tone(gradientOf(entry.app)[0]));
+    if (detail && entry) detail.style.setProperty('--c1', tone(entry.app.gradient[0]));
   }
 };
 
@@ -7561,7 +7996,6 @@ const runGridSwitch = (g, run, travel, nextView = viewMode()) => {
   settleGridSwitch();
   const outFlat = isFlatView(g.dataset.layout || 'bento');
   const inFlat = isFlatView(nextView);
-  const listMotion = outFlat || inFlat;
   const container = g.parentElement;
   const hadCards = g.querySelector('.app-card, .grid-empty');
   let ghost = null;
@@ -7583,34 +8017,17 @@ const runGridSwitch = (g, run, travel, nextView = viewMode()) => {
     ghost.style.cssText += `;position:absolute;left:${g.offsetLeft}px;top:${g.offsetTop}px;width:${g.offsetWidth}px;height:${g.offsetHeight}px;margin:0;pointer-events:none;z-index:0;overflow:hidden;`;
     ghost.scrollTop = g.scrollTop;
     container.insertBefore(ghost, g);
-    let out;
-    if (listMotion) {
-      out = ghost.animate(
-        [{ opacity: 1 }, { opacity: 0 }],
-        { duration: LIST_SWITCH.outMs, easing: LIST_SWITCH.outEase, fill: 'forwards' }
-      );
-    } else {
-      out = ghost.animate(
-        [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * 10}px,0,0) scale(.988)` }],
-        { duration: GRID_SWITCH.outMs, easing: GRID_SWITCH.outEase, fill: 'forwards' }
-      );
-    }
+    const out = ghost.animate(
+      [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * MOTION.travelOut}px,0,0) scale(${MOTION.scaleOut})` }],
+      { duration: MOTION.outMs, easing: MOTION.outEase, fill: 'forwards' }
+    );
     anims.push(out);
   }
 
   const wasBoot = run();
-  const scrollDriven = !listMotion && supportsViewTimeline && isNarrowViewport();
+  const scrollDriven = supportsViewTimeline && isNarrowViewport();
   const cards = [...g.querySelectorAll('.app-card, .grid-empty')];
-  const origin = lastInteractionPoint ?? railCenter();
-  const gr = g.getBoundingClientRect();
-  let max = 1;
-  const dists = cards.map((c) => {
-    const cx = gr.left + c.offsetLeft + c.offsetWidth / 2;
-    const cy = gr.top + c.offsetTop + c.offsetHeight / 2;
-    const d = Math.hypot(cx - origin.x, cy - origin.y);
-    max = Math.max(max, d);
-    return d;
-  });
+  const { dists, max } = cardDistances(cards);
 
   if (g.classList.contains('is-auto-flow')) g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
 
@@ -7618,18 +8035,11 @@ const runGridSwitch = (g, run, travel, nextView = viewMode()) => {
     cards.forEach((c, i) => {
       c.classList.add('no-enter');
       c.style.willChange = 'opacity, translate, scale';
-      let a;
-      if (inFlat) {
-        a = c.animate(
-          [{ opacity: 0, translate: travel ? `${travel * LIST_SWITCH.travelPx}px 0` : `0 ${LIST_SWITCH.liftPx}px` }, { opacity: 1, translate: '0 0' }],
-          { duration: LIST_SWITCH.inMs, delay: LIST_SWITCH.delayBase + Math.min(i, LIST_SWITCH.delayCap) * LIST_SWITCH.delayStep, easing: EASE_LUX, fill: 'backwards' }
-        );
-      } else {
-        a = c.animate(
-          [{ opacity: 0, translate: `${travel * 14}px 0`, scale: '.982' }, { opacity: 1, translate: '0 0', scale: '1' }],
-          { duration: GRID_SWITCH.inMs, delay: (outFlat ? Math.max(GRID_SWITCH.delayBase, LIST_SWITCH.outMs) : GRID_SWITCH.delayBase) + Math.round((dists[i] / max) * GRID_SWITCH.delaySpread), easing: EASE_LUX, fill: 'backwards' }
-        );
-      }
+      const from = inFlat && !travel ? `0 ${MOTION.liftIn}px` : `${travel * MOTION.travelIn}px 0`;
+      const a = c.animate(
+        [{ opacity: 0, translate: from, scale: String(MOTION.scaleIn) }, { opacity: 1, translate: '0 0', scale: '1' }],
+        { duration: MOTION.inMs, delay: staggerDelay(dists[i], max, MOTION.delayBase, MOTION.delaySpread), easing: EASE_LUX, fill: 'backwards' }
+      );
       anims.push(a);
     });
   } else if (wasBoot) {
@@ -7819,7 +8229,8 @@ const fuzzyScore = (query, target) => {
 
 const EXTRA_CAT = { id: '_extra', label: { ar: 'مشغّل بديل', en: 'Alt launcher' } };
 const extraEntries = [
-  { app: { id: 'alt', title: { ar: 'الحساب البديل', en: 'Alt Account' }, url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', favicon: 'icons/alt.png', gradient: ['#334155', '#94a3b8', '#0f172a'] }, cat: EXTRA_CAT }
+  { app: { id: 'alt', title: { ar: 'الحساب البديل', en: 'Alt Account' }, url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }, cat: EXTRA_CAT },
+  { app: { id: 'harvest', title: { ar: 'الحصاد', en: 'Harvest' }, url: new URL('harvest/', location.href).href, icon: 'fa-rotate-right', gradient: ['#3f6212', '#a3e635', '#1a2e05'] }, cat: EXTRA_CAT }
 ];
 try { localStorage.removeItem('lx-unlocked-secrets'); } catch (e) { if (LX_DEBUG) console.warn(e); }
 
@@ -7832,9 +8243,6 @@ const allPaletteEntries = () => {
           title: { ar: `${app.title.ar} · ${v.label.ar}`, en: `${app.title.en} · ${v.label.en}` },
           url: v.url,
           icon: v.icon,
-          favicon: v.favicon,
-          favGlyph: v.favGlyph,
-          favGradient: v.favGradient,
           gradient: app.gradient,
           isNew: app.isNew,
           since: app.since,
@@ -8074,7 +8482,7 @@ const sanitizeDomId = (key) => String(key).replace(/[^a-zA-Z0-9_-]/g, '-');
 const paletteTrailHtml = (e) => e.app.command && e.app.kbd ? keycapsHtml(e.app.kbd) : '<kbd>↵</kbd>';
 const paletteTrailClass = (e) => 'palette-item-trail' + (e.app.command && e.app.kbd ? ' is-persistent' : '');
 
-const paletteItemContentHtml = (e, query) => `<div class="app-icon-wrapper">${tileIconHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span>`;
+const paletteItemContentHtml = (e, query) => `${wrapOpen(e.app, null)}${markHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span>`;
 
 const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   const li = document.createElement('li');
@@ -8084,7 +8492,7 @@ const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   li.setAttribute('aria-selected', String(isActive));
   li.dataset.key = paletteEntryKey(e);
   li.dataset.index = String(globalIndex);
-  li.setAttribute('style', `${gradVars(gradientOf(e.app))}--n:${globalIndex};`);
+  li.setAttribute('style', `${gradVars(e.app.gradient)}--n:${globalIndex};`);
   li.innerHTML = paletteItemContentHtml(e, query);
   return li;
 };
@@ -8094,7 +8502,7 @@ const updatePaletteItemNode = (li, e, globalIndex, query, isActive) => {
   li.setAttribute('aria-selected', String(isActive));
   li.dataset.index = String(globalIndex);
   li.style.setProperty('--n', globalIndex);
-  if (e.app.gradient) li.style.setProperty('--c1', tone(gradientOf(e.app)[0]));
+  if (e.app.gradient) li.style.setProperty('--c1', tone(e.app.gradient[0]));
   const tileEl = li.querySelector('.app-icon-wrapper');
   if (tileEl) retileIcon(tileEl, e.app, null, e.app.icon);
   const titleEl = li.querySelector('.palette-item-title');
@@ -8389,7 +8797,7 @@ const renderPaletteDetail = () => {
   }
 
   const { app, cat } = entry;
-  detail.setAttribute('style', gradVars(gradientOf(app)));
+  detail.setAttribute('style', gradVars(app.gradient));
 
   const actionsHtml = `
     <div class="palette-actions" role="group" aria-label="${escapeHtml(t('actionsLabel'))}">
@@ -8454,8 +8862,8 @@ const renderPaletteDetail = () => {
   detail.innerHTML = `
     ${slabHtml}
     <div class="palette-detail-header">
-      <div class="app-icon-wrapper">
-        ${tileIconHtml(app, null, app.icon, 'app-icon')}
+      ${wrapOpen(app, null)}
+        ${markHtml(app, null, app.icon, 'app-icon')}
       </div>
       <div class="palette-detail-title-wrap">
         <span class="palette-detail-eyebrow">${escapeHtml(loc(cat.label))}</span>
@@ -8509,7 +8917,7 @@ const updateLiveAccent = () => {
   const entry = paletteItems[paletteActiveIndex];
   const palette = document.getElementById('lx-palette');
   if (!palette) return;
-  palette.style.setProperty('--c1', tone(entry ? gradientOf(entry.app)[0] : '#7c9bff'));
+  palette.style.setProperty('--c1', tone(entry ? entry.app.gradient[0] : '#7c9bff'));
 };
 
 const copyToClipboard = async (text) => {
@@ -9564,8 +9972,8 @@ const setupInteractions = () => {
     }
     const digit = eventDigit(e);
     if (digit) {
-      const cards = document.querySelectorAll('#appGrid .app-card');
-      const card = cards[digit - 1];
+      const overlay = document.querySelector(`#appGrid .card-link-overlay[aria-keyshortcuts="${digit}"]`);
+      const card = overlay ? overlay.closest('.app-card') : null;
       if (card) {
         try { localStorage.setItem('lx-last-open', card.dataset.appId); } catch (err) { if (LX_DEBUG) console.warn(err); }
         card.classList.add('is-keylaunched');
@@ -9597,7 +10005,10 @@ const setupInteractions = () => {
     else if (e.key === 'End') target = cards[cards.length - 1];
     else {
       const rtl = document.documentElement.dir === 'rtl';
-      const center = (c) => ({ x: c.offsetLeft + c.offsetWidth / 2, y: c.offsetTop + c.offsetHeight / 2 });
+      const center = (c) => {
+        const r = c.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      };
       const o = center(from);
       let vx = 0, vy = 0;
       if (e.key === 'ArrowLeft') vx = -1;
@@ -9693,10 +10104,6 @@ const cleanLoc = (v) => {
   return ar || en ? { ar: ar || en, en: en || ar } : null;
 };
 const cleanIcon = (v) => (typeof v === 'string' && ICON_RE.test(v) ? v : DEFAULT_ICON);
-const FAVICON_RE = /^icons\/[a-z0-9-]+\.png(\?v=[0-9a-f]{8})?$/;
-const cleanFavicon = (v) => (typeof v === 'string' && v.length <= 120 && FAVICON_RE.test(v) ? v : '');
-const cleanFavGlyph = (v) => (typeof v === 'string' && v.length <= 120 && GLYPH_RE.test(v) ? v : '');
-const cleanFavGradient = (v) => (Array.isArray(v) && v.length === 3 && v.every((c) => typeof c === 'string' && HEX_RE.test(c)) ? v.slice() : null);
 const cleanHex = (v, fb) => (typeof v === 'string' && HEX_RE.test(v) ? v.toLowerCase() : fb);
 const cleanGradient = (g, color) => {
   const c = cleanHex(color, null);
@@ -9720,12 +10127,6 @@ const cleanApp = (a, { allowHttp, allowVariants }) => {
       if (!url || !label) return null;
       seen.add(v.id);
       const variant = { id: v.id, label, url, icon: cleanIcon(v.icon) };
-      const variantFavicon = cleanFavicon(v.favicon);
-      if (variantFavicon) variant.favicon = variantFavicon;
-      const variantGlyph = cleanFavGlyph(v.favGlyph);
-      if (variantGlyph) variant.favGlyph = variantGlyph;
-      const variantGradient = cleanFavGradient(v.favGradient);
-      if (variantGradient) variant.favGradient = variantGradient;
       return variant;
     }).filter(Boolean);
     if (!variants.length) return null;
@@ -9745,14 +10146,6 @@ const cleanApp = (a, { allowHttp, allowVariants }) => {
   if (typeof a.since === 'string' && DATE_RE.test(a.since) && !Number.isNaN(Date.parse(a.since))) app.since = a.since;
   const badge = cleanText(a.variantBadge, 24);
   if (badge) app.variantBadge = badge;
-  if (allowVariants) {
-    const favicon = cleanFavicon(a.favicon);
-    if (favicon) app.favicon = favicon;
-    const favGlyph = cleanFavGlyph(a.favGlyph);
-    if (favGlyph) app.favGlyph = favGlyph;
-    const favGradient = cleanFavGradient(a.favGradient);
-    if (favGradient) app.favGradient = favGradient;
-  }
   return app;
 };
 
@@ -9902,10 +10295,7 @@ const warmedGlyphs = new Set();
 const warmGlyphs = () => {
   const queue = [];
   const add = (u) => { if (u && !warmedGlyphs.has(u) && !queue.includes(u)) queue.push(u); };
-  categories.forEach((cat) => cat.apps.forEach((app) => {
-    add(glyphOf(app));
-    if (app.variants) app.variants.forEach((v) => add(glyphOf(app, v)));
-  }));
+  if (iconManifest) Object.values(iconManifest.icons).forEach((e) => { if (e && e.status !== 'default') add(typeof e.glyph === 'string' && GLYPH_RE.test(e.glyph) ? e.glyph : null); });
   if (!queue.length) return;
   const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 200));
   const step = () => {
@@ -9914,6 +10304,48 @@ const warmGlyphs = () => {
   };
   idle(step);
 };
+
+const refreshMarks = () => {
+  document.querySelectorAll('#appGrid .app-card[data-app-id]').forEach((card) => {
+    const app = findAppById(card.dataset.appId);
+    const wrap = card.querySelector('.app-icon-wrapper');
+    if (!app || !wrap) return;
+    const v = app.variants ? app.variants[Number(card.dataset.variantIndex) || 0] : null;
+    const iconName = (v || app).icon;
+    const before = wrap.querySelector('.app-icon');
+    const after = retileIcon(wrap, app, v, iconName);
+    const mark = card.querySelector('.card-glyph');
+    if (mark) retileIcon(mark, app, v, iconName, '');
+    if (after && after !== before) {
+      after.style.opacity = '0';
+      requestAnimationFrame(() => requestAnimationFrame(() => { after.style.opacity = ''; }));
+    }
+  });
+  const dialog = document.getElementById('lx-palette');
+  if (dialog && dialog.open) {
+    lastDetailKey = null;
+    renderPaletteResults(document.getElementById('paletteInput').value);
+  }
+};
+
+const sameIcons = (a, b) => JSON.stringify(a && a.icons) === JSON.stringify(b && b.icons);
+
+const applyIconManifest = (next) => {
+  if (!validIconManifest(next) || sameIcons(next, iconManifest)) return;
+  iconManifest = next;
+  try { localStorage.setItem(ICONS_KEY, JSON.stringify(next)); } catch (e) { if (LX_DEBUG) console.warn(e); }
+  if (document.querySelector('#appGrid .app-card')) refreshMarks();
+  warmGlyphs();
+};
+
+const fetchIconManifest = () => {
+  if (!/^https?:$/.test(location.protocol)) return Promise.resolve(null);
+  try {
+    return fetch(new URL('icons/manifest.json', location.href), { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  } catch (e) { return Promise.resolve(null); }
+};
+
+Promise.resolve(window.__lxIcons || fetchIconManifest()).then(applyIconManifest);
 
 const setBaseCatalog = (next) => {
   if (sameCatalog(next, baseCatalog)) return;
