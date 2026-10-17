@@ -23,6 +23,12 @@
             "maxItems": 3,
             "items": { "type": "string", "pattern": "^#[0-9a-f]{6}$" }
           },
+          "sourceTint": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": { "type": "string", "pattern": "^#[0-9a-f]{6}$" }
+          },
           "status": { "enum": ["found", "override", "stale", "blocked", "default"] },
           "checkedAt": { "type": ["string", "null"], "format": "date-time" },
           "hash": { "type": ["string", "null"], "pattern": "^[0-9a-f]{64}$" }

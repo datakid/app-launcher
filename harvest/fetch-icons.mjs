@@ -17,6 +17,7 @@ const reportPath = path.join(here, 'report.json');
 const DHASH_MAX = 6;
 const DELTA_E_MAX = 0.03;
 const MIN_OTHER_APPS = 2;
+const MIN_TINT_SEP = 0.04;
 const BLOCK_STATUS = new Set([401, 403, 429]);
 const CHALLENGE_RE = /security checkpoint|just a moment|attention required|authentication required|vercel\.com\/sso-api|_vercel\/(jwt|sso)|cf-chl|challenge-platform|x-vercel-challenge|checking your browser/i;
 
@@ -328,6 +329,42 @@ const extractGradient = (data, lab, n) => {
   return [oklchHex(0.66, c, h), oklchHex(0.86, Math.min(c * 0.75, 0.11), h), oklchHex(0.38, Math.min(c, 0.12), h)];
 };
 
+const solve3 = (m, v) => {
+  const a = m.map((r, i) => [...r, v[i]]);
+  for (let i = 0; i < 3; i++) {
+    let piv = i;
+    for (let r = i + 1; r < 3; r++) if (Math.abs(a[r][i]) > Math.abs(a[piv][i])) piv = r;
+    if (Math.abs(a[piv][i]) < 1e-9) return null;
+    [a[i], a[piv]] = [a[piv], a[i]];
+    for (let r = 0; r < 3; r++) {
+      if (r === i) continue;
+      const f = a[r][i] / a[i][i];
+      for (let c = i; c < 4; c++) a[r][c] -= f * a[i][c];
+    }
+  }
+  return [a[0][3] / a[0][0], a[1][3] / a[1][1], a[2][3] / a[2][2]];
+};
+
+const fitBackground = (pts, lab, w, h) => {
+  if (pts.length < 40) return null;
+  const m = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  const rhs = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+  for (const p of pts) {
+    const f = [1, (p % w) / w, Math.floor(p / w) / h];
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) m[i][j] += f[i] * f[j];
+      for (let c = 0; c < 3; c++) rhs[c][i] += f[i] * lab[p * 3 + c];
+    }
+  }
+  const coef = [0, 1, 2].map((c) => solve3(m, rhs[c]));
+  if (coef.some((c) => !c)) return null;
+  return (p) => {
+    const x = (p % w) / w;
+    const y = Math.floor(p / w) / h;
+    return coef.map((k) => k[0] + k[1] * x + k[2] * y);
+  };
+};
+
 const extractGlyph = async (data, lab, w, h) => {
   const n = w * h;
   let minX = w, minY = h, maxX = -1, maxY = -1, solid = 0;
@@ -339,14 +376,23 @@ const extractGlyph = async (data, lab, w, h) => {
   }
   if (!solid) return null;
   const fill = solid / ((maxX - minX + 1) * (maxY - minY + 1));
-  const alpha = new Float32Array(n);
-  if (fill >= 0.7) {
-    const clear = (x, y) => x < 0 || y < 0 || x >= w || y >= h || data[(y * w + x) * 4 + 3] < 128;
+  const clear = (x, y) => x < 0 || y < 0 || x >= w || y >= h || data[(y * w + x) * 4 + 3] < 128;
+  const nearEdge = (p, d) => {
+    const x = p % w, y = (p - x) / w;
+    return clear(x - d, y) || clear(x + d, y) || clear(x, y - d) || clear(x, y + d);
+  };
+
+  const plainAlpha = () => {
+    const alpha = new Float32Array(n);
+    for (let p = 0; p < n; p++) alpha[p] = data[p * 4 + 3] / 255;
+    return alpha;
+  };
+
+  const uniformAlpha = () => {
     const band = [];
     for (let p = 0; p < n; p++) {
       if (data[p * 4 + 3] < 200) continue;
-      const x = p % w, y = (p - x) / w;
-      if (clear(x - 3, y) || clear(x + 3, y) || clear(x, y - 3) || clear(x, y + 3)) band.push(p);
+      if (nearEdge(p, 3)) band.push(p);
     }
     if (!band.length) return null;
     let L = 0, A = 0, B = 0;
@@ -355,30 +401,65 @@ const extractGlyph = async (data, lab, w, h) => {
     let spread = 0;
     for (const p of band) spread += Math.hypot(lab[p * 3] - L, lab[p * 3 + 1] - A, lab[p * 3 + 2] - B);
     if (spread / band.length > 0.06) return null;
+    const alpha = new Float32Array(n);
     for (let p = 0; p < n; p++) alpha[p] = (data[p * 4 + 3] / 255) * smooth(0.08, 0.22, Math.hypot(lab[p * 3] - L, lab[p * 3 + 1] - A, lab[p * 3 + 2] - B));
-  } else {
-    for (let p = 0; p < n; p++) alpha[p] = data[p * 4 + 3] / 255;
+    return alpha;
+  };
+
+  const ringAlpha = () => {
+    const ring = [];
+    for (let p = 0; p < n; p++) {
+      if (data[p * 4 + 3] < 200) continue;
+      if (!nearEdge(p, 7) && nearEdge(p, 16)) ring.push(p);
+    }
+    const bgAt = fitBackground(ring, lab, w, h);
+    if (!bgAt) return null;
+    let res = 0;
+    for (const p of ring) {
+      const b = bgAt(p);
+      res += Math.hypot(lab[p * 3] - b[0], lab[p * 3 + 1] - b[1], lab[p * 3 + 2] - b[2]);
+    }
+    if (res / ring.length > 0.05) return null;
+    const alpha = new Float32Array(n);
+    for (let p = 0; p < n; p++) {
+      if (nearEdge(p, 7)) continue;
+      const b = bgAt(p);
+      alpha[p] = (data[p * 4 + 3] / 255) * smooth(0.08, 0.22, Math.hypot(lab[p * 3] - b[0], lab[p * 3 + 1] - b[1], lab[p * 3 + 2] - b[2]));
+    }
+    return alpha;
+  };
+
+  const finish = async (alpha) => {
+    let gx0 = w, gy0 = h, gx1 = -1, gy1 = -1, on = 0;
+    for (let p = 0; p < n; p++) {
+      if (alpha[p] < 0.5) continue;
+      const x = p % w, y = (p - x) / w;
+      on++;
+      if (x < gx0) gx0 = x; if (x > gx1) gx1 = x; if (y < gy0) gy0 = y; if (y > gy1) gy1 = y;
+    }
+    if (!on) return null;
+    const cover = on / n;
+    const gfill = on / ((gx1 - gx0 + 1) * (gy1 - gy0 + 1));
+    if (cover < 0.02 || cover > 0.6 || gfill > 0.85) return null;
+    const out = Buffer.alloc(n * 4);
+    for (let p = 0; p < n; p++) { out[p * 4] = 255; out[p * 4 + 1] = 255; out[p * 4 + 2] = 255; out[p * 4 + 3] = Math.round(alpha[p] * 255); }
+    const clearBg = { r: 255, g: 255, b: 255, alpha: 0 };
+    return sharp(out, { raw: { width: w, height: h, channels: 4 } })
+      .extract({ left: gx0, top: gy0, width: gx1 - gx0 + 1, height: gy1 - gy0 + 1 })
+      .resize(104, 104, { fit: 'contain', background: clearBg })
+      .extend({ top: 12, bottom: 12, left: 12, right: 12, background: clearBg })
+      .png({ compressionLevel: 9 })
+      .toBuffer();
+  };
+
+  const attempts = fill >= 0.7 ? [uniformAlpha, ringAlpha] : [plainAlpha];
+  for (const make of attempts) {
+    const alpha = make();
+    if (!alpha) continue;
+    const glyph = await finish(alpha);
+    if (glyph) return glyph;
   }
-  let gx0 = w, gy0 = h, gx1 = -1, gy1 = -1, on = 0;
-  for (let p = 0; p < n; p++) {
-    if (alpha[p] < 0.5) continue;
-    const x = p % w, y = (p - x) / w;
-    on++;
-    if (x < gx0) gx0 = x; if (x > gx1) gx1 = x; if (y < gy0) gy0 = y; if (y > gy1) gy1 = y;
-  }
-  if (!on) return null;
-  const cover = on / n;
-  const gfill = on / ((gx1 - gx0 + 1) * (gy1 - gy0 + 1));
-  if (cover < 0.02 || cover > 0.6 || gfill > 0.85) return null;
-  const out = Buffer.alloc(n * 4);
-  for (let p = 0; p < n; p++) { out[p * 4] = 255; out[p * 4 + 1] = 255; out[p * 4 + 2] = 255; out[p * 4 + 3] = Math.round(alpha[p] * 255); }
-  const clearBg = { r: 255, g: 255, b: 255, alpha: 0 };
-  return sharp(out, { raw: { width: w, height: h, channels: 4 } })
-    .extract({ left: gx0, top: gy0, width: gx1 - gx0 + 1, height: gy1 - gy0 + 1 })
-    .resize(104, 104, { fit: 'contain', background: clearBg })
-    .extend({ top: 12, bottom: 12, left: 12, right: 12, background: clearBg })
-    .png({ compressionLevel: 9 })
-    .toBuffer();
+  return null;
 };
 
 const analyzeIcon = async (png) => {
@@ -604,6 +685,77 @@ const detectDefaults = (items) => {
   return { flagged, palette };
 };
 
+const tintToLch = (hex) => {
+  const [L, a, b] = hexToLab(hex);
+  return [L, Math.hypot(a, b), Math.atan2(b, a)];
+};
+
+const shiftTint = (tint, dh, dl, dc) => tint.map((hex) => {
+  const [L, C, h] = tintToLch(hex);
+  return oklchHex(Math.min(0.95, Math.max(0.15, L + dl)), Math.max(0, C + dc), h + dh);
+});
+
+const seeded = (key) => {
+  let x = 2166136261;
+  for (const ch of key) {
+    x ^= ch.charCodeAt(0);
+    x = Math.imul(x, 16777619);
+  }
+  return (x >>> 0) / 4294967296;
+};
+
+const tintCandidates = (key) => {
+  const flip = seeded(key) < 0.5 ? 1 : -1;
+  const out = [];
+  for (const h of [0, 6, 12, 18, 24]) {
+    for (const sh of h ? [1, -1] : [1]) {
+      for (const dl of [0, 0.03, -0.03, 0.06, -0.06, 0.09, -0.09]) {
+        for (const dc of [0, -0.03]) {
+          out.push({ dh: (h * sh * flip * Math.PI) / 180, dl, dc, cost: h / 6 + Math.abs(dl) / 0.03 + Math.abs(dc) / 0.03 });
+        }
+      }
+    }
+  }
+  return out.sort((a, b) => a.cost - b.cost);
+};
+
+const separateTints = (entries, targets) => {
+  const appOf = new Map(targets.map((t) => [t.key, t.appId]));
+  const placed = [];
+  const adjusted = [];
+  for (const key of Object.keys(entries).sort()) {
+    const e = entries[key];
+    const base = e.sourceTint || e.tint;
+    if (!Array.isArray(base) || base.length !== 3 || !appOf.has(key)) continue;
+    const appId = appOf.get(key);
+    let chosen = base;
+    let bestSep = -1;
+    for (const c of tintCandidates(key)) {
+      const t = c.dh || c.dl || c.dc ? shiftTint(base, c.dh, c.dl, c.dc) : base;
+      const lab = hexToLab(t[0]);
+      let sep = Infinity;
+      for (const o of placed) if (o.appId !== appId) sep = Math.min(sep, deltaE(lab, o.lab));
+      if (sep >= MIN_TINT_SEP) {
+        chosen = t;
+        bestSep = sep;
+        break;
+      }
+      if (sep > bestSep) {
+        bestSep = sep;
+        chosen = t;
+      }
+    }
+    e.tint = chosen;
+    if (chosen === base) delete e.sourceTint;
+    else {
+      e.sourceTint = base;
+      adjusted.push(key);
+    }
+    placed.push({ appId, lab: hexToLab(chosen[0]) });
+  }
+  return adjusted;
+};
+
 const readPrevious = async (targets) => {
   const prev = new Map();
   let manifest = null;
@@ -719,6 +871,8 @@ const main = async () => {
     }
   }
 
+  const adjusted = separateTints(entries, targets);
+
   const probes = [];
   for (let i = 0; i < targets.length; i++) {
     const e = entries[targets[i].key];
@@ -753,7 +907,7 @@ const main = async () => {
   const count = (s) => results.filter((r) => (entries[r.key] ? entries[r.key].status : r.status) === s).length;
   const report = {
     generatedAt: now,
-    thresholds: { dHashMaxHamming: DHASH_MAX, deltaEOklabMax: DELTA_E_MAX, minOtherApps: MIN_OTHER_APPS },
+    thresholds: { dHashMaxHamming: DHASH_MAX, deltaEOklabMax: DELTA_E_MAX, minOtherApps: MIN_OTHER_APPS, minTintSeparation: MIN_TINT_SEP },
     summary: {
       total: targets.length,
       found: count('found'),
@@ -765,6 +919,7 @@ const main = async () => {
     },
     defaults: [...flagged.keys()],
     similarPalette: [...palette.keys()],
+    adjusted,
     items: results.map((r) => ({
       key: r.key,
       url: r.url,

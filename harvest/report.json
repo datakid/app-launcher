@@ -1,9 +1,10 @@
 {
-  "generatedAt": "2026-10-15T20:34:42.302Z",
+  "generatedAt": "2026-10-17T04:14:11.928Z",
   "thresholds": {
     "dHashMaxHamming": 6,
     "deltaEOklabMax": 0.03,
-    "minOtherApps": 2
+    "minOtherApps": 2,
+    "minTintSeparation": 0.04
   },
   "summary": {
     "total": 33,
@@ -15,22 +16,25 @@
     "notfound": 0
   },
   "defaults": [],
-  "similarPalette": [
-    "ledger-form--tally",
-    "drug-list--free",
+  "similarPalette": [],
+  "adjusted": [
     "drug-list--full",
-    "id-dates--id",
     "id-dates--contacts",
-    "roi--express",
-    "roi--full",
-    "survival-mirror",
+    "id-dates--id",
+    "ledger-form--tally",
+    "paid-calculator--calc",
+    "pharmacy-tools--bugvert",
+    "pharmacy-tools--pillbug",
+    "plan-maker--express",
+    "prep--floe",
     "qisma-mizan--express",
     "qisma-mizan--full",
-    "criteria-builder--meridian",
-    "prep--floe",
+    "roi--express",
+    "roi--full",
+    "solver",
+    "survival-mirror",
     "text-tools--weft",
-    "pharmacy-tools--pillbug",
-    "pharmacy-tools--bugvert"
+    "workspace"
   ],
   "items": [
     {
@@ -44,9 +48,9 @@
       },
       "error": null,
       "tint": [
-        "#d77250",
-        "#fdc1ad",
-        "#742301"
+        "#eb8562",
+        "#fedcd1",
+        "#873517"
       ],
       "glyph": true,
       "why": null
@@ -94,9 +98,9 @@
       },
       "error": null,
       "tint": [
-        "#c18412",
-        "#fbc77c",
-        "#5b3b00"
+        "#c1914b",
+        "#fad49f",
+        "#5b472b"
       ],
       "glyph": true,
       "why": null
@@ -130,11 +134,11 @@
       },
       "error": null,
       "tint": [
-        "#928bba",
-        "#d1ccf0",
-        "#433b65"
+        "#9b97b3",
+        "#dbd9e8",
+        "#4a475f"
       ],
-      "glyph": false,
+      "glyph": true,
       "why": null
     },
     {
@@ -148,9 +152,9 @@
       },
       "error": null,
       "tint": [
-        "#8092b8",
-        "#c3d1ef",
-        "#334263"
+        "#7789ae",
+        "#b9c7e5",
+        "#2b3a5a"
       ],
       "glyph": true,
       "why": null
@@ -230,9 +234,9 @@
       },
       "error": null,
       "tint": [
-        "#cc7b49",
-        "#fcc3a2",
-        "#693005"
+        "#bf825f",
+        "#edc9b4",
+        "#5e3821"
       ],
       "glyph": true,
       "why": null
@@ -248,9 +252,9 @@
       },
       "error": null,
       "tint": [
-        "#e3674b",
-        "#fec0b1",
-        "#75220f"
+        "#ed7155",
+        "#fdcfc3",
+        "#7f2b18"
       ],
       "glyph": true,
       "why": null
@@ -266,9 +270,9 @@
       },
       "error": null,
       "tint": [
-        "#d27556",
-        "#fdc1ad",
-        "#742301"
+        "#e29981",
+        "#fee9e2",
+        "#854733"
       ],
       "glyph": true,
       "why": null
@@ -284,9 +288,9 @@
       },
       "error": null,
       "tint": [
-        "#cb7a5b",
-        "#fdc1ab",
-        "#702805"
+        "#d0947d",
+        "#fddcd0",
+        "#77422e"
       ],
       "glyph": true,
       "why": null
@@ -302,9 +306,9 @@
       },
       "error": null,
       "tint": [
-        "#8a8dbd",
-        "#cacdf5",
-        "#3c3d67"
+        "#9ca0d0",
+        "#e0e2fc",
+        "#4c4d78"
       ],
       "glyph": true,
       "why": null
@@ -320,9 +324,9 @@
       },
       "error": null,
       "tint": [
-        "#d47452",
-        "#fdc1ac",
-        "#722604"
+        "#b65937",
+        "#dfa490",
+        "#4e1600"
       ],
       "glyph": true,
       "why": null
@@ -338,9 +342,9 @@
       },
       "error": null,
       "tint": [
-        "#d47354",
-        "#fdc1ad",
-        "#742302"
+        "#b65839",
+        "#dfa491",
+        "#4e1602"
       ],
       "glyph": true,
       "why": null
@@ -356,9 +360,9 @@
       },
       "error": null,
       "tint": [
-        "#66a091",
-        "#afdcd0",
-        "#0e4d41"
+        "#78b3a3",
+        "#c2f0e4",
+        "#235e51"
       ],
       "glyph": true,
       "why": null
@@ -374,9 +378,9 @@
       },
       "error": null,
       "tint": [
-        "#5c9eac",
-        "#acdae4",
-        "#034b57"
+        "#80a3aa",
+        "#ccdee2",
+        "#344f56"
       ],
       "glyph": true,
       "why": null
@@ -464,9 +468,9 @@
       },
       "error": null,
       "tint": [
-        "#c47f59",
-        "#fac3a6",
-        "#6b2e01"
+        "#b06d48",
+        "#e6b093",
+        "#542200"
       ],
       "glyph": true,
       "why": null
@@ -482,9 +486,9 @@
       },
       "error": null,
       "tint": [
-        "#d47354",
-        "#fdc1ad",
-        "#742302"
+        "#cd7b38",
+        "#f8c5a1",
+        "#653303"
       ],
       "glyph": true,
       "why": null
@@ -532,9 +536,9 @@
       },
       "error": null,
       "tint": [
-        "#d27556",
-        "#fdc1ad",
-        "#742301"
+        "#c86c4d",
+        "#f3b7a3",
+        "#671f01"
       ],
       "glyph": true,
       "why": null
@@ -550,11 +554,11 @@
       },
       "error": null,
       "tint": [
-        "#c97a64",
-        "#fec0af",
-        "#6f2914"
+        "#d3836d",
+        "#fdcfc2",
+        "#78311d"
       ],
-      "glyph": false,
+      "glyph": true,
       "why": null
     },
     {
@@ -572,7 +576,7 @@
         "#a6daee",
         "#014a5d"
       ],
-      "glyph": false,
+      "glyph": true,
       "why": null
     },
     {

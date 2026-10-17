@@ -5491,6 +5491,14 @@ const findAppById = (id) => {
   }
   return null;
 };
+const appGradient = (app) => {
+  const base = findAppById(app.parentId || app.id) || app;
+  const hasVariants = Array.isArray(base.variants) && base.variants.length > 0;
+  const dv = hasVariants ? base.variants[Number(base.defaultVariant) || 0] : null;
+  const e = iconEntry(hasVariants && dv ? `${base.id}--${dv.id}` : String(base.id));
+  const t = e && e.status !== 'default' && Array.isArray(e.tint) && e.tint.length === 3 && e.tint.every((c) => typeof c === 'string' && HEX6.test(c)) ? e.tint : null;
+  return t || app.gradient;
+};
 const appMark = (app, variant) => {
   const base = findAppById(app.parentId || app.id) || app;
   const hasVariants = Array.isArray(base.variants) && base.variants.length > 0;
@@ -6051,7 +6059,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
     el.style.gridRow = '';
   }
 
-  el.style.setProperty('--c1', tone(app.gradient[0]));
+  el.style.setProperty('--c1', tone(appGradient(app)[0]));
   if (app.variants) el.dataset.variantIndex = String(variantIndex);
   el.style.setProperty('--i', idx);
 
@@ -6210,7 +6218,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       el._iconTimer = setTimeout(() => {
         const incoming = retileIcon(tileEl, app, v, v.icon);
         if (markEl) retileIcon(markEl, app, v, v.icon, '');
-        el.style.setProperty('--c1', tone(app.gradient[0]));
+        el.style.setProperty('--c1', tone(appGradient(app)[0]));
         if (incoming === outgoing) {
           incoming.style.opacity = '1';
         } else {
@@ -6409,7 +6417,7 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   let host = '';
   try { host = new URL(activeUrl).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
   const mode = openMode();
-  if (app) menu.style.setProperty('--menu-accent', tone(app.gradient[0]));
+  if (app) menu.style.setProperty('--menu-accent', tone(appGradient(app)[0]));
   const kbdHint = (txt) => `<span class="ctx-kbd" aria-hidden="true">${escapeHtml(txt)}</span>`;
   const defaultTag = `<span class="ctx-tag">${escapeHtml(t('ctxDefault'))}</span>`;
   const openRow = (m) => `<button type="button" data-action="open-${m}" role="menuitem" class="ctx-item${m === mode ? ' is-default' : ''}">${icon(openModeIcon(m))}<span class="ctx-label">${escapeHtml(t(m === 'new' ? 'actionNewTab' : 'actionSameTab'))}</span>${m === mode ? defaultTag : ''}</button>`;
@@ -6430,7 +6438,7 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
     : `<div class="ctx-group" role="group">${openRow(mode)}${openRow(otherMode)}</div>`;
 
   let itemsHtml = `
-    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? app.gradient[0] : '#7c9bff'))}">
+    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? appGradient(app)[0] : '#7c9bff'))}">
       <span class="ctx-head-icon" data-mark="${app ? appMark(app, activeVariant).kind : 'fa'}">${app ? markHtml(app, activeVariant, iconName, '') : icon(iconName)}</span>
       <span class="ctx-head-text">
         <span class="ctx-head-title">${escapeHtml(title)}${activeVariant ? `<span class="ctx-head-variant">${escapeHtml(loc(activeVariant.label))}</span>` : ''}</span>
@@ -6619,7 +6627,7 @@ const buildIconPlate = (it, cat, isBootBatch) => {
   plate.setAttribute('role', 'group');
   plate.setAttribute('aria-label', loc(app.title));
   plate.style.setProperty('--n', String(it.n));
-  plate.style.setProperty('--c1', tone(app.gradient[0]));
+  plate.style.setProperty('--c1', tone(appGradient(app)[0]));
   const cap = document.createElement('span');
   cap.className = 'icon-plate-cap';
   cap.setAttribute('aria-hidden', 'true');
@@ -7356,7 +7364,7 @@ const retintUI = () => {
     if (!app || !app.gradient) return;
     const vi = el.dataset.variantIndex;
     const variant = app.variants && vi !== undefined ? app.variants[Number(vi)] : null;
-    el.style.setProperty('--c1', tone(app.gradient[0]));
+    el.style.setProperty('--c1', tone(appGradient(app)[0]));
   });
   if (contextMenuEl && contextMenuEl.dataset.owner === 'card') closeContextMenu();
   const activeCat = categories.find(c => c.id === currentTabId);
@@ -7374,7 +7382,7 @@ const retintUI = () => {
     renderPaletteResults(document.getElementById('paletteInput')?.value || '');
     const entry = paletteItems[paletteActiveIndex];
     const detail = document.getElementById('paletteDetail');
-    if (detail && entry) detail.style.setProperty('--c1', tone(entry.app.gradient[0]));
+    if (detail && entry) detail.style.setProperty('--c1', tone(appGradient(entry.app)[0]));
   }
 };
 
@@ -8492,7 +8500,7 @@ const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   li.setAttribute('aria-selected', String(isActive));
   li.dataset.key = paletteEntryKey(e);
   li.dataset.index = String(globalIndex);
-  li.setAttribute('style', `${gradVars(e.app.gradient)}--n:${globalIndex};`);
+  li.setAttribute('style', `${gradVars(appGradient(e.app))}--n:${globalIndex};`);
   li.innerHTML = paletteItemContentHtml(e, query);
   return li;
 };
@@ -8502,7 +8510,7 @@ const updatePaletteItemNode = (li, e, globalIndex, query, isActive) => {
   li.setAttribute('aria-selected', String(isActive));
   li.dataset.index = String(globalIndex);
   li.style.setProperty('--n', globalIndex);
-  if (e.app.gradient) li.style.setProperty('--c1', tone(e.app.gradient[0]));
+  if (e.app.gradient) li.style.setProperty('--c1', tone(appGradient(e.app)[0]));
   const tileEl = li.querySelector('.app-icon-wrapper');
   if (tileEl) retileIcon(tileEl, e.app, null, e.app.icon);
   const titleEl = li.querySelector('.palette-item-title');
@@ -8797,7 +8805,7 @@ const renderPaletteDetail = () => {
   }
 
   const { app, cat } = entry;
-  detail.setAttribute('style', gradVars(app.gradient));
+  detail.setAttribute('style', gradVars(appGradient(app)));
 
   const actionsHtml = `
     <div class="palette-actions" role="group" aria-label="${escapeHtml(t('actionsLabel'))}">
@@ -8917,7 +8925,7 @@ const updateLiveAccent = () => {
   const entry = paletteItems[paletteActiveIndex];
   const palette = document.getElementById('lx-palette');
   if (!palette) return;
-  palette.style.setProperty('--c1', tone(entry ? entry.app.gradient[0] : '#7c9bff'));
+  palette.style.setProperty('--c1', tone(entry ? appGradient(entry.app)[0] : '#7c9bff'));
 };
 
 const copyToClipboard = async (text) => {
@@ -10316,6 +10324,9 @@ const refreshMarks = () => {
     const after = retileIcon(wrap, app, v, iconName);
     const mark = card.querySelector('.card-glyph');
     if (mark) retileIcon(mark, app, v, iconName, '');
+    card.style.setProperty('--c1', tone(appGradient(app)[0]));
+    const plate = card.closest('.icon-plate');
+    if (plate) plate.style.setProperty('--c1', tone(appGradient(app)[0]));
     if (after && after !== before) {
       after.style.opacity = '0';
       requestAnimationFrame(() => requestAnimationFrame(() => { after.style.opacity = ''; }));
