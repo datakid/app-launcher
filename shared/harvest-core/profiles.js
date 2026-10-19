@@ -2,6 +2,7 @@ import { gzipSync, zipSync } from 'fflate';
 import { sha256, canonicalJson, utf8 } from './runtime.js';
 import { packAtlas, encodeAtlas, ATLAS_LIMIT, DEFAULT_CELL } from './atlas.js';
 import { symbolMarkup, SYMBOL_MAX_BYTES } from './glyph.js';
+import { resizeTo } from './pixels.js';
 import { encodePng, resizeStretch } from './codecs.js';
 import { encodeImage, EXTENSIONS } from './encode.js';
 import { passesContrast } from './color.js';
@@ -169,4 +170,61 @@ export const buildCustomExport = async (records, { formats = ['png'], sizes = [1
   const ordered = {};
   for (const k of Object.keys(entries).sort()) ordered[k] = [entries[k], { level: 0, mtime: new Date(1980, 0, 1) }];
   return { files: entries, zip: zipSync(ordered) };
+};
+
+const flattenOn = (img, hex) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const data = new Uint8ClampedArray(img.data.length);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const a = img.data[i + 3] / 255;
+    data[i] = Math.round(img.data[i] * a + r * (1 - a));
+    data[i + 1] = Math.round(img.data[i + 1] * a + g * (1 - a));
+    data[i + 2] = Math.round(img.data[i + 2] * a + b * (1 - a));
+    data[i + 3] = 255;
+  }
+  return { width: img.width, height: img.height, data };
+};
+
+export const buildFaviconPack = async (record, { name = 'App', background = '#ffffff', themeColor = null, base = '/' } = {}) => {
+  const source = record.original || record.image;
+  const files = {};
+  const sized = async (size) => resizeTo(source, size, size);
+  files['favicon.ico'] = await encodeImage(await sized(48), { format: 'ico' });
+  files['icon-192.png'] = await encodePng(await sized(192));
+  files['icon-512.png'] = await encodePng(await sized(512));
+  files['apple-touch-icon.png'] = await encodePng(flattenOn(await sized(180), background));
+  files['favicon-32.png'] = await encodePng(await sized(32));
+  files['site.webmanifest'] = utf8(
+    stableStringify({
+      name,
+      short_name: name,
+      icons: [
+        { src: base + 'icon-192.png', sizes: '192x192', type: 'image/png' },
+        { src: base + 'icon-512.png', sizes: '512x512', type: 'image/png' }
+      ],
+      theme_color: themeColor || undefined,
+      background_color: background,
+      display: 'standalone'
+    })
+  );
+  const head = [
+    '<link rel="icon" href="' + base + 'favicon.ico" sizes="48x48">',
+    '<link rel="icon" href="' + base + 'favicon-32.png" type="image/png" sizes="32x32">',
+    '<link rel="icon" href="' + base + 'icon-192.png" type="image/png" sizes="192x192">',
+    '<link rel="apple-touch-icon" href="' + base + 'apple-touch-icon.png">',
+    '<link rel="manifest" href="' + base + 'site.webmanifest">'
+  ];
+  if (themeColor) head.push('<meta name="theme-color" content="' + themeColor + '">');
+  files['head.html'] = utf8(head.join('\n') + '\n');
+  const ordered = {};
+  for (const k of Object.keys(files).sort()) ordered[k] = [files[k], { level: 0, mtime: new Date(1980, 0, 1) }];
+  return { files, zip: zipSync(ordered), head: head.join('\n') };
+};
+
+export const zipFiles = (files, folder = '') => {
+  const ordered = {};
+  for (const k of Object.keys(files).sort()) ordered[folder + k] = [files[k], { level: 0, mtime: new Date(1980, 0, 1) }];
+  return zipSync(ordered);
 };

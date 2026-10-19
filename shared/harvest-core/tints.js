@@ -217,6 +217,7 @@ export const resetToSource = (entries) => {
 
 export const applyMode = (entries, appOf, options = {}) => {
   const { mode = 'follow' } = options;
+  if (mode === 'keep') return { adjusted: [], groups: [], tight: [] };
   if (mode === 'mono') return monoTints(entries, appOf, options);
   if (mode === 'family') return { adjusted: separateTints(entries, appOf), groups: [], tight: [] };
   return followTints(entries, appOf, options);

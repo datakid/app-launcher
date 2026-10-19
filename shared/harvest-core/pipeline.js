@@ -9,8 +9,8 @@ import { applyMode, guardContrast, separateTints, MIN_TINT_SEP, DEFAULT_SEED } f
 import { unpackAtlas, DEFAULT_CELL } from './atlas.js';
 import { buildLauncherExport, buildLegacyExport, stableStringify } from './profiles.js';
 import { decodeImage } from './decode.js';
+import { KEY_RE, buildTargets, extrasToTargets, mergeTargets } from './targets.js';
 
-export const KEY_RE = /^[a-z0-9-]+$/;
 export const BLOCK_STATUS = new Set([401, 403, 429]);
 export const CHALLENGE_RE = /security checkpoint|just a moment|attention required|authentication required|vercel\.com\/sso-api|_vercel\/(jwt|sso)|cf-chl|challenge-platform|x-vercel-challenge|checking your browser/i;
 export const RASTER_EXT = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'ico', 'svg', 'avif', 'jxl'];
@@ -33,42 +33,14 @@ export const fetchRetry = async (io, url) => {
 
 export const pixelHash = (img) => sha256(img.data);
 
-export const buildTargets = (catalog) => {
-  const out = [];
-  const categories = catalog && Array.isArray(catalog.categories) ? catalog.categories : [];
-  for (const cat of categories) {
-    if (!cat || cat.id === 'mine') continue;
-    for (const app of Array.isArray(cat.apps) ? cat.apps : []) {
-      if (!app || typeof app.id !== 'string' || app.id.startsWith('u-')) continue;
-      if (Array.isArray(app.variants) && app.variants.length) {
-        for (const v of app.variants) out.push({ key: app.id + '--' + v.id, appId: app.id, variantId: v.id, url: v.url });
-      } else if (typeof app.url === 'string') {
-        out.push({ key: app.id, appId: app.id, variantId: null, url: app.url });
-      }
-    }
-  }
-  return out;
-};
-
-export const extrasToTargets = (parsed) => {
-  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return [];
-  return Object.entries(parsed)
-    .filter(([k, u]) => KEY_RE.test(k) && typeof u === 'string' && /^https?:/.test(u))
-    .map(([k, u]) => ({ key: k, appId: k, variantId: null, url: u, extra: true }));
-};
-
-export const mergeTargets = (catalogTargets, extras) => {
-  const taken = new Set(catalogTargets.map((t) => t.key));
-  return catalogTargets.concat(extras.filter((t) => !taken.has(t.key)));
-};
-
 const finishFrom = async (bytes, source, result) => {
   const ext = sniff(bytes);
   if (!ext) throw new Error('not an image');
-  const { img, srcWidth } = await normalize(bytes, ext);
+  const { img, srcWidth, original } = await normalize(bytes, ext);
   const bad = gate(img, srcWidth);
   if (bad) throw new Error(bad);
   result.image = img;
+  result.original = original;
   result.source = source;
 };
 
@@ -96,6 +68,19 @@ export const processTarget = async (t, ctx) => {
       await finishFrom(t.bytes, { type: 'file', href: t.fileName || t.key }, result);
       result.status = 'found';
       return result;
+    }
+    if (t.iconHref && !local) {
+      try {
+        const bytes = await loadHref(t.iconHref, { fetchBytes: (u) => fetchRetry(io, u) });
+        await finishFrom(bytes, { type: 'icon-field', href: short(t.iconHref) }, result);
+        result.status = 'found';
+        return result;
+      } catch (e) {
+        if (!t.url) {
+          result.error = errText(e);
+          return result;
+        }
+      }
     }
     if (local) {
       const found = await io.readLocal(t.key);
@@ -147,7 +132,7 @@ export const processTarget = async (t, ctx) => {
         if (!bytes || !bytes.length) throw new Error('empty');
         const ext = sniff(bytes);
         if (!ext) throw new Error('not an image');
-        const { img, srcWidth } = await normalize(bytes, ext);
+        const { img, srcWidth, original } = await normalize(bytes, ext);
         const bad = gate(img, srcWidth);
         if (bad) {
           lastBad = { bad, source: { type: c.type, href: short(c.href) } };
@@ -156,6 +141,7 @@ export const processTarget = async (t, ctx) => {
         }
         result.source = { type: c.type, href: short(c.href) };
         result.image = img;
+        result.original = original;
         result.status = 'found';
         return result;
       } catch (e) {
@@ -299,6 +285,7 @@ export const runHarvest = async (input, options = {}, io) => {
     const rec = recordOf(r);
     if (r.image) {
       rec.image = r.image;
+      rec.original = r.original || null;
       rec.hash = await pixelHash(r.image);
       let analysis = { gradient: null, glyph: null };
       try {
@@ -306,6 +293,7 @@ export const runHarvest = async (input, options = {}, io) => {
       } catch (e) {
         r.analysisError = errText(e);
       }
+      rec.base = analysis.gradient;
       rec.sourceTint = analysis.gradient;
       rec.tint = analysis.gradient;
       rec.glyphImage = analysis.glyph;
@@ -429,4 +417,4 @@ export const runHarvest = async (input, options = {}, io) => {
   return { records: sorted, results, report, export: exported, validKeys, entries: byKey };
 };
 
-export { canonicalJson, EXT_BY_NAME };
+export { canonicalJson, EXT_BY_NAME, KEY_RE, buildTargets, extrasToTargets, mergeTargets };

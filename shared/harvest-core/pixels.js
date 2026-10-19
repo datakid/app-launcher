@@ -172,7 +172,8 @@ export const normalize = async (bytes, ext) => {
   const opaque = ext === 'ico' || ext === 'svg' ? false : !hasAlphaChannel(bytes, ext, decoded);
   let img = await resizeTo(decoded.image, 192, 192);
   if (opaque) img = await matteCorners(img);
-  return { img, srcWidth: decoded.srcWidth };
+  const original = decoded.image.width <= 1024 && decoded.image.height <= 1024 ? decoded.image : null;
+  return { img, srcWidth: decoded.srcWidth, original };
 };
 
 export const gate = (img, srcWidth) => {
