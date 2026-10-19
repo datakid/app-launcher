@@ -5,7 +5,7 @@
     "height": 768,
     "width": 768
   },
-  "generatedAt": "2026-10-19T03:27:00.153Z",
+  "generatedAt": "2026-10-19T20:13:54.893Z",
   "glyphAtlas": {
     "cell": 128,
     "file": "icons/glyph-atlas.d38a84a3.webp",
@@ -18,7 +18,7 @@
   "hash": "c9005a33",
   "icons": {
     "alt": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 0,
         "y": 0
@@ -35,7 +35,7 @@
       "tint": null
     },
     "criteria-builder--meridian": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 128,
         "y": 0
@@ -64,7 +64,7 @@
       ]
     },
     "criteria-builder--rubric": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 256,
         "y": 0
@@ -90,7 +90,7 @@
       ]
     },
     "dafter": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 384,
         "y": 0
@@ -111,7 +111,7 @@
       ]
     },
     "draw": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 512,
         "y": 0
@@ -128,7 +128,7 @@
       "tint": null
     },
     "drug-list--free": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 640,
         "y": 0
@@ -154,7 +154,7 @@
       ]
     },
     "drug-list--full": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 0,
         "y": 128
@@ -180,7 +180,7 @@
       ]
     },
     "entity-tracker": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 128,
         "y": 128
@@ -206,7 +206,7 @@
       ]
     },
     "id-dates--contacts": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 256,
         "y": 128
@@ -232,7 +232,7 @@
       ]
     },
     "id-dates--id": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 384,
         "y": 128
@@ -258,7 +258,7 @@
       ]
     },
     "index-builder": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 512,
         "y": 128
@@ -284,7 +284,7 @@
       ]
     },
     "ledger-form--folio": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 640,
         "y": 128
@@ -304,7 +304,7 @@
       "tint": null
     },
     "ledger-form--tally": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 0,
         "y": 256
@@ -330,7 +330,7 @@
       ]
     },
     "paid-calculator--calc": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 128,
         "y": 256
@@ -356,7 +356,7 @@
       ]
     },
     "paid-calculator--daleel": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 256,
         "y": 256
@@ -373,7 +373,7 @@
       "tint": null
     },
     "parser": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 384,
         "y": 256
@@ -394,7 +394,7 @@
       ]
     },
     "pharmacy-tools--bugvert": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 512,
         "y": 256
@@ -420,7 +420,7 @@
       ]
     },
     "pharmacy-tools--pillbug": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 640,
         "y": 256
@@ -446,7 +446,7 @@
       ]
     },
     "plan-maker--express": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 0,
         "y": 384
@@ -472,7 +472,7 @@
       ]
     },
     "plan-maker--full": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 128,
         "y": 384
@@ -501,7 +501,7 @@
       ]
     },
     "prep--floe": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 256,
         "y": 384
@@ -527,7 +527,7 @@
       ]
     },
     "prep--prep": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 384,
         "y": 384
@@ -553,7 +553,7 @@
       ]
     },
     "protocols": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 512,
         "y": 384
@@ -570,7 +570,7 @@
       "tint": null
     },
     "qisma-mizan--express": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 640,
         "y": 384
@@ -596,7 +596,7 @@
       ]
     },
     "qisma-mizan--full": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 0,
         "y": 512
@@ -622,7 +622,7 @@
       ]
     },
     "roi--express": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 128,
         "y": 512
@@ -648,7 +648,7 @@
       ]
     },
     "roi--full": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 256,
         "y": 512
@@ -677,7 +677,7 @@
       ]
     },
     "solver": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 384,
         "y": 512
@@ -703,7 +703,7 @@
       ]
     },
     "survival-mirror": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 512,
         "y": 512
@@ -729,7 +729,7 @@
       ]
     },
     "text-tools--text": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 640,
         "y": 512
@@ -755,7 +755,7 @@
       ]
     },
     "text-tools--weft": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 0,
         "y": 640
@@ -781,7 +781,7 @@
       ]
     },
     "to-do": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 128,
         "y": 640
@@ -798,7 +798,7 @@
       "tint": null
     },
     "workspace": {
-      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "checkedAt": "2026-10-19T20:13:54.893Z",
       "favicon": {
         "x": 256,
         "y": 640

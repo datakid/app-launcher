@@ -144,6 +144,25 @@ await check('JXL round trip keeps size on every fixture and lossless is pixel-id
   }
 });
 
+await check('a rerun keeps locked tints, refreshes sourceTint and recovers the seed', async () => {
+  const base = await run({ seed: 'abcdef01' });
+  const files = new Map(Object.entries(base.export.files));
+  const manifest = JSON.parse(Buffer.from(files.get('manifest.v2.json')).toString('utf8'));
+  const mine = '#12b886';
+  const tint = core.tintFromHex(mine);
+  manifest.icons.dafter.tint = tint;
+  manifest.icons.dafter.locked = true;
+  delete manifest.icons.dafter.sourceTint;
+  files.set('manifest.v2.json', new TextEncoder().encode(JSON.stringify(manifest)));
+  const again = await core.runHarvest({ targets, overrides: {} }, { local: true, now: NOW }, localIo({ readOutput: async (name) => files.get(name) || null }));
+  const m = again.export.manifest;
+  assert.equal(m.icons.dafter.locked, true);
+  assert.deepEqual(m.icons.dafter.tint, tint);
+  assert.ok(Array.isArray(m.icons.dafter.sourceTint), 'sourceTint should be refreshed from the favicon');
+  assert.equal(again.report.colour.seed, 'abcdef01');
+  assert.equal(m.icons.parser.locked, false);
+});
+
 await check('stale keys keep the previous icon when the page is down', async () => {
   const out = new Map(Object.entries(first.export.files));
   const stale = [{ key: 'alt', appId: 'alt', url: 'https://example.invalid/' }];

@@ -1,0 +1,8 @@
+:root {
+  --r-icon: .27;
+  --r-card: 18px;
+  --r-chip: 9px;
+  --r-item: 10px;
+}
+:root[data-corners="soft"] { --r-icon: .31; --r-card: 24px; --r-chip: 999px; --r-item: 13px; }
+:root[data-corners="crisp"] { --r-icon: .2; --r-card: 10px; --r-chip: 6px; --r-item: 6px; }
