@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "manifest.v2.schema.json",
+  "type": "object",
+  "required": ["version", "generatedAt", "hash", "atlas", "glyphAtlas", "glyphSprite", "icons"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "const": 2 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "hash": { "type": "string", "pattern": "^[0-9a-f]{8}$" },
+    "atlas": { "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/atlas" }] },
+    "glyphAtlas": { "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/atlas" }] },
+    "glyphSprite": {
+      "type": "object",
+      "required": ["file"],
+      "additionalProperties": false,
+      "properties": { "file": { "type": "string", "pattern": "^icons/glyphs\\.[0-9a-f]{8}\\.svg$" } }
+    },
+    "icons": {
+      "type": "object",
+      "propertyNames": { "pattern": "^[a-z0-9-]+$" },
+      "additionalProperties": { "$ref": "#/definitions/icon" }
+    }
+  },
+  "definitions": {
+    "xy": {
+      "type": "object",
+      "required": ["x", "y"],
+      "additionalProperties": false,
+      "properties": { "x": { "type": "integer", "minimum": 0 }, "y": { "type": "integer", "minimum": 0 } }
+    },
+    "hex": { "type": "string", "pattern": "^#[0-9a-f]{6}$" },
+    "tint": { "type": "array", "items": { "$ref": "#/definitions/hex" }, "minItems": 3, "maxItems": 3 },
+    "atlas": {
+      "type": "object",
+      "required": ["file", "width", "height", "cell"],
+      "additionalProperties": false,
+      "properties": {
+        "file": { "type": "string", "pattern": "^icons/(glyph-)?atlas\\.[0-9a-f]{8}\\.webp$" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "cell": { "type": "integer", "minimum": 16 }
+      }
+    },
+    "icon": {
+      "type": "object",
+      "required": ["favicon", "glyph", "tint", "shape", "status", "checkedAt", "hash", "palette", "seed", "locked"],
+      "additionalProperties": false,
+      "properties": {
+        "favicon": { "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/xy" }] },
+        "glyph": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "object", "required": ["symbol"], "additionalProperties": false, "properties": { "symbol": { "type": "string", "pattern": "^g-[a-z0-9-]+$" } } },
+            { "type": "object", "required": ["atlas"], "additionalProperties": false, "properties": { "atlas": { "$ref": "#/definitions/xy" } } }
+          ]
+        },
+        "tint": { "oneOf": [{ "type": "null" }, { "$ref": "#/definitions/tint" }] },
+        "sourceTint": { "$ref": "#/definitions/tint" },
+        "shape": { "enum": ["default", "squircle", "circle", "rounded", "hexagon"] },
+        "status": { "enum": ["found", "stale", "blocked", "default", "override"] },
+        "checkedAt": { "type": "string" },
+        "hash": { "oneOf": [{ "type": "null" }, { "type": "string" }] },
+        "palette": { "oneOf": [{ "type": "null" }, { "type": "string" }] },
+        "seed": { "oneOf": [{ "type": "null" }, { "type": "string", "pattern": "^[0-9a-f]{8}$" }] },
+        "locked": { "type": "boolean" }
+      }
+    }
+  }
+}

@@ -1,0 +1,828 @@
+{
+  "atlas": {
+    "cell": 128,
+    "file": "icons/atlas.2d7f2d93.webp",
+    "height": 768,
+    "width": 768
+  },
+  "generatedAt": "2026-10-19T03:27:00.153Z",
+  "glyphAtlas": {
+    "cell": 128,
+    "file": "icons/glyph-atlas.d38a84a3.webp",
+    "height": 256,
+    "width": 256
+  },
+  "glyphSprite": {
+    "file": "icons/glyphs.3ae1d408.svg"
+  },
+  "hash": "c9005a33",
+  "icons": {
+    "alt": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 0,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-alt"
+      },
+      "hash": "3bae2ab44cb92c756000fba16f3239f5bf1de2f7c03aaed9327bc160be46aaf4",
+      "locked": false,
+      "palette": null,
+      "seed": null,
+      "shape": "default",
+      "status": "found",
+      "tint": null
+    },
+    "criteria-builder--meridian": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 128,
+        "y": 0
+      },
+      "glyph": {
+        "atlas": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "hash": "225f951682192c0b53c447fafc70121e45e70f680c54e67da2614cb9040c1d4c",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#9889b7",
+        "#d6caee",
+        "#483962"
+      ],
+      "status": "found",
+      "tint": [
+        "#827ba6",
+        "#c0bbdb",
+        "#352d52"
+      ]
+    },
+    "criteria-builder--rubric": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 256,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-criteria-builder--rubric"
+      },
+      "hash": "4b35e4edfee992a2dac68c522b1a2dc910f4c6e932083314506034c776df38ba",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#9884ce",
+        "#d5c8fd",
+        "#493375"
+      ],
+      "status": "found",
+      "tint": [
+        "#9983d4",
+        "#d4ccf0",
+        "#4a3278"
+      ]
+    },
+    "dafter": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 384,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-dafter"
+      },
+      "hash": "cc771bfffa36e680936fd0526689cd1242d4c413cf809825c73ef0227018f0bf",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "status": "found",
+      "tint": [
+        "#698cf0",
+        "#bed0fd",
+        "#273c81"
+      ]
+    },
+    "draw": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 512,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-draw"
+      },
+      "hash": "5d26f3072cc7bac1b54ab872c68039116f0521529e1fbfac938a943579fb2487",
+      "locked": false,
+      "palette": null,
+      "seed": null,
+      "shape": "default",
+      "status": "found",
+      "tint": null
+    },
+    "drug-list--free": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 640,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-drug-list--free"
+      },
+      "hash": "eee4a4b9c426b6db036103b3427ffbd5874f9306fac7a6bdee5df4c66fbc3ed2",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#de6e39",
+        "#ffc1a7",
+        "#702900"
+      ],
+      "status": "found",
+      "tint": [
+        "#e26c29",
+        "#f2c7b4",
+        "#6e2c02"
+      ]
+    },
+    "drug-list--full": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 0,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-drug-list--full"
+      },
+      "hash": "2825ceeaea5b02ef0d5ac0017e37b2bcd8e1dfc32a851760ab895a5482299d33",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#928bba",
+        "#d1ccf0",
+        "#433b65"
+      ],
+      "status": "found",
+      "tint": [
+        "#908abd",
+        "#cfcbf2",
+        "#413a66"
+      ]
+    },
+    "entity-tracker": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 128,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-entity-tracker"
+      },
+      "hash": "a23195dca17dc25eca53a3dc3f48f30c5a69daf2ab93d28bff57e4646c6914e5",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#569db6",
+        "#a6daee",
+        "#014a5d"
+      ],
+      "status": "found",
+      "tint": [
+        "#5992b0",
+        "#a5cfe6",
+        "#0d4157"
+      ]
+    },
+    "id-dates--contacts": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 256,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-id-dates--contacts"
+      },
+      "hash": "8bed47d27fa1725be6387fadb31817140afa8f00325e21c5552443de1b466a02",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#e3674b",
+        "#fec0b1",
+        "#75220f"
+      ],
+      "status": "found",
+      "tint": [
+        "#d05a2d",
+        "#ecb19c",
+        "#5e1e03"
+      ]
+    },
+    "id-dates--id": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 384,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-id-dates--id"
+      },
+      "hash": "912d137a01086f42952a9019aed9cb84d85da96d3d66d58e2aa63caf24d1178a",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#cc7b49",
+        "#fcc3a2",
+        "#693005"
+      ],
+      "status": "found",
+      "tint": [
+        "#c17c40",
+        "#f2c39c",
+        "#5f3203"
+      ]
+    },
+    "index-builder": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 512,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-index-builder"
+      },
+      "hash": "aae3355891d172f83f14846d5537e905a8ed0b9e92154442c15a580dd5767c89",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#6b9f8f",
+        "#b4dbce",
+        "#184d3f"
+      ],
+      "status": "found",
+      "tint": [
+        "#689884",
+        "#afd4c4",
+        "#164736"
+      ]
+    },
+    "ledger-form--folio": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 640,
+        "y": 128
+      },
+      "glyph": {
+        "atlas": {
+          "x": 128,
+          "y": 0
+        }
+      },
+      "hash": "490593a1812b6e19bf2644d597eb899409d517606ba1fabd6e64c73b2a94b139",
+      "locked": false,
+      "palette": null,
+      "seed": null,
+      "shape": "default",
+      "status": "found",
+      "tint": null
+    },
+    "ledger-form--tally": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 0,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-ledger-form--tally"
+      },
+      "hash": "8dd72acfdcb5141b1936a2eee31d5ddeb1ebd0b02d7a2eb730444383c5a2f80a",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d77250",
+        "#fdc1ad",
+        "#742301"
+      ],
+      "status": "found",
+      "tint": [
+        "#d37059",
+        "#f0c2b7",
+        "#702110"
+      ]
+    },
+    "paid-calculator--calc": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 128,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-paid-calculator--calc"
+      },
+      "hash": "45e1c362fe288459db868dc01c5702dac201f105a072783dc7708f090edca1ce",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#8092b8",
+        "#c3d1ef",
+        "#334263"
+      ],
+      "status": "found",
+      "tint": [
+        "#7992b5",
+        "#bcd0ec",
+        "#2c4160"
+      ]
+    },
+    "paid-calculator--daleel": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 256,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-paid-calculator--daleel"
+      },
+      "hash": "2f451cfd01cda20b72b91e32b15e2db928de25d66c7ac7b57bbf234dd1aaae74",
+      "locked": false,
+      "palette": null,
+      "seed": null,
+      "shape": "default",
+      "status": "found",
+      "tint": null
+    },
+    "parser": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 384,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-parser"
+      },
+      "hash": "1a18695233e8077bfbcddb20d3f273f66b4df80b452f15f40184f312f4193e6e",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "status": "found",
+      "tint": [
+        "#bc73be",
+        "#f4baf4",
+        "#612664"
+      ]
+    },
+    "pharmacy-tools--bugvert": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 512,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-pharmacy-tools--bugvert"
+      },
+      "hash": "11c0771204a7b4cd7394beb081fd25be03056f55193961a0c73621247dd230ff",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c97a64",
+        "#fec0af",
+        "#6f2914"
+      ],
+      "status": "found",
+      "tint": [
+        "#c07463",
+        "#f6b8ab",
+        "#672415"
+      ]
+    },
+    "pharmacy-tools--pillbug": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 640,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-pharmacy-tools--pillbug"
+      },
+      "hash": "17c0e92428ffb0599e289e7d97f56f7ab14d7b4acce91d5467a86bd3d7754216",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d27556",
+        "#fdc1ad",
+        "#742301"
+      ],
+      "status": "found",
+      "tint": [
+        "#c16f42",
+        "#edb99f",
+        "#5d2703"
+      ]
+    },
+    "plan-maker--express": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 0,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-plan-maker--express"
+      },
+      "hash": "18c6c99bbd37f24147acd5a0e57c11122fac1c63912c3e462fa92c053b9ded8b",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#5c9eac",
+        "#acdae4",
+        "#034b57"
+      ],
+      "status": "found",
+      "tint": [
+        "#6099aa",
+        "#aed5e1",
+        "#0f4755"
+      ]
+    },
+    "plan-maker--full": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 128,
+        "y": 384
+      },
+      "glyph": {
+        "atlas": {
+          "x": 0,
+          "y": 128
+        }
+      },
+      "hash": "6b76a9816e8514ae8f21ea00db8a85d9cd357013948623f0cbeff3bdf6bbbb49",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#af82a1",
+        "#eac4dd",
+        "#5a334f"
+      ],
+      "status": "found",
+      "tint": [
+        "#a47597",
+        "#dfb6d2",
+        "#502746"
+      ]
+    },
+    "prep--floe": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 256,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-prep--floe"
+      },
+      "hash": "a857351cb524b0ae66357e923b13d2650ecfacf95cf31ccbae1ccb99c24140a6",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c47f59",
+        "#fac3a6",
+        "#6b2e01"
+      ],
+      "status": "found",
+      "tint": [
+        "#c07f54",
+        "#eac7b1",
+        "#643105"
+      ]
+    },
+    "prep--prep": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 384,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-prep--prep"
+      },
+      "hash": "49ca15b82cc28e25e2151618000e54f94f5bffac0cea148576ac561304782c60",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#e36462",
+        "#ffbeba",
+        "#751f22"
+      ],
+      "status": "found",
+      "tint": [
+        "#d85a52",
+        "#f3b4ad",
+        "#6b1414"
+      ]
+    },
+    "protocols": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 512,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-protocols"
+      },
+      "hash": "b168565bdef2307648e1c90f3c9751bbc645fd2887005e5216db408d961399d7",
+      "locked": false,
+      "palette": null,
+      "seed": null,
+      "shape": "default",
+      "status": "found",
+      "tint": null
+    },
+    "qisma-mizan--express": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 640,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-qisma-mizan--express"
+      },
+      "hash": "6da78e467ce367fa2017a9daa83bea4aeb6d647715ae1841c67f5e23f330ae47",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d47452",
+        "#fdc1ac",
+        "#722604"
+      ],
+      "status": "found",
+      "tint": [
+        "#c16350",
+        "#e9b0a3",
+        "#601507"
+      ]
+    },
+    "qisma-mizan--full": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 0,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-qisma-mizan--full"
+      },
+      "hash": "e3de526becae7eede4a0c3a1590b25fa1197482ae66f302129feaeb2b580b742",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d47354",
+        "#fdc1ad",
+        "#742302"
+      ],
+      "status": "found",
+      "tint": [
+        "#d77245",
+        "#ffc1a6",
+        "#702900"
+      ]
+    },
+    "roi--express": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 128,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-roi--express"
+      },
+      "hash": "7475e02b41372cd620e36e63ee6f5a4ef5e88613f409356dafda6ad25e159d14",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d27556",
+        "#fdc1ad",
+        "#742301"
+      ],
+      "status": "found",
+      "tint": [
+        "#d36e5f",
+        "#fcbdb2",
+        "#741b12"
+      ]
+    },
+    "roi--full": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 256,
+        "y": 512
+      },
+      "glyph": {
+        "atlas": {
+          "x": 128,
+          "y": 128
+        }
+      },
+      "hash": "27831d0cbb55f4d60a021be2124b77f565caeb63c97738faebd2a1ce2b6db6c1",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#cb7a5b",
+        "#fdc1ab",
+        "#702805"
+      ],
+      "status": "found",
+      "tint": [
+        "#ca7b50",
+        "#f8c3aa",
+        "#6a2d03"
+      ]
+    },
+    "solver": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 384,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-solver"
+      },
+      "hash": "462e42c995007d7f726a1c0368ad932917a16420c0759ec81bc1be0dd45f12f6",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#66a091",
+        "#afdcd0",
+        "#0e4d41"
+      ],
+      "status": "found",
+      "tint": [
+        "#61978d",
+        "#a6d4ca",
+        "#08463d"
+      ]
+    },
+    "survival-mirror": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 512,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-survival-mirror"
+      },
+      "hash": "792b38d3920c20c785a483fdcf772129e98c21101a92faf588daddc5ddcaa1e7",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#8a8dbd",
+        "#cacdf5",
+        "#3c3d67"
+      ],
+      "status": "found",
+      "tint": [
+        "#888dbc",
+        "#c9cdea",
+        "#3a3d66"
+      ]
+    },
+    "text-tools--text": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 640,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-text-tools--text"
+      },
+      "hash": "b5b740a86dd648f57fcccca0020529710d1b623a03fc83063b7ec75d051a2a2a",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c18510",
+        "#f9c880",
+        "#5a3b00"
+      ],
+      "status": "found",
+      "tint": [
+        "#bd8809",
+        "#f1cc8d",
+        "#573e07"
+      ]
+    },
+    "text-tools--weft": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 0,
+        "y": 640
+      },
+      "glyph": {
+        "symbol": "g-text-tools--weft"
+      },
+      "hash": "556716586dc1a8d52decdf0cf7ef0678149f658c29e3ae7f6e7fc811f051d260",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d47354",
+        "#fdc1ad",
+        "#742302"
+      ],
+      "status": "found",
+      "tint": [
+        "#d2754b",
+        "#e9cabc",
+        "#6e2b05"
+      ]
+    },
+    "to-do": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 128,
+        "y": 640
+      },
+      "glyph": {
+        "symbol": "g-to-do"
+      },
+      "hash": "aec1475adf62bb1f22b020b689d40c3a86cfb15d388f47a1ca486e019d8f2fd6",
+      "locked": false,
+      "palette": null,
+      "seed": null,
+      "shape": "default",
+      "status": "found",
+      "tint": null
+    },
+    "workspace": {
+      "checkedAt": "2026-10-19T03:27:00.153Z",
+      "favicon": {
+        "x": 256,
+        "y": 640
+      },
+      "glyph": {
+        "symbol": "g-workspace"
+      },
+      "hash": "6537dd315dd6e3f7d83fdd4cd756e5a8277fc8661a687e6e6f6b6dbbaa9ff8e7",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c18412",
+        "#fbc77c",
+        "#5b3b00"
+      ],
+      "status": "found",
+      "tint": [
+        "#ae790d",
+        "#ecb968",
+        "#4b3100"
+      ]
+    }
+  },
+  "version": 2
+}

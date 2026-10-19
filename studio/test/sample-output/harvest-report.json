@@ -1,0 +1,910 @@
+{
+  "adjusted": [
+    "criteria-builder--meridian",
+    "criteria-builder--rubric",
+    "drug-list--free",
+    "drug-list--full",
+    "entity-tracker",
+    "id-dates--contacts",
+    "id-dates--id",
+    "index-builder",
+    "ledger-form--tally",
+    "paid-calculator--calc",
+    "pharmacy-tools--bugvert",
+    "pharmacy-tools--pillbug",
+    "plan-maker--express",
+    "plan-maker--full",
+    "prep--floe",
+    "prep--prep",
+    "qisma-mizan--express",
+    "qisma-mizan--full",
+    "roi--express",
+    "roi--full",
+    "solver",
+    "survival-mirror",
+    "text-tools--text",
+    "text-tools--weft",
+    "workspace"
+  ],
+  "atlas": {
+    "atlasBytes": 83988,
+    "atlasMode": "lossy-q90",
+    "cell": 128,
+    "cellDefaulted": true,
+    "count": 33,
+    "glyphAtlasBytes": 12970,
+    "glyphAtlasMode": "lossless",
+    "rejectedGlyphs": 4,
+    "spriteBytes": 15917,
+    "spriteGzip": 6437,
+    "symbols": 29
+  },
+  "colour": {
+    "contrastFlagged": [],
+    "contrastNudged": [
+      "criteria-builder--rubric",
+      "drug-list--free",
+      "drug-list--full",
+      "id-dates--id",
+      "index-builder",
+      "ledger-form--tally",
+      "paid-calculator--calc",
+      "plan-maker--express",
+      "prep--floe",
+      "roi--full",
+      "solver",
+      "survival-mirror",
+      "text-tools--text",
+      "text-tools--weft"
+    ],
+    "groups": [
+      [
+        "criteria-builder--meridian",
+        "criteria-builder--rubric",
+        "drug-list--full",
+        "entity-tracker",
+        "index-builder",
+        "paid-calculator--calc",
+        "plan-maker--express",
+        "plan-maker--full",
+        "solver",
+        "survival-mirror"
+      ],
+      [
+        "drug-list--free",
+        "id-dates--contacts",
+        "id-dates--id",
+        "ledger-form--tally",
+        "pharmacy-tools--bugvert",
+        "pharmacy-tools--pillbug",
+        "prep--floe",
+        "prep--prep",
+        "qisma-mizan--express",
+        "qisma-mizan--full",
+        "roi--express",
+        "roi--full",
+        "text-tools--text",
+        "text-tools--weft",
+        "workspace"
+      ]
+    ],
+    "mode": "follow",
+    "seed": "1f2e3d4c",
+    "tightGroups": [
+      "qisma-mizan--express",
+      "roi--express",
+      "roi--full",
+      "survival-mirror",
+      "text-tools--weft"
+    ]
+  },
+  "defaults": [],
+  "gate": {
+    "failures": [],
+    "ok": true
+  },
+  "generatedAt": "2026-10-19T03:27:00.153Z",
+  "items": [
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "ledger-form--tally",
+      "source": {
+        "href": "ledger-form--tally.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#d37059",
+        "#f0c2b7",
+        "#702110"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 636,
+        "iou": 0.967,
+        "reason": null
+      },
+      "url": "https://slippery-form-2-2.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "atlas",
+      "harvest": "found",
+      "key": "ledger-form--folio",
+      "source": {
+        "href": "ledger-form--folio.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": null,
+      "trace": {
+        "accepted": false,
+        "bytes": 816,
+        "iou": 0.908,
+        "reason": "trace IoU below 0.95"
+      },
+      "url": "https://slippery-form.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "parser",
+      "source": {
+        "href": "parser.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#bc73be",
+        "#f4baf4",
+        "#612664"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 732,
+        "iou": 0.966,
+        "reason": null
+      },
+      "url": "https://lx-parser.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "workspace",
+      "source": {
+        "href": "workspace.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#ae790d",
+        "#ecb968",
+        "#4b3100"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 96,
+        "iou": 1,
+        "reason": null
+      },
+      "url": "https://desktop-ru4x.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "drug-list--free",
+      "source": {
+        "href": "drug-list--free.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#e26c29",
+        "#f2c7b4",
+        "#6e2c02"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 421,
+        "iou": 0.965,
+        "reason": null
+      },
+      "url": "https://searchbar-five-beta.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "drug-list--full",
+      "source": {
+        "href": "drug-list--full.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#908abd",
+        "#cfcbf2",
+        "#413a66"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 521,
+        "iou": 0.977,
+        "reason": null
+      },
+      "url": "https://lx-search-kappa.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "paid-calculator--calc",
+      "source": {
+        "href": "paid-calculator--calc.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#7992b5",
+        "#bcd0ec",
+        "#2c4160"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 757,
+        "iou": 0.957,
+        "reason": null
+      },
+      "url": "https://newlist-eta.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "paid-calculator--daleel",
+      "source": {
+        "href": "paid-calculator--daleel.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": null,
+      "trace": {
+        "accepted": true,
+        "bytes": 361,
+        "iou": 0.961,
+        "reason": null
+      },
+      "url": "https://460-prices.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "protocols",
+      "source": {
+        "href": "protocols.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": null,
+      "trace": {
+        "accepted": true,
+        "bytes": 915,
+        "iou": 0.95,
+        "reason": null
+      },
+      "url": "https://strong-snickerdoodle-02a92f.netlify.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "index-builder",
+      "source": {
+        "href": "index-builder.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#689884",
+        "#afd4c4",
+        "#164736"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 464,
+        "iou": 0.977,
+        "reason": null
+      },
+      "url": "https://lx-index.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "dafter",
+      "source": {
+        "href": "dafter.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#698cf0",
+        "#bed0fd",
+        "#273c81"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 415,
+        "iou": 0.988,
+        "reason": null
+      },
+      "url": "https://daftar-psi-two.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "id-dates--id",
+      "source": {
+        "href": "id-dates--id.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#c17c40",
+        "#f2c39c",
+        "#5f3203"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 355,
+        "iou": 0.957,
+        "reason": null
+      },
+      "url": "https://lx-id.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "id-dates--contacts",
+      "source": {
+        "href": "id-dates--contacts.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#d05a2d",
+        "#ecb19c",
+        "#5e1e03"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 670,
+        "iou": 0.971,
+        "reason": null
+      },
+      "url": "https://contact-flow-web-orpin.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "roi--express",
+      "source": {
+        "href": "roi--express.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#d36e5f",
+        "#fcbdb2",
+        "#741b12"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 488,
+        "iou": 0.987,
+        "reason": null
+      },
+      "url": "https://roi-calc-express.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "atlas",
+      "harvest": "found",
+      "key": "roi--full",
+      "source": {
+        "href": "roi--full.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#ca7b50",
+        "#f8c3aa",
+        "#6a2d03"
+      ],
+      "trace": {
+        "accepted": false,
+        "bytes": 301,
+        "iou": 0.94,
+        "reason": "trace IoU below 0.95"
+      },
+      "url": "https://roi-calculator-eight-omega.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "survival-mirror",
+      "source": {
+        "href": "survival-mirror.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#888dbc",
+        "#c9cdea",
+        "#3a3d66"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 256,
+        "iou": 0.957,
+        "reason": null
+      },
+      "url": "https://survival-mirror.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "qisma-mizan--express",
+      "source": {
+        "href": "qisma-mizan--express.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#c16350",
+        "#e9b0a3",
+        "#601507"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 678,
+        "iou": 0.966,
+        "reason": null
+      },
+      "url": "https://m-izan.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "qisma-mizan--full",
+      "source": {
+        "href": "qisma-mizan--full.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#d77245",
+        "#ffc1a6",
+        "#702900"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 298,
+        "iou": 0.987,
+        "reason": null
+      },
+      "url": "https://shareholders-coral.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "solver",
+      "source": {
+        "href": "solver.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#61978d",
+        "#a6d4ca",
+        "#08463d"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 476,
+        "iou": 0.964,
+        "reason": null
+      },
+      "url": "https://solver-clone.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "plan-maker--express",
+      "source": {
+        "href": "plan-maker--express.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#6099aa",
+        "#aed5e1",
+        "#0f4755"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 489,
+        "iou": 0.98,
+        "reason": null
+      },
+      "url": "https://rushed-plan.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "atlas",
+      "harvest": "found",
+      "key": "plan-maker--full",
+      "source": {
+        "href": "plan-maker--full.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#a47597",
+        "#dfb6d2",
+        "#502746"
+      ],
+      "trace": {
+        "accepted": false,
+        "bytes": 697,
+        "iou": 0.919,
+        "reason": "trace IoU below 0.95"
+      },
+      "url": "https://plan-maker-tan.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "atlas",
+      "harvest": "found",
+      "key": "criteria-builder--meridian",
+      "source": {
+        "href": "criteria-builder--meridian.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#827ba6",
+        "#c0bbdb",
+        "#352d52"
+      ],
+      "trace": {
+        "accepted": false,
+        "bytes": 699,
+        "iou": 0.934,
+        "reason": "trace IoU below 0.95"
+      },
+      "url": "https://facilities-demo-tau.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "criteria-builder--rubric",
+      "source": {
+        "href": "criteria-builder--rubric.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#9983d4",
+        "#d4ccf0",
+        "#4a3278"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 453,
+        "iou": 0.989,
+        "reason": null
+      },
+      "url": "https://ranking-builder-demo.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "prep--prep",
+      "source": {
+        "href": "prep--prep.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#d85a52",
+        "#f3b4ad",
+        "#6b1414"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 512,
+        "iou": 0.982,
+        "reason": null
+      },
+      "url": "https://duckbench2.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "prep--floe",
+      "source": {
+        "href": "prep--floe.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#c07f54",
+        "#eac7b1",
+        "#643105"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 627,
+        "iou": 0.991,
+        "reason": null
+      },
+      "url": "https://polars-desktop-demo.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "text-tools--weft",
+      "source": {
+        "href": "text-tools--weft.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#d2754b",
+        "#e9cabc",
+        "#6e2b05"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 492,
+        "iou": 0.971,
+        "reason": null
+      },
+      "url": "https://data-cleaner-coral.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "text-tools--text",
+      "source": {
+        "href": "text-tools--text.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#bd8809",
+        "#f1cc8d",
+        "#573e07"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 558,
+        "iou": 0.977,
+        "reason": null
+      },
+      "url": "https://text-tools-kohl.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "to-do",
+      "source": {
+        "href": "to-do.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": null,
+      "trace": {
+        "accepted": true,
+        "bytes": 265,
+        "iou": 0.971,
+        "reason": null
+      },
+      "url": "https://to-do-cyan-theta.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "pharmacy-tools--pillbug",
+      "source": {
+        "href": "pharmacy-tools--pillbug.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#c16f42",
+        "#edb99f",
+        "#5d2703"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 1172,
+        "iou": 0.95,
+        "reason": null
+      },
+      "url": "https://pillbug.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "pharmacy-tools--bugvert",
+      "source": {
+        "href": "pharmacy-tools--bugvert.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#c07463",
+        "#f6b8ab",
+        "#672415"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 1075,
+        "iou": 0.961,
+        "reason": null
+      },
+      "url": "https://bugvert.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "entity-tracker",
+      "source": {
+        "href": "entity-tracker.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": [
+        "#5992b0",
+        "#a5cfe6",
+        "#0d4157"
+      ],
+      "trace": {
+        "accepted": true,
+        "bytes": 825,
+        "iou": 0.959,
+        "reason": null
+      },
+      "url": "https://entity-tracker-pi.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "draw",
+      "source": {
+        "href": "draw.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": null,
+      "trace": {
+        "accepted": true,
+        "bytes": 414,
+        "iou": 0.963,
+        "reason": null
+      },
+      "url": "https://draw-gold.vercel.app/",
+      "why": null
+    },
+    {
+      "error": null,
+      "glyph": "symbol",
+      "harvest": "found",
+      "key": "alt",
+      "source": {
+        "href": "alt.png",
+        "type": "local"
+      },
+      "status": "found",
+      "tint": null,
+      "trace": {
+        "accepted": true,
+        "bytes": 450,
+        "iou": 0.969,
+        "reason": null
+      },
+      "url": "https://alt-app-lanucher.vercel.app/",
+      "why": null
+    }
+  ],
+  "profile": "launcher",
+  "similarPalette": [
+    "ledger-form--tally",
+    "drug-list--free",
+    "drug-list--full",
+    "id-dates--id",
+    "id-dates--contacts",
+    "roi--express",
+    "roi--full",
+    "survival-mirror",
+    "qisma-mizan--express",
+    "qisma-mizan--full",
+    "criteria-builder--meridian",
+    "prep--floe",
+    "text-tools--weft",
+    "pharmacy-tools--pillbug",
+    "pharmacy-tools--bugvert"
+  ],
+  "summary": {
+    "blocked": 0,
+    "default": 0,
+    "found": 33,
+    "notfound": 0,
+    "override": 0,
+    "stale": 0,
+    "total": 33
+  },
+  "thresholds": {
+    "dHashMaxHamming": 6,
+    "deltaEOklabMax": 0.03,
+    "minOtherApps": 2,
+    "minTintSeparation": 0.04
+  }
+}

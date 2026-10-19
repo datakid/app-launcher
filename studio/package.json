@@ -1,0 +1,25 @@
+{
+  "name": "harvest-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "brand": "node scripts/brand.mjs",
+    "serve": "node scripts/serve.mjs",
+    "harvest": "node cli/harvest.mjs",
+    "test": "node test/run-all.mjs",
+    "postinstall": "npm install --prefix ../shared/harvest-core --no-audit --no-fund"
+  },
+  "dependencies": {
+    "@fontsource-variable/readex-pro": "^5.2.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "fflate": "^0.8.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "linkedom": "^0.18.13",
+    "playwright-core": "^1.64.1"
+  }
+}

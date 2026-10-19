@@ -1,0 +1,22 @@
+{
+  "name": "harvest-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "dependencies": {
+    "@jsquash/avif": "^2.1.1",
+    "@jsquash/jpeg": "^1.6.0",
+    "@jsquash/jxl": "^1.3.0",
+    "@jsquash/oxipng": "^2.3.0",
+    "@jsquash/png": "^3.1.1",
+    "@jsquash/resize": "^2.1.1",
+    "@jsquash/webp": "^1.5.0",
+    "@resvg/resvg-wasm": "^2.6.2",
+    "decode-ico": "^0.4.1",
+    "esm-potrace-wasm": "^0.5.1",
+    "fflate": "^0.8.2",
+    "omggif": "^1.0.10",
+    "svgo": "^4.1.0"
+  }
+}
