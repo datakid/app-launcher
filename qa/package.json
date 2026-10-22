@@ -1,7 +1,0 @@
-{
-  "name": "app-launcher-qa",
-  "private": true,
-  "type": "module",
-  "scripts": { "qa": "node run.mjs", "qa:quick": "node run.mjs --quick" },
-  "devDependencies": { "playwright": "^1.56.0" }
-}
