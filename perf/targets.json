@@ -1,0 +1,112 @@
+{
+  "mobile": {
+    "versionSwitch": {
+      "imageRequests": {
+        "worst": 0
+      },
+      "imageDecodes": {
+        "worst": 0
+      },
+      "interactionMs": {
+        "median": 32
+      },
+      "longTasks": {
+        "worst": 0
+      },
+      "settleGridMs": {
+        "median": 150
+      }
+    },
+    "tabSwitch": {
+      "interactionMs": {
+        "median": 32
+      },
+      "readableMs": {
+        "median": 120
+      },
+      "settleGridMs": {
+        "median": 300
+      },
+      "longTasks": {
+        "worst": 0
+      }
+    },
+    "viewSwitch": {
+      "interactionMs": {
+        "median": 32
+      },
+      "readableMs": {
+        "median": 120
+      },
+      "settleGridMs": {
+        "median": 300
+      },
+      "longTasks": {
+        "worst": 0
+      }
+    },
+    "pointerSweep": {
+      "longTasks": {
+        "worst": 0
+      },
+      "worstFrameMs": {
+        "worst": 32
+      },
+      "medianFrameMs": {
+        "median": 17.2
+      }
+    }
+  },
+  "desktop": {
+    "versionSwitch": {
+      "imageRequests": {
+        "worst": 0
+      },
+      "imageDecodes": {
+        "worst": 0
+      },
+      "interactionMs": {
+        "median": 16
+      },
+      "longTasks": {
+        "worst": 0
+      },
+      "settleGridMs": {
+        "median": 150
+      }
+    },
+    "tabSwitch": {
+      "interactionMs": {
+        "median": 16
+      },
+      "readableMs": {
+        "median": 120
+      },
+      "settleGridMs": {
+        "median": 300
+      },
+      "longTasks": {
+        "worst": 0
+      }
+    },
+    "viewSwitch": {
+      "interactionMs": {
+        "median": 16
+      },
+      "readableMs": {
+        "median": 120
+      },
+      "settleGridMs": {
+        "median": 300
+      },
+      "longTasks": {
+        "worst": 0
+      }
+    },
+    "pointerSweep": {
+      "worstFrameMs": {
+        "worst": 20
+      }
+    }
+  }
+}

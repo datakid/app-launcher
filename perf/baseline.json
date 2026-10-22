@@ -1,0 +1,510 @@
+{
+  "mobile": {
+    "versionSwitch": {
+      "interactionMs": {
+        "median": 112,
+        "worst": 136
+      },
+      "settleMs": {
+        "median": 703.45,
+        "worst": 730.3
+      },
+      "settleCoreMs": {
+        "median": 703.45,
+        "worst": 730.3
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 2,
+        "worst": 4
+      },
+      "worstFrameMs": {
+        "median": 66.6,
+        "worst": 66.7
+      },
+      "medianFrameMs": {
+        "median": 33.3,
+        "worst": 33.4
+      },
+      "droppedFrames": {
+        "median": 2,
+        "worst": 5
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 0
+      },
+      "imageDecodes": {
+        "median": 4,
+        "worst": 4
+      }
+    },
+    "tabSwitch": {
+      "interactionMs": {
+        "median": 796,
+        "worst": 904
+      },
+      "settleMs": {
+        "median": 3013.7,
+        "worst": 3023.1
+      },
+      "settleCoreMs": {
+        "median": 1781.5,
+        "worst": 1844.6
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 6,
+        "worst": 10
+      },
+      "worstFrameMs": {
+        "median": 558.35,
+        "worst": 633.3
+      },
+      "medianFrameMs": {
+        "median": 33.35,
+        "worst": 216.65
+      },
+      "droppedFrames": {
+        "median": 7,
+        "worst": 13
+      },
+      "imageRequests": {
+        "median": 6,
+        "worst": 8
+      },
+      "imageDecodes": {
+        "median": 70,
+        "worst": 81
+      }
+    },
+    "viewSwitch": {
+      "interactionMs": {
+        "median": 488,
+        "worst": 568
+      },
+      "settleMs": {
+        "median": 619.45,
+        "worst": 705.5
+      },
+      "settleCoreMs": {
+        "median": 619.45,
+        "worst": 705.5
+      },
+      "readableMs": {
+        "median": 22.05,
+        "worst": 215
+      },
+      "longTasks": {
+        "median": 2,
+        "worst": 3
+      },
+      "worstFrameMs": {
+        "median": 250,
+        "worst": 333.4
+      },
+      "medianFrameMs": {
+        "median": 70.83,
+        "worst": 116.6
+      },
+      "droppedFrames": {
+        "median": 1,
+        "worst": 2
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 3
+      },
+      "imageDecodes": {
+        "median": 23,
+        "worst": 26
+      }
+    },
+    "paletteOpen": {
+      "interactionMs": {
+        "median": 1104,
+        "worst": 1208
+      },
+      "settleMs": {
+        "median": 1861.8,
+        "worst": 1984
+      },
+      "settleCoreMs": {
+        "median": 1861.8,
+        "worst": 1984
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 4.5,
+        "worst": 7
+      },
+      "worstFrameMs": {
+        "median": 533.3,
+        "worst": 583.4
+      },
+      "medianFrameMs": {
+        "median": 137.42,
+        "worst": 258.35
+      },
+      "droppedFrames": {
+        "median": 2.5,
+        "worst": 4
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 0
+      },
+      "imageDecodes": {
+        "median": 52,
+        "worst": 54
+      }
+    },
+    "colorsChange": {
+      "interactionMs": {
+        "median": 216,
+        "worst": 376
+      },
+      "settleMs": {
+        "median": 1193.9,
+        "worst": 3023.9
+      },
+      "settleCoreMs": {
+        "median": 1193.9,
+        "worst": 3023.9
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 3,
+        "worst": 8
+      },
+      "worstFrameMs": {
+        "median": 483.35,
+        "worst": 633.3
+      },
+      "medianFrameMs": {
+        "median": 183.35,
+        "worst": 350
+      },
+      "droppedFrames": {
+        "median": 1,
+        "worst": 9
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 0
+      },
+      "imageDecodes": {
+        "median": 32,
+        "worst": 64
+      }
+    },
+    "pointerSweep": {
+      "interactionMs": {
+        "median": null,
+        "worst": null
+      },
+      "settleMs": {
+        "median": null,
+        "worst": null
+      },
+      "settleCoreMs": {
+        "median": null,
+        "worst": null
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 10,
+        "worst": 24
+      },
+      "worstFrameMs": {
+        "median": 58.35,
+        "worst": 66.7
+      },
+      "medianFrameMs": {
+        "median": 24.95,
+        "worst": 33.3
+      },
+      "droppedFrames": {
+        "median": 24,
+        "worst": 38
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 0
+      },
+      "imageDecodes": {
+        "median": 0,
+        "worst": 0
+      }
+    }
+  },
+  "desktop": {
+    "versionSwitch": {
+      "interactionMs": {
+        "median": 452,
+        "worst": 480
+      },
+      "settleMs": {
+        "median": 1008.7,
+        "worst": 1157.5
+      },
+      "settleCoreMs": {
+        "median": 1008.7,
+        "worst": 1157.5
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 4.5,
+        "worst": 6
+      },
+      "worstFrameMs": {
+        "median": 241.65,
+        "worst": 416.6
+      },
+      "medianFrameMs": {
+        "median": 141.68,
+        "worst": 166.7
+      },
+      "droppedFrames": {
+        "median": 1,
+        "worst": 1
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 0
+      },
+      "imageDecodes": {
+        "median": 31,
+        "worst": 40
+      }
+    },
+    "tabSwitch": {
+      "interactionMs": {
+        "median": 652,
+        "worst": 696
+      },
+      "settleMs": {
+        "median": 3135.6,
+        "worst": 3278.7
+      },
+      "settleCoreMs": {
+        "median": 2254.9,
+        "worst": 2500.1
+      },
+      "readableMs": {
+        "median": 1074.45,
+        "worst": 1266.8
+      },
+      "longTasks": {
+        "median": 8,
+        "worst": 9
+      },
+      "worstFrameMs": {
+        "median": 691.65,
+        "worst": 866.6
+      },
+      "medianFrameMs": {
+        "median": 295.82,
+        "worst": 358.35
+      },
+      "droppedFrames": {
+        "median": 2,
+        "worst": 3
+      },
+      "imageRequests": {
+        "median": 6.5,
+        "worst": 8
+      },
+      "imageDecodes": {
+        "median": 64,
+        "worst": 75
+      }
+    },
+    "viewSwitch": {
+      "interactionMs": {
+        "median": 304,
+        "worst": 456
+      },
+      "settleMs": {
+        "median": 1073,
+        "worst": 1211.4
+      },
+      "settleCoreMs": {
+        "median": 1073,
+        "worst": 1211.4
+      },
+      "readableMs": {
+        "median": 545.35,
+        "worst": 700
+      },
+      "longTasks": {
+        "median": 9,
+        "worst": 11
+      },
+      "worstFrameMs": {
+        "median": 158.4,
+        "worst": 300
+      },
+      "medianFrameMs": {
+        "median": 83.28,
+        "worst": 99.95
+      },
+      "droppedFrames": {
+        "median": 1.5,
+        "worst": 3
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 3
+      },
+      "imageDecodes": {
+        "median": 22.5,
+        "worst": 38
+      }
+    },
+    "paletteOpen": {
+      "interactionMs": {
+        "median": 444,
+        "worst": 1024
+      },
+      "settleMs": {
+        "median": 1435.8,
+        "worst": 1793.4
+      },
+      "settleCoreMs": {
+        "median": 1327.25,
+        "worst": 1694.8
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 3.5,
+        "worst": 5
+      },
+      "worstFrameMs": {
+        "median": 449.95,
+        "worst": 633.3
+      },
+      "medianFrameMs": {
+        "median": 175,
+        "worst": 366.6
+      },
+      "droppedFrames": {
+        "median": 2,
+        "worst": 4
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 1
+      },
+      "imageDecodes": {
+        "median": 62,
+        "worst": 70
+      }
+    },
+    "colorsChange": {
+      "interactionMs": {
+        "median": 236,
+        "worst": 304
+      },
+      "settleMs": {
+        "median": 945.5,
+        "worst": 3054.3
+      },
+      "settleCoreMs": {
+        "median": 945.5,
+        "worst": 3054.3
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 3,
+        "worst": 17
+      },
+      "worstFrameMs": {
+        "median": 500,
+        "worst": 516.6
+      },
+      "medianFrameMs": {
+        "median": 166.65,
+        "worst": 199.95
+      },
+      "droppedFrames": {
+        "median": 1.5,
+        "worst": 11
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 0
+      },
+      "imageDecodes": {
+        "median": 32,
+        "worst": 64
+      }
+    },
+    "pointerSweep": {
+      "interactionMs": {
+        "median": null,
+        "worst": null
+      },
+      "settleMs": {
+        "median": null,
+        "worst": null
+      },
+      "settleCoreMs": {
+        "median": null,
+        "worst": null
+      },
+      "readableMs": {
+        "median": null,
+        "worst": null
+      },
+      "longTasks": {
+        "median": 18.5,
+        "worst": 21
+      },
+      "worstFrameMs": {
+        "median": 216.7,
+        "worst": 300
+      },
+      "medianFrameMs": {
+        "median": 150,
+        "worst": 150
+      },
+      "droppedFrames": {
+        "median": 0,
+        "worst": 1
+      },
+      "imageRequests": {
+        "median": 0,
+        "worst": 0
+      },
+      "imageDecodes": {
+        "median": 115,
+        "worst": 140
+      }
+    }
+  }
+}
