@@ -1,0 +1,100 @@
+# LinkExpress
+
+A bilingual (Arabic/English) launchpad for internal tools. A static site built from `src/` into `dist/` by `npm run build`, driven entirely by `links.json`.
+
+## Mobile layout (≤ 640px)
+- Compact header: title on the start side, a small utility pill on the end side (theme, look, language, data, refresh). Zen and sound stay on desktop and in the `>` command palette
+- Full-width search bar that sticks to the top while scrolling
+- Category tabs become a fixed bottom tab bar with icons and labels, padded for the safe area
+- Cards sit in a 2-column grid with a natural height; if the count is odd, the last card spans both columns. Variant chips fill the card width
+- Desktop (> 640px) is unchanged
+
+## Editing links
+`links.json` is the source of truth. The build bakes a copy into `dist/index.html` (`<script id="lx-data">`, filled with `JSON.stringify` from `links.json`) so the first paint is instant, even offline or on a first visit, and the copy can never drift from the file.
+
+- Load order: localStorage cache, then the baked-in copy, then `links.json` fetched quietly in the background once the page is idle
+- The **refresh** button (last button in the top-left pill, or the "Refresh tools" command after typing `>` in the palette) forces a network fetch of `links.json` that skips the cache and tells you whether anything changed
+- To publish a change, edit `links.json` and push. Vercel runs the build, which refreshes the baked-in copy. Visitors who already have the site also pick the change up through the background fetch of `links.json`
+
+- Any Font Awesome 6 **solid** icon name works (`"icon": "fa-rocket"`). Icons already inlined in the page render instantly; any other name is fetched once from jsDelivr and falls back to `fa-circle` if the name does not exist
+- Visitors see changes on their next visit. The last good catalog is cached in `localStorage`, shown immediately, then silently refreshed from `links.json`
+- If `links.json` has a JSON syntax error, the cached version keeps showing (first-time visitors see "Could not load the tool list"). Check with `?lxdebug=1`, which also warns about rejected entries
+
+## Features
+- Bento grid of tools by category, with variants, "New" (auto-expires 30 days after `since`) and "Closed" badges
+- Command palette (⌘K / Ctrl K, `/`, or start typing) with recents, frequent tools, Arabic-aware fuzzy search and actions
+- Theme, language, sound and Zen mode, all saved in `localStorage`
+- My data menu: import personal links (they go into a "My Links" tab), export data, remove imported links
+- Pointer light: glass rim highlights with an opposite-edge glint, a soft inner glow and a sweeping sheen
+- Focus falloff: when you hover a card, the others recede by distance (0.90 opacity for neighbours down to about 0.74 for the farthest, plus a slight scale-back). It starts after 110 ms of intent, so passing over cards doesn't flicker
+- Cards: an accent glow in the corner, a hostname line under the title and an accent-tinted border on hover
+- Palette scopes: category chips with live match counts and a sliding highlight. Shift+Tab cycles through them
+- Command palette: flat keycaps, a quiet cursor, a strong primary action, dot-separated hints and a live status dot
+- Visual system (v2): accent-aware gradient rim on the bar and palette, glass surfaces with a stronger blur, a circular magnifier badge on the bar and palette input, a tab indicator with an inner accent glow, active-state dots on the controls pill, an accent hairline across the top of each card, refined icon tiles, tinted variant chips and a more legible hostname line. Motion timings were tightened across the board (springs, tab switch, palette morph, card entry) so animations feel snappy and never block interaction
+
+- Visual system (v3, "mature"): a single override layer at the end of the stylesheet. Calmer, lower-chroma colour tints (oklch); smaller corner radii (cards 18px, palette 20px, chips and badges 6–9px); flatter icon tiles with less gloss and no tilt on hover; quieter hover glow, sheen and watermark glyph; small-caps style badges with letter spacing; a hostname line in the UI font with a hairline lead-in; a solid title with a soft tone fade and fine rules on either side; hairline keycaps; and a palette cursor, primary action and scope indicator without the coloured glow. Background orbs are less saturated. All motion timings are unchanged
+- **Appearance menu** (sliders button in the controls pill). Two independent settings that work in both light and dark mode, so there are 4 × 3 × 2 combinations:
+  - **Colors**: **Vivid** (default) keeps each tool's own hue with richer chroma, a stronger aura, glow and rim, more saturated background orbs, and the full v2 gradient set: glossy three-tone icon tiles, the accent shimmer on the title, card title tint fades, the tinted bar, tab indicator, palette glow, cursor, primary action and detail slab. These are scoped to `[data-palette="vivid"]`, so the other looks are unchanged. **Curated** maps each colour to the nearest of eight shared tones (`CURATED_TONES`). **Muted** is a calm, editorial look of its own. Warm paper and espresso backgrounds; flat tinted icon tiles with the glyph in the tool's own ink instead of glossy gradients; solid titles with no shimmer; no glow, sheen or pointer light; a fine accent hairline on each card; hollow badges; quiet, low-saturation background orbs; and warm-toned bar, palette, menus and toast. Each tool keeps its own hue, blended 42% toward a warm grey (`MUTED_GREY`). **Monochrome** turns everything graphite: no hue on cards, icons, tabs, favicon or orbs
+  - **Corners**: **Balanced** (default, 18px cards), **Soft** (24px cards, pill chips and badges) and **Crisp** (10px cards, and the bar, tabs and controls become rounded rectangles). One set of `--r-*` tokens drives every radius, including the tab indicator's clip-path
+  - Switch with the menu, the palette commands (`>` then "Colors: …" / "Corners: …"), Alt+P (next colours), Alt+R (next corners), or `?palette=vivid|curated|muted|mono` and `?corners=balanced|soft|crisp` (URL parameters override the saved choice without saving it). Saved as `lx-palette` and `lx-corners`, applied before first paint, synced across tabs, and included in export/import prefs
+  - A change crossfades in 280 ms through a View Transition (instant with reduced motion). Pure CSS variable swap: no re-layout of the grid and no extra animation loops, so motion and frame budget are unchanged
+- Title rendering: the non-vivid title rule sets `background-clip: text` itself, so the title's gradient can no longer paint as a solid block behind the text when the base clip gets overridden (this was the dark rectangle). Muted goes back to plain solid ink
+- Final polish pass: balanced title wrapping, inline padding so italic glyph edges aren't clipped, kerning on all UI text, header hairlines centred on the title, slightly stronger hostname/muted ink, steadier hostname opacity, and badges set to line-height 1
+- No-flicker updates:
+  - **Colors change** (menu, Alt+P, palette command, another tab): retints the existing cards, tab accent, palette rows, scope chips and detail by updating `--c1` / `--tab-accent` in place. The grid, tab rail and palette list are no longer torn down, so focus, hover, variant selection and scroll position all survive. It still uses the 280 ms crossfade
+  - **Appearance menu**: clicking an option updates the checkmarks in place instead of re-rendering the menu, so the entry stagger doesn't replay and focus stays put
+  - **Card right-click menu**: the New tab / Same tab switch slides its thumb and reorders the open rows in place instead of closing and rebuilding the menu
+  - **Language switch**: wrapped in the same crossfade, so the RTL/LTR flip and the re-rendered labels land in one frame instead of jumping
+  - **Background catalog refresh**: if `links.json` changes while you're looking at the page, the swap crossfades and cards don't replay their entry animation. Keyboard focus on a tab is kept. Skipped (instant swap) while another transition or tab switch is running
+- `compare.html` polish: self-hosted Inter, 1px pane gutters, custom select chevron with hover and focus states, and pane labels aligned on a shared baseline
+- `compare.html` shows all four colour looks in a 2×2 grid, with theme and corner switches that apply to every pane
+- Card glyph: a large, faint copy of the tool's icon sits in the corner of each card and drifts slightly with the pointer
+- Zen mode persists across reloads (`lx-zen`), is applied before first paint, and travels with export/import prefs
+- Palette: a tappable close button (Esc keycap on desktop, × on touch). Closing or pressing Esc during the open morph cancels it instantly instead of being ignored
+- Tab indicator: positioned with real `left`/`right` edges (not `clip-path`), so its inset accent ring stays visible all the way around, rounded ends included, both at rest and while it slides. The top highlight sits on a `::before` layer inset by 1px so it never covers the top edge of the ring
+- Alt Account launcher: always listed in the palette (search "Alt" or "البديل") under an "Alt launcher" group. It has no card and is left out of the random "Try" picks
+- Short desktop windows (≤700 px tall) scroll instead of squashing the grid; very narrow phones (≤360 px) get a tighter controls pill
+- Touch: hover effects only apply on fine pointers, a tap scales the pressed card to 96%, version chips, tabs and the controls pill are at least 44 px, Bento, List and Icons all scroll with the page (never an inner scroll area on a phone), and a horizontal swipe on any grid switches tabs
+- One motion system: a single `MOTION` object holds the timings per interaction. Tab and view switches fade the old content out in 120 ms and the new content in over 220 ms after a 60 ms wait; version switches cross-fade in 120 ms; the command palette opens in 200 ms and closes in 140 ms; the Colors and language crossfade takes 200 ms; the first-load entrance takes 360 ms with a 120 ms offset plus up to 180 ms of distance-from-origin stagger. The stagger runs only at first load. `?motion=legacy` restores the earlier timings (190 ms out, 620 ms in, up to 150 ms of stagger) so the two can be compared; it is never saved and never shown in the UI. Crossfades that use View Transitions are skipped with reduced motion and on low-end devices (4 cores or fewer, or 4 GB of memory or less). Views only differ in the direction of travel (sideways on a tab switch, a small lift on a view switch). The outgoing grid and the incoming cards are never both at full opacity, only opacity, transform, translate and scale are animated, `will-change` is cleared when an animation ends, and phones up to 1024 px with view-timeline support use the same scroll-driven entrance in all three views. Reduced motion makes every switch instant
+- Real favicons: each tool's own favicon and a palette-matched single-colour glyph are harvested into `icons/` by `harvest/fetch-icons.mjs` (192 px PNGs, glyph PNGs and `icons/manifest.json`; run it locally with `cd harvest && npm ci && npm run harvest`). `node tools/icons-v2.mjs` turns those files into the assets the page loads: `icons/glyphs.<hash>.svg` (a sprite of `<symbol>` paths drawn with `currentColor`), `icons/glyph-atlas.<hash>.webp` (an alpha-mask atlas for glyphs that a single-colour path cannot reproduce), `icons/atlas.<hash>.webp` (a favicon atlas, loaded only when a tool needs a favicon) and `icons/manifest.v2.json`, validated by `icons/manifest.v2.schema.json`. `tools/icons-v2.config.json` pins chosen glyphs to the image fallback. A version switch only changes `data-active-variant` on a card that already holds every version's mark, so it never fetches or decodes an image for vector glyphs. If `manifest.v2.json` cannot be loaded the page falls back to the v1 files, which stay for one release. Harvest Studio, at https://harvest-studio-phi.vercel.app/, is the standalone successor to the harvest page and is what the palette's Harvest entry opens.
+
+## Open mode and card menu
+- **Default open setting**: links open in a **New tab** (default) or the **Same tab**. Change it in the Preferences menu (sliders button, "Open links" section), with the switch at the bottom of any card's right-click menu, with Alt+O, or from the palette command (`>` then "Open links in …"). Saved as `lx-open`, synced across tabs, and included in export/import prefs (`prefs.open`)
+- The setting applies everywhere: clicking a card (its link target), the digit shortcuts 1–9, palette click and Enter (Shift+Enter uses the other mode), and the palette's primary action. The card's hover icon shows which mode is active
+- **Card right-click menu**: a header with the tool's icon, name, active version, hostname and Closed state, tinted with the tool's colour. For single-link tools: both open options (the current default comes first and is tagged "Default"). For tools with versions: one row per version instead. Click the name to open that version now (the card keeps its version), ↗ opens it the other way (also Shift/Ctrl/⌘-click or middle-click), and the pin on the same row makes it the card's version (the set pin is filled; the menu stays open and its header updates). Then Copy link, Copy name (with a ✓ confirmation), Show details (opens the palette on that tool) and a two-way New tab / Same tab switch. It works with the keyboard (Shift+F10 / the menu key, ↑↓ between rows, ←→ across open / ↗ / pin, Home/End, Esc)
+- Polish: refined menu glass and shadows, staggered menu entry, accent-tinted states on the controls pill (no dot), a toast with a status dot and spring motion, clearer hostnames and variant chip hovers, and a thin grid scrollbar
+
+## Files and URLs
+- `src/index.html`, `src/app.css`, `src/app.js`: the app sources. `#<categoryId>` opens a tab (`#core`, `#tools`, `#experimental`, `#mine`). `?lxdebug=1` shows debug warnings. `?palette=` and `?corners=` preview a look
+- `build/build.mjs`: `npm run build` writes `dist/` (not committed): `index.html` with the data, the icon sprite and a small inline stylesheet, hashed `app.<hash>.css` and `app.<hash>.js`, `icons/`, `fonts/`, `links.json`, `compare.html`, `favicon.ico`, `apple-touch-icon.png` and the generated service worker `sw.js`
+- `vercel.json`: the Vercel build command and output directory, and the cache headers
+- `perf/` and `qa/`: the performance harness and the Playwright checks (see Checks)
+- `tools/icons-v2.mjs`: the icon asset generator described above
+- `links.json`: the catalog
+- `fonts/*.woff2`: self-hosted IBM Plex Sans Arabic, El Messiri, Inter and Cormorant Garamond
+
+## Data model
+- Catalog: `{ categories: [{ id, label{ar,en}, icon, accent, key, apps: [{ id, title{ar,en}, url | variants[{id,label,url,icon}], defaultVariant, icon, gradient[3], closed, closedReason, isNew, since }] }] }`
+- IDs: lowercase letters, digits and `-`, up to 40 characters, unique. Colors must be `#rrggbb`. URLs must be `https:`
+- Limits: 12 categories, 24 apps per category, 4 variants per app, 256 KB file
+- Import file: `{ "links": [{ "title": "..." | {ar,en}, "url": "https://...", "icon": "fa-...", "color": "#rrggbb" }], "prefs": {...} }`
+- localStorage keys: `lx-user-links`, `lx-catalog-cache`, `lx-theme`, `lx-lang`, `lx-sound`, `lx-zen`, `lx-variant-*`, `lx-recents`, `lx-freq`, `lx-last-tab`, `lx-last-open`, `lx-palette`, `lx-corners`, `lx-open`, `lx-icons` (cached icon manifest), `lx-glyphs` (cached icon sprite)
+
+## Build, deploy and cache
+- `npm ci && npm run build` writes `dist/`. Vercel runs the same command on every push (`vercel.json`: `npm run build`, output directory `dist`); the project's root directory is the repository root. Harvest Studio is a separate Vercel project
+- Hashed files (`app.<hash>.css`, `app.<hash>.js`, the icon atlases and sprite) and fonts are served with `Cache-Control: public, max-age=31536000, immutable`; `index.html`, `sw.js`, `links.json` and `icons/manifest.v2.json` are served with `no-cache`
+- The service worker precaches the page, its hashed files, the icon sprite, the glyph atlas, four fonts and `favicon.ico`. Navigations are answered from the cache, so a repeat visit makes no network request before the grid appears and the page reloads offline. `links.json` and the icon manifest are answered from the cache and refreshed about two seconds later. Each new build gets a new cache name and old `lx-` caches are removed when it activates. It registers only on `https:` and on localhost
+- Fonts: only the two faces used above the fold for the current language are preloaded (IBM Plex Sans Arabic and El Messiri for Arabic, Inter and Cormorant Garamond for English), and every web font uses `font-display: swap`
+
+## Checks
+- `npm run qa` runs the Playwright matrix (themes, languages, corners, viewports) against `dist/` when it exists; `npm run qa:quick` runs a subset. They check horizontal overflow, cut labels, tap targets, card presence and that `lx-data` equals `links.json`
+- `npm run qa:load` checks the page weight (`dist/index.html` gzipped, total first-load transfer), that a repeat visit makes no network request before the grid, and the offline reload
+- `npm run perf` measures the interactions in `perf/interactions.mjs` on a mobile and a desktop profile and writes `perf/out/latest.json`; `--assert` compares it with `perf/targets.json`. When the `CI` environment variable is set the timing targets are skipped, because shared runners have no GPU, and only the image request and decode targets are asserted. Run it on real hardware for the timing numbers
+- `node qa/visual-marks.mjs` writes screenshots of every icon surface in each palette and theme, and `node qa/shot-diff.mjs <before> <after>` compares two sets
+- `npm run qa:behaviour` runs `qa/behaviour.mjs` and `qa/rapid-switch.mjs`: twenty version switches with no image request, the `?motion=legacy` timings, focus and scroll surviving an icon-manifest change, no running animation after any interaction under reduced motion, and ten tab clicks 40 ms apart ending on the last tab. Add `--timing` to `qa/behaviour.mjs` and `--strict` to `qa/rapid-switch.mjs` on real hardware to also assert the frame and settle times
+- `npm run check` is what CI runs: build, `qa:quick`, `qa:load`, `qa:behaviour` and `perf --assert`
+- `perf/RESULTS.md` lists the baseline and final value of every measured metric, generated by `node perf/results.mjs`
+- The `qa` GitHub Actions workflow (`.github/workflows/qa.yml`) runs `npm run check` on every push and pull request and uploads `qa/out/` and `perf/out/`. The site deploys through Vercel, so there is no deploy workflow
+
+## Licenses
+The icon tracing step uses the GPL-licensed `potrace` package. It runs only in `tools/icons-v2.mjs`, at build time on a developer machine, and is never part of the code served to visitors. Harvest Studio, a separate project, uses the GPL-licensed `esm-potrace-wasm` for the same purpose and is likewise not part of the launcher bundle.

@@ -1,0 +1,27 @@
+{
+  "name": "app-launcher",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "qa": "node qa/run.mjs",
+    "qa:quick": "node qa/run.mjs --quick",
+    "perf": "node perf/measure.mjs",
+    "check": "npm run build && npm run qa:quick && npm run qa:load && npm run qa:behaviour && npm run perf -- --assert",
+    "build": "node build/build.mjs",
+    "qa:load": "node qa/load.mjs",
+    "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@resvg/resvg-js": "^2.6.2",
+    "ajv": "^8.20.0",
+    "esbuild": "^0.28.2",
+    "pixelmatch": "^8.0.0",
+    "playwright": "^1.56.1",
+    "pngjs": "^7.0.0",
+    "postcss": "^8.5.31",
+    "potrace": "^2.1.8",
+    "sharp": "^0.35.5",
+    "svgo": "^4.1.0"
+  }
+}
