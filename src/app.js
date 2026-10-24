@@ -1200,6 +1200,9 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
         `).join('')}
       </div>` : '';
 
+  const qrLabel = `${t('ctxQr')} — ${title}`;
+  const qrBtnHtml = (cls) => `<button type="button" class="card-qr ${cls}" aria-label="${escapeHtml(qrLabel)}">${icon('fa-qrcode')}</button>`;
+
   const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
   const host = hostOf(activeUrl);
 
@@ -1228,6 +1231,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
           <div class="title-row">
             ${titleHtml}
             <span class="open-affordance" aria-hidden="true">${icon(openModeIcon())}</span>
+            ${qrBtnHtml('card-qr--bento')}
           </div>
           ${hostHtml}
         </div>
@@ -1238,11 +1242,13 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       <div class="row-text">${titleHtml}${hostHtml}</div>
       ${chipsHtml ? `<div class="row-chips">${chipsHtml}</div>` : ''}
       ${badgesHtml ? `<div class="badges row-badges">${badgesHtml}</div>` : ''}
+      ${qrBtnHtml('card-qr--row')}
       <span class="open-affordance row-go" aria-hidden="true">${icon(openModeIcon())}</span>`;
 
   const iconsBody = `
       ${wrapOpen(app, activeVariant)}${markHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh && !isTile ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
-      <span class="icon-label">${escapeHtml(isTile ? loc(activeVariant.label) : title)}</span>`;
+      <span class="icon-label">${escapeHtml(isTile ? loc(activeVariant.label) : title)}</span>
+      ${qrBtnHtml('card-qr--tile')}`;
 
   if (iconsView) {
     el.innerHTML = `${overlayHtml}${iconsBody}`;
@@ -1295,6 +1301,16 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
   el.addEventListener('pointercancel', releasePress, { passive: true });
   el.addEventListener('pointerleave', releasePress, { passive: true });
   el.addEventListener('pointerdown', () => { el._pdAt = performance.now(); el.classList.remove('is-kb-focus'); }, { passive: true, capture: true });
+  const qrBtn = el.querySelector('.card-qr');
+  if (qrBtn) {
+    qrBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      sfx.click();
+      const vi = app.variants ? Number(el.dataset.variantIndex) : undefined;
+      openQrForApp(app, Number.isFinite(vi) ? vi : undefined, qrBtn);
+    });
+  }
   el.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     const kb = (e.clientX === 0 && e.clientY === 0) || !(el._pdAt && performance.now() - el._pdAt < 2000);
@@ -3643,7 +3659,7 @@ const sanitizeDomId = (key) => String(key).replace(/[^a-zA-Z0-9_-]/g, '-');
 const paletteTrailHtml = (e) => e.app.command && e.app.kbd ? keycapsHtml(e.app.kbd) : '<kbd>↵</kbd>';
 const paletteTrailClass = (e) => 'palette-item-trail' + (e.app.command && e.app.kbd ? ' is-persistent' : '');
 
-const paletteItemContentHtml = (e, query) => `${wrapOpen(e.app, null)}${markHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span>`;
+const paletteItemContentHtml = (e, query) => `${wrapOpen(e.app, null)}${markHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span><button type="button" class="palette-qr" tabindex="-1" aria-label="${escapeHtml(t('ctxQr'))}"${e.app.command ? ' hidden' : ''}>${icon('fa-qrcode')}</button>`;
 
 const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   const li = document.createElement('li');
@@ -3670,6 +3686,11 @@ const updatePaletteItemNode = (li, e, globalIndex, query, isActive) => {
   if (titleEl) titleEl.innerHTML = highlightTitle(loc(e.app.title), query);
   const catEl = li.querySelector('.palette-item-cat');
   if (catEl) catEl.textContent = loc(e.cat.label);
+  const qrEl = li.querySelector('.palette-qr');
+  if (qrEl) {
+    qrEl.hidden = !!e.app.command;
+    qrEl.setAttribute('aria-label', t('ctxQr'));
+  }
   const trailEl = li.querySelector('.palette-item-trail');
   if (trailEl) {
     trailEl.className = paletteTrailClass(e);
@@ -4373,8 +4394,9 @@ const executeAction = async (actionId) => {
     const vi = entry.app.parentId ? entry.app.variantIndex : undefined;
     paletteSkipCloseChime = true;
     closePaletteImmediate();
-    if (realApp) openQrForApp(realApp, vi, document.getElementById('lxBarSearch'));
-    else openQr({ app: null, variantIndex: -1, title: loc(entry.app.title), url: entry.app.url, returnTo: document.getElementById('lxBarSearch') });
+    const back = document.querySelector(`#appGrid .app-card[data-app-id="${parentId}"] .card-link-overlay`);
+    if (realApp) openQrForApp(realApp, vi, back);
+    else openQr({ app: null, variantIndex: -1, title: loc(entry.app.title), url: entry.app.url, returnTo: back });
   } else if (actionId === 'reveal') {
     sfx.click();
     await revealInGrid(entry);
@@ -5125,6 +5147,12 @@ const setupInteractions = () => {
   paletteResultsList.addEventListener('click', (e) => {
     const li = e.target.closest('.palette-item');
     if (!li || !paletteResultsList.contains(li)) return;
+    if (e.target.closest('.palette-qr')) {
+      e.preventDefault();
+      setPaletteActive(Number(li.dataset.index), { scroll: false });
+      executeAction('qr');
+      return;
+    }
     openPaletteItem(Number(li.dataset.index));
   });
 

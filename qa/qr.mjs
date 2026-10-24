@@ -155,10 +155,79 @@ const offline = async (browser, base) => {
   await ctx.close();
 };
 
+
+const press = async (page, loc, mobile) => {
+  const b = await loc.boundingBox();
+  const x = b.x + b.width / 2;
+  const y = b.y + b.height / 2;
+  if (mobile) await page.touchscreen.tap(x, y);
+  else await page.mouse.click(x, y);
+};
+
+const cardButton = (view, mobile) => async (browser, base) => {
+  const ctx = await browser.newContext(mobile ? { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true } : { viewport: { width: 1440, height: 900 } });
+  await ctx.addInitScript((v) => { try { localStorage.setItem('lx-view', v); localStorage.setItem('lx-lang', 'en'); } catch (e) {} }, view);
+  const page = await ctx.newPage();
+  const popups = [];
+  ctx.on('page', (p) => popups.push(p.url()));
+  await page.goto(base + '/#core');
+  await page.waitForSelector('#appGrid .app-card');
+  await page.waitForTimeout(2200);
+  const tag = `${view}${mobile ? ' phone' : ''}`;
+  const card = page.locator('#appGrid .app-card').nth(1);
+  const href = await card.locator('.card-link-overlay').evaluate((a) => a.href);
+  if (!mobile) await card.hover();
+  const btn = card.locator('.card-qr');
+  const box = await btn.boundingBox();
+  record(`${tag}: card shows a QR button of at least 24 px`, !!box && box.width >= 24 && box.height >= 24, box);
+  await press(page, btn, mobile);
+  await page.waitForSelector('#lx-qr[open]');
+  await page.waitForTimeout(450);
+  const data = await decode(page);
+  record(`${tag}: QR button opens that card's QR without launching the app`, data === href && popups.length === 0, { data, href, popups });
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !document.getElementById('lx-qr').open, null, { timeout: 3000 });
+  const back = await page.evaluate(() => document.activeElement && document.activeElement.classList.contains('card-qr'));
+  record(`${tag}: closing returns focus to the QR button`, back, { back });
+  await ctx.close();
+};
+
+const paletteRow = (mobile) => async (browser, base) => {
+  const ctx = await browser.newContext(mobile ? { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true } : { viewport: { width: 1440, height: 900 } });
+  await ctx.route('https://**/*', (r) => r.fulfill({ status: 200, contentType: 'text/html', body: 'x' }));
+  const page = await ctx.newPage();
+  const popups = [];
+  ctx.on('page', (p) => popups.push(p.url()));
+  await page.goto(base + '/');
+  await page.waitForSelector('#appGrid .app-card');
+  await page.waitForTimeout(2200);
+  await page.evaluate(() => document.getElementById('lxBarSearch').click());
+  await page.waitForSelector('#lx-palette[open]');
+  await page.waitForTimeout(500);
+  await page.keyboard.type('pa');
+  await page.waitForTimeout(700);
+  const key = await page.evaluate(() => document.querySelectorAll('#lx-palette .palette-item')[2].dataset.key);
+  const row = page.locator('#lx-palette .palette-item').nth(2);
+  if (!mobile) await row.hover();
+  const btn = row.locator('.palette-qr');
+  await press(page, btn, mobile);
+  await page.waitForSelector('#lx-qr[open]');
+  await page.waitForTimeout(450);
+  const title = await page.evaluate(() => document.getElementById('qrTitle').textContent);
+  const data = await decode(page);
+  const wantUrl = await (await fetch(base + '/links.json')).json().then((l) => { const [id, v] = key.split('::'); const a = l.categories.flatMap((c) => c.apps).find((x) => x.id === id); return v ? a.variants.find((x) => x.id === v).url : a.url; });
+  record(`palette${mobile ? ' phone' : ''}: QR button on the third result opens that result's QR without launching it`, data === wantUrl && popups.length === 0, { key, title, data, wantUrl, popups });
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !document.getElementById('lx-qr').open, null, { timeout: 3000 });
+  const focusOnInput = await page.evaluate(() => document.activeElement && document.activeElement.id === 'lxBarSearch');
+  record(`palette${mobile ? ' phone' : ''}: closing the QR does not refocus the search field`, !focusOnInput, { focusOnInput });
+  await ctx.close();
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
-  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline];
+  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), cardButton('icons', false), paletteRow(false), paletteRow(true)];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }

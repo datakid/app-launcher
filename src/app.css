@@ -4584,8 +4584,8 @@ h1 {
   position: relative;
   inset: auto;
   display: grid;
-  grid-template-columns: var(--lx-row-icon) minmax(0, 1fr) auto auto 16px;
-  grid-template-areas: "icon text badges chips go";
+  grid-template-columns: var(--lx-row-icon) minmax(0, 1fr) auto auto 30px 16px;
+  grid-template-areas: "icon text badges chips qr go";
   align-items: center;
   column-gap: var(--lx-row-gap);
   padding: 10px var(--lx-row-px);
@@ -4692,12 +4692,12 @@ h1 {
     inline-size: 100%;
   }
   :root .app-grid[data-layout="list"] > .app-card--row .card-clip {
-    grid-template-columns: var(--lx-row-icon) minmax(0, 1fr) auto;
-    grid-template-areas: "icon text badges" "icon chips chips";
+    grid-template-columns: var(--lx-row-icon) minmax(0, 1fr) auto 30px;
+    grid-template-areas: "icon text badges qr" "icon chips chips chips";
     row-gap: 8px;
   }
   :root .app-grid[data-layout="list"] > .app-card--row:not(:has(.row-chips)) .card-clip {
-    grid-template-areas: "icon text badges";
+    grid-template-areas: "icon text badges qr";
     row-gap: 0;
   }
 }
@@ -5015,6 +5015,60 @@ html[data-lowend] :is(.controls-pill, .lx-bar, .tab-rail, .app-grid[data-layout=
 @media (forced-colors: active) { .qr-stage { forced-color-adjust: none; background: #fff; } }
 html[data-lowend] #lx-qr::backdrop { background: color-mix(in oklab, var(--bg) 80%, transparent); }
 
+.card-qr {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  inline-size: 30px;
+  block-size: 30px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: light-dark(rgba(20,18,15,.06), rgba(255,255,255,.08));
+  border: 1px solid light-dark(rgba(20,18,15,.08), rgba(255,255,255,.1));
+  color: color-mix(in oklab, var(--tint) 80%, var(--text));
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: opacity var(--dur-fast) var(--ease-lux), background-color var(--dur-micro) var(--ease-lux), border-color var(--dur-micro) var(--ease-lux);
+}
+.card-qr svg { inline-size: 13px; block-size: 13px; pointer-events: none; }
+.card-qr::after { content: ""; position: absolute; inset: -7px; border-radius: 50%; }
+.card-qr:hover, .card-qr:focus-visible { background: color-mix(in oklab, var(--tint) 18%, transparent); border-color: color-mix(in oklab, var(--tint) 45%, transparent); }
+.card-qr:focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 2px; }
+.card-qr--bento { margin-inline-start: auto; }
+.card-qr--row { grid-area: qr; }
+.card-qr--tile { position: absolute; z-index: 3; inset-block-start: 2px; inset-inline-start: calc(50% - 42px); inline-size: 24px; block-size: 24px; background: light-dark(rgba(250,249,246,.92), rgba(20,22,28,.88)); box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.card-qr--tile svg { inline-size: 11px; block-size: 11px; }
+@media (hover: hover) and (pointer: fine) {
+  .card-qr { opacity: 0; }
+  .app-card:hover .card-qr, .app-card:focus-within .card-qr, .app-card.is-kb-focus .card-qr { opacity: 1; }
+}
+.palette-qr {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 34px;
+  block-size: 34px;
+  margin-inline-start: 6px;
+  padding: 0;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux);
+}
+.palette-qr[hidden] { display: none; }
+.palette-qr svg { inline-size: 14px; block-size: 14px; pointer-events: none; }
+.palette-qr:hover, .palette-qr:focus-visible { background: var(--surface-hover); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .palette-qr { opacity: 0; }
+  .palette-item.is-active .palette-qr, .palette-item:hover .palette-qr { opacity: 1; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after, *::backdrop {
     transition-duration: 0.01ms !important;
