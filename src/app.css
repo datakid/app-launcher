@@ -336,7 +336,7 @@ body.is-cinema .controls-pill { opacity: .5; }
   padding: clamp(2.25rem, 3.6dvh, 3.25rem) clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 3dvh, 2.5rem);
   position: relative; z-index: 3;
   display: flex; flex-direction: column; gap: clamp(1rem, 2.2dvh, 1.6rem);
-  transition: transform var(--dur-base) var(--ease-lux), max-width var(--dur-base) var(--ease-lux), padding-inline var(--dur-base) var(--ease-lux), padding-block-start var(--dur-base) var(--ease-lux), padding-block-end var(--dur-base) var(--ease-lux), gap var(--dur-base) var(--ease-lux);
+  transition: transform var(--dur-base) var(--ease-lux);
 }
 
 .container.is-dollied, .controls-pill.is-dollied {
@@ -417,7 +417,7 @@ body.palette-open .spotlight { opacity: 0; }
   max-block-size: var(--site-header-height, 180px);
   transform: translateY(0) scale(1);
   transform-origin: center top;
-  transition: max-block-size var(--dur-base) var(--ease-lux), opacity var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux), margin-block-end var(--dur-base) var(--ease-lux);
+  transition: opacity var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux);
 }
 
 body.is-zen .site-header {
@@ -573,7 +573,7 @@ h1 {
 }
 body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: none; }
 .lx-bar.is-focused { border-color: var(--border-highlight); box-shadow: var(--shadow-deep), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
-.lx-bar.is-focused .tab-rail { filter: saturate(.85); transition: filter var(--dur-base) var(--ease-lux); }
+.lx-bar.is-focused .tab-rail { opacity: .86; transition: opacity var(--dur-base) var(--ease-lux); }
 
 .lx-bar-search {
   flex: 1; min-width: 22ch; min-height: 0;
@@ -1327,6 +1327,7 @@ html.is-zen-transitioning .lx-bar {
 html.is-zen-transitioning {
   --zen-duration: 440ms;
 }
+html.is-zen-transitioning .app-card { will-change: auto !important; }
 
 html.is-zen-transitioning::view-transition-group(.tile) {
   animation-duration: var(--zen-duration);
@@ -2172,6 +2173,7 @@ h1 {
 
 .palette-hints { background: light-dark(rgba(20,18,15,.022), rgba(0,0,0,.22)); }
 .palette-status::before { animation: statusPulse 2.6s var(--ease-io) infinite; }
+#lx-palette:not([open]) .palette-status::before { animation-play-state: paused; }
 @keyframes statusPulse { 50% { box-shadow: 0 0 0 5px color-mix(in oklab, var(--live-accent) 6%, transparent); } }
 #lx-palette kbd {
   background: linear-gradient(180deg, light-dark(#fff, rgba(255,255,255,.08)), light-dark(rgba(20,18,15,.03), rgba(255,255,255,.03)));
@@ -4803,6 +4805,7 @@ h1 {
   position: relative;
   isolation: isolate;
   min-inline-size: 0;
+  contain: layout style;
 }
 .icon-plate::before {
   content: '';
