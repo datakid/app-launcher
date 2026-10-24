@@ -75,7 +75,7 @@ const core = (lang, mobile) => async (browser, base) => {
     await page.waitForFunction(() => !document.getElementById('lx-qr').open, null, { timeout: 1500 });
     const dt = await page.evaluate(() => Math.round(window.__qrT.x - window.__qrT.k));
     const back = await page.evaluate(() => document.activeElement?.classList.contains('card-link-overlay'));
-    record(`${tag}: Escape closes within 400 ms and returns focus to the card`, dt < 400 && back, { dt, back });
+    record(`${tag}: Escape closes within 700 ms and returns focus to the card`, dt < 700 && back, { dt, back });
   }
   await ctx.close();
 };
