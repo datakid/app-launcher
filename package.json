@@ -6,16 +6,18 @@
     "qa": "node qa/run.mjs",
     "qa:quick": "node qa/run.mjs --quick",
     "perf": "node perf/measure.mjs",
-    "check": "npm run build && npm run qa:quick && npm run qa:load && npm run qa:behaviour && npm run perf -- --assert",
+    "check": "npm run build && npm run qa:quick && npm run qa:load && npm run qa:behaviour && npm run qa:qr && npm run perf -- --assert",
     "build": "node build/build.mjs",
     "qa:load": "node qa/load.mjs",
-    "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs"
+    "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs",
+    "qa:qr": "node qa/qr-encoder.mjs && node qa/qr.mjs"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@resvg/resvg-js": "^2.6.2",
     "ajv": "^8.20.0",
     "esbuild": "^0.28.2",
+    "jsqr": "^1.4.0",
     "pixelmatch": "^8.0.0",
     "playwright": "^1.56.1",
     "pngjs": "^7.0.0",

@@ -1,3 +1,4 @@
+import { qrMatrix } from './qr.js';
 const LX_DEBUG = new URLSearchParams(location.search).get('lxdebug') === '1';
 const CATALOG_URL = 'links.json';
 const catalogRequest = (() => {
@@ -746,7 +747,16 @@ const STRINGS = {
   cmdSwitchView: { ar: 'تبديل التخطيط', en: 'Switch layout' },
   viewChanged: { ar: 'تم تغيير التخطيط إلى {m}', en: 'Layout changed to {m}' },
   cmdNextColors: { ar: 'الألوان التالية', en: 'Next colors' },
-  cmdNextCorners: { ar: 'الزوايا التالية', en: 'Next corners' }
+  cmdNextCorners: { ar: 'الزوايا التالية', en: 'Next corners' },
+  actionQr: { ar: 'رمز QR', en: 'QR code' },
+  ctxQr: { ar: 'عرض رمز QR', en: 'Show QR code' },
+  qrPng: { ar: 'تنزيل PNG', en: 'Download PNG' },
+  qrSvg: { ar: 'تنزيل SVG', en: 'Download SVG' },
+  qrShare: { ar: 'مشاركة', en: 'Share' },
+  qrHint: { ar: 'امسح الرمز بكاميرا الهاتف لفتح الرابط', en: 'Scan with a phone camera to open the link' },
+  qrTooLong: { ar: 'الرابط أطول من أن يُعرض كرمز QR', en: 'This link is too long for a QR code' },
+  qrSaved: { ar: 'تم تنزيل الرمز', en: 'QR code downloaded' },
+  cmdShareSite: { ar: 'مشاركة LinkExpress برمز QR', en: 'Share LinkExpress as a QR code' }
 };
 
 const OPEN_MODES = ['new', 'same'];
@@ -890,6 +900,7 @@ const MOTION_LEGACY = {
   version: { inMs: 240, clampMs: 0 },
   paletteOpen: { inMs: 420 },
   paletteClose: { outMs: 250 },
+  qr: { inMs: 420, outMs: 250 },
   crossfade: { inMs: 280 },
   theme: { inMs: 460 },
   boot: { inMs: 0, offset: 120, spread: 260 },
@@ -902,6 +913,7 @@ const MOTION_NEW = {
   version: { inMs: 120, clampMs: 120 },
   paletteOpen: { inMs: 200 },
   paletteClose: { outMs: 140 },
+  qr: { inMs: 200, outMs: 140 },
   crossfade: { inMs: 200 },
   theme: { inMs: 320 },
   boot: { inMs: 360, offset: 120, spread: 180 },
@@ -1558,6 +1570,7 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
     <div class="ctx-group" role="group">
       <button type="button" data-action="copy" role="menuitem" class="ctx-item">${icon('fa-copy')}<span class="ctx-label">${escapeHtml(t('ctxCopyLink'))}</span></button>
       <button type="button" data-action="copy-name" role="menuitem" class="ctx-item">${icon('fa-font')}<span class="ctx-label">${escapeHtml(t('ctxCopyName'))}</span></button>
+      <button type="button" data-action="qr" role="menuitem" class="ctx-item">${icon('fa-qrcode')}<span class="ctx-label">${escapeHtml(t('ctxQr'))}</span>${kbdHint(isMacPlatform() ? '⌥Q' : 'Alt Q')}</button>
       <button type="button" data-action="details" role="menuitem" class="ctx-item">${icon('fa-magnifying-glass')}<span class="ctx-label">${escapeHtml(t('ctxDetails'))}</span>${kbdHint(isMacPlatform() ? '⌘K' : 'Ctrl K')}</button>
     </div>
   `;
@@ -1607,6 +1620,15 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
     const ok = title ? await copyToClipboard(title) : false;
     sfx.click();
     flashItem(btn, ok, t('nameCopied'));
+  });
+  menu.querySelector('[data-action="qr"]').addEventListener('click', () => {
+    sfx.click();
+    const back = linkEl || card;
+    const liveChip = card.querySelector('.variant-chip.is-active');
+    const vi = liveChip ? Number(liveChip.dataset.variantIndex) : (chipIndex >= 0 ? chipIndex : undefined);
+    contextMenuReturn = null;
+    closeContextMenu();
+    openQrForApp(app, vi, back);
   });
   menu.querySelector('[data-action="details"]').addEventListener('click', () => {
     sfx.click();
@@ -1925,7 +1947,8 @@ const initPointerField = () => {
   if (!MQ.hoverFine) return;
 
   const paletteEl = document.getElementById('lx-palette');
-  const isSuspended = () => !!(paletteEl && paletteEl.open);
+  const qrEl = document.getElementById('lx-qr');
+  const isSuspended = () => !!((paletteEl && paletteEl.open) || (qrEl && qrEl.open));
   let REVEAL_RADIUS = Math.max(150, Math.min(260, window.innerWidth * 0.22));
   let cards = [];
   let px = -9999, py = -9999;
@@ -2021,7 +2044,7 @@ const initPointerField = () => {
       pointerVX *= Math.exp(-dt / 0.14);
       if (gridSwitch || document.documentElement.classList.contains('lx-scrolling')) return;
       if (pointerFieldDirty) measure();
-      const zenTransitioning = document.documentElement.classList.contains('is-zen-transitioning');
+      const zenTransitioning = document.documentElement.classList.contains('is-zen-transitioning') || !!(qrEl && qrEl.open);
       const wantsTilt = !MQ.reducedMotion && !zenTransitioning;
       const suspended = isSuspended();
       const fx = suspended ? -9999 : px;
@@ -2241,6 +2264,10 @@ const initPointerField = () => {
 
   if (paletteEl) {
     paletteEl.addEventListener('close', () => { pointerFieldDirty = true; Motion.wake(); });
+  }
+  if (qrEl) {
+    qrEl.addEventListener('close', () => { pointerFieldDirty = true; Motion.wake(); });
+    qrEl.addEventListener('toggle', () => { Motion.wake(); });
   }
   grid.addEventListener('focusin', () => Motion.wake());
   grid.addEventListener('focusout', () => Motion.wake());
@@ -2871,6 +2898,7 @@ const applyI18n = (opts = {}) => {
   updateDataButtonLabel();
   updateLookButtonLabel();
   syncZenMetrics();
+  if (document.getElementById('lx-qr')?.open) renderQr();
 
   if (!rebuild) return;
 
@@ -3473,7 +3501,8 @@ const getActionsForEntry = (entry) => {
     { ...primary, kbd: 'Enter' },
     { ...secondary, kbd: 'Shift+Enter' },
     { id: 'copy-link', icon: 'fa-copy', label: t('actionCopyLink'), kbd: 'Ctrl/Cmd+Enter' },
-    { id: 'copy-title', icon: 'fa-font', label: t('actionCopyTitle'), kbd: '' }
+    { id: 'copy-title', icon: 'fa-font', label: t('actionCopyTitle'), kbd: '' },
+    { id: 'qr', icon: 'fa-qrcode', label: t('actionQr'), kbd: 'Alt+Q' }
   ];
   if (entry && entry.cat.id !== '_extra') {
     actions.push({ id: 'reveal', icon: 'fa-crosshairs', label: t('actionReveal'), kbd: '' });
@@ -3526,6 +3555,7 @@ const commandEntries = () => {
       en: `${STRINGS.cmdGoTo.en} ${label.en ?? label.ar ?? ''}`
     }, c.icon, c.accent || '#7c9bff', () => activateTab(c.id)));
   });
+  list.push(cmd('share-site', STRINGS.cmdShareSite, 'fa-qrcode', '#6d8cff', () => openQrForSite(), 'Alt+Q'));
   list.push(cmd('refresh', STRINGS.refreshCatalog, 'fa-rotate-right', '#22c1a4', () => hardRefreshCatalog()));
   list.push(cmd('import', STRINGS.dataImport, 'fa-box-open', '#cf8350', () => importUserLinks()));
   list.push(cmd('export', STRINGS.dataExport, 'fa-file-lines', '#4aa5c5', () => exportUserData()));
@@ -4069,6 +4099,194 @@ const copyToClipboard = async (text) => {
   }
 };
 
+const QR_QUIET = 4;
+
+const qrPath = (m) => {
+  let d = '';
+  for (let r = 0; r < m.n; r++) {
+    let c = 0;
+    while (c < m.n) {
+      if (!m.dark(r, c)) { c++; continue; }
+      const s = c;
+      while (c < m.n && m.dark(r, c)) c++;
+      d += `M${s + QR_QUIET} ${r + QR_QUIET}h${c - s}v1h-${c - s}z`;
+    }
+  }
+  return d;
+};
+
+const qrSvgMarkup = (m, label) => {
+  const size = m.n + QR_QUIET * 2;
+  return `<svg class="qr-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" role="img" aria-label="${escapeHtml(label)}" shape-rendering="crispEdges"><rect width="${size}" height="${size}" fill="#fff"/><path d="${qrPath(m)}" fill="#000"/></svg>`;
+};
+
+const qrFileBase = (s) => (String(s || 'link').toLowerCase().replace(/[^a-z0-9\u0600-\u06ff]+/gi, '-').replace(/^-+|-+$/g, '') || 'link') + '-qr';
+
+const downloadBlob = (blob, name) => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.hidden = true;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+
+const qrPngBlob = (m) => new Promise((resolve) => {
+  const size = m.n + QR_QUIET * 2;
+  const scale = Math.max(4, Math.ceil(1024 / size));
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = size * scale;
+  const cx = cv.getContext('2d');
+  cx.fillStyle = '#fff';
+  cx.fillRect(0, 0, cv.width, cv.height);
+  cx.fillStyle = '#000';
+  for (let r = 0; r < m.n; r++) for (let c = 0; c < m.n; c++) if (m.dark(r, c)) cx.fillRect((c + QR_QUIET) * scale, (r + QR_QUIET) * scale, scale, scale);
+  cv.toBlob((b) => resolve(b), 'image/png');
+});
+
+let qrState = null;
+let qrAnim = null;
+
+const qrUrlFor = (s) => (s.app && s.app.variants && s.app.variants[s.variantIndex] ? s.app.variants[s.variantIndex].url : s.url);
+
+const renderQr = () => {
+  const dialog = document.getElementById('lx-qr');
+  if (!dialog || !qrState) return;
+  const s = qrState;
+  const url = qrUrlFor(s);
+  const variant = s.app && s.app.variants ? s.app.variants[s.variantIndex] : null;
+  const title = s.app ? loc(s.app.title) : s.title;
+  let host = '';
+  try { host = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
+  dialog.style.setProperty('--c1', tone(s.app ? appGradient(s.app, variant)[0] : (categories.find(c => c.id === currentTabId)?.accent || '#7c9bff')));
+  dialog.setAttribute('aria-label', `${t('actionQr')} — ${title}`);
+  document.getElementById('qrTitle').textContent = variant ? `${title} — ${loc(variant.label)}` : title;
+  document.getElementById('qrHost').textContent = host;
+  const iconHost = document.getElementById('qrIcon');
+  iconHost.innerHTML = s.app ? `${wrapOpen(s.app, variant)}${markHtml(s.app, variant, variant ? variant.icon : s.app.icon, 'app-icon')}</div>` : `<div class="app-icon-wrapper">${icon('fa-qrcode', 'app-icon')}</div>`;
+  const vWrap = document.getElementById('qrVariants');
+  if (s.app && s.app.variants && s.app.variants.length > 1) {
+    vWrap.hidden = false;
+    vWrap.setAttribute('aria-label', `${t('chooseVersionOf')} ${title}`);
+    vWrap.innerHTML = s.app.variants.map((v, i) => `<button type="button" role="radio" class="qr-variant${i === s.variantIndex ? ' is-active' : ''}" aria-checked="${i === s.variantIndex}" data-qr-variant="${i}">${escapeHtml(loc(v.label))}</button>`).join('');
+  } else {
+    vWrap.hidden = true;
+    vWrap.innerHTML = '';
+  }
+  const m = qrMatrix(url);
+  s.matrix = m;
+  const stage = document.getElementById('qrStage');
+  const note = document.getElementById('qrNote');
+  stage.innerHTML = m ? qrSvgMarkup(m, `${t('actionQr')}: ${url}`) : `<div class="qr-fail">${icon('fa-triangle-exclamation')}<span>${escapeHtml(t('qrTooLong'))}</span></div>`;
+  const closed = s.app && s.app.closed;
+  note.hidden = !closed;
+  note.textContent = closed ? (s.app.closedReason ? loc(s.app.closedReason) : t('closedReasonDefault')) : '';
+  dialog.querySelectorAll('[data-qr="png"], [data-qr="svg"]').forEach((b) => { b.disabled = !m; });
+  const share = dialog.querySelector('[data-qr="share"]');
+  share.hidden = typeof navigator.share !== 'function';
+};
+
+const openQr = (state) => {
+  const dialog = document.getElementById('lx-qr');
+  if (!dialog || !state) return;
+  closeContextMenu();
+  qrState = { ...state, returnTo: state.returnTo || document.activeElement };
+  renderQr();
+  if (qrAnim) { try { qrAnim.cancel(); } catch (e) { if (LX_DEBUG) console.warn(e); } qrAnim = null; }
+  if (!dialog.open) dialog.showModal();
+  document.body.classList.add('qr-open');
+  sfx.veil(true);
+  if (!MQ.reducedMotion) {
+    qrAnim = dialog.animate([{ opacity: 0, transform: 'translateY(8px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: MOTION.qr.inMs, easing: EASE_LUX });
+    qrAnim.finished.catch(() => {}).finally(() => { qrAnim = null; });
+  }
+  dialog.querySelector('[data-qr="copy"]')?.focus({ preventScroll: true });
+};
+
+const closeQr = () => {
+  const dialog = document.getElementById('lx-qr');
+  if (!dialog || !dialog.open) return;
+  const back = qrState && qrState.returnTo;
+  const done = () => {
+    if (dialog.open) dialog.close();
+    document.body.classList.remove('qr-open');
+    qrState = null;
+    if (back && back.isConnected && typeof back.focus === 'function') back.focus({ preventScroll: true });
+  };
+  if (qrAnim) { try { qrAnim.cancel(); } catch (e) { if (LX_DEBUG) console.warn(e); } qrAnim = null; }
+  sfx.veil(false);
+  if (MQ.reducedMotion) { done(); return; }
+  qrAnim = dialog.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(6px) scale(.98)' }], { duration: MOTION.qr.outMs, easing: MOTION.outEase, fill: 'forwards' });
+  qrAnim.finished.catch(() => {}).finally(() => { qrAnim = null; done(); });
+};
+
+const openQrForApp = (app, variantIndex, returnTo) => {
+  if (!app) return;
+  const vi = app.variants ? (Number.isInteger(variantIndex) && app.variants[variantIndex] ? variantIndex : getSelectedVariantIndex(app)) : -1;
+  openQr({ app, variantIndex: vi, url: app.url, returnTo });
+};
+
+const openQrForSite = () => openQr({ app: null, variantIndex: -1, title: 'LinkExpress', url: `${location.origin}${location.pathname}${currentTabId ? '#' + currentTabId : ''}` });
+
+const initQrDialog = () => {
+  const dialog = document.getElementById('lx-qr');
+  if (!dialog) return;
+  document.getElementById('qrClose')?.addEventListener('click', closeQr);
+  dialog.addEventListener('cancel', (e) => { e.preventDefault(); closeQr(); });
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      const r = dialog.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) { closeQr(); return; }
+    }
+    const vb = e.target.closest('[data-qr-variant]');
+    if (vb && qrState) {
+      const i = Number(vb.dataset.qrVariant);
+      if (i === qrState.variantIndex) return;
+      qrState.variantIndex = i;
+      sfx.click();
+      renderQr();
+      dialog.querySelector(`[data-qr-variant="${i}"]`)?.focus({ preventScroll: true });
+      return;
+    }
+    const btn = e.target.closest('[data-qr]');
+    if (!btn || !qrState) return;
+    const url = qrUrlFor(qrState);
+    const label = btn.querySelector('.qr-action-label');
+    const flash = (ok, text) => {
+      if (!label) return;
+      const prev = label.textContent;
+      const svg = btn.querySelector('svg');
+      const prevIcon = (svg.getAttribute('class') || '').split(/\s+/).find((c) => c.startsWith('fa-'));
+      setIcon(svg, ok ? 'fa-check' : 'fa-triangle-exclamation');
+      label.textContent = text;
+      setTimeout(() => { if (!btn.isConnected) return; setIcon(svg, prevIcon); label.textContent = prev; }, 1400);
+    };
+    const name = qrFileBase(qrState.app ? qrState.app.id : 'linkexpress');
+    const kind = btn.dataset.qr;
+    if (kind === 'copy') {
+      copyToClipboard(url).then((ok) => { sfx.click(); flash(ok, ok ? t('linkCopied') : t('copyFailed')); });
+    } else if (kind === 'png' && qrState.matrix) {
+      qrPngBlob(qrState.matrix).then((b) => { if (b) { downloadBlob(b, `${name}.png`); flash(true, t('qrSaved')); } });
+    } else if (kind === 'svg' && qrState.matrix) {
+      downloadBlob(new Blob([qrSvgMarkup(qrState.matrix, url)], { type: 'image/svg+xml' }), `${name}.svg`);
+      flash(true, t('qrSaved'));
+    } else if (kind === 'share') {
+      navigator.share({ title: document.getElementById('qrTitle').textContent, url }).catch(() => {});
+    }
+  });
+  dialog.addEventListener('keydown', (e) => {
+    const vb = e.target.closest && e.target.closest('[data-qr-variant]');
+    if (!vb || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+    const all = [...dialog.querySelectorAll('[data-qr-variant]')];
+    const fwd = (e.key === 'ArrowRight') !== (document.documentElement.dir === 'rtl');
+    const next = all[(all.indexOf(vb) + (fwd ? 1 : all.length - 1)) % all.length];
+    e.preventDefault();
+    next.click();
+  });
+};
+
 let actionFeedbackTimer;
 
 const announcePalette = (msg) => {
@@ -4115,7 +4333,7 @@ const executeAction = async (actionId) => {
   const entry = paletteItems[paletteActiveIndex];
   if (!entry) return;
   if (entry.app.command) {
-    if (actionId === 'copy-link' || actionId === 'copy-title') return;
+    if (actionId === 'copy-link' || actionId === 'copy-title' || actionId === 'qr') return;
     paletteSkipCloseChime = true;
     runCommand(entry);
     return;
@@ -4145,6 +4363,15 @@ const executeAction = async (actionId) => {
     const ok = await copyToClipboard(loc(entry.app.parentTitle || entry.app.title));
     sfx.click();
     showActionFeedback('copy-title', ok, t('nameCopied'), t('copyFailed'));
+  } else if (actionId === 'qr') {
+    sfx.click();
+    const parentId = entry.app.parentId || entry.app.id;
+    const realApp = categories.flatMap(c => c.apps).find(a => a.id === parentId);
+    const vi = entry.app.parentId ? entry.app.variantIndex : undefined;
+    paletteSkipCloseChime = true;
+    closePaletteImmediate();
+    if (realApp) openQrForApp(realApp, vi, document.getElementById('lxBarSearch'));
+    else openQr({ app: null, variantIndex: -1, title: loc(entry.app.title), url: entry.app.url, returnTo: document.getElementById('lxBarSearch') });
   } else if (actionId === 'reveal') {
     sfx.click();
     await revealInGrid(entry);
@@ -4523,6 +4750,7 @@ const runZenFlip = (enabled, cards, gen) => {
 const setZenMode = (enabled) => {
   const paletteDialog = document.getElementById('lx-palette');
   if (paletteDialog && paletteDialog.open) return;
+  if (document.getElementById('lx-qr')?.open) return;
   if (isZen() === enabled && !document.documentElement.classList.contains('is-zen-transitioning')) return;
 
   const zenBtn = document.getElementById('zenToggle');
@@ -4973,6 +5201,14 @@ const setupInteractions = () => {
       return;
     }
 
+    if (e.altKey && !e.metaKey && !e.ctrlKey && (e.code === 'KeyQ' || (e.key || '').toLowerCase() === 'q')) {
+      e.preventDefault();
+      e.stopPropagation();
+      const entry = paletteItems[paletteActiveIndex];
+      if (entry && !entry.app.command) executeAction('qr');
+      return;
+    }
+
     if (e.key === 'Enter') {
       e.preventDefault();
       if (paletteActiveIndex === -1) return;
@@ -4984,6 +5220,7 @@ const setupInteractions = () => {
     }
   });
 
+  initQrDialog();
   paletteDialog.addEventListener('close', () => {
     document.querySelector('.container').classList.remove('is-dollied');
     document.querySelector('.controls-pill').classList.remove('is-dollied');
@@ -5041,6 +5278,11 @@ const setupInteractions = () => {
   };
 
   document.addEventListener('keydown', (e) => {
+    const qrDialog = document.getElementById('lx-qr');
+    if (qrDialog && qrDialog.open) {
+      if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyQ', 'q')) { e.preventDefault(); closeQr(); }
+      return;
+    }
     if ((e.metaKey || e.ctrlKey) && isPhysical(e, 'KeyK', 'k', 'ن')) {
       e.preventDefault();
       if (paletteDialog.open) { requestClosePalette(); return; }
@@ -5084,6 +5326,14 @@ const setupInteractions = () => {
     if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyO', 'o')) {
       e.preventDefault();
       setOpenMode(otherOpenMode(), { silent: false });
+      return;
+    }
+    if (e.altKey && !e.metaKey && !e.ctrlKey && isPhysical(e, 'KeyQ', 'q')) {
+      e.preventDefault();
+      const focused = document.activeElement && document.activeElement.closest ? document.activeElement.closest('#appGrid .app-card') : null;
+      const target = focused ? categories.flatMap(c => c.apps).find(a => a.id === focused.dataset.appId) : null;
+      if (target) openQrForApp(target, focused.dataset.variantIndex !== undefined ? Number(focused.dataset.variantIndex) : undefined, focused.querySelector('.card-link-overlay'));
+      else openQrForSite();
       return;
     }
     if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.altKey) {
