@@ -1201,7 +1201,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       </div>` : '';
 
   const qrLabel = `${t('ctxQr')} — ${title}`;
-  const qrBtnHtml = (cls) => `<button type="button" class="card-qr ${cls}" aria-label="${escapeHtml(qrLabel)}">${icon('fa-qrcode')}</button>`;
+  const qrBtnHtml = (cls) => `<button type="button" class="card-qr ${cls}" aria-label="${escapeHtml(qrLabel)}">${icon('fa-qrcode')}<span class="card-qr-label" aria-hidden="true">QR</span></button>`;
 
   const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
   const host = hostOf(activeUrl);
@@ -1224,14 +1224,16 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
   const bentoBody = `
       <div class="bento-header">
         ${iconHtml}
-        ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
+        <div class="header-end">
+          ${badgesHtml ? `<div class="badges">${badgesHtml}</div>` : ''}
+          ${qrBtnHtml('card-qr--bento')}
+        </div>
       </div>
       <div class="bento-footer">
         <div class="title-stack">
           <div class="title-row">
             ${titleHtml}
             <span class="open-affordance" aria-hidden="true">${icon(openModeIcon())}</span>
-            ${qrBtnHtml('card-qr--bento')}
           </div>
           ${hostHtml}
         </div>
@@ -1247,8 +1249,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
 
   const iconsBody = `
       ${wrapOpen(app, activeVariant)}${markHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh && !isTile ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
-      <span class="icon-label">${escapeHtml(isTile ? loc(activeVariant.label) : title)}</span>
-      ${qrBtnHtml('card-qr--tile')}`;
+      <span class="icon-label">${escapeHtml(isTile ? loc(activeVariant.label) : title)}</span>`;
 
   if (iconsView) {
     el.innerHTML = `${overlayHtml}${iconsBody}`;
@@ -3659,7 +3660,7 @@ const sanitizeDomId = (key) => String(key).replace(/[^a-zA-Z0-9_-]/g, '-');
 const paletteTrailHtml = (e) => e.app.command && e.app.kbd ? keycapsHtml(e.app.kbd) : '<kbd>↵</kbd>';
 const paletteTrailClass = (e) => 'palette-item-trail' + (e.app.command && e.app.kbd ? ' is-persistent' : '');
 
-const paletteItemContentHtml = (e, query) => `${wrapOpen(e.app, null)}${markHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span><button type="button" class="palette-qr" tabindex="-1" aria-label="${escapeHtml(t('ctxQr'))}"${e.app.command ? ' hidden' : ''}>${icon('fa-qrcode')}</button>`;
+const paletteItemContentHtml = (e, query) => `${wrapOpen(e.app, null)}${markHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span><button type="button" class="palette-qr" tabindex="-1" aria-label="${escapeHtml(t('ctxQr'))}"${e.app.command ? ' hidden' : ''}>${icon('fa-qrcode')}<span aria-hidden="true">QR</span></button>`;
 
 const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   const li = document.createElement('li');
@@ -4223,7 +4224,7 @@ const openQr = (state) => {
   document.body.classList.add('qr-open');
   sfx.veil(true);
   if (!MQ.reducedMotion) {
-    qrAnim = dialog.animate([{ opacity: 0, transform: 'translateY(8px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: MOTION.qr.inMs, easing: EASE_LUX });
+    qrAnim = dialog.animate([{ opacity: 0, transform: 'translateY(8px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: MOTION.qr.inMs, easing: EASE_LUX, fill: 'backwards' });
     qrAnim.finished.catch(() => {}).finally(() => { qrAnim = null; });
   }
   dialog.querySelector('[data-qr="copy"]')?.focus({ preventScroll: true });

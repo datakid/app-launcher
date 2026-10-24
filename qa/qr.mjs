@@ -224,10 +224,114 @@ const paletteRow = (mobile) => async (browser, base) => {
   await ctx.close();
 };
 
+const iconsNoBadge = async (browser, base) => {
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await ctx.addInitScript(() => { try { localStorage.setItem('lx-view', 'icons'); localStorage.setItem('lx-lang', 'en'); } catch (e) {} });
+  const page = await ctx.newPage();
+  await page.goto(base + '/#tools');
+  await page.waitForSelector('#appGrid .app-card');
+  await page.waitForTimeout(2200);
+  const r = await page.evaluate(() => {
+    const items = [...document.querySelectorAll('#appGrid .app-card--icon')].map((c) => c.querySelector('.app-icon-wrapper').getBoundingClientRect());
+    let overlaps = 0;
+    for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) { const a = items[i], b = items[j]; if (a.left < b.right - 2 && b.left < a.right - 2 && a.top < b.bottom - 2 && b.top < a.bottom - 2) overlaps++; }
+    return { badges: document.querySelectorAll('#appGrid .app-card--icon .card-qr').length, overlaps, tiles: items.length };
+  });
+  record('icons view: no QR badge on tiles and no overlapping tiles', r.badges === 0 && r.overlaps === 0 && r.tiles > 0, r);
+  await page.keyboard.press('Alt+KeyQ');
+  await page.waitForTimeout(600);
+  const open = await page.evaluate(() => document.getElementById('lx-qr').open);
+  record('icons view: QR still reachable from the keyboard', open, { open });
+  await ctx.close();
+};
+
+const bentoVisible = async (browser, base) => {
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await ctx.addInitScript(() => { try { localStorage.setItem('lx-view', 'bento'); localStorage.setItem('lx-lang', 'en'); } catch (e) {} });
+  const page = await ctx.newPage();
+  await page.goto(base + '/#tools');
+  await page.waitForSelector('#appGrid .app-card');
+  await page.waitForTimeout(2200);
+  await page.mouse.move(5, 5);
+  const r = await page.evaluate(() => {
+    const cards = [...document.querySelectorAll('#appGrid .app-card')];
+    const hidden = cards.filter((c) => { const b = c.querySelector('.card-qr'); if (!b) return true; const cs = getComputedStyle(b); const r = b.getBoundingClientRect(); return cs.opacity !== '1' || cs.visibility === 'hidden' || r.width < 24 || r.height < 24; }).length;
+    const stray = cards.filter((c) => { const b = c.querySelector('.card-qr'); const cr = c.getBoundingClientRect(); const br = b.getBoundingClientRect(); return br.left < cr.left || br.right > cr.right || br.top < cr.top || br.bottom > cr.bottom; }).length;
+    return { cards: cards.length, hidden, stray };
+  });
+  record('bento: every card shows its QR chip without hovering and inside the card', r.cards > 0 && r.hidden === 0 && r.stray === 0, r);
+  await ctx.close();
+};
+
+const watch = (page) => page.evaluate(() => new Promise((res) => {
+  const d = document.getElementById('lx-qr');
+  const t0 = performance.now();
+  let opened = false;
+  let closedAfter = false;
+  let peak = 0;
+  let dropped = false;
+  const tick = () => {
+    const o = d.open;
+    if (o) {
+      opened = true;
+      const op = parseFloat(getComputedStyle(d).opacity);
+      if (op > peak) peak = op;
+      if (peak >= 0.95 && op < 0.9) dropped = true;
+    } else if (opened) closedAfter = true;
+    if (performance.now() - t0 < 2200) requestAnimationFrame(tick);
+    else res({ opened, closedAfter, peak: Math.round(peak * 100) / 100, dropped });
+  };
+  tick();
+}));
+
+const realPress = async (page, loc) => {
+  const b = await loc.boundingBox();
+  const x = b.x + b.width / 2;
+  const y = b.y + b.height / 2;
+  await page.mouse.move(x - 90, y + 50, { steps: 6 });
+  await page.mouse.move(x, y, { steps: 8 });
+  await page.waitForTimeout(120);
+  const w = watch(page);
+  await page.mouse.down();
+  await page.waitForTimeout(80);
+  await page.mouse.up();
+  return w;
+};
+
+const stable = async (browser, base) => {
+  for (const view of ['bento', 'list']) {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await ctx.addInitScript((v) => { try { localStorage.setItem('lx-view', v); localStorage.setItem('lx-lang', 'en'); } catch (e) {} }, view);
+    const page = await ctx.newPage();
+    await page.goto(base + '/#tools');
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(2200);
+    const r = await realPress(page, page.locator('#appGrid .app-card').nth(2).locator('.card-qr'));
+    record(`${view}: real mouse press opens the QR and it stays open`, r.opened && !r.closedAfter && !r.dropped && r.peak >= 0.95, r);
+    await ctx.close();
+  }
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await ctx.newPage();
+  await page.goto(base + '/');
+  await page.waitForSelector('#appGrid .app-card');
+  await page.waitForTimeout(2200);
+  await page.mouse.click(700, 190);
+  await page.waitForSelector('#lx-palette[open]');
+  await page.keyboard.type('pa');
+  await page.waitForTimeout(800);
+  const row = page.locator('#lx-palette .palette-item').nth(1);
+  const rb = await row.boundingBox();
+  await page.mouse.move(rb.x + 120, rb.y + 12, { steps: 6 });
+  await page.waitForTimeout(300);
+  const r = await realPress(page, row.locator('.palette-qr'));
+  record('palette: real mouse press on the hovered row opens the QR and it stays open', r.opened && !r.closedAfter && !r.dropped && r.peak >= 0.95, r);
+  await ctx.close();
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
-  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), cardButton('icons', false), paletteRow(false), paletteRow(true)];
+  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), iconsNoBadge, bentoVisible, stable, paletteRow(false), paletteRow(true)];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }
