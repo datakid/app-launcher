@@ -4805,7 +4805,6 @@ h1 {
   position: relative;
   isolation: isolate;
   min-inline-size: 0;
-  contain: layout style;
 }
 .icon-plate::before {
   content: '';

@@ -69,6 +69,11 @@ const zenFor = (view, tab, napps) => async (browser, base) => {
   if (view === 'list') {
     record('list: grid widens to at least 1050 and uses 2 columns for more than 6 apps', zen.gridW >= 1050 && (napps > 6 ? zen.listCols === '2' : true), { before: before.gridW, zen: zen.gridW, cols: zen.listCols });
   } else if (view === 'icons') {
+    const flatZen = await page.evaluate(() => {
+      const plates = [...document.querySelectorAll('#appGrid .icon-plate')];
+      return { plates: plates.length, vertical: plates.filter((p) => { const k = [...p.querySelectorAll('.app-card--icon .app-icon-wrapper')].map((w) => w.getBoundingClientRect()); return k.length > 1 && Math.abs(k[0].top - k[1].top) > 4; }).length };
+    });
+    record('icons: plates stay horizontal in Zen', flatZen.plates > 0 && flatZen.vertical === 0, flatZen);
     record('icons: at least as many columns, with 76px tiles', zen.icCols >= before.icCols && zen.iconSize === '76px', { before: before.icCols, zen: zen.icCols, size: zen.iconSize });
   } else {
     record('bento: grid at least as wide as before', zen.gridW >= before.gridW, { before: before.gridW, zen: zen.gridW });

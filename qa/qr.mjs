@@ -238,6 +238,12 @@ const iconsNoBadge = async (browser, base) => {
     return { badges: document.querySelectorAll('#appGrid .app-card--icon .card-qr').length, overlaps, tiles: items.length };
   });
   record('icons view: no QR badge on tiles and no overlapping tiles', r.badges === 0 && r.overlaps === 0 && r.tiles > 0, r);
+  const flat = await page.evaluate(() => {
+    const plates = [...document.querySelectorAll('#appGrid .icon-plate')];
+    const vertical = plates.filter((p) => { const k = [...p.querySelectorAll('.app-card--icon .app-icon-wrapper')].map((w) => w.getBoundingClientRect()); return k.length > 1 && Math.abs(k[0].top - k[1].top) > 4; }).length;
+    return { plates: plates.length, vertical };
+  });
+  record('icons view: icons of one app sit side by side inside their plate', flat.plates > 0 && flat.vertical === 0, flat);
   await page.keyboard.press('Alt+KeyQ');
   await page.waitForTimeout(600);
   const open = await page.evaluate(() => document.getElementById('lx-qr').open);
