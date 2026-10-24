@@ -45,7 +45,7 @@
     if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
     if (/^https?:$/.test(location.protocol) && window.fetch) {
       window.__lxCatalog = fetch('links.json', { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).catch(function () { return null; });
-      window.__lxIcons = fetch('icons/manifest.v2.json', { credentials: 'same-origin', mode: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (m) { if (m) return m; return fetch('icons/manifest.json', { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); });
+      window.__lxIcons = fetch('icons/manifest.v2.json', { credentials: 'same-origin', mode: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
       try {
         if (/[?&]motion=legacy(&|$)/.test(location.search)) document.documentElement.dataset.motion = 'legacy';
       } catch (e) {}

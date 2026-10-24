@@ -20,6 +20,7 @@ const open = async (browser, base, opts = {}, url = '/') => {
   const ctx = await browser.newContext({ viewport: opts.viewport || { width: 1440, height: 900 }, hasTouch: !!opts.mobile, isMobile: !!opts.mobile, reducedMotion: opts.reduced ? 'reduce' : 'no-preference', serviceWorkers: opts.noSw ? 'block' : 'allow' });
   await boost(ctx);
   await ctx.addInitScript(collectorInit);
+  if (opts.setup) await opts.setup(ctx);
   const page = await ctx.newPage();
   await page.goto(base + url);
   await page.waitForSelector('#appGrid .app-card');
@@ -127,10 +128,57 @@ const reducedMotion = async (browser, base) => {
   await ctx.close();
 };
 
+
+const versionColour = async (browser, base) => {
+  const { ctx, page } = await open(browser, base);
+  const read = () => page.evaluate(() => getComputedStyle(document.querySelector('#appGrid .app-card[data-app-id="ledger-form"]')).getPropertyValue('--c1').trim());
+  const click = (i) => page.evaluate((n) => document.querySelectorAll('#appGrid .app-card[data-app-id="ledger-form"] .variant-chip')[n].click(), i);
+  const first = await read();
+  await click(1);
+  await page.waitForTimeout(250);
+  const second = await read();
+  await click(0);
+  await page.waitForTimeout(250);
+  const back = await read();
+  record('ledger-form: each version has its own colour and switching back restores it', !!first && !!second && first !== second && back === first, { first, second, back });
+  await ctx.close();
+};
+
+const iconFallback = async (browser, base) => {
+  const { ctx, page } = await open(browser, base, { noSw: true, setup: (c) => c.route('**/icons/**', (r) => r.abort()) });
+  const r = await page.evaluate(() => {
+    const wraps = [...document.querySelectorAll('#appGrid .app-icon-wrapper')];
+    const empty = wraps.filter((w) => {
+      const m = w.querySelector('svg, .lx-glyph, .lx-fav');
+      if (!m) return true;
+      const b = m.getBoundingClientRect();
+      return b.width === 0 || b.height === 0;
+    }).length;
+    return { tiles: wraps.length, empty };
+  });
+  record('icons blocked: every tile still renders a mark', r.tiles > 0 && r.empty === 0, r);
+  await ctx.close();
+};
+
+const harvestEntry = async (browser, base) => {
+  const { ctx, page } = await open(browser, base, { setup: (c) => c.route('https://harvest-studio-phi.vercel.app/**', (r) => r.fulfill({ status: 200, contentType: 'text/html', body: '<title>ok</title>' })) });
+  await page.keyboard.press('Control+KeyK');
+  await page.waitForTimeout(400);
+  await page.keyboard.type('harvest');
+  await page.waitForTimeout(500);
+  const active = await page.evaluate(() => { const a = document.querySelector('.palette-item.is-active'); return a ? a.dataset.key : null; });
+  const popup = ctx.waitForEvent('page', { timeout: 4000 }).catch(() => null);
+  await page.keyboard.press('Enter');
+  const opened = await popup;
+  const url = opened ? opened.url() : null;
+  record('palette Harvest entry opens Harvest Studio', active === 'harvest' && !!url && url.startsWith('https://harvest-studio-phi.vercel.app/'), { active, url });
+  await ctx.close();
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
-  for (const step of [versionSwitches, legacyMotion, manifestRefresh, reducedMotion]) {
+  for (const step of [versionSwitches, legacyMotion, manifestRefresh, reducedMotion, versionColour, iconFallback, harvestEntry]) {
     try { await step(browser, server.base); } catch (e) { record(step.name, false, { error: String(e.message || e).slice(0, 200) }); }
   }
   await browser.close();

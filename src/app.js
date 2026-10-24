@@ -438,6 +438,7 @@ const primeIconAssets = () => {
   }
 };
 let iconManifest = readIconsCache();
+if (isV1Manifest(iconManifest)) { iconManifest = null; try { localStorage.removeItem(ICONS_KEY); } catch (e) { if (LX_DEBUG) console.warn(e); } }
 primeIconAssets();
 const markKey = (app, variant) => (variant ? `${app.id}--${variant.id}` : String(app.id).replace('::', '--'));
 const iconEntry = (key) => {
@@ -468,13 +469,16 @@ const findAppById = (id) => {
   }
   return null;
 };
-const appGradient = (app) => {
+const tintOf = (key) => {
+  const e = iconEntry(key);
+  return e && e.status !== 'default' && Array.isArray(e.tint) && e.tint.length === 3 && e.tint.every((c) => typeof c === 'string' && HEX6.test(c)) ? e.tint : null;
+};
+const appGradient = (app, variant) => {
   const base = findAppById(app.parentId || app.id) || app;
-  const hasVariants = Array.isArray(base.variants) && base.variants.length > 0;
-  const dv = hasVariants ? base.variants[Number(base.defaultVariant) || 0] : null;
-  const e = iconEntry(hasVariants && dv ? `${base.id}--${dv.id}` : String(base.id));
-  const t = e && e.status !== 'default' && Array.isArray(e.tint) && e.tint.length === 3 && e.tint.every((c) => typeof c === 'string' && HEX6.test(c)) ? e.tint : null;
-  return t || app.gradient;
+  const vs = Array.isArray(base.variants) && base.variants.length ? base.variants : null;
+  if (!vs) return tintOf(String(base.id)) || app.gradient;
+  const pick = variant || (app.parentId && vs[app.variantIndex]) || vs[Number(base.defaultVariant) || 0];
+  return tintOf(`${base.id}--${pick.id}`) || base.gradient || app.gradient;
 };
 const appMark = (app, variant) => {
   const base = findAppById(app.parentId || app.id) || app;
@@ -1156,7 +1160,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
     el.style.gridRow = '';
   }
 
-  el.style.setProperty('--c1', tone(appGradient(app)[0]));
+  el.style.setProperty('--c1', tone(appGradient(app, activeVariant)[0]));
   if (app.variants) el.dataset.variantIndex = String(variantIndex);
   el.style.setProperty('--i', idx);
 
@@ -1309,7 +1313,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       });
       if (!supportsAnchor) moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
       if (stackable) {
-        setActiveVariant(el, String(v.id), { href: v.url, host: hostOf(v.url), label: ariaLabel, c1: tone(appGradient(app)[0]) });
+        setActiveVariant(el, String(v.id), { href: v.url, host: hostOf(v.url), label: ariaLabel, c1: tone(appGradient(app, v)[0]) });
       } else {
         linkEl.href = v.url;
         if (metaEl) metaEl.textContent = hostOf(v.url);
@@ -1321,7 +1325,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
         el._iconTimer = setTimeout(() => {
           const incoming = retileIcon(tileEl, app, v, v.icon);
           if (markEl) retileIcon(markEl, app, v, v.icon, '');
-          el.style.setProperty('--c1', tone(appGradient(app)[0]));
+          el.style.setProperty('--c1', tone(appGradient(app, v)[0]));
           if (incoming === outgoing) {
             incoming.style.opacity = '1';
           } else {
@@ -1521,7 +1525,7 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   let host = '';
   try { host = new URL(activeUrl).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
   const mode = openMode();
-  if (app) menu.style.setProperty('--menu-accent', tone(appGradient(app)[0]));
+  if (app) menu.style.setProperty('--menu-accent', tone(appGradient(app, activeVariant)[0]));
   const kbdHint = (txt) => `<span class="ctx-kbd" aria-hidden="true">${escapeHtml(txt)}</span>`;
   const defaultTag = `<span class="ctx-tag">${escapeHtml(t('ctxDefault'))}</span>`;
   const openRow = (m) => `<button type="button" data-action="open-${m}" role="menuitem" class="ctx-item${m === mode ? ' is-default' : ''}">${icon(openModeIcon(m))}<span class="ctx-label">${escapeHtml(t(m === 'new' ? 'actionNewTab' : 'actionSameTab'))}</span>${m === mode ? defaultTag : ''}</button>`;
@@ -1542,7 +1546,7 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
     : `<div class="ctx-group" role="group">${openRow(mode)}${openRow(otherMode)}</div>`;
 
   let itemsHtml = `
-    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? appGradient(app)[0] : '#7c9bff'))}">
+    <div class="ctx-head" role="presentation" style="--c1:${escapeHtml(tone(app ? appGradient(app, activeVariant)[0] : '#7c9bff'))}">
       <span class="ctx-head-icon" data-mark="${app ? appMark(app, activeVariant).kind : 'fa'}">${app ? markHtml(app, activeVariant, iconName, '') : icon(iconName)}</span>
       <span class="ctx-head-text">
         <span class="ctx-head-title">${escapeHtml(title)}${activeVariant ? `<span class="ctx-head-variant">${escapeHtml(loc(activeVariant.label))}</span>` : ''}</span>
@@ -1654,6 +1658,10 @@ const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
       });
       const v = app && app.variants ? app.variants[i] : null;
       if (v) {
+        const tint = tone(appGradient(app, v)[0]);
+        menu.style.setProperty('--menu-accent', tint);
+        const headEl = menu.querySelector('.ctx-head');
+        if (headEl) headEl.style.setProperty('--c1', tint);
         const headVar = menu.querySelector('.ctx-head-variant');
         if (headVar) headVar.textContent = loc(v.label);
         const headIcon = menu.querySelector('.ctx-head-icon');
@@ -2472,7 +2480,7 @@ const retintUI = () => {
     if (!app || !app.gradient) return;
     const vi = el.dataset.variantIndex;
     const variant = app.variants && vi !== undefined ? app.variants[Number(vi)] : null;
-    el.style.setProperty('--c1', tone(appGradient(app)[0]));
+    el.style.setProperty('--c1', tone(appGradient(app, variant)[0]));
   });
   if (contextMenuEl && contextMenuEl.dataset.owner === 'card') closeContextMenu();
   const activeCat = categories.find(c => c.id === currentTabId);
@@ -3350,7 +3358,7 @@ const fuzzyScore = (query, target) => {
 const EXTRA_CAT = { id: '_extra', label: { ar: 'مشغّل بديل', en: 'Alt launcher' } };
 const extraEntries = [
   { app: { id: 'alt', title: { ar: 'الحساب البديل', en: 'Alt Account' }, url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }, cat: EXTRA_CAT },
-  { app: { id: 'harvest', title: { ar: 'الحصاد', en: 'Harvest' }, url: new URL('harvest/', location.href).href, icon: 'fa-rotate-right', gradient: ['#3f6212', '#a3e635', '#1a2e05'] }, cat: EXTRA_CAT }
+  { app: { id: 'harvest', title: { ar: 'الحصاد', en: 'Harvest' }, url: 'https://harvest-studio-phi.vercel.app/', icon: 'fa-rotate-right', gradient: ['#3f6212', '#a3e635', '#1a2e05'] }, cat: EXTRA_CAT }
 ];
 try { localStorage.removeItem('lx-unlocked-secrets'); } catch (e) { if (LX_DEBUG) console.warn(e); }
 
@@ -5433,14 +5441,15 @@ const refreshMarks = () => {
     if (!app || !wrap) return;
     const v = app.variants ? app.variants[Number(card.dataset.variantIndex) || 0] : null;
     const iconName = (v || app).icon;
+    const active = app.variants && wrap.querySelector('.mark-stack') ? app.variants.find((x) => String(x.id) === card.dataset.activeVariant) || v : v;
+    card.style.setProperty('--c1', tone(appGradient(app, active)[0]));
+    const plate = card.closest('.icon-plate');
+    if (plate) plate.style.setProperty('--c1', tone(appGradient(app)[0]));
     if (wrap.querySelector('.mark-stack')) { refreshStack(card, app); return; }
     const before = wrap.querySelector('.app-icon');
     const after = retileIcon(wrap, app, v, iconName);
     const mark = card.querySelector('.card-glyph');
     if (mark) retileIcon(mark, app, v, iconName, '');
-    card.style.setProperty('--c1', tone(appGradient(app)[0]));
-    const plate = card.closest('.icon-plate');
-    if (plate) plate.style.setProperty('--c1', tone(appGradient(app)[0]));
     if (after && after !== before) {
       after.style.opacity = '0';
       requestAnimationFrame(() => requestAnimationFrame(() => { after.style.opacity = ''; }));
@@ -5495,7 +5504,7 @@ const applyIconManifest = (next) => {
 const fetchIconManifest = () => {
   if (!/^https?:$/.test(location.protocol)) return Promise.resolve(null);
   try {
-    return fetch(new URL('icons/manifest.v2.json', location.href), { credentials: 'same-origin', mode: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).catch(() => null).then((m) => m || fetch(new URL('icons/manifest.json', location.href), { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).catch(() => null));
+    return fetch(new URL('icons/manifest.v2.json', location.href), { credentials: 'same-origin', mode: 'same-origin' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   } catch (e) { return Promise.resolve(null); }
 };
 

@@ -139,7 +139,12 @@ const main = async () => {
   fill('<!--LX:JS-->', `<script defer src="${jsName}"></script>`);
   await fs.writeFile(path.join(dist, 'index.html'), html);
 
-  await copyDir(path.join(root, 'icons'), path.join(dist, 'icons'));
+  await fs.mkdir(path.join(dist, 'icons'), { recursive: true });
+  const shipped = ['icons/manifest.v2.json', 'icons/manifest.v2.schema.json', manifest.atlas.file, manifest.glyphSprite.file];
+  if (manifest.glyphAtlas) shipped.push(manifest.glyphAtlas.file);
+  for (const f of shipped) {
+    try { await fs.copyFile(path.join(root, f), path.join(dist, f)); } catch (e) { throw new Error(`icons: missing ${f}`); }
+  }
   await copyDir(path.join(root, 'fonts'), path.join(dist, 'fonts'));
   for (const f of ['links.json', 'compare.html', 'favicon.ico']) await fs.copyFile(path.join(root, f), path.join(dist, f));
   await fs.copyFile(src('apple-touch-icon.png'), path.join(dist, 'apple-touch-icon.png'));
