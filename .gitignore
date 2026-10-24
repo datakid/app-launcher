@@ -1,3 +1,4 @@
 node_modules/
 qa/out/
 .DS_Store
+perf/out/
