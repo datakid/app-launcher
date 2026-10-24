@@ -367,6 +367,36 @@ body.is-zen .container {
   }
 }
 
+@media (min-width: 1025px) {
+  body.is-zen .container { --lx-panel-w: min(1120px, 92vw); }
+  body.is-zen .lx-bar { --lx-panel-w: min(880px, 94vw); }
+  :root body.is-zen .app-grid[data-layout="list"],
+  :root body.is-zen .app-grid[data-layout="icons"] { margin-block: auto; max-block-size: 100%; }
+  :root body.is-zen .app-grid[data-layout="list"] {
+    --lx-panel-pad: 8px;
+    --lx-row-icon: 44px;
+    --lx-row-px: 18px;
+    --lx-row-gap: 16px;
+  }
+  :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .card-clip { min-block-size: 68px; padding-block: 12px; }
+  :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .app-title { font-size: 1.04rem; }
+  :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .card-meta { opacity: .72; }
+  :root body.is-zen .app-grid[data-layout="list"][data-list-cols="2"] { column-gap: 17px; }
+  :root body.is-zen .app-grid[data-layout="list"][data-list-cols="2"] > .app-card--row:nth-child(odd)::after { inset-inline-end: -9px; }
+  :root body.is-zen .app-grid[data-layout="icons"] {
+    --ic-min: 132px;
+    --ic-cap: 20px;
+    column-gap: 20px;
+    row-gap: calc(var(--ic-cap) + 24px);
+    padding: calc(var(--ic-cap) + 12px) 10px 10px;
+  }
+  :root body.is-zen .app-grid[data-layout="icons"] .app-card--icon { gap: 11px; }
+  :root body.is-zen .app-grid[data-layout="icons"] .app-card--icon .app-icon-wrapper { --icon-size: 76px; }
+  :root body.is-zen .app-grid[data-layout="icons"] .app-card--icon .app-icon { font-size: 2rem; }
+  :root body.is-zen .app-grid[data-layout="icons"] .app-card--icon .icon-label { font-size: 13px; }
+  :root body.is-zen .app-grid[data-layout="icons"] .icon-plate::before { inset-inline: -6px; inset-block-end: -6px; }
+}
+
 .dolly-scrim {
   position: fixed; inset: 0; z-index: 150; pointer-events: none;
   background: #000; opacity: 0;
@@ -4721,6 +4751,7 @@ h1 {
 .look-view[data-view="icons"] i { border-radius: 1.5px; }
 :root .app-grid[data-layout="icons"] {
   --ic-cols: 4;
+  --ic-min: 104px;
   --ic-cap: 18px;
   --ic-tint: 6%;
   --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));

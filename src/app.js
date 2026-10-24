@@ -1743,8 +1743,11 @@ const packIcons = (items, cols) => {
 const iconCols = (grid) => {
   const cs = getComputedStyle(grid);
   const w = grid.clientWidth - (parseFloat(cs.paddingInlineStart) || 0) - (parseFloat(cs.paddingInlineEnd) || 0);
-  return Math.max(4, Math.floor(w / IC_MIN));
+  const min = parseFloat(cs.getPropertyValue('--ic-min')) || IC_MIN;
+  return Math.max(4, Math.floor(w / min));
 };
+
+const listColsFor = (n) => (n > (document.body.classList.contains('is-zen') ? 6 : 10) ? '2' : '1');
 
 const fitIconLabels = (grid) => {
   grid.querySelectorAll('.icon-label').forEach((l) => {
@@ -1837,7 +1840,7 @@ const renderCards = (grid, categoryId) => {
   grid.classList.toggle('is-auto-flow', !listView && !iconsView && !curated && !generated);
   if (listView) {
     grid.dataset.layout = 'list';
-    grid.dataset.listCols = n > 10 ? '2' : '1';
+    grid.dataset.listCols = listColsFor(n);
   } else if (iconsView) {
     grid.dataset.layout = 'icons';
     delete grid.dataset.listCols;
@@ -4683,6 +4686,7 @@ const zenCancelFallback = () => {
     const clip = card.querySelector('.card-clip');
     if (shadow) { shadow.style.transform = ''; shadow.style.opacity = ''; }
     if (clip) { clip.style.transform = ''; clip.style.opacity = ''; }
+    if (card.classList.contains('app-card--icon')) { card.style.transform = ''; card.style.opacity = ''; }
   });
 };
 
@@ -4696,6 +4700,7 @@ const zenFinish = (gen, zenBtn) => {
   document.documentElement.classList.remove('is-zen-transitioning');
   const appGrid = document.getElementById('appGrid');
   if (appGrid) nameTiles(appGrid, false);
+  if (appGrid && appGrid.dataset.layout === 'icons') fitIconLabels(appGrid);
   pointerFieldDirty = true;
   Motion.wake();
   syncHeroRestBox();
@@ -4714,10 +4719,22 @@ const zenFinish = (gen, zenBtn) => {
   }
 };
 
+const syncZenLayout = () => {
+  const grid = document.getElementById('appGrid');
+  if (!grid) return;
+  if (grid.dataset.layout === 'list') {
+    const cat = categories.find(c => c.id === currentTabId);
+    if (cat) grid.dataset.listCols = listColsFor(cat.apps.length);
+  } else if (grid.dataset.layout === 'icons') {
+    repackIcons(grid);
+  }
+};
+
 const runZenFlip = (enabled, cards, gen) => {
   zenNeutralizeSprings();
   const rects = cards.map((c) => c.getBoundingClientRect());
   document.body.classList.toggle('is-zen', enabled);
+  syncZenLayout();
   updateZenButtonLabel();
 
   return new Promise((resolve) => requestAnimationFrame(resolve)).then(() => {
@@ -4731,7 +4748,7 @@ const runZenFlip = (enabled, cards, gen) => {
       const syRaw = next.height ? old.height / next.height : 1;
       const scale = Math.min(sxRaw, syRaw);
       if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5 && Math.abs(scale - 1) < 0.002) return [];
-      const layers = [card.querySelector('.card-shadow'), card.querySelector('.card-clip')].filter(Boolean);
+      const layers = card.classList.contains('app-card--icon') ? [card] : [card.querySelector('.card-shadow'), card.querySelector('.card-clip')].filter(Boolean);
       return layers.map((layer) => {
         const anim = layer.animate([
           { transformOrigin: '0 0', transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0.92 },
@@ -4768,6 +4785,7 @@ const setZenMode = (enabled) => {
   if (MQ.reducedMotion) {
     document.documentElement.classList.remove('is-zen-transitioning');
     document.body.classList.toggle('is-zen', enabled);
+    syncZenLayout();
     updateZenButtonLabel();
     zenFinish(gen, zenBtn);
     return;
@@ -4784,6 +4802,7 @@ const setZenMode = (enabled) => {
     try {
       vt = withViewTransition(() => {
         document.body.classList.toggle('is-zen', enabled);
+        syncZenLayout();
         updateZenButtonLabel();
       });
     } catch (e) {
@@ -4791,6 +4810,7 @@ const setZenMode = (enabled) => {
     }
     if (!vt) {
       document.body.classList.toggle('is-zen', enabled);
+      syncZenLayout();
       updateZenButtonLabel();
       zenFinish(gen, zenBtn);
       return;
