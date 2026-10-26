@@ -1234,6 +1234,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   position: relative; align-self: center; flex-shrink: 0;
   display: flex; justify-content: center; align-items: center;
   gap: 0.15rem; padding: 0.35rem;
+  border-start-end-radius: 999px; border-end-end-radius: 999px;
 }
 .tab-rail.is-measuring, .tab-rail.is-measuring * { transition: none !important; }
 
@@ -3023,7 +3024,7 @@ h1 {
     inset-inline: 0; top: auto; bottom: 0;
     width: auto !important; max-width: none;
     display: flex; justify-content: space-around; align-items: stretch;
-    gap: 0.25rem; overflow: visible; filter: none;
+    gap: 0.25rem; overflow: visible; filter: none; border-radius: 0;
     padding: 0.35rem max(0.5rem, env(safe-area-inset-right, 0px)) calc(0.35rem + env(safe-area-inset-bottom, 0px)) max(0.5rem, env(safe-area-inset-left, 0px));
     background: light-dark(rgba(248,247,243,0.88), rgba(10,11,14,0.86));
     backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%);

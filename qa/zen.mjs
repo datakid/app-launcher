@@ -195,12 +195,34 @@ const iconsRows = async (browser, base) => {
   record('icons: every row centred under the bar, grid edges match the bar, normal and Zen, LTR and RTL', bad.length === 0, bad.slice(0, 4));
 };
 
+const barEdge = async (browser, base) => {
+  const bad = [];
+  for (const [w, lang] of [[1440, 'en'], [1440, 'ar'], [390, 'en']]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
+    await ctx.addInitScript((l) => { try { localStorage.setItem('lx-lang', l); localStorage.setItem('lx-lowend', '1'); } catch (e) {} }, lang);
+    const page = await ctx.newPage();
+    await page.goto(`${base}/#core`);
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(1500);
+    const r = await page.evaluate(() => {
+      const c = getComputedStyle(document.querySelector('.tab-rail'));
+      const rtl = document.documentElement.dir === 'rtl';
+      const outer = parseFloat(rtl ? c.borderTopLeftRadius : c.borderTopRightRadius);
+      return { outer, bottomOuter: parseFloat(rtl ? c.borderBottomLeftRadius : c.borderBottomRightRadius) };
+    });
+    const ok = w >= 641 ? r.outer >= 20 && r.bottomOuter >= 20 : r.outer === 0 && r.bottomOuter === 0;
+    if (!ok) bad.push({ w, lang, ...r });
+    await ctx.close();
+  }
+  record('bar: the tab rail follows the bar rounding on desktop and stays square in the phone bottom bar', bad.length === 0, bad);
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
   const links = await (await fetch(server.base + '/links.json')).json();
   const biggest = links.categories.slice().sort((a, b) => b.apps.length - a.apps.length)[0];
-  const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback, header, listFit, iconsRows];
+  const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback, header, listFit, iconsRows, barEdge];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }
