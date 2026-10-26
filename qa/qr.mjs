@@ -72,7 +72,7 @@ const core = (lang, mobile) => async (browser, base) => {
       document.getElementById('lx-qr').addEventListener('close', () => { window.__qrT.x = performance.now(); }, { once: true });
     });
     await page.keyboard.press('Escape');
-    await page.waitForFunction(() => !document.getElementById('lx-qr').open, null, { timeout: 1500 });
+    await page.waitForFunction(() => window.__qrT.x !== undefined, null, { timeout: 1500 });
     const dt = await page.evaluate(() => Math.round(window.__qrT.x - window.__qrT.k));
     const back = await page.evaluate(() => document.activeElement?.classList.contains('card-link-overlay'));
     record(`${tag}: Escape closes within 700 ms and returns focus to the card`, dt < 700 && back, { dt, back });
@@ -90,8 +90,8 @@ const variants = async (browser, base) => {
   const app = links.categories.flatMap((c) => c.apps).find((a) => a.id === info.id);
   await openFromMenu(page, `#appGrid .app-card[data-app-id="${info.id}"]`);
   const first = await decode(page);
-  await page.click('#lx-qr .qr-variant:nth-child(2)');
-  await page.waitForTimeout(250);
+  await page.click('#lx-qr [data-qr-variant="1"]');
+  await page.waitForTimeout(600);
   const second = await decode(page);
   const dIndex = Number(app.defaultVariant) || 0;
   record('variants: switching version re-renders the QR for that url', first === app.variants[dIndex].url && second === app.variants[1].url, { first, second });
@@ -235,9 +235,9 @@ const iconsNoBadge = async (browser, base) => {
     const items = [...document.querySelectorAll('#appGrid .app-card--icon')].map((c) => c.querySelector('.app-icon-wrapper').getBoundingClientRect());
     let overlaps = 0;
     for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) { const a = items[i], b = items[j]; if (a.left < b.right - 2 && b.left < a.right - 2 && a.top < b.bottom - 2 && b.top < a.bottom - 2) overlaps++; }
-    return { badges: document.querySelectorAll('#appGrid .app-card--icon .card-qr').length, overlaps, tiles: items.length };
+    return { badges: document.querySelectorAll('#appGrid .app-card--icon .card-qr').length, rest: Math.max(...[...document.querySelectorAll('#appGrid .app-card--icon .card-qr')].map((b) => Number(getComputedStyle(b).opacity))), overlaps, tiles: items.length };
   });
-  record('icons view: no QR badge on tiles and no overlapping tiles', r.badges === 0 && r.overlaps === 0 && r.tiles > 0, r);
+  record('icons view: one hidden QR chip per tile at rest and no overlapping tiles', r.badges === r.tiles && r.rest === 0 && r.overlaps === 0 && r.tiles > 0, r);
   const flat = await page.evaluate(() => {
     const plates = [...document.querySelectorAll('#appGrid .icon-plate')];
     const vertical = plates.filter((p) => { const k = [...p.querySelectorAll('.app-card--icon .app-icon-wrapper')].map((w) => w.getBoundingClientRect()); return k.length > 1 && Math.abs(k[0].top - k[1].top) > 4; }).length;
@@ -248,6 +248,17 @@ const iconsNoBadge = async (browser, base) => {
   await page.waitForTimeout(600);
   const open = await page.evaluate(() => document.getElementById('lx-qr').open);
   record('icons view: QR still reachable from the keyboard', open, { open });
+  await page.keyboard.press('Escape');
+  await page.waitForFunction(() => !document.getElementById('lx-qr').open, null, { timeout: 3000 });
+  const tile = page.locator('#appGrid .app-card--icon').nth(2);
+  const tileHref = await tile.locator('.card-link-overlay').evaluate((a) => a.href);
+  await tile.hover();
+  await page.waitForFunction(() => Number(getComputedStyle(document.querySelector('#appGrid .app-card--icon:hover .card-qr--icon')).opacity) === 1, null, { timeout: 2000 });
+  await tile.locator('.card-qr--icon').click();
+  await page.waitForSelector('#lx-qr[open]');
+  await page.waitForTimeout(800);
+  const chipData = await decode(page);
+  record('icons view: hover reveals a QR chip that opens that tile\'s QR', chipData === tileHref, { chipData, tileHref });
   await ctx.close();
 };
 
@@ -334,10 +345,37 @@ const stable = async (browser, base) => {
   await ctx.close();
 };
 
+
+const matrix = async (browser, base) => {
+  const combos = [];
+  for (const palette of ['vivid', 'curated', 'muted', 'mono']) for (const theme of ['light', 'dark']) for (const lang of ['en', 'ar']) combos.push({ palette, theme, lang, mobile: false });
+  for (const palette of ['vivid', 'mono']) for (const theme of ['light', 'dark']) combos.push({ palette, theme, lang: 'ar', mobile: true });
+  let ok = 0;
+  const bad = [];
+  for (const c of combos) {
+    const ctx = await browser.newContext(c.mobile ? { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true } : { viewport: { width: 1440, height: 900 } });
+    await ctx.addInitScript((o) => { try { localStorage.setItem('lx-palette', o.palette); localStorage.setItem('lx-theme', o.theme); localStorage.setItem('lx-lang', o.lang); } catch (e) {} }, c);
+    const page = await ctx.newPage();
+    await page.goto(base + '/#core');
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(1600);
+    const link = page.locator('#appGrid .app-card').nth(2).locator('.card-link-overlay');
+    const href = await link.evaluate((a) => a.href);
+    await link.focus();
+    await page.keyboard.press('Alt+KeyQ');
+    await page.waitForFunction(() => { const d = document.getElementById('lx-qr'); return d.open && Number(getComputedStyle(d).opacity) >= 0.99 && !!d.querySelector('.qr-layer .qr-svg'); }, null, { timeout: 4000 });
+    await page.waitForTimeout(1500);
+    const data = await decode(page);
+    if (data === href) ok++; else bad.push({ ...c, data });
+    await ctx.close();
+  }
+  record('decode: every palette x theme x direction, desktop and phone sheet', ok === combos.length, { ok, total: combos.length, bad: bad.slice(0, 3) });
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
-  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), iconsNoBadge, bentoVisible, stable, paletteRow(false), paletteRow(true)];
+  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), iconsNoBadge, bentoVisible, stable, paletteRow(false), paletteRow(true), matrix];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }
