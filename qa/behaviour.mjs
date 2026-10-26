@@ -110,7 +110,15 @@ const manifestRefresh = async (browser, base) => {
 
 const reducedMotion = async (browser, base) => {
   const { ctx, page } = await open(browser, base, { reduced: true });
-  const quiet = () => page.evaluate(async () => { await new Promise((r) => setTimeout(r, 450)); return window.__perf.running(true); });
+  const quiet = () => page.evaluate(async () => {
+    await new Promise((r) => setTimeout(r, 450));
+    const end = performance.now() + 1500;
+    while (window.__perf.running(true) && performance.now() < end) {
+      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    return window.__perf.running(true);
+  });
   const left = {};
   await page.evaluate(() => { const t = [...document.querySelectorAll('.tab-btn')]; const i = t.findIndex((x) => x.getAttribute('aria-selected') === 'true'); t[(i + 1) % t.length].click(); });
   left.tab = await quiet();
