@@ -175,7 +175,8 @@
   <div id="paletteLive" class="visually-hidden" aria-live="polite"></div>
 </dialog>
 
-<dialog id="lx-qr" aria-labelledby="qrTitle">
+<dialog id="lx-qr" aria-labelledby="qrTitle" aria-describedby="qrHint qrUrl">
+  <span class="qr-grab" id="qrGrab" aria-hidden="true"></span>
   <div class="qr-head">
     <span class="qr-head-icon" id="qrIcon" aria-hidden="true"></span>
     <span class="qr-head-text">
@@ -185,15 +186,20 @@
     <button type="button" class="qr-close" id="qrClose" aria-label="إغلاق" data-i18n-aria="hintClose"><svg class="fas fa-xmark" aria-hidden="true" focusable="false"><use href="#fa-xmark"></use></svg></button>
   </div>
   <div class="qr-variants" id="qrVariants" role="radiogroup" hidden></div>
-  <div class="qr-stage" id="qrStage"></div>
+  <div class="qr-frame"><div class="qr-stage" id="qrStage"></div></div>
+  <button type="button" class="qr-url" id="qrUrl" data-qr="copy-url"></button>
   <p class="qr-note" id="qrNote" hidden></p>
   <div class="qr-actions">
     <button type="button" class="qr-action is-primary" data-qr="copy"><svg class="fas fa-copy" aria-hidden="true" focusable="false"><use href="#fa-copy"></use></svg><span class="qr-action-label" data-i18n="actionCopyLink">نسخ الرابط</span></button>
-    <button type="button" class="qr-action" data-qr="png"><svg class="fas fa-download" aria-hidden="true" focusable="false"><use href="#fa-download"></use></svg><span class="qr-action-label" data-i18n="qrPng">تنزيل PNG</span></button>
-    <button type="button" class="qr-action" data-qr="svg"><svg class="fas fa-download" aria-hidden="true" focusable="false"><use href="#fa-download"></use></svg><span class="qr-action-label" data-i18n="qrSvg">تنزيل SVG</span></button>
-    <button type="button" class="qr-action" data-qr="share" hidden><svg class="fas fa-arrow-up-right-from-square" aria-hidden="true" focusable="false"><use href="#fa-arrow-up-right-from-square"></use></svg><span class="qr-action-label" data-i18n="qrShare">مشاركة</span></button>
+    <div class="qr-tools">
+      <button type="button" class="qr-action" data-qr="image" data-i18n-aria="qrImage" aria-label="نسخ الصورة" hidden><svg class="fas fa-clone" aria-hidden="true" focusable="false"><use href="#fa-clone"></use></svg><span class="qr-action-label" data-i18n="qrImageShort">صورة</span></button>
+      <button type="button" class="qr-action" data-qr="png" data-i18n-aria="qrPng" aria-label="تنزيل PNG"><svg class="fas fa-download" aria-hidden="true" focusable="false"><use href="#fa-download"></use></svg><span class="qr-action-label">PNG</span></button>
+      <button type="button" class="qr-action" data-qr="svg" data-i18n-aria="qrSvg" aria-label="تنزيل SVG"><svg class="fas fa-download" aria-hidden="true" focusable="false"><use href="#fa-download"></use></svg><span class="qr-action-label">SVG</span></button>
+      <button type="button" class="qr-action" data-qr="share" data-i18n-aria="qrShare" aria-label="مشاركة" hidden><svg class="fas fa-arrow-up-right-from-square" aria-hidden="true" focusable="false"><use href="#fa-arrow-up-right-from-square"></use></svg><span class="qr-action-label" data-i18n="qrShare">مشاركة</span></button>
+    </div>
   </div>
-  <p class="qr-hint" data-i18n="qrHint">امسح الرمز بكاميرا الهاتف لفتح الرابط</p>
+  <p class="qr-hint visually-hidden" id="qrHint" data-i18n="qrHint">امسح الرمز بكاميرا الهاتف لفتح الرابط</p>
+  <p class="visually-hidden" id="qrLive" aria-live="polite"></p>
 </dialog>
 
 <!--LX:DATA-->

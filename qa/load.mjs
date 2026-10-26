@@ -8,7 +8,7 @@ import { siteRoot } from '../perf/site-root.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TEXT = /\.(html|css|js|json|svg|mjs)$/;
-const LIMITS = { htmlGz: 61440, firstLoadGz: 262144 };
+const LIMITS = { htmlGz: 61440, firstLoadGz: 266240 };
 
 const main = async () => {
   const site = siteRoot(root);

@@ -752,6 +752,10 @@ const STRINGS = {
   ctxQr: { ar: 'عرض رمز QR', en: 'Show QR code' },
   qrPng: { ar: 'تنزيل PNG', en: 'Download PNG' },
   qrSvg: { ar: 'تنزيل SVG', en: 'Download SVG' },
+  qrImage: { ar: 'نسخ الصورة', en: 'Copy image' },
+  qrImageShort: { ar: 'صورة', en: 'Image' },
+  qrReady: { ar: 'الرمز جاهز', en: 'QR ready' },
+  qrImageCopied: { ar: 'تم نسخ الصورة', en: 'Image copied' },
   qrShare: { ar: 'مشاركة', en: 'Share' },
   qrHint: { ar: 'امسح الرمز بكاميرا الهاتف لفتح الرابط', en: 'Scan with a phone camera to open the link' },
   qrTooLong: { ar: 'الرابط أطول من أن يُعرض كرمز QR', en: 'This link is too long for a QR code' },
@@ -900,7 +904,7 @@ const MOTION_LEGACY = {
   version: { inMs: 240, clampMs: 0 },
   paletteOpen: { inMs: 420 },
   paletteClose: { outMs: 250 },
-  qr: { inMs: 420, outMs: 250 },
+  qr: { inMs: 420, outMs: 250, variantMs: 240 },
   crossfade: { inMs: 280 },
   theme: { inMs: 460 },
   boot: { inMs: 0, offset: 120, spread: 260 },
@@ -913,7 +917,7 @@ const MOTION_NEW = {
   version: { inMs: 120, clampMs: 120 },
   paletteOpen: { inMs: 200 },
   paletteClose: { outMs: 140 },
-  qr: { inMs: 200, outMs: 140 },
+  qr: { inMs: 220, outMs: 150, variantMs: 160 },
   crossfade: { inMs: 200 },
   theme: { inMs: 320 },
   boot: { inMs: 360, offset: 120, spread: 180 },
@@ -921,6 +925,9 @@ const MOTION_NEW = {
 };
 const MOTION = document.documentElement.dataset.motion === 'legacy' ? MOTION_LEGACY : MOTION_NEW;
 document.documentElement.style.setProperty('--lx-version-ms', `${MOTION.version.inMs}ms`);
+document.documentElement.style.setProperty('--lx-qr-in-ms', `${MOTION.qr.inMs}ms`);
+document.documentElement.style.setProperty('--lx-qr-out-ms', `${MOTION.qr.outMs}ms`);
+document.documentElement.style.setProperty('--lx-qr-variant-ms', `${MOTION.qr.variantMs}ms`);
 if (MOTION.boot.inMs) document.documentElement.style.setProperty('--lx-boot-ms', `${MOTION.boot.inMs}ms`);
 if (MOTION.hover.inMs) document.documentElement.style.setProperty('--lx-hover-ms', `${MOTION.hover.inMs}ms`);
 let scrollingTimer = 0;
@@ -1201,7 +1208,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       </div>` : '';
 
   const qrLabel = `${t('ctxQr')} — ${title}`;
-  const qrBtnHtml = (cls) => `<button type="button" class="card-qr ${cls}" aria-label="${escapeHtml(qrLabel)}">${icon('fa-qrcode')}<span class="card-qr-label" aria-hidden="true">QR</span></button>`;
+  const qrBtnHtml = (cls, compact = false) => `<button type="button" class="card-qr ${cls}" aria-label="${escapeHtml(qrLabel)}"${compact ? ' tabindex="-1"' : ''}>${icon('fa-qrcode')}${compact ? '' : '<span class="card-qr-label" aria-hidden="true">QR</span>'}</button>`;
 
   const hostOf = (u) => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
   const host = hostOf(activeUrl);
@@ -1252,7 +1259,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       <span class="icon-label">${escapeHtml(isTile ? loc(activeVariant.label) : title)}</span>`;
 
   if (iconsView) {
-    el.innerHTML = `${overlayHtml}${iconsBody}`;
+    el.innerHTML = `${overlayHtml}${iconsBody}${qrBtnHtml('card-qr--icon', true)}`;
     if (app.closed) el.title = app.closedReason ? `${t('badgeClosed')} — ${loc(app.closedReason)}` : t('badgeClosed');
   } else {
     el.innerHTML = `
@@ -1764,14 +1771,14 @@ const iconCols = (grid) => {
   return Math.max(4, Math.floor(w / min));
 };
 
-const listColsFor = (n) => (n > (document.body.classList.contains('is-zen') ? 6 : 10) ? '2' : '1');
-
 const fitIconLabels = (grid) => {
-  grid.querySelectorAll('.icon-label').forEach((l) => {
-    l.classList.remove('is-tight');
+  const labels = [...grid.querySelectorAll('.icon-label')];
+  labels.forEach((l) => l.classList.remove('is-tight'));
+  const tight = labels.filter((l) => {
     const lh = parseFloat(getComputedStyle(l).lineHeight) || 16;
-    if (l.getBoundingClientRect().height > lh * 2 + 1 || l.scrollWidth > l.clientWidth + 1) l.classList.add('is-tight');
+    return l.getBoundingClientRect().height > lh * 2 + 1 || l.scrollWidth > l.clientWidth + 1;
   });
+  tight.forEach((l) => l.classList.add('is-tight'));
 };
 
 const buildIconPlate = (it, cat, isBootBatch) => {
@@ -1841,7 +1848,6 @@ const renderCards = (grid, categoryId) => {
     grid.style.gridTemplateColumns = '';
     grid.style.gridTemplateRows = '';
     delete grid.dataset.layout;
-    delete grid.dataset.listCols;
     grid.innerHTML = `<div class="grid-empty">${icon('fa-box-open')}<span>${escapeHtml(t('emptyCategory'))}</span></div>`;
     pointerFieldDirty = true;
     if (hadFocusInGrid) document.getElementById(`tab-${categoryId}`)?.focus({ preventScroll: true });
@@ -1855,16 +1861,9 @@ const renderCards = (grid, categoryId) => {
   const generated = curated || listView || iconsView ? null : BentoSolver.generate(n);
 
   grid.classList.toggle('is-auto-flow', !listView && !iconsView && !curated && !generated);
-  if (listView) {
-    grid.dataset.layout = 'list';
-    grid.dataset.listCols = listColsFor(n);
-  } else if (iconsView) {
-    grid.dataset.layout = 'icons';
-    delete grid.dataset.listCols;
-  } else {
-    delete grid.dataset.layout;
-    delete grid.dataset.listCols;
-  }
+  if (listView) grid.dataset.layout = 'list';
+  else if (iconsView) grid.dataset.layout = 'icons';
+  else delete grid.dataset.layout;
 
   if (curated) {
     grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
@@ -4125,24 +4124,64 @@ const copyToClipboard = async (text) => {
 };
 
 const QR_QUIET = 4;
+const QR_PAPER = '#fbfaf7';
+const QR_NIGHT = [10, 12, 18];
+const QR_LOGO_MAX_VERSION = 8;
 
-const qrPath = (m) => {
+const qrBuild = (url) => {
+  const high = qrMatrix(url, 'H');
+  if (high && high.version <= QR_LOGO_MAX_VERSION) return { m: high, logo: true };
+  const m = qrMatrix(url, 'Q') || qrMatrix(url, 'M');
+  return m ? { m, logo: false } : null;
+};
+
+const qrLogoBox = (m) => {
+  const side = (Math.round(m.n * 0.27) | 1);
+  const from = Math.floor((m.n - side) / 2);
+  return { from, to: from + side, side };
+};
+
+const qrInk = (hex) => ({ ink: hexBlend(hex, QR_NIGHT, 0.82), eye: hexBlend(hex, QR_NIGHT, 0.6) });
+
+const qrCell = (x, y, tl, tr, br, bl) => {
+  const R = 0.5;
+  const a = tl ? R : 0;
+  const b = tr ? R : 0;
+  const c = br ? R : 0;
+  const d = bl ? R : 0;
+  return `M${x + a} ${y}H${x + 1 - b}${b ? `a${R} ${R} 0 0 1 ${R} ${R}` : ''}V${y + 1 - c}${c ? `a${R} ${R} 0 0 1 -${R} ${R}` : ''}H${x + d}${d ? `a${R} ${R} 0 0 1 -${R} -${R}` : ''}V${y + a}${a ? `a${R} ${R} 0 0 1 ${R} -${R}` : ''}z`;
+};
+
+const qrDots = (m, hidden) => {
+  const n = m.n;
+  const on = (r, c) => r >= 0 && c >= 0 && r < n && c < n && m.dark(r, c) && !hidden(r, c);
   let d = '';
-  for (let r = 0; r < m.n; r++) {
-    let c = 0;
-    while (c < m.n) {
-      if (!m.dark(r, c)) { c++; continue; }
-      const s = c;
-      while (c < m.n && m.dark(r, c)) c++;
-      d += `M${s + QR_QUIET} ${r + QR_QUIET}h${c - s}v1h-${c - s}z`;
+  for (let r = 0; r < n; r++) {
+    for (let c = 0; c < n; c++) {
+      if (!on(r, c)) continue;
+      const up = on(r - 1, c);
+      const dn = on(r + 1, c);
+      const lf = on(r, c - 1);
+      const rt = on(r, c + 1);
+      d += qrCell(c + QR_QUIET, r + QR_QUIET, !up && !lf, !up && !rt, !dn && !rt, !dn && !lf);
     }
   }
   return d;
 };
 
-const qrSvgMarkup = (m, label) => {
-  const size = m.n + QR_QUIET * 2;
-  return `<svg class="qr-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" role="img" aria-label="${escapeHtml(label)}" shape-rendering="crispEdges"><rect width="${size}" height="${size}" fill="#fff"/><path d="${qrPath(m)}" fill="#000"/></svg>`;
+const qrFinder = (x, y, ink, eye) => `<rect x="${x + 0.5}" y="${y + 0.5}" width="6" height="6" rx="1.9" fill="none" stroke="${ink}" stroke-width="1"/><rect x="${x + 2}" y="${y + 2}" width="3" height="3" rx="1" fill="${eye}"/>`;
+
+const qrSvgMarkup = (m, label, hex, opts = {}) => {
+  const n = m.n;
+  const size = n + QR_QUIET * 2;
+  const { ink, eye } = qrInk(hex);
+  const box = opts.logo ? qrLogoBox(m) : null;
+  const inFinder = (r, c) => (r < 7 && c < 7) || (r < 7 && c >= n - 7) || (r >= n - 7 && c < 7);
+  const hidden = (r, c) => inFinder(r, c) || (box && r >= box.from && r < box.to && c >= box.from && c < box.to);
+  const dim = opts.px ? ` width="${opts.px}" height="${opts.px}"` : '';
+  const bg = opts.paper ? `<rect width="${size}" height="${size}" fill="${QR_PAPER}"/>` : '';
+  const q = QR_QUIET;
+  return `<svg class="qr-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}"${dim} role="img" aria-label="${escapeHtml(label)}" shape-rendering="geometricPrecision">${opts.title ? `<title>${escapeHtml(opts.title)}</title><desc>${escapeHtml(opts.desc || '')}</desc>` : ''}${bg}<path d="${qrDots(m, hidden)}" fill="${ink}"/>${qrFinder(q, q, ink, eye)}${qrFinder(q + n - 7, q, ink, eye)}${qrFinder(q, q + n - 7, ink, eye)}</svg>`;
 };
 
 const qrFileBase = (s) => (String(s || 'link').toLowerCase().replace(/[^a-z0-9\u0600-\u06ff]+/gi, '-').replace(/^-+|-+$/g, '') || 'link') + '-qr';
@@ -4158,75 +4197,204 @@ const downloadBlob = (blob, name) => {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 };
 
-const qrPngBlob = (m) => new Promise((resolve) => {
-  const size = m.n + QR_QUIET * 2;
-  const scale = Math.max(4, Math.ceil(1024 / size));
-  const cv = document.createElement('canvas');
-  cv.width = cv.height = size * scale;
-  const cx = cv.getContext('2d');
-  cx.fillStyle = '#fff';
-  cx.fillRect(0, 0, cv.width, cv.height);
-  cx.fillStyle = '#000';
-  for (let r = 0; r < m.n; r++) for (let c = 0; c < m.n; c++) if (m.dark(r, c)) cx.fillRect((c + QR_QUIET) * scale, (r + QR_QUIET) * scale, scale, scale);
-  cv.toBlob((b) => resolve(b), 'image/png');
+const qrPngBlob = (svg, px = 1024, caption = null) => new Promise((resolve) => {
+  const img = new Image();
+  const href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+  img.onload = () => {
+    URL.revokeObjectURL(href);
+    const pad = caption ? Math.round(px * 0.07) : 0;
+    const foot = caption ? Math.round(px * 0.17) : 0;
+    const cv = document.createElement('canvas');
+    cv.width = px + pad * 2;
+    cv.height = px + pad * 2 + foot;
+    const cx = cv.getContext('2d');
+    if (caption) {
+      cx.fillStyle = QR_PAPER;
+      cx.beginPath();
+      cx.roundRect(0, 0, cv.width, cv.height, Math.round(px * 0.06));
+      cx.fill();
+    }
+    cx.drawImage(img, pad, pad, px, px);
+    if (caption) {
+      cx.textAlign = 'center';
+      cx.textBaseline = 'alphabetic';
+      cx.direction = document.documentElement.dir === 'rtl' ? 'rtl' : 'ltr';
+      const fit = (text, weight, size, color, y) => {
+        let f = size;
+        cx.font = `${weight} ${f}px system-ui, -apple-system, "Segoe UI", sans-serif`;
+        while (cx.measureText(text).width > cv.width - pad * 2 && f > 18) { f -= 2; cx.font = `${weight} ${f}px system-ui, -apple-system, "Segoe UI", sans-serif`; }
+        cx.fillStyle = color;
+        cx.fillText(text, cv.width / 2, y);
+      };
+      fit(caption.title, 600, Math.round(px * 0.045), '#14161c', px + pad * 2 + Math.round(foot * 0.42));
+      fit(caption.host, 400, Math.round(px * 0.032), '#6b6f7a', px + pad * 2 + Math.round(foot * 0.78));
+    }
+    cv.toBlob((b) => resolve(b), 'image/png');
+  };
+  img.onerror = () => { URL.revokeObjectURL(href); resolve(null); };
+  img.src = href;
 });
 
+const qrExportSvg = (url, hex, px, title) => {
+  const m = qrMatrix(url, 'Q') || qrMatrix(url, 'M');
+  return m ? qrSvgMarkup(m, title || url, hex, { paper: true, px, desc: url, title }) : null;
+};
+
 let qrState = null;
-let qrAnim = null;
+let qrOpenedAt = 0;
+let qrDownOnBackdrop = false;
+let qrDrag = null;
+const qrCache = new Map();
 
 const qrUrlFor = (s) => (s.app && s.app.variants && s.app.variants[s.variantIndex] ? s.app.variants[s.variantIndex].url : s.url);
 
-const renderQr = () => {
-  const dialog = document.getElementById('lx-qr');
-  if (!dialog || !qrState) return;
-  const s = qrState;
-  const url = qrUrlFor(s);
+const qrBuildCached = (url) => {
+  if (qrCache.has(url)) {
+    const hit = qrCache.get(url);
+    qrCache.delete(url);
+    qrCache.set(url, hit);
+    return hit;
+  }
+  const built = qrBuild(url);
+  qrCache.set(url, built);
+  if (qrCache.size > 32) qrCache.delete(qrCache.keys().next().value);
+  return built;
+};
+
+const qrView = (s) => {
   const variant = s.app && s.app.variants ? s.app.variants[s.variantIndex] : null;
+  const url = qrUrlFor(s);
   const title = s.app ? loc(s.app.title) : s.title;
   let host = '';
   try { host = new URL(url).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
-  dialog.style.setProperty('--c1', tone(s.app ? appGradient(s.app, variant)[0] : (categories.find(c => c.id === currentTabId)?.accent || '#7c9bff')));
-  dialog.setAttribute('aria-label', `${t('actionQr')} — ${title}`);
-  document.getElementById('qrTitle').textContent = variant ? `${title} — ${loc(variant.label)}` : title;
-  document.getElementById('qrHost').textContent = host;
-  const iconHost = document.getElementById('qrIcon');
-  iconHost.innerHTML = s.app ? `${wrapOpen(s.app, variant)}${markHtml(s.app, variant, variant ? variant.icon : s.app.icon, 'app-icon')}</div>` : `<div class="app-icon-wrapper">${icon('fa-qrcode', 'app-icon')}</div>`;
-  const vWrap = document.getElementById('qrVariants');
+  const hex = tone(s.app ? appGradient(s.app, variant)[0] : (categories.find(c => c.id === currentTabId)?.accent || '#7c9bff'));
+  return { variant, url, title, host, hex, full: variant ? `${title} — ${loc(variant.label)}` : title };
+};
+
+const qrMarkHtml = (s, variant) => (s.app
+  ? `${wrapOpen(s.app, variant)}${markHtml(s.app, variant, variant ? variant.icon : s.app.icon, 'app-icon')}</div>`
+  : `<div class="app-icon-wrapper">${icon('fa-qrcode', 'app-icon')}</div>`);
+
+const qrLogoHtml = (s, variant, built) => {
+  const box = qrLogoBox(built.m);
+  const frac = box.side / (built.m.n + QR_QUIET * 2);
+  const mark = s.app ? qrMarkHtml(s, variant) : `<div class="app-icon-wrapper">${icon('fa-link', 'app-icon')}</div>`;
+  return `<span class="qr-logo" style="--qr-logo:${frac.toFixed(4)}" aria-hidden="true">${mark}</span>`;
+};
+
+const qrPlaceThumb = (animate) => {
+  const track = document.getElementById('qrVariants');
+  if (!track || track.hidden) return;
+  const thumb = track.querySelector('.qr-thumb');
+  const active = track.querySelector('.qr-variant.is-active');
+  if (!thumb || !active) return;
+  const rtl = document.documentElement.dir === 'rtl';
+  const x = rtl ? -(track.clientWidth - active.offsetLeft - active.offsetWidth) : active.offsetLeft;
+  thumb.style.transition = animate ? '' : 'none';
+  thumb.style.inlineSize = `${active.offsetWidth}px`;
+  thumb.style.transform = `translateX(${x}px)`;
+};
+
+const renderQrShell = () => {
+  const dialog = document.getElementById('lx-qr');
+  const s = qrState;
+  const v = qrView(s);
+  dialog.setAttribute('aria-label', `${t('actionQr')} — ${v.title}`);
+  const track = document.getElementById('qrVariants');
   if (s.app && s.app.variants && s.app.variants.length > 1) {
-    vWrap.hidden = false;
-    vWrap.setAttribute('aria-label', `${t('chooseVersionOf')} ${title}`);
-    vWrap.innerHTML = s.app.variants.map((v, i) => `<button type="button" role="radio" class="qr-variant${i === s.variantIndex ? ' is-active' : ''}" aria-checked="${i === s.variantIndex}" data-qr-variant="${i}">${escapeHtml(loc(v.label))}</button>`).join('');
+    track.hidden = false;
+    track.setAttribute('aria-label', `${t('chooseVersionOf')} ${v.title}`);
+    track.innerHTML = `<span class="qr-thumb" aria-hidden="true"></span>${s.app.variants.map((x, i) => `<button type="button" role="radio" class="qr-variant${i === s.variantIndex ? ' is-active' : ''}" aria-checked="${i === s.variantIndex}" data-qr-variant="${i}">${escapeHtml(loc(x.label))}</button>`).join('')}`;
   } else {
-    vWrap.hidden = true;
-    vWrap.innerHTML = '';
+    track.hidden = true;
+    track.innerHTML = '';
   }
-  const m = qrMatrix(url);
-  s.matrix = m;
-  const stage = document.getElementById('qrStage');
   const note = document.getElementById('qrNote');
-  stage.innerHTML = m ? qrSvgMarkup(m, `${t('actionQr')}: ${url}`) : `<div class="qr-fail">${icon('fa-triangle-exclamation')}<span>${escapeHtml(t('qrTooLong'))}</span></div>`;
   const closed = s.app && s.app.closed;
   note.hidden = !closed;
   note.textContent = closed ? (s.app.closedReason ? loc(s.app.closedReason) : t('closedReasonDefault')) : '';
-  dialog.querySelectorAll('[data-qr="png"], [data-qr="svg"]').forEach((b) => { b.disabled = !m; });
-  const share = dialog.querySelector('[data-qr="share"]');
-  share.hidden = typeof navigator.share !== 'function';
+  dialog.querySelector('[data-qr="share"]').hidden = typeof navigator.share !== 'function';
+  dialog.querySelector('[data-qr="image"]').hidden = !(navigator.clipboard && typeof window.ClipboardItem === 'function');
+  const keys = { copy: 'C', png: 'P', svg: 'S', image: 'I' };
+  dialog.querySelectorAll('.qr-tools [data-qr]').forEach((b) => {
+    const label = b.getAttribute('aria-label') || '';
+    b.title = keys[b.dataset.qr] ? `${label} · ${keys[b.dataset.qr]}` : label;
+  });
+};
+
+const renderQrCode = (swap) => {
+  const dialog = document.getElementById('lx-qr');
+  const s = qrState;
+  const v = qrView(s);
+  s.hex = v.hex;
+  s.view = v;
+  dialog.style.setProperty('--c1', v.hex);
+  document.getElementById('qrTitle').textContent = v.full;
+  document.getElementById('qrHost').textContent = v.host;
+  document.getElementById('qrIcon').innerHTML = qrMarkHtml(s, v.variant);
+  const urlEl = document.getElementById('qrUrl');
+  urlEl.textContent = v.url;
+  urlEl.title = v.url;
+  const built = qrBuildCached(v.url);
+  s.ok = !!built;
+  const stage = document.getElementById('qrStage');
+  stage.querySelectorAll('.qr-layer.is-leaving').forEach((n) => n.remove());
+  const prev = stage.querySelector('.qr-layer');
+  const layer = document.createElement('div');
+  layer.className = 'qr-layer';
+  layer.innerHTML = built
+    ? `${qrSvgMarkup(built.m, `${t('actionQr')}: ${v.url}`, v.hex, { logo: built.logo })}${built.logo ? qrLogoHtml(s, v.variant, built) : ''}`
+    : `<div class="qr-fail">${icon('fa-triangle-exclamation')}<span>${escapeHtml(t('qrTooLong'))}</span></div>`;
+  stage.classList.toggle('is-swap', swap);
+  stage.classList.toggle('is-fail', !built);
+  if (prev) {
+    if (swap && !MQ.reducedMotion) {
+      prev.classList.add('is-leaving');
+      prev.addEventListener('animationend', (e) => { if (e.target === prev) prev.remove(); });
+    } else prev.remove();
+  }
+  stage.appendChild(layer);
+  dialog.querySelectorAll('[data-qr="png"], [data-qr="svg"], [data-qr="image"]').forEach((b) => { b.disabled = !built; });
+  qrPlaceThumb(swap);
+  if (swap && v.variant) document.getElementById('qrLive').textContent = `${loc(v.variant.label)} — ${t('qrReady')}`;
+};
+
+const qrSetOrigin = (dialog, el) => {
+  let fx = 0;
+  let fy = 0;
+  if (el && typeof el.getBoundingClientRect === 'function') {
+    const r = el.getBoundingClientRect();
+    if (r.width || r.height) {
+      fx = Math.max(-40, Math.min(40, (r.left + r.width / 2 - innerWidth / 2) * 0.08));
+      fy = Math.max(-40, Math.min(40, (r.top + r.height / 2 - innerHeight / 2) * 0.08));
+    }
+  }
+  dialog.style.setProperty('--qr-fx', `${fx.toFixed(1)}px`);
+  dialog.style.setProperty('--qr-fy', `${fy.toFixed(1)}px`);
 };
 
 const openQr = (state) => {
   const dialog = document.getElementById('lx-qr');
   if (!dialog || !state) return;
   closeContextMenu();
-  qrState = { ...state, returnTo: state.returnTo || document.activeElement };
-  renderQr();
-  if (qrAnim) { try { qrAnim.cancel(); } catch (e) { if (LX_DEBUG) console.warn(e); } qrAnim = null; }
-  if (!dialog.open) dialog.showModal();
-  document.body.classList.add('qr-open');
-  sfx.veil(true);
-  if (!MQ.reducedMotion) {
-    qrAnim = dialog.animate([{ opacity: 0, transform: 'translateY(8px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: MOTION.qr.inMs, easing: EASE_LUX, fill: 'backwards' });
-    qrAnim.finished.catch(() => {}).finally(() => { qrAnim = null; });
+  const pal = document.getElementById('lx-palette');
+  if (pal && pal.open) {
+    heroReturnFocus = false;
+    paletteSkipCloseChime = true;
+    closePaletteImmediate();
   }
+  qrState = { ...state, returnTo: state.returnTo || document.activeElement };
+  renderQrShell();
+  renderQrCode(false);
+  qrSetOrigin(dialog, qrState.returnTo);
+  dialog.style.translate = '';
+  qrOpenedAt = performance.now();
+  if (!dialog.open) {
+    dialog.showModal();
+    sfx.veil(true);
+  }
+  document.body.classList.add('qr-open');
+  qrPlaceThumb(false);
   dialog.querySelector('[data-qr="copy"]')?.focus({ preventScroll: true });
 };
 
@@ -4234,17 +4402,12 @@ const closeQr = () => {
   const dialog = document.getElementById('lx-qr');
   if (!dialog || !dialog.open) return;
   const back = qrState && qrState.returnTo;
-  const done = () => {
-    if (dialog.open) dialog.close();
-    document.body.classList.remove('qr-open');
-    qrState = null;
-    if (back && back.isConnected && typeof back.focus === 'function') back.focus({ preventScroll: true });
-  };
-  if (qrAnim) { try { qrAnim.cancel(); } catch (e) { if (LX_DEBUG) console.warn(e); } qrAnim = null; }
   sfx.veil(false);
-  if (MQ.reducedMotion) { done(); return; }
-  qrAnim = dialog.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(6px) scale(.98)' }], { duration: MOTION.qr.outMs, easing: MOTION.outEase, fill: 'forwards' });
-  qrAnim.finished.catch(() => {}).finally(() => { qrAnim = null; done(); });
+  dialog.style.translate = '';
+  dialog.close();
+  document.body.classList.remove('qr-open');
+  qrState = null;
+  if (back && back.isConnected && typeof back.focus === 'function') back.focus({ preventScroll: true });
 };
 
 const openQrForApp = (app, variantIndex, returnTo) => {
@@ -4255,60 +4418,168 @@ const openQrForApp = (app, variantIndex, returnTo) => {
 
 const openQrForSite = () => openQr({ app: null, variantIndex: -1, title: 'LinkExpress', url: `${location.origin}${location.pathname}${currentTabId ? '#' + currentTabId : ''}` });
 
+const openQrFromPalette = (entry) => {
+  const parentId = entry.app.parentId || entry.app.id;
+  const realApp = categories.flatMap(c => c.apps).find(a => a.id === parentId);
+  const vi = entry.app.parentId ? entry.app.variantIndex : undefined;
+  const back = document.querySelector(`#appGrid .app-card[data-app-id="${CSS.escape(parentId)}"] .card-link-overlay`);
+  heroReturnFocus = false;
+  paletteSkipCloseChime = true;
+  closePaletteImmediate();
+  requestAnimationFrame(() => {
+    if (realApp) openQrForApp(realApp, vi, back);
+    else openQr({ app: null, variantIndex: -1, title: loc(entry.app.title), url: entry.app.url, returnTo: back });
+  });
+};
+
+const openQrFromUrl = () => {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('qr');
+  if (!id) return;
+  let frames = 0;
+  const attempt = () => {
+    const app = findAppById(id);
+    if (app) {
+      const vid = params.get('v');
+      const vi = app.variants && vid ? app.variants.findIndex((x) => x.id === vid) : -1;
+      openQrForApp(app, vi >= 0 ? vi : undefined);
+      return;
+    }
+    if (++frames < 240) requestAnimationFrame(attempt);
+  };
+  requestAnimationFrame(attempt);
+};
+
+const qrSelectVariant = (i) => {
+  const dialog = document.getElementById('lx-qr');
+  qrState.variantIndex = i;
+  dialog.querySelectorAll('[data-qr-variant]').forEach((b) => {
+    const on = Number(b.dataset.qrVariant) === i;
+    b.classList.toggle('is-active', on);
+    b.setAttribute('aria-checked', String(on));
+  });
+  renderQrCode(true);
+};
+
 const initQrDialog = () => {
   const dialog = document.getElementById('lx-qr');
   if (!dialog) return;
+  const outside = (e) => {
+    const r = dialog.getBoundingClientRect();
+    return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+  };
   document.getElementById('qrClose')?.addEventListener('click', closeQr);
   dialog.addEventListener('cancel', (e) => { e.preventDefault(); closeQr(); });
+  dialog.addEventListener('close', () => {
+    document.body.classList.remove('qr-open');
+    qrState = null;
+  });
+  dialog.addEventListener('pointerdown', (e) => { qrDownOnBackdrop = e.target === dialog && outside(e); });
+  const grab = document.getElementById('qrGrab');
+  const phone = window.matchMedia('(max-width: 640px)');
+  if (grab) {
+    grab.addEventListener('pointerdown', (e) => {
+      if (!phone.matches) return;
+      grab.setPointerCapture(e.pointerId);
+      qrDrag = { y: e.clientY, t: e.timeStamp, dy: 0 };
+      dialog.classList.add('is-dragging');
+    });
+    grab.addEventListener('pointermove', (e) => {
+      if (!qrDrag) return;
+      qrDrag.dy = Math.max(0, e.clientY - qrDrag.y);
+      dialog.style.translate = `0 ${qrDrag.dy}px`;
+    });
+    const endDrag = (e) => {
+      if (!qrDrag) return;
+      const d = qrDrag;
+      qrDrag = null;
+      dialog.classList.remove('is-dragging');
+      const speed = d.dy / Math.max(1, e.timeStamp - d.t);
+      if (d.dy > 80 || speed > 0.5) closeQr();
+      else dialog.style.translate = '';
+    };
+    grab.addEventListener('pointerup', endDrag);
+    grab.addEventListener('pointercancel', endDrag);
+  }
   dialog.addEventListener('click', (e) => {
     if (e.target === dialog) {
-      const r = dialog.getBoundingClientRect();
-      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) { closeQr(); return; }
+      if (performance.now() - qrOpenedAt < 250 || !qrDownOnBackdrop) return;
+      if (outside(e)) closeQr();
+      return;
     }
     const vb = e.target.closest('[data-qr-variant]');
     if (vb && qrState) {
       const i = Number(vb.dataset.qrVariant);
       if (i === qrState.variantIndex) return;
-      qrState.variantIndex = i;
       sfx.click();
-      renderQr();
-      dialog.querySelector(`[data-qr-variant="${i}"]`)?.focus({ preventScroll: true });
+      qrSelectVariant(i);
       return;
     }
     const btn = e.target.closest('[data-qr]');
-    if (!btn || !qrState) return;
+    if (!btn || !qrState || btn.disabled) return;
     const url = qrUrlFor(qrState);
-    const label = btn.querySelector('.qr-action-label');
+    const kind = btn.dataset.qr === 'copy-url' ? 'copy' : btn.dataset.qr;
+    const fb = kind === 'copy' ? dialog.querySelector('[data-qr="copy"]') : btn;
+    const label = fb.querySelector('.qr-action-label');
     const flash = (ok, text) => {
       if (!label) return;
-      const prev = label.textContent;
-      const svg = btn.querySelector('svg');
+      const prev = label.dataset.rest || label.textContent;
+      label.dataset.rest = prev;
+      const svg = fb.querySelector('svg');
       const prevIcon = (svg.getAttribute('class') || '').split(/\s+/).find((c) => c.startsWith('fa-'));
       setIcon(svg, ok ? 'fa-check' : 'fa-triangle-exclamation');
       label.textContent = text;
-      setTimeout(() => { if (!btn.isConnected) return; setIcon(svg, prevIcon); label.textContent = prev; }, 1400);
+      label.classList.remove('is-flash');
+      void label.offsetWidth;
+      label.classList.add('is-flash');
+      clearTimeout(fb._qrFlash);
+      fb._qrFlash = setTimeout(() => {
+        if (!fb.isConnected) return;
+        setIcon(svg, prevIcon === 'fa-check' || prevIcon === 'fa-triangle-exclamation' ? fb.dataset.icon : prevIcon);
+        label.textContent = prev;
+        label.classList.remove('is-flash');
+      }, 1400);
     };
+    if (!fb.dataset.icon) fb.dataset.icon = (fb.querySelector('svg').getAttribute('class') || '').split(/\s+/).find((c) => c.startsWith('fa-'));
     const name = qrFileBase(qrState.app ? qrState.app.id : 'linkexpress');
-    const kind = btn.dataset.qr;
+    const v = qrState.view;
+    const caption = e.altKey ? null : { title: v.full, host: v.host };
     if (kind === 'copy') {
       copyToClipboard(url).then((ok) => { sfx.click(); flash(ok, ok ? t('linkCopied') : t('copyFailed')); });
-    } else if (kind === 'png' && qrState.matrix) {
-      qrPngBlob(qrState.matrix).then((b) => { if (b) { downloadBlob(b, `${name}.png`); flash(true, t('qrSaved')); } });
-    } else if (kind === 'svg' && qrState.matrix) {
-      downloadBlob(new Blob([qrSvgMarkup(qrState.matrix, url)], { type: 'image/svg+xml' }), `${name}.svg`);
+    } else if (kind === 'png' || kind === 'image') {
+      const svg = qrExportSvg(url, qrState.hex, 1024, v.full);
+      if (!svg) return;
+      const png = qrPngBlob(svg, 1024, caption).then((b) => (b ? b : Promise.reject(new Error('png'))));
+      if (kind === 'png') png.then((b) => { downloadBlob(b, `${name}.png`); flash(true, t('qrSaved')); }, () => flash(false, t('copyFailed')));
+      else navigator.clipboard.write([new ClipboardItem({ 'image/png': png })]).then(() => { sfx.click(); flash(true, t('qrImageCopied')); }, () => flash(false, t('copyFailed')));
+    } else if (kind === 'svg') {
+      const svg = qrExportSvg(url, qrState.hex, undefined, v.full);
+      if (!svg) return;
+      downloadBlob(new Blob([svg], { type: 'image/svg+xml' }), `${name}.svg`);
       flash(true, t('qrSaved'));
     } else if (kind === 'share') {
-      navigator.share({ title: document.getElementById('qrTitle').textContent, url }).catch(() => {});
+      navigator.share({ title: v.full, url }).catch(() => {});
     }
   });
   dialog.addEventListener('keydown', (e) => {
     const vb = e.target.closest && e.target.closest('[data-qr-variant]');
-    if (!vb || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
-    const all = [...dialog.querySelectorAll('[data-qr-variant]')];
-    const fwd = (e.key === 'ArrowRight') !== (document.documentElement.dir === 'rtl');
-    const next = all[(all.indexOf(vb) + (fwd ? 1 : all.length - 1)) % all.length];
-    e.preventDefault();
-    next.click();
+    if (vb && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+      const all = [...dialog.querySelectorAll('[data-qr-variant]')];
+      const fwd = (e.key === 'ArrowRight') !== (document.documentElement.dir === 'rtl');
+      const next = all[(all.indexOf(vb) + (fwd ? 1 : all.length - 1)) % all.length];
+      e.preventDefault();
+      next.click();
+      next.focus({ preventScroll: true });
+      return;
+    }
+    if (e.altKey || e.ctrlKey || e.metaKey || !qrState) return;
+    const kind = { c: 'copy', s: 'svg', p: 'png', i: 'image' }[String(e.key).toLowerCase()];
+    if (!kind) return;
+    const b = dialog.querySelector(`[data-qr="${kind}"]`);
+    if (b && !b.hidden && !b.disabled) {
+      e.preventDefault();
+      b.click();
+    }
   });
 };
 
@@ -4390,14 +4661,7 @@ const executeAction = async (actionId) => {
     showActionFeedback('copy-title', ok, t('nameCopied'), t('copyFailed'));
   } else if (actionId === 'qr') {
     sfx.click();
-    const parentId = entry.app.parentId || entry.app.id;
-    const realApp = categories.flatMap(c => c.apps).find(a => a.id === parentId);
-    const vi = entry.app.parentId ? entry.app.variantIndex : undefined;
-    paletteSkipCloseChime = true;
-    closePaletteImmediate();
-    const back = document.querySelector(`#appGrid .app-card[data-app-id="${parentId}"] .card-link-overlay`);
-    if (realApp) openQrForApp(realApp, vi, back);
-    else openQr({ app: null, variantIndex: -1, title: loc(entry.app.title), url: entry.app.url, returnTo: back });
+    openQrFromPalette(entry);
   } else if (actionId === 'reveal') {
     sfx.click();
     await revealInGrid(entry);
@@ -4745,12 +5009,7 @@ const zenFinish = (gen, zenBtn) => {
 const syncZenLayout = () => {
   const grid = document.getElementById('appGrid');
   if (!grid) return;
-  if (grid.dataset.layout === 'list') {
-    const cat = categories.find(c => c.id === currentTabId);
-    if (cat) grid.dataset.listCols = listColsFor(cat.apps.length);
-  } else if (grid.dataset.layout === 'icons') {
-    repackIcons(grid);
-  }
+  if (grid.dataset.layout === 'icons') repackIcons(grid);
 };
 
 const runZenFlip = (enabled, cards, gen) => {
@@ -5270,6 +5529,7 @@ const setupInteractions = () => {
   });
 
   initQrDialog();
+  openQrFromUrl();
   paletteDialog.addEventListener('close', () => {
     document.querySelector('.container').classList.remove('is-dollied');
     document.querySelector('.controls-pill').classList.remove('is-dollied');

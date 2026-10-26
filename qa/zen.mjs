@@ -49,7 +49,7 @@ const measure = (page) => page.evaluate(() => {
     barBottom: Math.round(bar.bottom),
     contBottom: Math.round(cont.getBoundingClientRect().bottom - parseFloat(cc.paddingBottom)),
     icCols: parseInt(cs.getPropertyValue('--ic-cols'), 10) || 0,
-    listCols: g.dataset.listCols || null,
+    listTpl: getComputedStyle(g).gridTemplateColumns.split(' ').length,
     iconSize: w ? getComputedStyle(w).getPropertyValue('--icon-size').trim() : null,
     headerH: Math.round(document.querySelector('.site-header').getBoundingClientRect().height),
     zen: document.body.classList.contains('is-zen'),
@@ -67,7 +67,7 @@ const zenFor = (view, tab, napps) => async (browser, base) => {
   const t = `${view}`;
   record(`${t}: Zen on, header hidden, no running animations, no transition class`, zen.zen && zen.headerH === 0 && zen.running === 0 && !zen.transitioning, { headerH: zen.headerH, running: zen.running, transitioning: zen.transitioning });
   if (view === 'list') {
-    record('list: grid widens to at least 1050 and uses 2 columns for more than 6 apps', zen.gridW >= 1050 && (napps > 6 ? zen.listCols === '2' : true), { before: before.gridW, zen: zen.gridW, cols: zen.listCols });
+    record('list: stays one column in Zen, centred and no wider than 780', zen.listTpl === 1 && zen.gridW <= 780, { before: before.gridW, zen: zen.gridW, cols: zen.listTpl });
   } else if (view === 'icons') {
     const flatZen = await page.evaluate(() => {
       const plates = [...document.querySelectorAll('#appGrid .icon-plate')];
@@ -112,12 +112,34 @@ const fallback = async (browser, base) => {
   await ctx.close();
 };
 
+const header = async (browser, base) => {
+  const bad = [];
+  for (const w of [1100, 1280, 1440, 1600, 1920]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
+    await ctx.addInitScript(() => { try { localStorage.setItem('lx-view', 'list'); localStorage.setItem('lx-zen', '1'); localStorage.setItem('lx-lang', 'en'); } catch (e) {} });
+    const page = await ctx.newPage();
+    await page.goto(`${base}/#core`);
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(1800);
+    const r = await page.evaluate(() => {
+      const a = document.querySelector('.controls-pill').getBoundingClientRect();
+      const b = document.querySelector('.lx-bar').getBoundingClientRect();
+      const x = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+      const y = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+      return { overlap: x > 0 && y > 0, pill: [Math.round(a.left), Math.round(a.right), Math.round(a.top), Math.round(a.bottom)], bar: [Math.round(b.left), Math.round(b.right), Math.round(b.top), Math.round(b.bottom)] };
+    });
+    if (r.overlap) bad.push({ w, ...r });
+    await ctx.close();
+  }
+  record('zen: controls pill never overlaps the search bar from 1100 to 1920 wide', bad.length === 0, bad);
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
   const links = await (await fetch(server.base + '/links.json')).json();
   const biggest = links.categories.slice().sort((a, b) => b.apps.length - a.apps.length)[0];
-  const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback];
+  const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback, header];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }

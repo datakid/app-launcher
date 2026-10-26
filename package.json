@@ -10,7 +10,7 @@
     "build": "node build/build.mjs",
     "qa:load": "node qa/load.mjs",
     "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs",
-    "qa:qr": "node qa/qr-encoder.mjs && node qa/qr.mjs",
+    "qa:qr": "node qa/qr-encoder.mjs && node qa/qr.mjs && node qa/qr-stress.mjs",
     "qa:zen": "node qa/zen.mjs"
   },
   "devDependencies": {
