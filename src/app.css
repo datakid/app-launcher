@@ -381,7 +381,7 @@ body.is-zen .container {
   :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .card-clip { min-block-size: 64px; padding-block: 10px; }
   :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .app-title { font-size: 1.04rem; }
   :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .card-meta { opacity: .72; }
-  :root body.is-zen .app-grid[data-layout="list"] { inline-size: min(760px, calc(100% - 48px)); }
+  :root body.is-zen .app-grid[data-layout="list"] { inline-size: min(880px, 94vw); }
   :root body.is-zen .app-grid[data-layout="icons"] {
     --ic-min: 132px;
     --ic-cap: 20px;
@@ -4532,7 +4532,7 @@ h1 {
   flex: 0 1 auto;
   align-self: center;
   inline-size: var(--lx-panel-w);
-  max-inline-size: 680px;
+  max-inline-size: none;
   margin-inline: 0;
   gap: 0;
   padding: var(--lx-panel-pad);
