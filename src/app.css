@@ -381,11 +381,12 @@ body.is-zen .container {
   :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .card-clip { min-block-size: 64px; padding-block: 10px; }
   :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .app-title { font-size: 1.04rem; }
   :root body.is-zen .app-grid[data-layout="list"] > .app-card--row .card-meta { opacity: .72; }
-  :root body.is-zen .app-grid[data-layout="list"] { inline-size: min(760px, calc(100% - 48px)); }
+  :root body.is-zen .app-grid[data-layout="list"] { inline-size: min(880px, 94vw); }
   :root body.is-zen .app-grid[data-layout="icons"] {
     --ic-min: 132px;
     --ic-cap: 20px;
-    column-gap: 20px;
+    --ic-gap: 24px;
+    inline-size: min(880px, 94vw);
     row-gap: calc(var(--ic-cap) + 24px);
     padding: calc(var(--ic-cap) + 12px) 10px 10px;
   }
@@ -1233,6 +1234,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   position: relative; align-self: center; flex-shrink: 0;
   display: flex; justify-content: center; align-items: center;
   gap: 0.15rem; padding: 0.35rem;
+  border-start-end-radius: 999px; border-end-end-radius: 999px;
 }
 .tab-rail.is-measuring, .tab-rail.is-measuring * { transition: none !important; }
 
@@ -3022,7 +3024,7 @@ h1 {
     inset-inline: 0; top: auto; bottom: 0;
     width: auto !important; max-width: none;
     display: flex; justify-content: space-around; align-items: stretch;
-    gap: 0.25rem; overflow: visible; filter: none;
+    gap: 0.25rem; overflow: visible; filter: none; border-radius: 0;
     padding: 0.35rem max(0.5rem, env(safe-area-inset-right, 0px)) calc(0.35rem + env(safe-area-inset-bottom, 0px)) max(0.5rem, env(safe-area-inset-left, 0px));
     background: light-dark(rgba(248,247,243,0.88), rgba(10,11,14,0.86));
     backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%);
@@ -4532,7 +4534,7 @@ h1 {
   flex: 0 1 auto;
   align-self: center;
   inline-size: var(--lx-panel-w);
-  max-inline-size: 680px;
+  max-inline-size: none;
   margin-inline: 0;
   gap: 0;
   padding: var(--lx-panel-pad);
@@ -4729,6 +4731,7 @@ h1 {
   --ic-cols: 4;
   --ic-min: 104px;
   --ic-cap: 18px;
+  --ic-gap: 16px;
   --ic-tint: 6%;
   --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
   --lx-panel-shadow: 0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)), 0 14px 34px -28px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.72)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
@@ -4743,7 +4746,7 @@ h1 {
   inline-size: var(--lx-panel-w);
   max-inline-size: none;
   margin-inline: 0;
-  column-gap: 12px;
+  column-gap: var(--ic-gap);
   row-gap: calc(var(--ic-cap) + 12px);
   padding: calc(var(--ic-cap) + 8px) 6px 6px;
   overflow-x: hidden;
@@ -4795,6 +4798,8 @@ h1 {
   backdrop-filter: blur(22px) saturate(175%);
   pointer-events: none;
 }
+:root .app-grid[data-layout="icons"] > .ic-half { translate: calc((100% + var(--ic-gap)) / (2 * var(--n, 1))); }
+:root[dir="rtl"] .app-grid[data-layout="icons"] > .ic-half { translate: calc(-1 * (100% + var(--ic-gap)) / (2 * var(--n, 1))); }
 .icon-plate.is-closed { opacity: .5; filter: grayscale(1); }
 .icon-plate-cap {
   position: absolute;

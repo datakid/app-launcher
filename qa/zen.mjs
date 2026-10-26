@@ -44,6 +44,9 @@ const measure = (page) => page.evaluate(() => {
   const w = g.querySelector('.app-card--icon .app-icon-wrapper');
   return {
     gridW: Math.round(gr.width),
+    gridL: Math.round(gr.left),
+    barW: Math.round(bar.width),
+    barL: Math.round(bar.left),
     gridTop: Math.round(gr.top),
     gridH: Math.round(gr.height),
     barBottom: Math.round(bar.bottom),
@@ -67,14 +70,14 @@ const zenFor = (view, tab, napps) => async (browser, base) => {
   const t = `${view}`;
   record(`${t}: Zen on, header hidden, no running animations, no transition class`, zen.zen && zen.headerH === 0 && zen.running === 0 && !zen.transitioning, { headerH: zen.headerH, running: zen.running, transitioning: zen.transitioning });
   if (view === 'list') {
-    record('list: stays one column in Zen, centred and no wider than 780', zen.listTpl === 1 && zen.gridW <= 780, { before: before.gridW, zen: zen.gridW, cols: zen.listTpl });
+    record('list: one column in Zen with the same width and edges as the search bar', zen.listTpl === 1 && Math.abs(zen.gridW - zen.barW) <= 2 && Math.abs(zen.gridL - zen.barL) <= 2, { zen: zen.gridW, bar: zen.barW, gridL: zen.gridL, barL: zen.barL, cols: zen.listTpl });
   } else if (view === 'icons') {
     const flatZen = await page.evaluate(() => {
       const plates = [...document.querySelectorAll('#appGrid .icon-plate')];
       return { plates: plates.length, vertical: plates.filter((p) => { const k = [...p.querySelectorAll('.app-card--icon .app-icon-wrapper')].map((w) => w.getBoundingClientRect()); return k.length > 1 && Math.abs(k[0].top - k[1].top) > 4; }).length };
     });
     record('icons: plates stay horizontal in Zen', flatZen.plates > 0 && flatZen.vertical === 0, flatZen);
-    record('icons: at least as many columns, with 76px tiles', zen.icCols >= before.icCols && zen.iconSize === '76px', { before: before.icCols, zen: zen.icCols, size: zen.iconSize });
+    record('icons: Zen keeps at least 4 columns, with 76px tiles', zen.icCols >= 4 && zen.iconSize === '76px', { before: before.icCols, zen: zen.icCols, size: zen.iconSize });
   } else {
     record('bento: grid at least as wide as before', zen.gridW >= before.gridW, { before: before.gridW, zen: zen.gridW });
   }
@@ -134,12 +137,92 @@ const header = async (browser, base) => {
   record('zen: controls pill never overlaps the search bar from 1100 to 1920 wide', bad.length === 0, bad);
 };
 
+const listFit = async (browser, base) => {
+  const bad = [];
+  for (const zen of ['0', '1']) for (const w of [320, 390, 768, 1100, 1440, 1920]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
+    await ctx.addInitScript((z) => { try { localStorage.setItem('lx-view', 'list'); localStorage.setItem('lx-zen', z); localStorage.setItem('lx-lang', 'en'); } catch (e) {} }, zen);
+    const page = await ctx.newPage();
+    await page.goto(`${base}/#core`);
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(1500);
+    const r = await page.evaluate(() => {
+      const g = document.getElementById('appGrid');
+      const b = document.querySelector('.lx-bar').getBoundingClientRect();
+      const gr = g.getBoundingClientRect();
+      const rows = [...g.querySelectorAll('.app-card--row')];
+      const over = rows.filter((c) => c.scrollWidth > c.clientWidth + 1).length;
+      return { cols: getComputedStyle(g).gridTemplateColumns.split(' ').length, over, dl: Math.round(gr.left - b.left), dr: Math.round(gr.right - b.right), page: document.documentElement.scrollWidth - innerWidth };
+    });
+    const edges = w >= 1025 ? Math.abs(r.dl) <= 2 && Math.abs(r.dr) <= 2 : true;
+    if (r.cols !== 1 || r.over > 0 || r.page > 0 || !edges) bad.push({ zen, w, ...r });
+    await ctx.close();
+  }
+  record('list: one column, no row overflow, no sideways scroll, edges match the bar (320 to 1920, normal and Zen)', bad.length === 0, bad.slice(0, 4));
+};
+
+const iconsRows = async (browser, base) => {
+  const bad = [];
+  for (const zen of ['0', '1']) for (const lang of ['en', 'ar']) for (const [w, cat] of [[1100, 'core'], [1440, 'experimental'], [1920, 'core']]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
+    await ctx.addInitScript((o) => { try { localStorage.setItem('lx-view', 'icons'); localStorage.setItem('lx-zen', o.zen); localStorage.setItem('lx-lang', o.lang); } catch (e) {} }, { zen, lang });
+    const page = await ctx.newPage();
+    await page.goto(`${base}/#${cat}`);
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(1800);
+    const r = await page.evaluate(() => {
+      const g = document.getElementById('appGrid');
+      const cs = getComputedStyle(g);
+      const gr = g.getBoundingClientRect();
+      const mid = gr.left + (gr.width + parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)) / 2;
+      const bar = document.querySelector('.lx-bar').getBoundingClientRect();
+      const items = [...g.children].filter((c) => c.matches('.icon-plate, .app-card--icon'));
+      const rows = new Map();
+      items.forEach((c) => {
+        const b = c.getBoundingClientRect();
+        const k = Math.round(b.top / 12);
+        const o = rows.get(k) || { l: 1e9, r: -1e9 };
+        o.l = Math.min(o.l, b.left);
+        o.r = Math.max(o.r, b.right);
+        rows.set(k, o);
+      });
+      const off = [...rows.values()].map((o) => Math.round((o.l + o.r) / 2 - mid));
+      return { rows: off.length, worst: Math.max(...off.map(Math.abs)), edgeL: Math.round(gr.left - bar.left), edgeR: Math.round(gr.right - bar.right), page: document.documentElement.scrollWidth - innerWidth };
+    });
+    if (r.worst > 3 || Math.abs(r.edgeL) > 2 || Math.abs(r.edgeR) > 2 || r.page > 0) bad.push({ zen, lang, w, cat, ...r });
+    await ctx.close();
+  }
+  record('icons: every row centred under the bar, grid edges match the bar, normal and Zen, LTR and RTL', bad.length === 0, bad.slice(0, 4));
+};
+
+const barEdge = async (browser, base) => {
+  const bad = [];
+  for (const [w, lang] of [[1440, 'en'], [1440, 'ar'], [390, 'en']]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
+    await ctx.addInitScript((l) => { try { localStorage.setItem('lx-lang', l); localStorage.setItem('lx-lowend', '1'); } catch (e) {} }, lang);
+    const page = await ctx.newPage();
+    await page.goto(`${base}/#core`);
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(1500);
+    const r = await page.evaluate(() => {
+      const c = getComputedStyle(document.querySelector('.tab-rail'));
+      const rtl = document.documentElement.dir === 'rtl';
+      const outer = parseFloat(rtl ? c.borderTopLeftRadius : c.borderTopRightRadius);
+      return { outer, bottomOuter: parseFloat(rtl ? c.borderBottomLeftRadius : c.borderBottomRightRadius) };
+    });
+    const ok = w >= 641 ? r.outer >= 20 && r.bottomOuter >= 20 : r.outer === 0 && r.bottomOuter === 0;
+    if (!ok) bad.push({ w, lang, ...r });
+    await ctx.close();
+  }
+  record('bar: the tab rail follows the bar rounding on desktop and stays square in the phone bottom bar', bad.length === 0, bad);
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
   const links = await (await fetch(server.base + '/links.json')).json();
   const biggest = links.categories.slice().sort((a, b) => b.apps.length - a.apps.length)[0];
-  const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback, header];
+  const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback, header, listFit, iconsRows, barEdge];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }
