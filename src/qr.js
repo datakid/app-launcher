@@ -1,4 +1,9 @@
-const EC = [null, [10, 1, 16, 0, 0], [16, 1, 28, 0, 0], [26, 1, 44, 0, 0], [18, 2, 32, 0, 0], [24, 2, 43, 0, 0], [16, 4, 27, 0, 0], [18, 4, 31, 0, 0], [22, 2, 38, 2, 39], [22, 3, 36, 2, 37], [26, 4, 43, 1, 44], [30, 1, 50, 4, 51], [22, 6, 36, 2, 37], [22, 8, 37, 1, 38], [24, 4, 40, 5, 41]];
+const EC_LEVELS = {
+  M: { bits: 0, rows: [null, [10, 1, 16, 0, 0], [16, 1, 28, 0, 0], [26, 1, 44, 0, 0], [18, 2, 32, 0, 0], [24, 2, 43, 0, 0], [16, 4, 27, 0, 0], [18, 4, 31, 0, 0], [22, 2, 38, 2, 39], [22, 3, 36, 2, 37], [26, 4, 43, 1, 44], [30, 1, 50, 4, 51], [22, 6, 36, 2, 37], [22, 8, 37, 1, 38], [24, 4, 40, 5, 41]] },
+  Q: { bits: 3, rows: [null, [13, 1, 13, 0, 0], [22, 1, 22, 0, 0], [18, 2, 17, 0, 0], [26, 2, 24, 0, 0], [18, 2, 15, 2, 16], [24, 4, 19, 0, 0], [18, 2, 14, 4, 15], [22, 4, 18, 2, 19], [20, 4, 16, 4, 17], [24, 6, 19, 2, 20], [28, 4, 22, 4, 23], [26, 4, 20, 6, 21], [24, 8, 20, 4, 21], [20, 11, 16, 5, 17]] },
+  H: { bits: 2, rows: [null, [17, 1, 9, 0, 0], [28, 1, 16, 0, 0], [22, 2, 13, 0, 0], [16, 4, 9, 0, 0], [22, 2, 11, 2, 12], [28, 4, 15, 0, 0], [26, 4, 13, 1, 14], [26, 4, 14, 2, 15], [24, 4, 12, 4, 13], [28, 6, 15, 2, 16], [24, 3, 12, 8, 13], [28, 7, 14, 4, 15], [22, 12, 11, 4, 12], [24, 11, 12, 5, 13]] }
+};
+const MAX_VERSION = 14;
 const ALIGN = [null, [], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50], [6, 30, 54], [6, 32, 58], [6, 34, 62], [6, 26, 46, 66]];
 const EXP = new Uint8Array(512);
 const LOG = new Uint8Array(256);
@@ -30,8 +35,8 @@ const rsRemainder = (data, n) => {
   return rem;
 };
 
-const codewords = (bytes, v) => {
-  const [ec, b1, d1, b2, d2] = EC[v];
+const codewords = (bytes, v, level) => {
+  const [ec, b1, d1, b2, d2] = EC_LEVELS[level].rows[v];
   const cap = b1 * d1 + b2 * d2;
   const bits = [];
   const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
@@ -104,14 +109,15 @@ const MASKS = [
   (x, y) => ((((x + y) % 2) + ((x * y) % 3)) % 2) === 0
 ];
 
-export const qrMatrix = (text) => {
+export const qrMatrix = (text, level = 'M') => {
+  if (!EC_LEVELS[level]) return null;
   const bytes = new TextEncoder().encode(String(text));
   let v = 1;
-  for (; v < EC.length; v++) {
-    const e = EC[v];
+  for (; v <= MAX_VERSION; v++) {
+    const e = EC_LEVELS[level].rows[v];
     if (4 + (v < 10 ? 8 : 16) + bytes.length * 8 <= (e[1] * e[2] + e[3] * e[4]) * 8) break;
   }
-  if (v >= EC.length) return null;
+  if (v > MAX_VERSION) return null;
   const size = 17 + 4 * v;
   const base = Array.from({ length: size }, () => new Array(size).fill(false));
   const fn = Array.from({ length: size }, () => new Array(size).fill(false));
@@ -133,7 +139,7 @@ export const qrMatrix = (text) => {
     for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) set(al[i] + dx, al[j] + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
   }
   const format = (mask) => {
-    const data = mask;
+    const data = (EC_LEVELS[level].bits << 3) | mask;
     let rem = data;
     for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
     return ((data << 10) | rem) ^ 0x5412;
@@ -166,7 +172,7 @@ export const qrMatrix = (text) => {
       set(b, a, d);
     }
   }
-  const cw = codewords(bytes, v);
+  const cw = codewords(bytes, v, level);
   let bi = 0;
   for (let right = size - 1; right >= 1; right -= 2) {
     if (right === 6) right = 5;
@@ -190,5 +196,5 @@ export const qrMatrix = (text) => {
     const score = penalty(g, size);
     if (score < bestScore) { bestScore = score; best = g; }
   }
-  return { n: size, dark: (r, c) => best[r][c] };
+  return { n: size, version: v, level, dark: (r, c) => best[r][c] };
 };
