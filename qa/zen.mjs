@@ -77,7 +77,7 @@ const zenFor = (view, tab, napps) => async (browser, base) => {
       return { plates: plates.length, vertical: plates.filter((p) => { const k = [...p.querySelectorAll('.app-card--icon .app-icon-wrapper')].map((w) => w.getBoundingClientRect()); return k.length > 1 && Math.abs(k[0].top - k[1].top) > 4; }).length };
     });
     record('icons: plates stay horizontal in Zen', flatZen.plates > 0 && flatZen.vertical === 0, flatZen);
-    record('icons: at least as many columns, with 76px tiles', zen.icCols >= before.icCols && zen.iconSize === '76px', { before: before.icCols, zen: zen.icCols, size: zen.iconSize });
+    record('icons: Zen keeps at least 4 columns, with 76px tiles', zen.icCols >= 4 && zen.iconSize === '76px', { before: before.icCols, zen: zen.icCols, size: zen.iconSize });
   } else {
     record('bento: grid at least as wide as before', zen.gridW >= before.gridW, { before: before.gridW, zen: zen.gridW });
   }
@@ -161,12 +161,46 @@ const listFit = async (browser, base) => {
   record('list: one column, no row overflow, no sideways scroll, edges match the bar (320 to 1920, normal and Zen)', bad.length === 0, bad.slice(0, 4));
 };
 
+const iconsRows = async (browser, base) => {
+  const bad = [];
+  for (const zen of ['0', '1']) for (const lang of ['en', 'ar']) for (const [w, cat] of [[1100, 'core'], [1440, 'experimental'], [1920, 'core']]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: 900 } });
+    await ctx.addInitScript((o) => { try { localStorage.setItem('lx-view', 'icons'); localStorage.setItem('lx-zen', o.zen); localStorage.setItem('lx-lang', o.lang); } catch (e) {} }, { zen, lang });
+    const page = await ctx.newPage();
+    await page.goto(`${base}/#${cat}`);
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(1800);
+    const r = await page.evaluate(() => {
+      const g = document.getElementById('appGrid');
+      const cs = getComputedStyle(g);
+      const gr = g.getBoundingClientRect();
+      const mid = gr.left + (gr.width + parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)) / 2;
+      const bar = document.querySelector('.lx-bar').getBoundingClientRect();
+      const items = [...g.children].filter((c) => c.matches('.icon-plate, .app-card--icon'));
+      const rows = new Map();
+      items.forEach((c) => {
+        const b = c.getBoundingClientRect();
+        const k = Math.round(b.top / 12);
+        const o = rows.get(k) || { l: 1e9, r: -1e9 };
+        o.l = Math.min(o.l, b.left);
+        o.r = Math.max(o.r, b.right);
+        rows.set(k, o);
+      });
+      const off = [...rows.values()].map((o) => Math.round((o.l + o.r) / 2 - mid));
+      return { rows: off.length, worst: Math.max(...off.map(Math.abs)), edgeL: Math.round(gr.left - bar.left), edgeR: Math.round(gr.right - bar.right), page: document.documentElement.scrollWidth - innerWidth };
+    });
+    if (r.worst > 3 || Math.abs(r.edgeL) > 2 || Math.abs(r.edgeR) > 2 || r.page > 0) bad.push({ zen, lang, w, cat, ...r });
+    await ctx.close();
+  }
+  record('icons: every row centred under the bar, grid edges match the bar, normal and Zen, LTR and RTL', bad.length === 0, bad.slice(0, 4));
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
   const links = await (await fetch(server.base + '/links.json')).json();
   const biggest = links.categories.slice().sort((a, b) => b.apps.length - a.apps.length)[0];
-  const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback, header, listFit];
+  const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback, header, listFit, iconsRows];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }

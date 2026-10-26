@@ -385,7 +385,8 @@ body.is-zen .container {
   :root body.is-zen .app-grid[data-layout="icons"] {
     --ic-min: 132px;
     --ic-cap: 20px;
-    column-gap: 20px;
+    --ic-gap: 24px;
+    inline-size: min(880px, 94vw);
     row-gap: calc(var(--ic-cap) + 24px);
     padding: calc(var(--ic-cap) + 12px) 10px 10px;
   }
@@ -4729,6 +4730,7 @@ h1 {
   --ic-cols: 4;
   --ic-min: 104px;
   --ic-cap: 18px;
+  --ic-gap: 16px;
   --ic-tint: 6%;
   --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
   --lx-panel-shadow: 0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)), 0 14px 34px -28px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.72)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
@@ -4743,7 +4745,7 @@ h1 {
   inline-size: var(--lx-panel-w);
   max-inline-size: none;
   margin-inline: 0;
-  column-gap: 12px;
+  column-gap: var(--ic-gap);
   row-gap: calc(var(--ic-cap) + 12px);
   padding: calc(var(--ic-cap) + 8px) 6px 6px;
   overflow-x: hidden;
@@ -4795,6 +4797,8 @@ h1 {
   backdrop-filter: blur(22px) saturate(175%);
   pointer-events: none;
 }
+:root .app-grid[data-layout="icons"] > .ic-half { translate: calc((100% + var(--ic-gap)) / (2 * var(--n, 1))); }
+:root[dir="rtl"] .app-grid[data-layout="icons"] > .ic-half { translate: calc(-1 * (100% + var(--ic-gap)) / (2 * var(--n, 1))); }
 .icon-plate.is-closed { opacity: .5; filter: grayscale(1); }
 .icon-plate-cap {
   position: absolute;

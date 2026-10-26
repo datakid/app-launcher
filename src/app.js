@@ -1764,6 +1764,30 @@ const packIcons = (items, cols) => {
   return out;
 };
 
+const centerIconRows = (order, cols) => {
+  let row = [];
+  let used = 0;
+  const flush = () => {
+    if (!row.length) return;
+    const left = cols - used;
+    const start = left > 0 ? Math.floor(left / 2) + 1 : 1;
+    row.forEach((it, i) => {
+      if (i === 0 && start > 1) it.el.style.setProperty('grid-column', `${start} / span ${Math.min(it.n, cols)}`, 'important');
+      else it.el.style.removeProperty('grid-column');
+      it.el.classList.toggle('ic-half', left > 0 && left % 2 === 1);
+    });
+    row = [];
+    used = 0;
+  };
+  order.forEach((it) => {
+    const span = Math.min(it.n, cols);
+    if (used + span > cols) flush();
+    row.push(it);
+    used += span;
+  });
+  flush();
+};
+
 const iconCols = (grid) => {
   const cs = getComputedStyle(grid);
   const w = grid.clientWidth - (parseFloat(cs.paddingInlineStart) || 0) - (parseFloat(cs.paddingInlineEnd) || 0);
@@ -1820,7 +1844,9 @@ const repackIcons = (grid) => {
   const active = document.activeElement;
   const keep = active && grid.contains(active) ? active : null;
   const frag = document.createDocumentFragment();
-  packIcons(items, cols).forEach((it) => frag.appendChild(it.el));
+  const order = packIcons(items, cols);
+  centerIconRows(order, cols);
+  order.forEach((it) => frag.appendChild(it.el));
   grid.appendChild(frag);
   if (keep) keep.focus({ preventScroll: true });
   fitIconLabels(grid);
@@ -1892,7 +1918,9 @@ const renderCards = (grid, categoryId) => {
     });
     grid._icItems = entries;
     grid._icCols = cols;
-    packIcons(entries, cols).forEach((it) => frag.appendChild(it.el));
+    const order = packIcons(entries, cols);
+    centerIconRows(order, cols);
+    order.forEach((it) => frag.appendChild(it.el));
     if (iconsRO) iconsRO.observe(grid);
   } else {
     grid._icItems = null;
