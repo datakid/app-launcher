@@ -298,10 +298,42 @@ const spacing = (browser, base) => async () => {
   record('icons layout: two balanced rows per tab, no overlaps and at least 12 px between adjacent plate panels (1280 and 1707 px, normal and Zen, LTR and RTL)', bad.length === 0, bad.length ? bad.slice(0, 4) : { pairs });
 };
 
+const closedPlate = (browser, base) => async () => {
+  const bad = [];
+  for (const lang of ['en', 'ar']) {
+    const { ctx, page } = await open(browser, base, { view: 'icons', tab: 'core', lang });
+    const r = await page.evaluate(() => {
+      const op = (el) => (el ? Number(getComputedStyle(el).opacity) : -1);
+      const plate = document.querySelector('#appGrid .icon-plate.is-closed');
+      if (!plate) return null;
+      const cards = [...plate.querySelectorAll('.app-card--icon')];
+      const open = [...document.querySelectorAll('#appGrid .icon-plate:not(.is-closed)')];
+      return {
+        plate: op(plate),
+        filter: getComputedStyle(plate).filter,
+        panel: Number(getComputedStyle(plate, '::before').opacity),
+        icons: cards.map((c) => op(c.querySelector('.app-icon-wrapper'))),
+        gray: cards.map((c) => { const w = c.querySelector('.app-icon-wrapper'); return !!w && getComputedStyle(w).filter.includes('grayscale'); }),
+        labels: cards.map((c) => op(c.querySelector('.icon-label'))),
+        capText: op(plate.querySelector('.icon-plate-cap-text')),
+        tag: (plate.querySelector('.icon-plate-tag') || {}).textContent || '',
+        title: plate.title,
+        openTags: open.filter((p) => p.querySelector('.icon-plate-tag')).length,
+        openDim: open.filter((p) => op(p.querySelector('.icon-plate-cap-text')) < 1 || op(p.querySelector('.app-icon-wrapper')) < 1).length
+      };
+    });
+    const want = lang === 'ar' ? 'مغلق' : 'Closed';
+    const ok = r && r.plate === 1 && r.filter === 'none' && r.panel === 1 && r.icons.length > 0 && r.icons.every((v) => v === 0.5) && r.gray.every(Boolean) && r.labels.every((v) => v === 0.5) && r.capText === 0.5 && r.tag === want && r.title.includes(want) && r.openTags === 0 && r.openDim === 0;
+    if (!ok) bad.push({ lang, ...r });
+    await ctx.close();
+  }
+  record('icons view: a closed plate keeps its panel at full strength, dims only its icons, labels and caption, and shows a Closed tag', bad.length === 0, bad);
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
-  const steps = [popIn, noSnap, rowsCentred, ghostGone, rapid, reduced, narrow, spacing].map((make) => ({ name: make.name, run: make(browser, server.base) }));
+  const steps = [popIn, noSnap, rowsCentred, ghostGone, rapid, reduced, narrow, spacing, closedPlate].map((make) => ({ name: make.name, run: make(browser, server.base) }));
   for (const step of steps) {
     try { await step.run(); } catch (e) { record(step.name, false, { error: String(e.message || e).slice(0, 240) }); }
   }

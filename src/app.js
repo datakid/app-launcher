@@ -1780,8 +1780,16 @@ const buildIconPlate = (it, cat, isBootBatch) => {
   cap.className = 'icon-plate-cap';
   cap.setAttribute('aria-hidden', 'true');
   const capText = document.createElement('span');
+  capText.className = 'icon-plate-cap-text';
   capText.textContent = loc(app.title);
   cap.appendChild(capText);
+  if (app.closed) {
+    const tag = document.createElement('span');
+    tag.className = 'badge badge-closed icon-plate-tag';
+    tag.textContent = t('badgeClosed');
+    cap.appendChild(tag);
+    plate.title = app.closedReason ? `${t('badgeClosed')} — ${loc(app.closedReason)}` : t('badgeClosed');
+  }
   if (isFresh(app)) {
     const dot = document.createElement('i');
     dot.className = 'icon-new-dot';
