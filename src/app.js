@@ -1,4 +1,5 @@
 import { qrMatrix } from './qr.js';
+import { solveIconRows } from './icon-solver.js';
 const LX_DEBUG = new URLSearchParams(location.search).get('lxdebug') === '1';
 const CATALOG_URL = 'links.json';
 const catalogRequest = (() => {
@@ -1737,38 +1738,9 @@ const IC_MIN = 104;
 
 const iconItems = (cat) => cat.apps.map((app, i) => ({ app, idx: i, n: Array.isArray(app.variants) && app.variants.length > 1 ? app.variants.length : 1, el: null }));
 
-const packIcons = (items, cols) => {
-  const rest = items.slice();
-  const out = [];
-  let col = 0;
-  while (rest.length) {
-    const it = rest[0];
-    const span = Math.min(it.n, cols);
-    if (col + span <= cols) {
-      out.push(rest.shift());
-      col = (col + span) % cols;
-      continue;
-    }
-    let free = cols - col;
-    let j = 1;
-    while (free > 0 && j < Math.min(rest.length, cols + 1)) {
-      if (rest[j].n === 1) {
-        out.push(rest.splice(j, 1)[0]);
-        free -= 1;
-      } else {
-        j += 1;
-      }
-    }
-    col = 0;
-  }
-  return out;
-};
-
-const centerIconRows = (order, cols) => {
-  let row = [];
-  let used = 0;
-  const flush = () => {
-    if (!row.length) return;
+const centerIconRows = (rows, cols) => {
+  rows.forEach((row) => {
+    const used = row.reduce((sum, it) => sum + Math.min(it.n, cols), 0);
     const left = cols - used;
     const start = left > 0 ? Math.floor(left / 2) + 1 : 1;
     row.forEach((it, i) => {
@@ -1776,16 +1748,7 @@ const centerIconRows = (order, cols) => {
       else it.el.style.removeProperty('grid-column');
       it.el.classList.toggle('ic-half', left > 0 && left % 2 === 1);
     });
-    row = [];
-    used = 0;
-  };
-  order.forEach((it) => {
-    const span = Math.min(it.n, cols);
-    if (used + span > cols) flush();
-    row.push(it);
-    used += span;
   });
-  flush();
 };
 
 const iconCols = (grid) => {
@@ -1817,8 +1780,16 @@ const buildIconPlate = (it, cat, isBootBatch) => {
   cap.className = 'icon-plate-cap';
   cap.setAttribute('aria-hidden', 'true');
   const capText = document.createElement('span');
+  capText.className = 'icon-plate-cap-text';
   capText.textContent = loc(app.title);
   cap.appendChild(capText);
+  if (app.closed) {
+    const tag = document.createElement('span');
+    tag.className = 'badge badge-closed icon-plate-tag';
+    tag.textContent = t('badgeClosed');
+    cap.appendChild(tag);
+    plate.title = app.closedReason ? `${t('badgeClosed')} — ${loc(app.closedReason)}` : t('badgeClosed');
+  }
   if (isFresh(app)) {
     const dot = document.createElement('i');
     dot.className = 'icon-new-dot';
@@ -1827,26 +1798,28 @@ const buildIconPlate = (it, cat, isBootBatch) => {
   plate.appendChild(cap);
   app.variants.forEach((v, vi) => {
     const card = createCard(app, idx, null, cat, { variantIndex: vi });
-    if (isBootBatch) card.classList.add('is-boot-card');
+    card.classList.add('no-enter');
     plate.appendChild(card);
   });
+  if (isBootBatch) plate.classList.add('is-boot-card');
   return plate;
 };
 
 const repackIcons = (grid) => {
   const items = grid._icItems;
   if (!items || grid.dataset.layout !== 'icons') return;
+  if (gridSwitch) { grid._icDeferred = true; return; }
   const cols = iconCols(grid);
   if (cols === grid._icCols) return;
   grid._icCols = cols;
   grid.style.setProperty('--ic-cols', String(cols));
-  grid.querySelectorAll('.app-card').forEach((c) => c.classList.add('no-enter'));
+  grid.querySelectorAll('.app-card, .icon-plate').forEach((c) => c.classList.add('no-enter'));
   const active = document.activeElement;
   const keep = active && grid.contains(active) ? active : null;
   const frag = document.createDocumentFragment();
-  const order = packIcons(items, cols);
-  centerIconRows(order, cols);
-  order.forEach((it) => frag.appendChild(it.el));
+  const rows = solveIconRows(items, cols);
+  centerIconRows(rows, cols);
+  rows.flat().forEach((it) => frag.appendChild(it.el));
   grid.appendChild(frag);
   if (keep) keep.focus({ preventScroll: true });
   fitIconLabels(grid);
@@ -1918,9 +1891,9 @@ const renderCards = (grid, categoryId) => {
     });
     grid._icItems = entries;
     grid._icCols = cols;
-    const order = packIcons(entries, cols);
-    centerIconRows(order, cols);
-    order.forEach((it) => frag.appendChild(it.el));
+    const rows = solveIconRows(entries, cols);
+    centerIconRows(rows, cols);
+    rows.flat().forEach((it) => frag.appendChild(it.el));
     if (iconsRO) iconsRO.observe(grid);
   } else {
     grid._icItems = null;
@@ -1942,7 +1915,7 @@ const renderCards = (grid, categoryId) => {
   });
   grid.innerHTML = '';
   grid.appendChild(frag);
-  if (iconsView) requestAnimationFrame(() => fitIconLabels(grid));
+  if (iconsView) fitIconLabels(grid);
   firstCardBatchDone = true;
   pointerFieldDirty = true;
   if (hadFocusInGrid) grid.querySelector('.card-link-overlay')?.focus({ preventScroll: true });
@@ -1954,6 +1927,8 @@ const staggerDelay = (kind, dist, max) => {
   const m = MOTION[kind];
   return m && m.stagger ? Math.round((dist / max) * m.stagger) : 0;
 };
+
+const gridUnits = (grid) => [...grid.querySelectorAll(':scope > .app-card, :scope > .icon-plate, :scope > .grid-empty')];
 
 const cardDistances = (cards) => {
   const origin = lastInteractionPoint ?? railCenter();
@@ -1968,7 +1943,7 @@ const cardDistances = (cards) => {
 };
 
 const staggerCardEntry = (grid, isBootBatch) => {
-  const cards = [...grid.querySelectorAll('.app-card')];
+  const cards = gridUnits(grid);
   const skipEntryAnim = MQ.reducedMotion;
   const isAutoFlow = grid.classList.contains('is-auto-flow');
   const scrollDriven = supportsViewTimeline && isNarrowViewport();
@@ -2627,7 +2602,7 @@ const setViewMode = (mode, { silent = false, persist = true } = {}) => {
   } else if (MQ.reducedMotion || typeof grid.animate !== 'function') {
     settleGridSwitch();
     run();
-    grid.querySelectorAll('.app-card').forEach((c) => c.classList.add('no-enter'));
+    grid.querySelectorAll('.app-card, .icon-plate').forEach((c) => c.classList.add('no-enter'));
     if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
   } else {
     switchClamp('view');
@@ -2963,7 +2938,7 @@ const applyI18n = (opts = {}) => {
 
     settleGridSwitch();
     renderCards(grid, preservedTab);
-    grid.querySelectorAll('.app-card').forEach(c => c.classList.add('no-enter'));
+    grid.querySelectorAll('.app-card, .icon-plate').forEach(c => c.classList.add('no-enter'));
     if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
     requestAnimationFrame(() => measureRail());
   }
@@ -3228,7 +3203,7 @@ const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab') => {
 
   const wasBoot = run();
   const scrollDriven = supportsViewTimeline && isNarrowViewport();
-  const cards = [...g.querySelectorAll('.app-card, .grid-empty')];
+  const cards = gridUnits(g);
   const { dists, max } = mo.stagger ? cardDistances(cards) : { dists: [], max: 1 };
 
   if (g.classList.contains('is-auto-flow')) g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
@@ -3258,6 +3233,7 @@ const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab') => {
     gridSwitch = null;
     ghost?.remove();
     cards.forEach((c) => { c.style.willChange = ''; });
+    if (g._icDeferred) { g._icDeferred = false; repackIcons(g); }
     pointerFieldDirty = true;
     Motion.wake();
   });
@@ -5992,7 +5968,7 @@ const rebuildCatalogUI = (preferId) => {
   updateBarLabel();
   activateTab(target, { playSound: false, instant: true, pushHash: changed && (hashWasTab || target === preferId) });
   if (quiet) {
-    document.querySelectorAll('#appGrid .app-card').forEach((c) => { c.classList.add('no-enter'); c.style.willChange = ''; });
+    document.querySelectorAll('#appGrid .app-card, #appGrid .icon-plate').forEach((c) => { c.classList.add('no-enter'); c.style.willChange = ''; });
   }
   if (focusedTab) document.getElementById(`tab-${has(focusedTab) ? focusedTab : target}`)?.focus({ preventScroll: true });
   const dialog = document.getElementById('lx-palette');
