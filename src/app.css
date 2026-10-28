@@ -728,7 +728,7 @@ kbd {
 .app-grid.has-dim-engine .app-card { transition: none; will-change: transform, opacity; }
 .app-card.is-live .app-icon-wrapper,
 .app-card.is-live .app-title,
-.app-card.is-live .header-end { will-change: transform; }
+.app-card.is-live .header-end { will-change: translate; }
 @media not ((hover: hover) and (pointer: fine)) {
   .app-card { transition: opacity var(--lx-hover-ms, var(--dur-fast)) var(--ease-lux), transform var(--lx-hover-ms, 420ms) var(--ease-spring), scale var(--lx-hover-ms, var(--dur-fast)) var(--ease-lux); }
   .app-card:active { transform: scale(.982); transition-duration: var(--dur-tap), 90ms; }
@@ -5119,9 +5119,6 @@ html[data-lowend] .qr-stage::after { display: none; }
 .card-qr::after { content: ""; position: absolute; inset: -8px -6px; }
 .card-qr:hover, .card-qr:focus-visible { background: color-mix(in oklab, var(--tint) 18%, transparent); border-color: color-mix(in oklab, var(--tint) 45%, transparent); }
 .card-qr:focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 2px; }
-.header-end { display: flex; align-items: center; gap: .5rem; position: relative; z-index: 3; transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 1.3), calc(var(--ty, 0) * var(--depth, 0px) * 1.3), 0); }
-.header-end > .badges { transform: none; }
-.card-hero .header-end { position: absolute; inset-block-start: 1.25rem; inset-inline-end: 1.5rem; }
 .card-qr--row { grid-area: qr; }
 .card-qr--icon {
   position: absolute;
@@ -5185,4 +5182,43 @@ html[data-lowend] .qr-stage::after { display: none; }
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
   }
+}
+
+.header-end {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: .5rem;
+  min-inline-size: 0;
+  translate: calc(var(--tx, 0) * var(--depth, 0px) * 1.3) calc(var(--ty, 0) * var(--depth, 0px) * 1.3);
+}
+.header-end .badges { transform: none; }
+.card-hero .header-end { position: relative; inset: auto; }
+
+.card-qr {
+  transition:
+    background-color var(--dur-fast) var(--ease-lux),
+    border-color var(--dur-fast) var(--ease-lux),
+    color var(--dur-fast) var(--ease-lux),
+    scale var(--dur-micro, 90ms) var(--ease-lux);
+}
+.card-qr:active { scale: .94; }
+
+@media (min-width: 1025px) {
+  .card-hero .card-clip {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "icon title chips end";
+    align-items: center;
+    column-gap: clamp(1rem, 2.5dvh, 2rem);
+  }
+  .card-hero .bento-header,
+  .card-hero .bento-footer { display: contents; }
+  .card-hero .app-icon-wrapper { grid-area: icon; }
+  .card-hero .title-stack { grid-area: title; min-inline-size: 0; position: relative; z-index: 2; }
+  .card-hero .variant-chips { grid-area: chips; position: relative; z-index: 5; }
+  .card-hero .header-end { grid-area: end; align-self: center; }
 }
