@@ -387,14 +387,14 @@ body.is-zen .container {
     --ic-cap: 20px;
     --ic-gap: 24px;
     inline-size: min(880px, 94vw);
-    row-gap: calc(var(--ic-cap) + 24px);
-    padding: calc(var(--ic-cap) + 12px) 10px 10px;
+    row-gap: calc(var(--ic-cap) + 30px);
+    padding: calc(var(--ic-cap) + 12px) 10px 14px;
   }
   :root body.is-zen .app-grid[data-layout="icons"] .app-card--icon { gap: 11px; }
   :root body.is-zen .app-grid[data-layout="icons"] .app-card--icon .app-icon-wrapper { --icon-size: 76px; }
   :root body.is-zen .app-grid[data-layout="icons"] .app-card--icon .app-icon { font-size: 2rem; }
   :root body.is-zen .app-grid[data-layout="icons"] .app-card--icon .icon-label { font-size: 13px; }
-  :root body.is-zen .app-grid[data-layout="icons"] .icon-plate::before { inset-inline: -6px; inset-block-end: -6px; }
+  :root body.is-zen .app-grid[data-layout="icons"] .icon-plate::before { inset-block-end: -12px; }
 }
 
 @media (min-width: 1025px) and (max-width: 1639px) {
@@ -4750,8 +4750,8 @@ h1 {
   max-inline-size: none;
   margin-inline: 0;
   column-gap: var(--ic-gap);
-  row-gap: calc(var(--ic-cap) + 12px);
-  padding: calc(var(--ic-cap) + 8px) 6px 6px;
+  row-gap: calc(var(--ic-cap) + 18px);
+  padding: calc(var(--ic-cap) + 8px) 6px 10px;
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -4797,8 +4797,8 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
 .icon-plate::before {
   content: '';
   position: absolute;
-  inset-block: calc(-1 * var(--ic-cap) - 4px) -4px;
-  inset-inline: -4px;
+  inset-block: calc(-1 * var(--ic-cap) - 4px) -10px;
+  inset-inline: calc(-1 * (var(--ic-gap) - 12px) / 2);
   z-index: -1;
   border: 1px solid var(--hairline);
   border-radius: min(var(--r-card), 16px);
@@ -4830,7 +4830,6 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   overflow: hidden;
   pointer-events: none;
 }
-.icon-plate-cap:lang(ar) { letter-spacing: 0; font-variant-caps: normal; font-size: 12px; }
 :root:lang(ar) .icon-plate-cap { letter-spacing: 0; font-variant-caps: normal; font-size: 12px; }
 :root .app-grid[data-layout="icons"] .app-card--icon {
   display: flex; flex-direction: column; align-items: center; gap: 9px;

@@ -12,7 +12,7 @@
     "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs",
     "qa:qr": "node qa/qr-encoder.mjs && node qa/qr.mjs && node qa/qr-stress.mjs",
     "qa:zen": "node qa/zen.mjs",
-    "qa:icons": "node qa/icons-switch.mjs"
+    "qa:icons": "node qa/icon-solver.mjs && node qa/icons-switch.mjs"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",

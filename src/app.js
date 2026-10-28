@@ -1,4 +1,5 @@
 import { qrMatrix } from './qr.js';
+import { solveIconRows } from './icon-solver.js';
 const LX_DEBUG = new URLSearchParams(location.search).get('lxdebug') === '1';
 const CATALOG_URL = 'links.json';
 const catalogRequest = (() => {
@@ -1737,38 +1738,9 @@ const IC_MIN = 104;
 
 const iconItems = (cat) => cat.apps.map((app, i) => ({ app, idx: i, n: Array.isArray(app.variants) && app.variants.length > 1 ? app.variants.length : 1, el: null }));
 
-const packIcons = (items, cols) => {
-  const rest = items.slice();
-  const out = [];
-  let col = 0;
-  while (rest.length) {
-    const it = rest[0];
-    const span = Math.min(it.n, cols);
-    if (col + span <= cols) {
-      out.push(rest.shift());
-      col = (col + span) % cols;
-      continue;
-    }
-    let free = cols - col;
-    let j = 1;
-    while (free > 0 && j < Math.min(rest.length, cols + 1)) {
-      if (rest[j].n === 1) {
-        out.push(rest.splice(j, 1)[0]);
-        free -= 1;
-      } else {
-        j += 1;
-      }
-    }
-    col = 0;
-  }
-  return out;
-};
-
-const centerIconRows = (order, cols) => {
-  let row = [];
-  let used = 0;
-  const flush = () => {
-    if (!row.length) return;
+const centerIconRows = (rows, cols) => {
+  rows.forEach((row) => {
+    const used = row.reduce((sum, it) => sum + Math.min(it.n, cols), 0);
     const left = cols - used;
     const start = left > 0 ? Math.floor(left / 2) + 1 : 1;
     row.forEach((it, i) => {
@@ -1776,16 +1748,7 @@ const centerIconRows = (order, cols) => {
       else it.el.style.removeProperty('grid-column');
       it.el.classList.toggle('ic-half', left > 0 && left % 2 === 1);
     });
-    row = [];
-    used = 0;
-  };
-  order.forEach((it) => {
-    const span = Math.min(it.n, cols);
-    if (used + span > cols) flush();
-    row.push(it);
-    used += span;
   });
-  flush();
 };
 
 const iconCols = (grid) => {
@@ -1846,9 +1809,9 @@ const repackIcons = (grid) => {
   const active = document.activeElement;
   const keep = active && grid.contains(active) ? active : null;
   const frag = document.createDocumentFragment();
-  const order = packIcons(items, cols);
-  centerIconRows(order, cols);
-  order.forEach((it) => frag.appendChild(it.el));
+  const rows = solveIconRows(items, cols);
+  centerIconRows(rows, cols);
+  rows.flat().forEach((it) => frag.appendChild(it.el));
   grid.appendChild(frag);
   if (keep) keep.focus({ preventScroll: true });
   fitIconLabels(grid);
@@ -1920,9 +1883,9 @@ const renderCards = (grid, categoryId) => {
     });
     grid._icItems = entries;
     grid._icCols = cols;
-    const order = packIcons(entries, cols);
-    centerIconRows(order, cols);
-    order.forEach((it) => frag.appendChild(it.el));
+    const rows = solveIconRows(entries, cols);
+    centerIconRows(rows, cols);
+    rows.flat().forEach((it) => frag.appendChild(it.el));
     if (iconsRO) iconsRO.observe(grid);
   } else {
     grid._icItems = null;

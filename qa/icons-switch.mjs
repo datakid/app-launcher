@@ -244,10 +244,64 @@ const narrow = (browser, base) => async () => {
   record('icons switch: at 390 px no visible unit stays hidden after a tab switch and nothing scrolls sideways', bad.length === 0, bad);
 };
 
+const spacing = (browser, base) => async () => {
+  const bad = [];
+  let pairs = 0;
+  for (const lang of ['en', 'ar']) {
+    for (const zen of ['0', '1']) {
+      for (const width of [1280, 1707]) {
+        for (const tab of ['core', 'tools', 'experimental']) {
+          const { ctx, page } = await open(browser, base, { view: 'icons', tab, lang, width, zen });
+          const r = await page.evaluate(() => {
+            const g = document.getElementById('appGrid');
+            const units = [...g.children].filter((el) => el.matches('.icon-plate, .app-card--icon')).map((el) => {
+              const b = el.getBoundingClientRect();
+              const plate = el.classList.contains('icon-plate');
+              const cs = plate ? getComputedStyle(el, '::before') : null;
+              const num = (v) => (Number.isFinite(parseFloat(v)) ? parseFloat(v) : 0);
+              return {
+                plate,
+                top: Math.round(b.top),
+                l: plate ? b.left + num(cs.left) : b.left,
+                r: plate ? b.right - num(cs.right) : b.right,
+                t: plate ? b.top + num(cs.top) : b.top,
+                b: plate ? b.bottom - num(cs.bottom) : b.bottom
+              };
+            });
+            const rows = new Map();
+            units.forEach((u) => rows.set(u.top, (rows.get(u.top) || 0) + 1));
+            let overlaps = 0;
+            let minGap = Infinity;
+            let pairs = 0;
+            for (let i = 0; i < units.length; i++) {
+              for (let j = i + 1; j < units.length; j++) {
+                const a = units[i];
+                const c = units[j];
+                const vert = a.t < c.b - 0.5 && c.t < a.b - 0.5;
+                const horiz = a.l < c.r - 0.5 && c.l < a.r - 0.5;
+                if (vert && horiz) overlaps++;
+                if (a.plate && c.plate && vert) {
+                  pairs++;
+                  minGap = Math.min(minGap, Math.max(a.l - c.r, c.l - a.r));
+                }
+              }
+            }
+            return { rows: rows.size, single: [...rows.values()].filter((n) => n === 1).length, overlaps, minGap: Number.isFinite(minGap) ? Math.round(minGap * 10) / 10 : null, pairs, cols: g.style.getPropertyValue('--ic-cols') };
+          });
+          pairs += r.pairs;
+          if (r.rows !== 2 || r.single || r.overlaps || (r.minGap !== null && r.minGap < 11.5)) bad.push({ lang, zen, width, tab, ...r });
+          await ctx.close();
+        }
+      }
+    }
+  }
+  record('icons layout: two balanced rows per tab, no overlaps and at least 12 px between adjacent plate panels (1280 and 1707 px, normal and Zen, LTR and RTL)', bad.length === 0, bad.length ? bad.slice(0, 4) : { pairs });
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
-  const steps = [popIn, noSnap, rowsCentred, ghostGone, rapid, reduced, narrow].map((make) => ({ name: make.name, run: make(browser, server.base) }));
+  const steps = [popIn, noSnap, rowsCentred, ghostGone, rapid, reduced, narrow, spacing].map((make) => ({ name: make.name, run: make(browser, server.base) }));
   for (const step of steps) {
     try { await step.run(); } catch (e) { record(step.name, false, { error: String(e.message || e).slice(0, 240) }); }
   }
