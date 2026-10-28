@@ -2948,7 +2948,8 @@ h1 {
 
 @media (max-width: 1024px) {
   @supports (animation-timeline: view()) {
-    .app-card {
+    .app-card,
+    .icon-plate {
       animation-timeline: view();
       animation-range: entry 0% cover 22%;
     }
@@ -4046,8 +4047,10 @@ h1 {
   55% { opacity: 1; }
   to { opacity: 1; scale: 1; translate: 0 0; }
 }
-body.is-booted .app-card.is-boot-card { animation-duration: 900ms; }
-.app-card { animation-duration: var(--dur-story); }
+body.is-booted .app-card.is-boot-card,
+body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
+.app-card,
+.icon-plate { animation-duration: var(--dur-story); }
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-14px); }
   to { opacity: 1; transform: none; }
@@ -4420,7 +4423,7 @@ body.is-booted .app-card.is-boot-card { animation-duration: 900ms; }
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .controls-pill, .site-header, .lx-bar, .app-card { animation: none !important; }
+  .controls-pill, .site-header, .lx-bar, .app-card, .icon-plate { animation: none !important; }
 }
 
 .ctx-vrow { display: flex; align-items: center; gap: 2px; border-radius: var(--r-menu-item, 8px); }
@@ -4782,6 +4785,14 @@ h1 {
   position: relative;
   isolation: isolate;
   min-inline-size: 0;
+  animation: cardEnter var(--lx-boot-ms, var(--dur-story)) var(--ease-lux) backwards;
+  animation-delay: 0s;
+}
+.icon-plate.no-enter { animation: none; }
+.app-grid.is-switching .icon-plate { animation: none !important; }
+body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-duration: 520ms; }
+@media (min-width: 1025px) {
+  :root .app-grid[data-layout="icons"] { scrollbar-gutter: stable both-edges; }
 }
 .icon-plate::before {
   content: '';
@@ -4798,8 +4809,10 @@ h1 {
   backdrop-filter: blur(22px) saturate(175%);
   pointer-events: none;
 }
-:root .app-grid[data-layout="icons"] > .ic-half { translate: calc((100% + var(--ic-gap)) / (2 * var(--n, 1))); }
-:root[dir="rtl"] .app-grid[data-layout="icons"] > .ic-half { translate: calc(-1 * (100% + var(--ic-gap)) / (2 * var(--n, 1))); }
+:root .app-grid[data-layout="icons"] > .ic-half {
+  position: relative;
+  inset-inline-start: calc((100% + var(--ic-gap)) / (2 * var(--n, 1)));
+}
 .icon-plate.is-closed { opacity: .5; filter: grayscale(1); }
 .icon-plate-cap {
   position: absolute;

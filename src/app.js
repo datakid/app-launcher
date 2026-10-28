@@ -1827,20 +1827,22 @@ const buildIconPlate = (it, cat, isBootBatch) => {
   plate.appendChild(cap);
   app.variants.forEach((v, vi) => {
     const card = createCard(app, idx, null, cat, { variantIndex: vi });
-    if (isBootBatch) card.classList.add('is-boot-card');
+    card.classList.add('no-enter');
     plate.appendChild(card);
   });
+  if (isBootBatch) plate.classList.add('is-boot-card');
   return plate;
 };
 
 const repackIcons = (grid) => {
   const items = grid._icItems;
   if (!items || grid.dataset.layout !== 'icons') return;
+  if (gridSwitch) { grid._icDeferred = true; return; }
   const cols = iconCols(grid);
   if (cols === grid._icCols) return;
   grid._icCols = cols;
   grid.style.setProperty('--ic-cols', String(cols));
-  grid.querySelectorAll('.app-card').forEach((c) => c.classList.add('no-enter'));
+  grid.querySelectorAll('.app-card, .icon-plate').forEach((c) => c.classList.add('no-enter'));
   const active = document.activeElement;
   const keep = active && grid.contains(active) ? active : null;
   const frag = document.createDocumentFragment();
@@ -1942,7 +1944,7 @@ const renderCards = (grid, categoryId) => {
   });
   grid.innerHTML = '';
   grid.appendChild(frag);
-  if (iconsView) requestAnimationFrame(() => fitIconLabels(grid));
+  if (iconsView) fitIconLabels(grid);
   firstCardBatchDone = true;
   pointerFieldDirty = true;
   if (hadFocusInGrid) grid.querySelector('.card-link-overlay')?.focus({ preventScroll: true });
@@ -1954,6 +1956,8 @@ const staggerDelay = (kind, dist, max) => {
   const m = MOTION[kind];
   return m && m.stagger ? Math.round((dist / max) * m.stagger) : 0;
 };
+
+const gridUnits = (grid) => [...grid.querySelectorAll(':scope > .app-card, :scope > .icon-plate, :scope > .grid-empty')];
 
 const cardDistances = (cards) => {
   const origin = lastInteractionPoint ?? railCenter();
@@ -1968,7 +1972,7 @@ const cardDistances = (cards) => {
 };
 
 const staggerCardEntry = (grid, isBootBatch) => {
-  const cards = [...grid.querySelectorAll('.app-card')];
+  const cards = gridUnits(grid);
   const skipEntryAnim = MQ.reducedMotion;
   const isAutoFlow = grid.classList.contains('is-auto-flow');
   const scrollDriven = supportsViewTimeline && isNarrowViewport();
@@ -2627,7 +2631,7 @@ const setViewMode = (mode, { silent = false, persist = true } = {}) => {
   } else if (MQ.reducedMotion || typeof grid.animate !== 'function') {
     settleGridSwitch();
     run();
-    grid.querySelectorAll('.app-card').forEach((c) => c.classList.add('no-enter'));
+    grid.querySelectorAll('.app-card, .icon-plate').forEach((c) => c.classList.add('no-enter'));
     if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
   } else {
     switchClamp('view');
@@ -2963,7 +2967,7 @@ const applyI18n = (opts = {}) => {
 
     settleGridSwitch();
     renderCards(grid, preservedTab);
-    grid.querySelectorAll('.app-card').forEach(c => c.classList.add('no-enter'));
+    grid.querySelectorAll('.app-card, .icon-plate').forEach(c => c.classList.add('no-enter'));
     if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
     requestAnimationFrame(() => measureRail());
   }
@@ -3228,7 +3232,7 @@ const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab') => {
 
   const wasBoot = run();
   const scrollDriven = supportsViewTimeline && isNarrowViewport();
-  const cards = [...g.querySelectorAll('.app-card, .grid-empty')];
+  const cards = gridUnits(g);
   const { dists, max } = mo.stagger ? cardDistances(cards) : { dists: [], max: 1 };
 
   if (g.classList.contains('is-auto-flow')) g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
@@ -3258,6 +3262,7 @@ const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab') => {
     gridSwitch = null;
     ghost?.remove();
     cards.forEach((c) => { c.style.willChange = ''; });
+    if (g._icDeferred) { g._icDeferred = false; repackIcons(g); }
     pointerFieldDirty = true;
     Motion.wake();
   });
@@ -5992,7 +5997,7 @@ const rebuildCatalogUI = (preferId) => {
   updateBarLabel();
   activateTab(target, { playSound: false, instant: true, pushHash: changed && (hashWasTab || target === preferId) });
   if (quiet) {
-    document.querySelectorAll('#appGrid .app-card').forEach((c) => { c.classList.add('no-enter'); c.style.willChange = ''; });
+    document.querySelectorAll('#appGrid .app-card, #appGrid .icon-plate').forEach((c) => { c.classList.add('no-enter'); c.style.willChange = ''; });
   }
   if (focusedTab) document.getElementById(`tab-${has(focusedTab) ? focusedTab : target}`)?.focus({ preventScroll: true });
   const dialog = document.getElementById('lx-palette');
