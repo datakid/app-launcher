@@ -372,10 +372,82 @@ const matrix = async (browser, base) => {
   record('decode: every palette x theme x direction, desktop and phone sheet', ok === combos.length, { ok, total: combos.length, bad: bad.slice(0, 3) });
 };
 
+const bentoChipDrift = async (browser, base) => {
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await boost(ctx);
+  await ctx.addInitScript(() => { try { localStorage.setItem('lx-view', 'bento'); localStorage.setItem('lx-lang', 'en'); } catch (e) {} });
+  const page = await ctx.newPage();
+  let found = null;
+  for (const tab of ['tools', 'core', 'experimental']) {
+    await page.goto(`${base}/#${tab}`);
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(2200);
+    const idx = await page.evaluate(() => [...document.querySelectorAll('#appGrid .app-card')].findIndex((c) => c.querySelector('.header-end .badges') && c.querySelector('.card-qr')));
+    if (idx >= 0) { found = { tab, idx }; break; }
+  }
+  if (!found) {
+    record('bento: the QR chip drifts with the badges beside it', false, { error: 'no card with a badge' });
+    await ctx.close();
+    return;
+  }
+  const measure = () => page.evaluate((i) => {
+    const c = document.querySelectorAll('#appGrid .app-card')[i];
+    const q = c.querySelector('.card-qr').getBoundingClientRect();
+    const b = c.querySelector('.header-end .badges').getBoundingClientRect();
+    const cr = c.getBoundingClientRect();
+    return { qx: q.left, qy: q.top, bx: b.left, by: b.top, cx: cr.left, cy: cr.top, cw: cr.width };
+  }, found.idx);
+  await page.mouse.move(5, 5);
+  await page.waitForTimeout(500);
+  const rest = await measure();
+  await page.mouse.move(rest.cx + 6, rest.cy + 6, { steps: 10 });
+  await page.waitForTimeout(500);
+  const hov = await measure();
+  const sc = hov.cw / rest.cw;
+  const drift = (px, py) => ({ x: (hov[px] - hov.cx) - (rest[px] - rest.cx) * sc, y: (hov[py] - hov.cy) - (rest[py] - rest.cy) * sc });
+  const dq = drift('qx', 'qy');
+  const db = drift('bx', 'by');
+  const together = Math.abs(dq.x - db.x) < 0.5 && Math.abs(dq.y - db.y) < 0.5;
+  const moved = Math.hypot(dq.x, dq.y) > 0.5;
+  record('bento: the QR chip drifts with the badges beside it (same shift, and it does move)', together && moved, { dq, db, ...found });
+  await ctx.close();
+};
+
+const iconsChipAnchor = async (browser, base) => {
+  const bad = [];
+  const cases = [['en', '0', 1440], ['ar', '0', 1440], ['en', '1', 1440], ['ar', '1', 1440], ['en', '0', 360], ['ar', '0', 360]];
+  for (const [lang, zen, width] of cases) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+    await boost(ctx);
+    await ctx.addInitScript((o) => { try { localStorage.setItem('lx-view', 'icons'); localStorage.setItem('lx-lang', o.lang); localStorage.setItem('lx-zen', o.zen); } catch (e) {} }, { lang, zen });
+    const page = await ctx.newPage();
+    await page.goto(`${base}/#core`);
+    await page.waitForSelector('#appGrid .app-card');
+    await page.waitForTimeout(2200);
+    for (const sel of ['#appGrid > .app-card--icon', '#appGrid .icon-plate > .app-card--icon']) {
+      const tile = page.locator(sel).first();
+      if (!(await tile.count())) { bad.push({ lang, zen, width, sel, error: 'no tile' }); continue; }
+      await tile.scrollIntoViewIfNeeded();
+      await tile.locator('.card-link-overlay').hover();
+      await page.waitForTimeout(600);
+      const r = await tile.evaluate((el) => {
+        const w = el.querySelector('.app-icon-wrapper').getBoundingClientRect();
+        const q = el.querySelector('.card-qr--icon').getBoundingClientRect();
+        const rtl = getComputedStyle(el).direction === 'rtl';
+        const corner = { x: rtl ? w.left : w.right, y: w.top };
+        return { dist: Math.hypot(q.left + q.width / 2 - corner.x, q.top + q.height / 2 - corner.y), opacity: Number(getComputedStyle(el.querySelector('.card-qr--icon')).opacity), rtl };
+      });
+      if (r.dist > 10 || r.opacity < 0.99) bad.push({ lang, zen, width, sel, ...r });
+    }
+    await ctx.close();
+  }
+  record('icons view: on hover the QR chip sits within 10 px of the tile corner (LTR and RTL, normal, Zen and 360 px)', bad.length === 0, bad.slice(0, 4));
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await chromium.launch();
-  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), iconsNoBadge, bentoVisible, stable, paletteRow(false), paletteRow(true), matrix];
+  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), iconsNoBadge, bentoVisible, stable, paletteRow(false), paletteRow(true), matrix, bentoChipDrift, iconsChipAnchor];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }
