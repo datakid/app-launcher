@@ -5127,7 +5127,7 @@ html[data-lowend] .qr-stage::after { display: none; }
 .card-qr--icon {
   position: absolute;
   inset-block-start: -4px;
-  inset-inline-end: calc(50% - var(--icon-size) / 2 - 8px);
+  inset-inline-start: calc(50% - var(--icon-size) / 2 - 8px);
   inline-size: 24px;
   block-size: 24px;
   padding: 0;

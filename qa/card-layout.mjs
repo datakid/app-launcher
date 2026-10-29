@@ -31,6 +31,7 @@ const VIEWPORTS = FULL
   ? [[1920, 1080], [1440, 900], [1280, 800], [1280, 680], [1100, 760], [1024, 768], [768, 1024], [390, 844], [360, 740]]
   : [[1440, 900], [1280, 800], [1024, 768], [390, 844]];
 const LANGS = ['en', 'ar'];
+const VIEWS = ['bento', 'icons'];
 const THEMES = FULL ? ['light', 'dark'] : ['light'];
 const PALETTES = FULL ? ['vivid', 'muted', 'curated', 'mono'] : ['muted', 'vivid'];
 const CORNERS = FULL ? ['balanced', 'soft', 'crisp'] : ['balanced', 'crisp'];
@@ -60,6 +61,28 @@ const auditInPage = () => {
   return out;
 };
 
+const auditIcons = () => {
+  const box = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return r.width && r.height ? { l: r.left, t: r.top, r: r.right, b: r.bottom } : null; };
+  const hit = (a, b) => !!(a && b) && a.l < b.r - 0.5 && a.r > b.l + 0.5 && a.t < b.b - 0.5 && a.b > b.t + 0.5;
+  const inside = (a, b) => !!(a && b) && a.l >= b.l - 0.5 && a.r <= b.r + 0.5 && a.t >= b.t - 0.5 && a.b <= b.b + 0.5;
+  const out = [];
+  for (const card of document.querySelectorAll('.app-grid .app-card--icon')) {
+    const rest = [...card.querySelectorAll('.card-qr--icon, .digit-badge')].map((el) => [el, el.style.transition, el.style.transform]);
+    for (const [el] of rest) { el.style.transition = 'none'; el.style.transform = 'none'; }
+    const q = (s) => box(card.querySelector(s));
+    const p = { qr: q('.card-qr--icon'), icon: q('.app-icon-wrapper'), label: q('.icon-label'), dot: q('.icon-new-dot'), digit: q('.digit-badge') };
+    const gridBox = box(card.closest('.app-grid'));
+    for (const [el, tr, tf] of rest) { el.style.transition = tr; el.style.transform = tf; }
+    const issues = [];
+    if (!p.qr) issues.push('qr-missing');
+    for (const k of ['dot', 'digit', 'label']) if (hit(p.qr, p[k])) issues.push('qr-overlaps-' + k);
+    if (p.qr && !inside(p.qr, gridBox)) issues.push('qr-outside-grid ' + JSON.stringify({ gridBox, qr: p.qr, w: innerWidth, sw: document.documentElement.scrollWidth, n: document.querySelectorAll('.app-grid .app-card--icon').length }));
+    if (issues.length) out.push({ title: card.querySelector('.icon-label')?.textContent.trim(), cls: 'icon', issues });
+  }
+  if (document.documentElement.scrollWidth > innerWidth + 1) out.push({ title: '(page)', issues: ['horizontal-overflow'] });
+  return out;
+};
+
 const failures = [];
 const record = (ctx, list) => { for (const f of list) failures.push({ ...ctx, ...f }); };
 
@@ -83,24 +106,25 @@ const main = async () => {
     }
     const page = await ctx.newPage();
     await page.goto(`${origin}/${hash}`);
-    await page.waitForSelector('.app-grid > .app-card .card-qr');
+    await page.waitForSelector('.app-grid .card-qr');
     await page.waitForTimeout(400);
     return { ctx, page };
   };
 
-  for (const vp of VIEWPORTS) for (const lang of LANGS) for (const theme of THEMES) for (const palette of PALETTES) for (const corners of CORNERS) {
-    const prefs = { 'lx-lang': lang, 'lx-theme': theme, 'lx-palette': palette, 'lx-corners': corners, 'lx-view': 'bento', 'lx-zen': '0' };
+  for (const vp of VIEWPORTS) for (const lang of LANGS) for (const theme of THEMES) for (const palette of PALETTES) for (const corners of CORNERS) for (const view of VIEWS) {
+    if (view === 'icons' && (palette !== PALETTES[0] || corners !== CORNERS[0])) continue;
+    const prefs = { 'lx-lang': lang, 'lx-theme': theme, 'lx-palette': palette, 'lx-corners': corners, 'lx-view': view, 'lx-zen': '0' };
     for (const cat of realLinks.categories) {
       const { ctx, page } = await open(vp, prefs, null, '#' + cat.id);
-      record({ vp: vp.join('x'), lang, theme, palette, corners, tab: cat.id }, await page.evaluate(auditInPage));
+      record({ vp: vp.join('x'), lang, theme, palette, corners, view, tab: cat.id }, await page.evaluate(view === 'icons' ? auditIcons : auditInPage));
       await ctx.close();
     }
   }
 
-  for (const n of COUNTS) for (const vp of VIEWPORTS) for (const lang of LANGS) {
-    const prefs = { 'lx-lang': lang, 'lx-theme': 'light', 'lx-palette': 'muted', 'lx-view': 'bento', 'lx-zen': '0' };
+  for (const n of COUNTS) for (const vp of VIEWPORTS) for (const lang of LANGS) for (const view of VIEWS) {
+    const prefs = { 'lx-lang': lang, 'lx-theme': 'light', 'lx-palette': 'muted', 'lx-view': view, 'lx-zen': '0' };
     const { ctx, page } = await open(vp, prefs, synthetic(n), '#core');
-    record({ vp: vp.join('x'), lang, count: n }, await page.evaluate(auditInPage));
+    record({ vp: vp.join('x'), lang, view, count: n }, await page.evaluate(view === 'icons' ? auditIcons : auditInPage));
     await ctx.close();
   }
 
