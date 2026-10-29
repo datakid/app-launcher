@@ -5312,3 +5312,13 @@ html[data-lowend] .qr-stage::after { display: none; }
 :root .card-qr:focus-visible,
 :root .variant-chip:focus-visible { outline-offset: 2px; }
 :root .card-link-overlay:focus-visible { outline-offset: -3px; }
+
+@media (min-width: 1025px) {
+  .card-hero .app-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+}
