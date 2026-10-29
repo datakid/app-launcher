@@ -1864,6 +1864,9 @@ const renderCards = (grid, categoryId) => {
   else if (iconsView) grid.dataset.layout = 'icons';
   else delete grid.dataset.layout;
 
+  if (generated) grid.dataset.rows = String(generated.rows);
+  else delete grid.dataset.rows;
+
   if (curated) {
     grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
     grid.style.gridTemplateRows = 'repeat(3, 1fr)';
