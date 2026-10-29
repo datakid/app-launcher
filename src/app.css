@@ -3166,6 +3166,7 @@ h1 {
   .controls-pill #refreshToggle.is-spinning svg { animation: none; }
   .spotlight { display: none; }
   .app-card { translate: none !important; }
+  :root .card-qr:active { scale: none; }
   .app-card, .card-clip, .app-icon-wrapper, .app-title, .badges, .variant-chips,
   .tab-indicator, .tab-ghost, .variant-chip-indicator {
     transition-property: opacity, color, background-color, border-color, box-shadow;
