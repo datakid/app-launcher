@@ -1180,7 +1180,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 }
 .variant-chip.is-active { color: var(--text); }
 .variant-chip:active { opacity: 0.7; transition-duration: var(--dur-tap); }
-.variant-chip:focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 1px; }
+.variant-chip:focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 2px; }
 
 .card-wide .app-icon-wrapper { --icon-size: clamp(52px, 7.2dvh, 62px); --icon-radius: 15px; }
 .card-wide .app-icon { font-size: clamp(1.3rem, 3dvh, 1.6rem); }
@@ -5105,7 +5105,7 @@ html[data-lowend] .qr-stage::after { display: none; }
   block-size: 28px;
   padding: 0 10px;
   flex-shrink: 0;
-  border-radius: min(var(--r-chip, 8px), 10px);
+  border-radius: var(--r-chip, 8px);
   background: light-dark(rgba(20,18,15,.06), rgba(255,255,255,.08));
   border: 1px solid light-dark(rgba(20,18,15,.1), rgba(255,255,255,.12));
   color: color-mix(in oklab, var(--tint) 70%, var(--text));
@@ -5123,7 +5123,7 @@ html[data-lowend] .qr-stage::after { display: none; }
 .card-qr--icon {
   position: absolute;
   inset-block-start: -4px;
-  inset-inline-end: calc(50% - var(--icon-size) / 2 - 8px);
+  inset-inline-start: calc(50% - var(--icon-size) / 2 - 8px);
   inline-size: 24px;
   block-size: 24px;
   padding: 0;
@@ -5142,6 +5142,8 @@ html[data-lowend] .qr-stage::after { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .app-card--icon:hover .card-qr--icon { translate: none; }
+  .card-qr { transition: none; }
+  .card-qr:active { scale: none; }
 }
 @media (hover: none), (pointer: coarse) { .card-qr--icon { display: none; } }
 .palette-qr {
@@ -5153,7 +5155,7 @@ html[data-lowend] .qr-stage::after { display: none; }
   margin-inline-start: 8px;
   padding: 0 10px;
   flex-shrink: 0;
-  border-radius: 9px;
+  border-radius: var(--r-chip, 9px);
   border: 1px solid var(--border);
   background: transparent;
   color: var(--text-muted);
