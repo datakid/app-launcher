@@ -1191,9 +1191,9 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
 
   const fresh = isFresh(app);
   let badgesHtml = '';
-  if (fresh) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span>${escapeHtml(t('badgeNew'))}</div>`;
-  if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span>${escapeHtml(t('badgeClosed'))}</div>`;
-  if (app.variantBadge) badgesHtml += `<div class="badge badge-variant">${icon('fa-clone')}${escapeHtml(app.variantBadge)}</div>`;
+  if (fresh) badgesHtml += `<div class="badge badge-new"><span class="badge-dot"></span><span class="badge-label">${escapeHtml(t('badgeNew'))}</span></div>`;
+  if (app.closed) badgesHtml += `<div class="badge badge-closed"><span class="badge-dot"></span><span class="badge-label">${escapeHtml(t('badgeClosed'))}</span></div>`;
+  if (app.variantBadge) badgesHtml += `<div class="badge badge-variant">${icon('fa-clone')}<span class="badge-label">${escapeHtml(app.variantBadge)}</span></div>`;
 
   const iconClass = activeVariant ? activeVariant.icon : app.icon;
   const stackable = !!app.variants && !iconsView && !isTile && stackableVariants(app);
