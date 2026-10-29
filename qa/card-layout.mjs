@@ -130,6 +130,35 @@ const main = async () => {
     await ctx.close();
   }
 
+  for (const lang of LANGS) for (const vp of [[1440, 900], [390, 844]]) {
+    const ctx = await browser.newContext({ viewport: { width: vp[0], height: vp[1] }, serviceWorkers: 'block', hasTouch: vp[0] < 500, isMobile: vp[0] < 500 });
+    await ctx.addInitScript((l) => { localStorage.clear(); localStorage.setItem('lx-lang', l); localStorage.setItem('lx-view', 'icons'); localStorage.setItem('lx-zen', '0'); }, lang);
+    const page = await ctx.newPage();
+    await page.goto(`${origin}/#core`);
+    await page.waitForSelector('.app-card--icon');
+    await page.waitForTimeout(800);
+    const cards = page.locator('.app-card--icon');
+    const total = await cards.count();
+    const hoverable = vp[0] >= 500;
+    for (let k = 0; k < total; k++) {
+      const card = cards.nth(k);
+      if (hoverable) { await card.hover(); await page.waitForTimeout(320); }
+      const issues = await card.evaluate((el, hov) => {
+        const box = (s) => { const e = el.querySelector(s); if (!e) return null; const cs = getComputedStyle(e); if (cs.display === 'none') return null; const r = e.getBoundingClientRect(); return { l: r.left, t: r.top, r: r.right, b: r.bottom, opacity: +cs.opacity }; };
+        const hit = (a, b) => a && b && a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b;
+        const qr = box('.card-qr--icon'), badge = box('.digit-badge'), dot = box('.icon-new-dot'), icon = box('.app-icon-wrapper');
+        const out = [];
+        if (hov && !qr) out.push('qr-missing');
+        if (hit(qr, badge) && badge.opacity > 0) out.push('qr-overlaps-digit-badge');
+        if (hit(qr, dot)) out.push('qr-overlaps-new-dot');
+        if (qr && icon && qr.l < icon.l - 12) out.push('qr-detached-from-icon');
+        return out;
+      }, hoverable);
+      if (issues.length) failures.push({ view: 'icons', vp: vp.join('x'), lang, index: k, issues });
+    }
+    await ctx.close();
+  }
+
   await browser.close();
   server.close();
   await fs.mkdir(path.join(root, 'qa', 'out'), { recursive: true });
