@@ -927,7 +927,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   touch-action: manipulation;
 }
 .card-link-overlay:focus-visible {
-  outline-offset: -3px;
   transition: outline-offset var(--dur-micro) var(--ease-out);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -1180,7 +1179,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 }
 .variant-chip.is-active { color: var(--text); }
 .variant-chip:active { opacity: 0.7; transition-duration: var(--dur-tap); }
-.variant-chip:focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 1px; }
 
 .card-wide .app-icon-wrapper { --icon-size: clamp(52px, 7.2dvh, 62px); --icon-radius: 15px; }
 .card-wide .app-icon { font-size: clamp(1.3rem, 3dvh, 1.6rem); }
@@ -5123,7 +5121,6 @@ html[data-lowend] .qr-stage::after { display: none; }
 .card-qr-label { pointer-events: none; }
 .card-qr::after { content: ""; position: absolute; inset: calc((var(--chip-h) - 44px) / 2) -6px; }
 .card-qr:hover, .card-qr:focus-visible { background: color-mix(in oklab, var(--tint) 18%, transparent); border-color: color-mix(in oklab, var(--tint) 45%, transparent); }
-.card-qr:focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 2px; }
 .header-end { display: flex; align-items: center; gap: .5rem; position: relative; z-index: 3; }
 .card-qr--row { grid-area: qr; }
 .card-qr--icon {
@@ -5306,3 +5303,12 @@ html[data-lowend] .qr-stage::after { display: none; }
   font: 600 .68rem/1 var(--ui-font);
   letter-spacing: .04em;
 }
+
+:root .card-qr:focus-visible,
+:root .variant-chip:focus-visible,
+:root .card-link-overlay:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text));
+}
+:root .card-qr:focus-visible,
+:root .variant-chip:focus-visible { outline-offset: 2px; }
+:root .card-link-overlay:focus-visible { outline-offset: -3px; }
