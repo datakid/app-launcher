@@ -434,7 +434,7 @@ const iconsChipAnchor = async (browser, base) => {
         const w = el.querySelector('.app-icon-wrapper').getBoundingClientRect();
         const q = el.querySelector('.card-qr--icon').getBoundingClientRect();
         const rtl = getComputedStyle(el).direction === 'rtl';
-        const corner = { x: rtl ? w.left : w.right, y: w.top };
+        const corner = { x: rtl ? w.right : w.left, y: w.top };
         return { dist: Math.hypot(q.left + q.width / 2 - corner.x, q.top + q.height / 2 - corner.y), opacity: Number(getComputedStyle(el.querySelector('.card-qr--icon')).opacity), rtl };
       });
       if (r.dist > 10 || r.opacity < 0.99) bad.push({ lang, zen, width, sel, ...r });
