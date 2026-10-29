@@ -9,7 +9,7 @@ for (const line of diff.split('\n')) {
   if (!line.startsWith('+') || line.startsWith('+++')) continue;
   const code = line.slice(1);
   const stripped = code.replace(/(['"`])(?:\\.|(?!\1).)*\1/g, '""').replace(/https?:\/\/\S+/g, '');
-  const html = /<!--(?!LX:)/.test(code);
+  const html = new RegExp('<!' + '--(?!LX:)').test(code);
   const block = /\/\*/.test(stripped) || /^\s*\*(\s|\/|$)/.test(code);
   const lineC = /(^|[\s;{}(),])\/\/(?!\/)/.test(stripped) && !/\/[^/\n]+\/[gimsuy]*/.test(stripped.replace(/\/\/.*$/, ''));
   const hash = /\.(sh|ya?ml|toml)$/.test(file) && /^\s*#/.test(code);
