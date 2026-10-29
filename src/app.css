@@ -5210,7 +5210,7 @@ html[data-lowend] .qr-stage::after { display: none; }
     color var(--dur-fast) var(--ease-lux),
     scale var(--dur-micro, 90ms) var(--ease-lux);
 }
-.card-qr:active { scale: .94; }
+.card-qr:active { scale: .94; transition-duration: var(--dur-tap); }
 
 @media (min-width: 1025px) {
   .card-hero .card-clip {
