@@ -5226,8 +5226,6 @@ html[data-lowend] .qr-stage::after { display: none; }
 }
 
 .header-end .badges { flex-wrap: wrap; justify-content: flex-end; min-inline-size: 0; }
-.app-card .title-row { min-inline-size: 0; }
-.app-card .app-title { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 @media (max-width: 520px) {
   .app-grid .app-card .bento-header { flex-wrap: wrap; row-gap: .5rem; }
@@ -5237,10 +5235,24 @@ html[data-lowend] .qr-stage::after { display: none; }
   .app-grid .app-card:has(.badges .badge + .badge + .badge) .card-clip { min-height: calc(11rem + 4.75rem); }
 }
 
-@container (max-height: 160px) {
-  .card-wide .app-icon-wrapper { --icon-size: 52px; }
-}
+@media (min-width: 1025px) {
+  .app-card .bento-footer .title-stack { margin-inline-end: -.5rem; }
+  .app-card .title-row { min-inline-size: 0; }
+  .app-card .title-row { --aff: 24px; }
+  .app-card.card-hero .title-row { --aff: 28px; }
+  .app-card .title-row > .open-affordance { margin-inline-end: calc(-1 * (var(--aff) + .6rem)); }
+  .app-card .app-title { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
 
-@container (max-height: 140px) {
-  .card-wide .app-icon-wrapper { --icon-size: 44px; }
+  @container (max-width: 205px) {
+    .app-card:not(.card-hero):not(.card-wide):not(.card-tall) .bento-footer:has(.variant-chips) .variant-chip { padding-inline: .3rem; }
+  }
+
+  @container (max-height: 110px) {
+    .card-wide .app-icon-wrapper { --icon-size: 52px; }
+    .app-card .app-title { white-space: nowrap; }
+  }
+
+  @container (max-height: 96px) {
+    .card-wide .app-icon-wrapper { --icon-size: 44px; }
+  }
 }
