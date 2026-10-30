@@ -5230,9 +5230,9 @@ html[data-lowend] .qr-stage::after { display: none; }
 @media (max-width: 520px) {
   .app-grid .app-card .bento-header { flex-wrap: wrap; row-gap: .5rem; }
   .app-grid .app-card .header-end { margin-inline-start: auto; }
-  .app-grid .app-card:has(.badges .badge) .card-clip { min-height: calc(11rem + 2.25rem); }
-  .app-grid .app-card:has(.badges .badge + .badge) .card-clip { min-height: calc(11rem + 3.25rem); }
-  .app-grid .app-card:has(.badges .badge + .badge + .badge) .card-clip { min-height: calc(11rem + 4.75rem); }
+  .app-grid .app-card:has(.badges .badge) .card-clip { min-height: calc(11rem + 2.5rem); }
+  .app-grid .app-card:has(.badges .badge + .badge) .card-clip { min-height: calc(11rem + 4.75rem); }
+  .app-grid .app-card:has(.badges .badge + .badge + .badge) .card-clip { min-height: calc(11rem + 7rem); }
 }
 
 @media (min-width: 1025px) {
@@ -5250,9 +5250,16 @@ html[data-lowend] .qr-stage::after { display: none; }
   @container (max-height: 110px) {
     .card-wide .app-icon-wrapper { --icon-size: 52px; }
     .app-card .app-title { white-space: nowrap; }
+    .bento-header, .bento-footer { --chip-h: 24px; }
   }
 
   @container (max-height: 96px) {
     .card-wide .app-icon-wrapper { --icon-size: 44px; }
   }
 }
+
+:root { --chip-h: 28px; }
+@media (max-width: 1024px) { :root { --chip-h: 32px; } }
+.card-qr, .badge, .variant-chips, .palette-qr { block-size: var(--chip-h); box-sizing: border-box; }
+.badge { display: inline-flex; align-items: center; padding-block: 0; border-radius: var(--r-chip); border: 1px solid var(--hairline); font: 600 .68rem/1 var(--ui-font); letter-spacing: .04em; }
+.variant-chips .variant-chip { block-size: calc(var(--chip-h) - 4px); }
