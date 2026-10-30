@@ -5260,6 +5260,6 @@ html[data-lowend] .qr-stage::after { display: none; }
 
 :root { --chip-h: 28px; }
 @media (max-width: 1024px) { :root { --chip-h: 32px; } }
-.card-qr, .badge, .variant-chips, .palette-qr { block-size: var(--chip-h); box-sizing: border-box; }
+.card-qr:not(.card-qr--icon), .badge, .variant-chips, .palette-qr { block-size: var(--chip-h); box-sizing: border-box; }
 .badge { display: inline-flex; align-items: center; padding-block: 0; border-radius: var(--r-chip); border: 1px solid var(--hairline); font: 600 .68rem/1 var(--ui-font); letter-spacing: .04em; }
 .variant-chips .variant-chip { block-size: calc(var(--chip-h) - 4px); }
