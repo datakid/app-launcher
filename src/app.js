@@ -5240,6 +5240,8 @@ const setupInteractions = () => {
           measureRail();
           syncHeroRestBox();
           syncZenMetrics();
+          const iconGrid = document.getElementById('appGrid');
+          if (iconGrid && iconGrid.dataset.layout === 'icons') fitIconLabels(iconGrid);
           document.documentElement.classList.add('fonts-ready');
         });
       };
