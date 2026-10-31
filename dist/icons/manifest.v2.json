@@ -1,24 +1,24 @@
 {
-  "version": 2,
-  "generatedAt": "2026-10-20T20:23:14.278Z",
-  "hash": "01ac8619",
   "atlas": {
-    "file": "icons/atlas.c2da9595.webp",
-    "width": 768,
+    "cell": 128,
+    "file": "icons/atlas.02b8d85c.webp",
     "height": 768,
-    "cell": 128
+    "width": 768
   },
+  "generatedAt": "2026-10-31T05:24:57.930Z",
   "glyphAtlas": {
-    "file": "icons/glyph-atlas.2c29e8ec.webp",
-    "width": 384,
-    "height": 384,
-    "cell": 128
+    "cell": 128,
+    "file": "icons/glyph-atlas.85619065.webp",
+    "height": 256,
+    "width": 384
   },
   "glyphSprite": {
-    "file": "icons/glyphs.a8f51f68.svg"
+    "file": "icons/glyphs.f3066055.svg"
   },
+  "hash": "060cb136",
   "icons": {
     "alt": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 0,
         "y": 0
@@ -26,13 +26,25 @@
       "glyph": {
         "symbol": "g-alt"
       },
-      "tint": null,
+      "hash": "0976f4802cd59f8a1f10e87e7d61af74d22faf3c5355ebea22cc7caf2e49604c",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
+      "sourceTint": [
+        "#e36652",
+        "#febfb3",
+        "#752114"
+      ],
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "306df6169aef31d27c74861b27c4a6f0d23f89a531b4746dea668215b008c48b"
+      "tint": [
+        "#e75e63",
+        "#febdbb",
+        "#781821"
+      ]
     },
     "criteria-builder--meridian": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 128,
         "y": 0
@@ -43,17 +55,25 @@
           "y": 0
         }
       },
-      "tint": [
-        "#9889b7",
+      "hash": "a2ee6180d4334375c01ba3760408301a15b7bfab7be3261fa6ba3ebc89e4fc11",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#9989b7",
         "#d6caee",
         "#483962"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "c69de6b0bcc71bde6a0a04fa07ad6a93bc333559d8b2451d6e31863dc26b3959"
+      "tint": [
+        "#837ba6",
+        "#c0bbdb",
+        "#352d52"
+      ]
     },
     "criteria-builder--rubric": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 256,
         "y": 0
@@ -61,17 +81,25 @@
       "glyph": {
         "symbol": "g-criteria-builder--rubric"
       },
-      "tint": [
+      "hash": "60f94864f922bdc5f99cec9ec9dbd260602d4f48edbe5bca93bd778d73f986af",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
         "#9884ce",
         "#d5c8fd",
         "#493375"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "ed7ebbb0e3d2498ea0ae5e6b8db6d8f6ee27fb536518436da60e3eac9972e354"
+      "tint": [
+        "#9983d4",
+        "#d4ccf0",
+        "#4a3278"
+      ]
     },
     "dafter": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 384,
         "y": 0
@@ -79,17 +107,20 @@
       "glyph": {
         "symbol": "g-dafter"
       },
+      "hash": "21f3ebab2ed72523fad91802fec932e4cb437635fdc6e495b541403b7258a08d",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "status": "found",
       "tint": [
         "#698cf0",
         "#bed0fd",
         "#273c81"
-      ],
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "12ded8fd53b73b9303c9e36b583d88fd640a528c0469873662b7ea0636e8490b"
+      ]
     },
     "draw": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 512,
         "y": 0
@@ -97,129 +128,204 @@
       "glyph": {
         "symbol": "g-draw"
       },
-      "tint": null,
+      "hash": "fb7a6ca202a5b1b9a87d7549f3a92575977669489a75d61848651aaa71bb9247",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "b8f152628ac959eb994b4f769e8bbb4b32fa0d1ea618df1f81ceb3de333e6c9e"
+      "tint": [
+        "#b45cc9",
+        "#f0aef0",
+        "#5b1a66"
+      ]
     },
     "drug-list--free": {
-      "favicon": null,
-      "glyph": null,
-      "tint": null,
-      "shape": "default",
-      "status": "override",
-      "checkedAt": "2026-10-20T20:11:15.691Z",
-      "hash": null
-    },
-    "drug-list--full": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 640,
         "y": 0
       },
       "glyph": {
+        "symbol": "g-drug-list--free"
+      },
+      "hash": "30f142c87fb0aa2579acccc7ce29a796a69b26afb9104a68e6e57320d77989ec",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#de6e39",
+        "#ffc1a7",
+        "#702900"
+      ],
+      "status": "found",
+      "tint": [
+        "#e26c29",
+        "#f2c7b4",
+        "#6e2c02"
+      ]
+    },
+    "drug-list--full": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 128
+      },
+      "glyph": {
         "symbol": "g-drug-list--full"
       },
-      "tint": [
-        "#9b97b3",
-        "#dbd9e8",
-        "#4a475f"
-      ],
+      "hash": "34655de126886eba6de836c226c3f371b9b467906bf49c37a32c1bf55eabb612",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
       "sourceTint": [
         "#928bba",
         "#d1ccf0",
         "#433b65"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "5f81fc0ac8ed4f1e19fa67306b6ba62a8da158af93c1251700cc3153cacc17e2"
+      "tint": [
+        "#908abd",
+        "#cfcbf2",
+        "#413a66"
+      ]
     },
     "entity-tracker": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 0,
+        "x": 128,
         "y": 128
       },
       "glyph": {
         "symbol": "g-entity-tracker"
       },
-      "tint": [
+      "hash": "9e5f4e2b8410ecf6ad36bf1da309e6fb82fdd682326c314838cdbd7492c69473",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
         "#569db6",
         "#a6daee",
         "#014a5d"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "09f60e0bc40cbf4daf8f18f31ed4490068a38cc7e9bd905223e47eb450e43731"
+      "tint": [
+        "#5992b0",
+        "#a5cfe6",
+        "#0d4157"
+      ]
+    },
+    "harvest": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-studio"
+      },
+      "hash": "51513be39b2d5412a3e21f6dc0a4024619d2db6e6d2ae3de012d93c55e8f3700",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#de6e2c",
+        "#fec2a4",
+        "#6d2c00"
+      ],
+      "status": "found",
+      "tint": [
+        "#c06508",
+        "#e7b28c",
+        "#4f2704"
+      ]
     },
     "id-dates--contacts": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 128,
+        "x": 256,
         "y": 128
       },
       "glyph": {
         "symbol": "g-id-dates--contacts"
       },
-      "tint": [
-        "#ed7155",
-        "#fdcfc3",
-        "#7f2b18"
-      ],
+      "hash": "da73c74da06a3988157336bffeaae60651966dfc45a630a38a9047dc7b47753e",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
       "sourceTint": [
         "#e3674b",
         "#fec0b1",
-        "#75220f"
+        "#75220e"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "b19f93a7ee8107d021ee0b73271853aaf570f1e9e0b7accdc6c0f60207de3ad5"
+      "tint": [
+        "#d05a2d",
+        "#ecb19c",
+        "#5e1e02"
+      ]
     },
     "id-dates--id": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 256,
+        "x": 384,
         "y": 128
       },
       "glyph": {
         "symbol": "g-id-dates--id"
       },
-      "tint": [
-        "#bf825f",
-        "#edc9b4",
-        "#5e3821"
-      ],
+      "hash": "1d91b6211bd3749cc5bcac1c93978e8e9e25231b3dceeb66fed47cf0e0919e0b",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
       "sourceTint": [
         "#cc7b49",
-        "#fcc3a2",
+        "#fdc3a2",
         "#693005"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "10f7301b50ae5cf44563460a1b28ff41e27eef2d7a0109890888c30427e2d6e9"
+      "tint": [
+        "#c17c40",
+        "#f3c39d",
+        "#5f3203"
+      ]
     },
     "index-builder": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 384,
+        "x": 512,
         "y": 128
       },
       "glyph": {
         "symbol": "g-index-builder"
       },
-      "tint": [
+      "hash": "499b1490f8e1815a88c92d4b4926822db70024fd5730008eeb90067a60f234a3",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
         "#6b9f8f",
         "#b4dbce",
         "#184d3f"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "b454dc9c396089917330e0526f9a1daf7ecd3cd24f41b07c70c8eea69c6a2dbc"
+      "tint": [
+        "#689884",
+        "#afd4c4",
+        "#164736"
+      ]
     },
     "ledger-form--folio": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 512,
+        "x": 640,
         "y": 128
       },
       "glyph": {
@@ -228,97 +334,281 @@
           "y": 0
         }
       },
-      "tint": null,
+      "hash": "f694dcac0028175dafc943a7d3dac3bdb01b7844bb95f50bc677d07d79e42dde",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "2aa7ce237c81df6b052659c04a67d3363bb385284b36b96150d72ab83d3ef93f"
+      "tint": [
+        "#707a8c",
+        "#7c9bff",
+        "#1c2f8f"
+      ]
     },
     "ledger-form--tally": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 640,
-        "y": 128
+        "x": 0,
+        "y": 256
       },
       "glyph": {
-        "atlas": {
-          "x": 256,
-          "y": 0
-        }
+        "symbol": "g-ledger-form--tally"
       },
-      "tint": [
-        "#eb8562",
-        "#fedcd1",
-        "#873517"
-      ],
+      "hash": "62c3b624a8ebcb1aba7645127ef527360b25cac63c06ec69452944b63d037c3b",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
       "sourceTint": [
         "#d77250",
         "#fdc1ad",
-        "#742301"
+        "#742302"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "44ec5894237c0c8227f040a96a601dcf75206b66ad2d0c737eb1412d641e50cd"
+      "tint": [
+        "#d37059",
+        "#f0c2b7",
+        "#702111"
+      ]
     },
     "paid-calculator--calc": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 0,
+        "x": 128,
         "y": 256
       },
       "glyph": {
         "symbol": "g-paid-calculator--calc"
       },
-      "tint": [
-        "#7789ae",
-        "#b9c7e5",
-        "#2b3a5a"
-      ],
+      "hash": "441aa434f3ea89bc8c4b0dcb51978d2923cb1ab69a12ef853ea3d263a3ea74b3",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
       "sourceTint": [
         "#8092b8",
         "#c3d1ef",
         "#334263"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "c0757d01bf0b63e9cfbe1580e33b588ad30f3c0baecbb42a956791286fa8b249"
+      "tint": [
+        "#7992b5",
+        "#bcd0ec",
+        "#2c4160"
+      ]
     },
     "paid-calculator--daleel": {
-      "favicon": {
-        "x": 128,
-        "y": 256
-      },
-      "glyph": {
-        "symbol": "g-paid-calculator--daleel"
-      },
-      "tint": null,
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "78f3e2fe56dfc87207ec1b7d59ac1485fcf20ca2cd8c4a59d734bfc2699592b0"
-    },
-    "parser": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 256,
         "y": 256
       },
       "glyph": {
+        "symbol": "g-paid-calculator--daleel"
+      },
+      "hash": "2ae1357196651fb631280d3414d8a4b38e97e1406429012b485dd4514e291f7d",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "status": "found",
+      "tint": [
+        "#c96b8b",
+        "#ffb3d9",
+        "#8a1150"
+      ]
+    },
+    "parser": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 384,
+        "y": 256
+      },
+      "glyph": {
         "symbol": "g-parser"
       },
-      "tint": [
+      "hash": "7eb7d20c906296d915386dca4a1d143a6fc2053ca1ba7896c4f7c877631b160b",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
         "#bc73be",
         "#f4baf4",
         "#612664"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "392badecb5d144b5de9e4f8dd7a826adb04ebe9815860a137b4c3e29a7680fef"
+      "tint": [
+        "#b574bf",
+        "#ebbdf0",
+        "#5b2764"
+      ]
     },
     "pharmacy-tools--bugvert": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-pharmacy-tools--bugvert"
+      },
+      "hash": "8caaf28a471ee043abe43cca0aa5fb4952025cafead26b0bddf7708a9e3edc25",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c97a64",
+        "#fec0af",
+        "#6f2914"
+      ],
+      "status": "found",
+      "tint": [
+        "#c07463",
+        "#f6b8ab",
+        "#672415"
+      ]
+    },
+    "pharmacy-tools--pillbug": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 640,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-pharmacy-tools--pillbug"
+      },
+      "hash": "17e59a7b20ec13bcd60e664618b6cf4452bfc10dcd6b9646ec0e429e3dc3a680",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d27556",
+        "#fdc1ad",
+        "#742301"
+      ],
+      "status": "found",
+      "tint": [
+        "#c16f42",
+        "#edb99f",
+        "#5d2703"
+      ]
+    },
+    "plan-maker--express": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-plan-maker--express"
+      },
+      "hash": "7418b3b3aa96716f8ed15363f6fb2341296b9f68f215ee1650fafdd136984196",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#5c9eac",
+        "#acdae4",
+        "#034b57"
+      ],
+      "status": "found",
+      "tint": [
+        "#6099aa",
+        "#aed5e1",
+        "#0f4755"
+      ]
+    },
+    "plan-maker--full": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 128,
+        "y": 384
+      },
+      "glyph": {
+        "atlas": {
+          "x": 256,
+          "y": 0
+        }
+      },
+      "hash": "899ef21546f264408d6258dc56b81afd0903ed596d9778f86574594af2741c0e",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#af82a1",
+        "#eac4dd",
+        "#5a334f"
+      ],
+      "status": "found",
+      "tint": [
+        "#a47597",
+        "#dfb6d2",
+        "#502746"
+      ]
+    },
+    "prep--floe": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 256,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-prep--floe"
+      },
+      "hash": "0aed3d22a0d007e9f334f63eeb88c8606e3530e6c57e5c1dc9942613a73b7c8c",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c47f59",
+        "#fac3a6",
+        "#6b2e01"
+      ],
+      "status": "found",
+      "tint": [
+        "#c07f54",
+        "#eac7b1",
+        "#643105"
+      ]
+    },
+    "prep--prep": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 384,
-        "y": 256
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-prep--prep"
+      },
+      "hash": "c272c0264d03b92a49d303524d6fda9bcdfbb958ba4e811b894136e6bbb45300",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#e36462",
+        "#ffbeba",
+        "#751f22"
+      ],
+      "status": "found",
+      "tint": [
+        "#d75550",
+        "#f4b0aa",
+        "#6a0d12"
+      ]
+    },
+    "protocols": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 384
       },
       "glyph": {
         "atlas": {
@@ -326,25 +616,54 @@
           "y": 128
         }
       },
-      "tint": [
-        "#d3836d",
-        "#fdcfc2",
-        "#78311d"
-      ],
-      "sourceTint": [
-        "#c97a64",
-        "#fec0af",
-        "#6f2914"
-      ],
+      "hash": "9110aea8fde4c0077c48384fa17b8e9fb986360292d1daa26ea360d3d1d56390",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
+      "sourceTint": [
+        "#cf8350",
+        "#fdba74",
+        "#7c2d12"
+      ],
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "8a10109e257f68432e0d297ebfe5be88cd9935fd38fdfab7ff4d307069326cac"
+      "tint": [
+        "#be7834",
+        "#eaaf58",
+        "#672901"
+      ]
     },
-    "pharmacy-tools--pillbug": {
+    "qisma-mizan--express": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 512,
-        "y": 256
+        "x": 640,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-qisma-mizan--express"
+      },
+      "hash": "54b6649134ec2c70089f49c3bd29c29d5bf46ed16ff55cbe916e3abd2ac1ca6b",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d47452",
+        "#fdc1ac",
+        "#722604"
+      ],
+      "status": "found",
+      "tint": [
+        "#c16350",
+        "#e9b0a3",
+        "#601507"
+      ]
+    },
+    "qisma-mizan--full": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 512
       },
       "glyph": {
         "atlas": {
@@ -352,189 +671,53 @@
           "y": 128
         }
       },
-      "tint": [
-        "#c86c4d",
-        "#f3b7a3",
-        "#671f01"
-      ],
-      "sourceTint": [
-        "#d27556",
-        "#fdc1ad",
-        "#742301"
-      ],
+      "hash": "815310e519114a7a23103cd8d02ad4e6d6d4ad2f8986163998504e858f1bb268",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "719f37dbeb08ab08d765170c6266f9a5c42b95d49bf3ed2bcb1d25a39f51d263"
-    },
-    "plan-maker--express": {
-      "favicon": {
-        "x": 640,
-        "y": 256
-      },
-      "glyph": {
-        "symbol": "g-plan-maker--express"
-      },
-      "tint": [
-        "#80a3aa",
-        "#ccdee2",
-        "#344f56"
-      ],
-      "sourceTint": [
-        "#5c9eac",
-        "#acdae4",
-        "#034b57"
-      ],
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "4b23b22f2e1c80d57becd56f403aab652eee862ec666e9d0328b9cdd5cd6f38a"
-    },
-    "plan-maker--full": {
-      "favicon": {
-        "x": 0,
-        "y": 384
-      },
-      "glyph": {
-        "symbol": "g-plan-maker--full"
-      },
-      "tint": [
-        "#af82a1",
-        "#eac4dd",
-        "#5a334f"
-      ],
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "484147c8ef239e9c85278cbb5e770373969a26a68b1ab5d7d7b1b5a2580e1055"
-    },
-    "prep--floe": {
-      "favicon": {
-        "x": 128,
-        "y": 384
-      },
-      "glyph": {
-        "symbol": "g-prep--floe"
-      },
-      "tint": [
-        "#b06d48",
-        "#e6b093",
-        "#542200"
-      ],
-      "sourceTint": [
-        "#c47f59",
-        "#fac3a6",
-        "#6b2e01"
-      ],
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "bcec1d750c4fb786ad0a9b055034be3ac45050a0a14f9d5edb578674df4d0f1b"
-    },
-    "prep--prep": {
-      "favicon": {
-        "x": 256,
-        "y": 384
-      },
-      "glyph": {
-        "symbol": "g-prep--prep"
-      },
-      "tint": [
-        "#e36462",
-        "#ffbeba",
-        "#751f22"
-      ],
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "ef2e4c06ea9a7ad7cd76ffeb682247802edd0f8d15fdbd449afb99b90e822794"
-    },
-    "protocols": {
-      "favicon": {
-        "x": 384,
-        "y": 384
-      },
-      "glyph": {
-        "symbol": "g-protocols"
-      },
-      "tint": null,
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "7d18d40fc5c0d2cd3db01d75405713ea8f0b0f2368266ae1d543597c9c8f712f"
-    },
-    "qisma-mizan--express": {
-      "favicon": {
-        "x": 512,
-        "y": 384
-      },
-      "glyph": {
-        "symbol": "g-qisma-mizan--express"
-      },
-      "tint": [
-        "#b65937",
-        "#dfa490",
-        "#4e1600"
-      ],
-      "sourceTint": [
-        "#d47452",
-        "#fdc1ac",
-        "#722604"
-      ],
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "2b0bd76d7ed0d609fbbdca282ef1701f0658b2ca3640b4e1055d45a086ffa968"
-    },
-    "qisma-mizan--full": {
-      "favicon": {
-        "x": 640,
-        "y": 384
-      },
-      "glyph": {
-        "symbol": "g-qisma-mizan--full"
-      },
-      "tint": [
-        "#b65839",
-        "#dfa491",
-        "#4e1602"
-      ],
       "sourceTint": [
         "#d47354",
         "#fdc1ad",
         "#742302"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "24c05296499b2d6d753afe93f80ac8591116252f5a95cd19e7a94540d7b9c20b"
+      "tint": [
+        "#d77245",
+        "#ffc1a6",
+        "#702900"
+      ]
     },
     "roi--express": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 0,
+        "x": 128,
         "y": 512
       },
       "glyph": {
         "symbol": "g-roi--express"
       },
-      "tint": [
-        "#e29981",
-        "#fee9e2",
-        "#854733"
-      ],
+      "hash": "51b0ab7b686bf042d5e7eeeb478939acc8c18b5f2395e4d7377b5fe1a19060fb",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
       "sourceTint": [
         "#d27556",
         "#fdc1ad",
-        "#742301"
+        "#742400"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "3177b49e4e8ef6c1eb6164a8502c6a856af998dfa32ea7b5943441f2b6d0efe7"
+      "tint": [
+        "#d36e5f",
+        "#fcbdb2",
+        "#741b11"
+      ]
     },
     "roi--full": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
-        "x": 128,
+        "x": 256,
         "y": 512
       },
       "glyph": {
@@ -543,147 +726,205 @@
           "y": 128
         }
       },
-      "tint": [
-        "#d0947d",
-        "#fddcd0",
-        "#77422e"
-      ],
+      "hash": "84baa82a9b2e152993ac4dba542c4972cca4a5c4c3f78dfa053fdb9350c19c78",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
       "sourceTint": [
         "#cb7a5b",
         "#fdc1ab",
         "#702805"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "4ba4c5cc98b0b11b9d7e1fd3529fbb9163ae9c126d7377843c714ca8694a6e30"
+      "tint": [
+        "#ca7b50",
+        "#f8c3aa",
+        "#6a2d03"
+      ]
     },
     "solver": {
-      "favicon": {
-        "x": 256,
-        "y": 512
-      },
-      "glyph": {
-        "symbol": "g-solver"
-      },
-      "tint": [
-        "#78b3a3",
-        "#c2f0e4",
-        "#235e51"
-      ],
-      "sourceTint": [
-        "#66a091",
-        "#afdcd0",
-        "#0e4d41"
-      ],
-      "shape": "default",
-      "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "f73a61e385244bd58f0f60247c7b91542470ba746da9bfceda4df0db7d4fcb06"
-    },
-    "survival-mirror": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 384,
         "y": 512
       },
       "glyph": {
-        "symbol": "g-survival-mirror"
+        "symbol": "g-solver"
       },
-      "tint": [
-        "#9ca0d0",
-        "#e0e2fc",
-        "#4c4d78"
-      ],
-      "sourceTint": [
-        "#8a8dbd",
-        "#cacdf5",
-        "#3c3d67"
-      ],
+      "hash": "5bc60de1b2f223da79107d48ff982c2c275908a516e2d06e023d7c66c6efeb6e",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
+      "sourceTint": [
+        "#66a091",
+        "#afdcd0",
+        "#0e4d41"
+      ],
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "539e16a865c0e53685731ba6561c528bf47c283c2c069b842f6014abe4558c03"
+      "tint": [
+        "#61978d",
+        "#a6d4ca",
+        "#08463d"
+      ]
     },
-    "text-tools--text": {
+    "studio": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 512,
         "y": 512
       },
       "glyph": {
-        "symbol": "g-text-tools--text"
+        "symbol": "g-studio"
       },
-      "tint": [
-        "#c18510",
-        "#f9c880",
-        "#5a3b00"
-      ],
+      "hash": "51513be39b2d5412a3e21f6dc0a4024619d2db6e6d2ae3de012d93c55e8f3700",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
+      "sourceTint": [
+        "#de6e2c",
+        "#fec2a4",
+        "#6d2c00"
+      ],
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "3eb7c8ed1f3d3168dd4c7e0f17a1005ec22c3cafb5ca2361bce5669ea95d016f"
+      "tint": [
+        "#c06508",
+        "#e7b28c",
+        "#4f2704"
+      ]
     },
-    "text-tools--weft": {
+    "survival-mirror": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 640,
         "y": 512
       },
       "glyph": {
-        "atlas": {
-          "x": 0,
-          "y": 256
-        }
+        "symbol": "g-survival-mirror"
       },
-      "tint": [
-        "#cd7b38",
-        "#f8c5a1",
-        "#653303"
-      ],
-      "sourceTint": [
-        "#d47354",
-        "#fdc1ad",
-        "#742302"
-      ],
+      "hash": "ae5d24b1f4412da3744b3990ce3beaaa46d7f889365cbd5e5a83e53c2cccb9b3",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
+      "sourceTint": [
+        "#8a8dbd",
+        "#cacdf5",
+        "#3c3d67"
+      ],
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "621e397e9c17983a7149bf27e6e1640f06ce13d32c0d6427753e699317be42d2"
+      "tint": [
+        "#888dbc",
+        "#c9cdea",
+        "#3a3d66"
+      ]
     },
-    "to-do": {
+    "text-tools--text": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 0,
         "y": 640
       },
       "glyph": {
-        "symbol": "g-to-do"
+        "symbol": "g-text-tools--text"
       },
-      "tint": null,
+      "hash": "bba1eaf510904581e42d0221113554435f6d6ecadec431c7748a25c8e61d7ae9",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
       "shape": "default",
+      "sourceTint": [
+        "#c18510",
+        "#f9c880",
+        "#5a3b00"
+      ],
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "7a55d0d69a4ecf6d35132745cf9e9573eae752506fd9fca3aae33c57cee330bb"
+      "tint": [
+        "#bd8809",
+        "#f1cc8d",
+        "#573e07"
+      ]
     },
-    "workspace": {
+    "text-tools--weft": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
         "x": 128,
         "y": 640
       },
       "glyph": {
+        "symbol": "g-text-tools--weft"
+      },
+      "hash": "9e097f4fc0a4560e66fba3b08ed20f2df984b410af7d435463e8b1d909de14dc",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d47354",
+        "#fdc1ad",
+        "#742302"
+      ],
+      "status": "found",
+      "tint": [
+        "#d2754b",
+        "#e9cabc",
+        "#6e2b05"
+      ]
+    },
+    "to-do": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 256,
+        "y": 640
+      },
+      "glyph": {
+        "symbol": "g-to-do"
+      },
+      "hash": "b74e65bf30885a917acdd0067b75a443fc1dddb6e4347cb644bf581a33fd511c",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#9d72c4",
+        "#ddd6fe",
+        "#4c1d95"
+      ],
+      "status": "found",
+      "tint": [
+        "#aa7aca",
+        "#e9e1ff",
+        "#59279b"
+      ]
+    },
+    "workspace": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 384,
+        "y": 640
+      },
+      "glyph": {
         "symbol": "g-workspace"
       },
-      "tint": [
-        "#c1914b",
-        "#fad49f",
-        "#5b472b"
-      ],
+      "hash": "6537dd315dd6e3f7d83fdd4cd756e5a8277fc8661a687e6e6f6b6dbbaa9ff8e7",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
       "sourceTint": [
         "#c18412",
         "#fbc77c",
         "#5b3b00"
       ],
-      "shape": "default",
       "status": "found",
-      "checkedAt": "2026-10-17T04:14:11.928Z",
-      "hash": "28ed3b7951b0092cff4459b97c35adc74e655b68d51f54f6b6988081966c9dbc"
+      "tint": [
+        "#a97803",
+        "#e5b86a",
+        "#463004"
+      ]
     }
-  }
+  },
+  "version": 2
 }
