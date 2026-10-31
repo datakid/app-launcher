@@ -218,6 +218,32 @@
         "#0d4157"
       ]
     },
+    "harvest": {
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-studio"
+      },
+      "hash": "51513be39b2d5412a3e21f6dc0a4024619d2db6e6d2ae3de012d93c55e8f3700",
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#de6e2c",
+        "#fec2a4",
+        "#6d2c00"
+      ],
+      "status": "found",
+      "tint": [
+        "#c06508",
+        "#e7b28c",
+        "#4f2704"
+      ]
+    },
     "id-dates--contacts": {
       "checkedAt": "2026-10-31T05:23:35.595Z",
       "favicon": {
