@@ -5237,6 +5237,7 @@ html[data-lowend] .qr-stage::after { display: none; }
 
 @media (min-width: 1025px) {
   .app-card .bento-footer .title-stack { margin-inline-end: -.5rem; }
+  .header-end .badges:has(.badge + .badge) .badge { block-size: 22px; }
   .app-card .title-row { min-inline-size: 0; }
   .app-card .title-row { --aff: 24px; }
   .app-card.card-hero .title-row { --aff: 28px; }
