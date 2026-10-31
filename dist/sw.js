@@ -1,4 +1,4 @@
-const CACHE = "lx-3896240b";
+const CACHE = "lx-3c2f4e1f";
 const PRECACHE = ["index.html","app.a85a4d87.css","app.cf2dfa35.js","icons/glyphs.f3066055.svg","favicon.ico","links.json","icons/manifest.v2.json","fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2","fonts/el-messiri-arabic-700-normal.woff2","fonts/inter-latin-400-normal.woff2","fonts/cormorant-garamond-latin-400-italic.woff2","icons/glyph-atlas.85619065.webp"];
 const HASHED = /\/(app\.[0-9a-f]{8}\.(css|js)|icons\/(atlas|glyph-atlas|glyphs)\.[0-9a-f]{8}\.(webp|svg)|fonts\/[^/]+\.woff2)$/;
 const REVALIDATED = /\/(links\.json|icons\/manifest\.v2\.json)$/;
