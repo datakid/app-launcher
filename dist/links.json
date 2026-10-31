@@ -112,6 +112,13 @@
         { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11" },
         { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18" }
       ]
+    },
+    {
+      "id": "palette", "label": { "ar": "مشغّل بديل", "en": "Alt launcher" },
+      "apps": [
+        { "id": "alt", "title": { "ar": "الحساب البديل", "en": "Alt Account" }, "url": "https://alt-app-lanucher.vercel.app/", "icon": "fa-user-secret", "gradient": ["#334155", "#94a3b8", "#0f172a"] },
+        { "id": "harvest", "title": { "ar": "الحصاد", "en": "Harvest" }, "url": "https://harvest-studio-phi.vercel.app/", "icon": "fa-rotate-right", "gradient": ["#3f6212", "#a3e635", "#1a2e05"] }
+      ]
     }
   ]
 }

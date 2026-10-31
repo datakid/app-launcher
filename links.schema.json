@@ -11,7 +11,7 @@
       "type": "array",
       "minItems": 1,
       "maxItems": 12,
-      "description": "Tab categories. The app reads at most 12.",
+      "description": "Tab categories, plus an optional palette-only group with the id palette. The app reads at most 12 in total.",
       "items": {
         "$ref": "#/definitions/category"
       }
@@ -331,7 +331,7 @@
               }
             }
           ],
-          "description": "Unique among categories. The id mine is reserved for user links."
+          "description": "Unique among categories. The id mine is reserved for user links. The id palette marks a palette-only group: its apps are searchable in the command palette under this label and get no tab and no cards."
         },
         "label": {
           "description": "Tab label.",

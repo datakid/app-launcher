@@ -627,6 +627,9 @@ const scheduleWarmActiveEntry = () => {
 };
 
 const categories = [];
+const PALETTE_CAT_ID = 'palette';
+const paletteGroups = [];
+const isPaletteOnly = (cat) => cat.id === PALETTE_CAT_ID;
 
 const STRINGS = {
   skipToContent: { ar: 'تخطي إلى المحتوى', en: 'Skip to content' },
@@ -3409,37 +3412,29 @@ const fuzzyScore = (query, target) => {
   return qi === q.length ? s : -1;
 };
 
-const EXTRA_CAT = { id: '_extra', label: { ar: 'مشغّل بديل', en: 'Alt launcher' } };
-const extraEntries = [
-  { app: { id: 'alt', title: { ar: 'الحساب البديل', en: 'Alt Account' }, url: 'https://alt-app-lanucher.vercel.app/', icon: 'fa-user-secret', gradient: ['#334155', '#94a3b8', '#0f172a'] }, cat: EXTRA_CAT },
-  { app: { id: 'harvest', title: { ar: 'الحصاد', en: 'Harvest' }, url: 'https://harvest-studio-phi.vercel.app/', icon: 'fa-rotate-right', gradient: ['#3f6212', '#a3e635', '#1a2e05'] }, cat: EXTRA_CAT }
-];
 try { localStorage.removeItem('lx-unlocked-secrets'); } catch (e) { if (LX_DEBUG) console.warn(e); }
 
-const allPaletteEntries = () => {
-  const normal = categories.flatMap(cat => cat.apps.flatMap(app => {
-    if (app.variants) {
-      return app.variants.map((v, i) => ({
-        app: {
-          id: `${app.id}::${v.id}`,
-          title: { ar: `${app.title.ar} · ${v.label.ar}`, en: `${app.title.en} · ${v.label.en}` },
-          url: v.url,
-          icon: v.icon,
-          gradient: app.gradient,
-          isNew: app.isNew,
-          since: app.since,
-          closed: app.closed,
-          parentId: app.id,
-          parentTitle: app.title,
-          variantIndex: i
-        },
-        cat
-      }));
-    }
-    return [{ app, cat }];
-  }));
-  return normal.concat(extraEntries);
-};
+const allPaletteEntries = () => [...categories, ...paletteGroups].flatMap(cat => cat.apps.flatMap(app => {
+  if (app.variants) {
+    return app.variants.map((v, i) => ({
+      app: {
+        id: `${app.id}::${v.id}`,
+        title: { ar: `${app.title.ar} · ${v.label.ar}`, en: `${app.title.en} · ${v.label.en}` },
+        url: v.url,
+        icon: v.icon,
+        gradient: app.gradient,
+        isNew: app.isNew,
+        since: app.since,
+        closed: app.closed,
+        parentId: app.id,
+        parentTitle: app.title,
+        variantIndex: i
+      },
+      cat
+    }));
+  }
+  return [{ app, cat }];
+}));
 
 const RECENTS_KEY = 'lx-recents';
 const RECENTS_CAP = 8;
@@ -3530,7 +3525,7 @@ const getActionsForEntry = (entry) => {
     { id: 'copy-title', icon: 'fa-font', label: t('actionCopyTitle'), kbd: '' },
     { id: 'qr', icon: 'fa-qrcode', label: t('actionQr'), kbd: 'Alt+Q' }
   ];
-  if (entry && entry.cat.id !== '_extra') {
+  if (entry && !isPaletteOnly(entry.cat)) {
     actions.push({ id: 'reveal', icon: 'fa-crosshairs', label: t('actionReveal'), kbd: '' });
   }
   return actions;
@@ -3846,7 +3841,7 @@ const renderPaletteResults = (rawQuery) => {
     }
   } else {
     if (!paletteTryPicks) {
-      const pool = allEntries.filter(e => e.cat.id !== '_extra');
+      const pool = allEntries.filter(e => !isPaletteOnly(e.cat));
       const picks = [];
       const used = new Set();
       while (picks.length < Math.min(3, pool.length)) {
@@ -4616,7 +4611,7 @@ const showActionFeedback = (actionId, ok, okLabel, failLabel) => {
 };
 
 const revealInGrid = async (entry) => {
-  if (entry.cat.id === '_extra') return;
+  if (isPaletteOnly(entry.cat)) return;
   const targetId = entry.app.parentId || entry.app.id;
   const targetCatId = entry.cat.id;
   closePaletteImmediate();
@@ -5902,7 +5897,8 @@ const userCategory = (apps) => ({
 
 const composeCategories = () => {
   const mine = readUserLinks();
-  categories.splice(0, categories.length, ...baseCatalog, ...(mine.length ? [userCategory(mine)] : []));
+  paletteGroups.splice(0, paletteGroups.length, ...baseCatalog.filter(isPaletteOnly));
+  categories.splice(0, categories.length, ...baseCatalog.filter(c => !isPaletteOnly(c)), ...(mine.length ? [userCategory(mine)] : []));
 };
 
 const readCachedCatalog = () => {
