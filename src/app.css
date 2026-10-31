@@ -5248,6 +5248,10 @@ html[data-lowend] .qr-stage::after { display: none; }
     .app-card:not(.card-hero):not(.card-wide):not(.card-tall) .bento-footer:has(.variant-chips) .variant-chip { padding-inline: .3rem; }
   }
 
+  @container (max-height: 135px) {
+    :lang(ar) .app-title { line-height: 1.4; }
+  }
+
   @container (max-height: 110px) {
     .card-wide .app-icon-wrapper { --icon-size: 52px; }
     .app-card .app-title { white-space: nowrap; }
