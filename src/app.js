@@ -442,7 +442,8 @@ const primeIconAssets = () => {
 let iconManifest = readIconsCache();
 if (isV1Manifest(iconManifest)) { iconManifest = null; try { localStorage.removeItem(ICONS_KEY); } catch (e) { if (LX_DEBUG) console.warn(e); } }
 primeIconAssets();
-const markKey = (app, variant) => (variant ? `${app.id}--${variant.id}` : String(app.id).replace('::', '--'));
+const ICON_KEY_ALIAS = { harvest: 'studio' };
+const markKey = (app, variant) => (variant ? `${app.id}--${variant.id}` : (ICON_KEY_ALIAS[app.id] || String(app.id).replace('::', '--')));
 const iconEntry = (key) => {
   if (location.protocol === 'file:' || !iconManifest || !Object.hasOwn(iconManifest.icons, key)) return null;
   const e = iconManifest.icons[key];
@@ -485,7 +486,7 @@ const appGradient = (app, variant) => {
 const appMark = (app, variant) => {
   const base = findAppById(app.parentId || app.id) || app;
   const hasVariants = Array.isArray(base.variants) && base.variants.length > 0;
-  const keys = hasVariants ? base.variants.map((v) => `${base.id}--${v.id}`) : [String(base.id)];
+  const keys = hasVariants ? base.variants.map((v) => `${base.id}--${v.id}`) : [ICON_KEY_ALIAS[base.id] || String(base.id)];
   const pick = variant || (hasVariants && !app.parentId ? base.variants[Number(base.defaultVariant) || 0] : null);
   const key = markKey(app, pick);
   const glyph = keys.every((k) => glyphRefFor(k)) ? glyphRefFor(key) : null;
