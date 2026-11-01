@@ -3899,8 +3899,8 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 
 .scrim::before { opacity: .22; }
 :root[data-palette] .scrim::before { opacity: .22; }
-:root[data-palette][data-theme] .scrim::after { opacity: .18; }
-:root[data-palette][data-theme="light"] .scrim::after { opacity: .1; }
+:root[data-palette][data-theme] .scrim::after { opacity: .108; }
+:root[data-palette][data-theme="light"] .scrim::after { opacity: .06; }
 :root[data-palette="vivid"] .scrim,
 :root[data-palette="curated"] .scrim {
   background:
@@ -3946,8 +3946,8 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 :root[data-palette] .controls-pill button[aria-pressed="true"],
 :root[data-palette] .controls-pill button[aria-expanded="true"] {
   color: var(--text);
-  background: light-dark(rgba(24,20,14,.05), rgba(255,255,255,.07));
-  box-shadow: inset 0 0 0 1px var(--hairline);
+  background: color-mix(in oklab, var(--tab-accent) 14%, light-dark(#fff, rgb(255 255 255 / .06)));
+  box-shadow: inset 0 0 0 .5px color-mix(in oklab, var(--tab-accent) 30%, transparent), inset 0 1px 0 light-dark(#fff, rgb(255 255 255 / .08));
 }
 @media (hover: hover) and (pointer: fine) {
   .controls-pill button:hover svg { transform: scale(1.04); }
@@ -3962,7 +3962,7 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
     0 1px 1px light-dark(rgba(30,24,16,.03), rgba(0,0,0,.3)),
     0 22px 48px -30px light-dark(rgba(30,24,16,.26), rgba(0,0,0,.85)),
     inset 0 1px 0 light-dark(rgba(255,255,255,.95), rgba(255,255,255,.05));
-  transition: --tab-accent var(--dur-base) var(--ease-lux), border-color var(--dur-base) var(--ease-lux), box-shadow var(--dur-base) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-lux);
+  transition: --tab-accent var(--dur-base) var(--ease-lux), border-color var(--dur-base) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-lux);
 }
 :root[data-palette] .lx-bar::before {
   inset-inline: 26%;
@@ -3978,8 +3978,7 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
   border-color: color-mix(in oklab, var(--tab-accent) 22%, var(--hairline-strong));
   box-shadow:
     0 1px 1px light-dark(rgba(30,24,16,.03), rgba(0,0,0,.3)),
-    0 24px 52px -30px light-dark(rgba(30,24,16,.3), rgba(0,0,0,.9)),
-    0 0 0 4px color-mix(in oklab, var(--tab-accent) 7%, transparent),
+    0 22px 48px -30px light-dark(rgba(30,24,16,.26), rgba(0,0,0,.85)),
     inset 0 1px 0 light-dark(rgba(255,255,255,.95), rgba(255,255,255,.05));
 }
 :root[data-palette] .lx-bar-search svg.fa-magnifying-glass { color: var(--lux-ink-soft); transition: color var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux); }
@@ -3992,6 +3991,7 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 }
 .lx-bar-label { font-size: 1.04rem; font-weight: 400; transition: color var(--dur-base) var(--ease-lux); }
 :root[data-palette] .lx-bar-kbd {
+  font-size: 11px; line-height: 1; font-variant-numeric: tabular-nums; align-self: center;
   font-weight: 500; letter-spacing: .04em;
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--hairline);
@@ -5330,3 +5330,22 @@ html[data-lowend] .qr-stage::after { display: none; }
     inset 0 -1px 0 light-dark(rgb(0 0 0 / .14), rgb(0 0 0 / .25)),
     0 2px 6px -3px light-dark(color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent), color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5)));
 }
+
+.lx-bar-ring {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--tab-accent) 22%, transparent);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-lux);
+}
+.lx-bar.is-focused .lx-bar-ring { opacity: 1; }
+
+.controls-pill button svg { width: 15px; height: 15px; }
+:root[data-palette] .lx-bar-search svg.fa-magnifying-glass { inline-size: 16px; block-size: 16px; color: var(--text-muted); }
+:root[data-palette] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette] .lx-bar-search:hover svg.fa-magnifying-glass { color: var(--text); }
+}
+@media (min-width: 641px) {
+  .tab-btn svg { font-size: 15px; }
+}
+.tab-ghost { background: light-dark(rgb(20 18 15 / .05), rgb(255 255 255 / .07)); }
