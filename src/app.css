@@ -689,6 +689,11 @@ kbd {
   --c2: var(--tint);
   --c3: var(--tint);
   --tint-ink: var(--c1, #7c9bff);
+  --tile-hi: var(--c2);
+  --tile-mid: var(--tint);
+  --tile-lo: var(--c3);
+  --tile-shade: var(--c3);
+  --glyph-accent: rgba(255,255,255,.62);
 }
 @supports (color: oklch(from red l c h)) {
   .app-card, .palette-item, #paletteDetail, #lx-palette, #lx-qr {
@@ -696,6 +701,22 @@ kbd {
     --c2: oklch(from var(--tint) calc(l + .12) calc(c * .82) h);
     --c3: oklch(from var(--tint) calc(l - .21) c h);
     --tint-ink: var(--tint);
+    --tile-hi: oklch(from var(--tint) min(calc(l + .15), .9) calc(max(c, .085) * .8) calc(h - 12));
+    --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) max(c, .09) h);
+    --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) calc(max(c, .09) * 1.08) calc(h + 14));
+    --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) calc(c * .8) calc(h + 14));
+    --glyph-accent: oklch(from var(--tint) .94 calc(max(c, .06) * .5) calc(h - 12));
+  }
+  :root[data-palette="curated"] .app-card,
+  :root[data-palette="curated"] .palette-item,
+  :root[data-palette="curated"] #paletteDetail,
+  :root[data-palette="curated"] #lx-palette,
+  :root[data-palette="curated"] #lx-qr {
+    --tile-hi: oklch(from var(--tint) min(calc(l + .15), .9) calc(max(c, .085) * .8) calc(h - 6));
+    --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) max(c, .09) h);
+    --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) calc(max(c, .09) * 1.08) calc(h + 6));
+    --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) calc(c * .8) calc(h + 6));
+    --glyph-accent: oklch(from var(--tint) .94 calc(max(c, .06) * .5) calc(h - 6));
   }
   :root[data-theme="light"] .app-card,
   :root[data-theme="light"] .palette-item,
@@ -967,28 +988,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .app-icon-wrapper {
   --icon-size: clamp(46px, 6.4dvh, 56px);
   --icon-radius: 13px;
-  --icon-veil: light-dark(rgba(255,255,255,.28), rgba(255,255,255,.42));
-  --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.10));
   width: var(--icon-size); height: var(--icon-size);
   border-radius: var(--icon-radius);
-  background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 16%) calc(28% - var(--ty,0) * 11%),
-      var(--icon-veil), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   display: flex; align-items: center; justify-content: center;
-  box-shadow:
-    0 calc(10px + var(--icon-lift) * 5px)
-      calc(24px + var(--icon-lift) * 10px) -10px
-      color-mix(in oklab, var(--c1) 45%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.42),
-    inset 0 -1px 0 rgba(0,0,0,.3),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
   position: relative; flex-shrink: 0;
   transform:
     translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0)
-    rotate(calc(var(--icon-lift) * -2deg))
     scale(calc(1 + .05 * var(--icon-lift)));
 }
 
@@ -1000,28 +1005,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   .palette-item:hover .app-icon-wrapper {
     --icon-lift: 1;
   }
-}
-
-.app-icon-wrapper::before {
-  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background:
-    radial-gradient(72% 56% at calc(50% - var(--tx,0) * 15%) calc(24% - var(--ty,0) * 11%),
-      rgba(255,255,255,.5) 0%, rgba(255,255,255,.15) 44%, rgba(255,255,255,0) 80%);
-  mix-blend-mode: plus-lighter;
-  opacity: calc(.24 * var(--icon-lift));
-}
-
-:root[data-theme="light"] .app-icon-wrapper::before {
-  background:
-    radial-gradient(72% 56% at calc(50% - var(--tx,0) * 15%) calc(24% - var(--ty,0) * 11%),
-      rgba(255,255,255,.38) 0%, rgba(255,255,255,.11) 44%, rgba(255,255,255,0) 80%);
-  opacity: calc(.18 * var(--icon-lift));
-}
-
-.app-icon-wrapper::after {
-  content: ''; position: absolute; inset: -22px; border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in oklab, var(--tint) 70%, transparent), color-mix(in oklab, var(--tint) 22%, transparent) 45%, transparent 100%);
-  opacity: calc(.34 * var(--icon-lift)); z-index: -1; pointer-events: none;
 }
 
 .fa-svg, svg.fas { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; flex-shrink: 0; overflow: visible; }
@@ -1036,13 +1019,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .lx-fav { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; border-radius: inherit; position: relative; z-index: 1; }
 .app-icon-wrapper .lx-fav.app-icon { filter: none; text-shadow: none; }
-.app-icon-wrapper[data-mark="favicon"] {
-  background: light-dark(#ffffff, #171a21);
-  box-shadow:
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 0 0 1px light-dark(rgba(15,23,42,.16), rgba(255,255,255,.18));
-}
-.app-icon-wrapper[data-mark="favicon"]::before { display: none; }
 .card-glyph .lx-fav { inline-size: 1em; block-size: 1em; object-fit: contain; opacity: .14; filter: grayscale(1); border-radius: 22%; }
 .ctx-head-icon .lx-fav { inline-size: 100%; block-size: 100%; border-radius: inherit; object-fit: cover; }
 .ctx-head-icon[data-mark="favicon"] { background: light-dark(#ffffff, #171a21); box-shadow: inset 0 0 0 1px light-dark(rgba(15,23,42,.16), rgba(255,255,255,.18)); }
@@ -1197,9 +1173,10 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .card-tall .app-icon { font-size: clamp(1.7rem, 3.6dvh, 2.2rem); }
 .card-tall .app-title { font-size: clamp(1.5rem, 3.4dvh, 2.2rem); font-weight: 700; }
 
+.app-card.status-closed .app-icon-wrapper { opacity: .78; }
+.app-card.status-closed .app-title { opacity: .7; }
 .app-card.status-closed .app-icon-wrapper,
 .app-card.status-closed .app-title {
-  opacity: .7;
   transition: opacity var(--dur-fast) var(--ease-lux);
 }
 .app-card.status-closed.is-kb-focus .app-icon-wrapper,
@@ -1527,7 +1504,6 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 
 .palette-item .app-icon-wrapper {
   --icon-size: 34px; --icon-radius: 10px;
-  box-shadow: 0 2px 6px -2px color-mix(in oklab, var(--c1) 50%, transparent), inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.08);
   transform: none;
 }
 .palette-item .app-icon-wrapper::after { display: none; }
@@ -1847,13 +1823,6 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   content: ''; position: absolute; inset-inline: 0; top: 0; height: 1px;
   background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 50%, transparent), transparent);
 }
-.palette-detail .app-icon-wrapper {
-  box-shadow:
-    0 14px 30px -12px color-mix(in oklab, var(--c1) 70%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.45),
-    inset 0 0 0 1px rgba(255,255,255,.12);
-}
 .palette-detail-watermark {
   color: color-mix(in oklab, var(--tint) 10%, transparent);
   -webkit-mask-image: linear-gradient(200deg, #000 25%, transparent 90%);
@@ -2026,17 +1995,6 @@ h1 {
 .card-sheen { box-shadow: inset 0 1px 0 color-mix(in oklab, var(--tint) 45%, rgba(255,255,255,.35)); }
 
 .app-icon-wrapper { border-radius: calc(var(--icon-size) * .3); }
-.app-icon-wrapper::after { opacity: calc(.42 * var(--icon-lift)); }
-.app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(10px + var(--icon-lift) * 8px) calc(22px + var(--icon-lift) * 14px) -10px color-mix(in oklab, var(--c1) 55%, transparent),
-    0 2px 5px -2px rgba(0,0,0,.35),
-    0 0 0 1px light-dark(rgba(255,255,255,.7), rgba(255,255,255,.05)),
-    inset 0 1px 0 rgba(255,255,255,.5),
-    inset 0 -1px 0 rgba(0,0,0,.28),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -6px 12px -6px rgba(0,0,0,.25);
-}
 
 .card-meta::before {
   content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%;
@@ -2138,9 +2096,8 @@ h1 {
 }
 .palette-cursor.is-dimmed::before { opacity: 0; }
 .palette-item { border-radius: 13px; }
-.palette-item .app-icon-wrapper { transition: --icon-lift var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
+.palette-item .app-icon-wrapper { transition: --icon-lift var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
 .palette-item.is-active .app-icon-wrapper {
-  box-shadow: 0 6px 16px -6px color-mix(in oklab, var(--c1) 80%, transparent), inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 1px rgba(255,255,255,.12);
   transform: scale(1.06);
 }
 .palette-item-title mark { box-shadow: inset 0 -0.42em 0 color-mix(in oklab, var(--tint) 32%, transparent); }
@@ -2394,27 +2351,11 @@ h1 {
 .app-card.status-closed .card-glyph { color: color-mix(in oklab, var(--text) 4%, transparent); }
 
 .app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.12), rgba(255,255,255,.16));
-  --icon-rim: light-dark(rgba(255,255,255,.2), rgba(255,255,255,.08));
   border-radius: calc(var(--icon-size) * .27);
-  background:
-    radial-gradient(70% 55% at calc(50% - var(--tx,0) * 14%) calc(18% - var(--ty,0) * 10%), var(--icon-veil), transparent 70%),
-    linear-gradient(165deg, var(--c2) 0%, var(--tint) 46%, var(--c3) 100%);
   transform:
     translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0)
     scale(calc(1 + .03 * var(--icon-lift)));
 }
-.app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px color-mix(in oklab, var(--c3) 60%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.3)),
-    inset 0 1px 0 rgba(255,255,255,.26),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -10px 16px -12px rgba(0,0,0,.3);
-}
-.app-icon-wrapper::before { opacity: calc(.12 * var(--icon-lift)); }
-:root[data-theme="light"] .app-icon-wrapper::before { opacity: calc(.1 * var(--icon-lift)); }
-.app-icon-wrapper::after { opacity: calc(.14 * var(--icon-lift)); }
 .app-icon { color: rgba(255,255,255,.95); text-shadow: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.2)); }
 
 .app-title {
@@ -2522,11 +2463,9 @@ h1 {
 .palette-item { border-radius: 10px; }
 .palette-item .app-icon-wrapper {
   --icon-size: 32px;
-  box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.24), inset 0 0 0 1px rgba(255,255,255,.08);
 }
 .palette-item.is-active .app-icon-wrapper {
   transform: scale(1.03);
-  box-shadow: 0 4px 10px -6px color-mix(in oklab, var(--c3) 80%, transparent), inset 0 1px 0 rgba(255,255,255,.28), inset 0 0 0 1px rgba(255,255,255,.1);
 }
 .palette-item-title mark { box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--tint) 70%, transparent); border-radius: 0; }
 .palette-detail-slab {
@@ -2538,11 +2477,6 @@ h1 {
 .palette-detail-watermark { color: color-mix(in oklab, var(--tint) 5%, transparent); }
 .palette-detail .app-icon-wrapper {
   --icon-size: 56px;
-  box-shadow:
-    0 10px 22px -14px color-mix(in oklab, var(--c3) 75%, transparent),
-    0 1px 2px rgba(0,0,0,.24),
-    inset 0 1px 0 rgba(255,255,255,.26),
-    inset 0 0 0 1px rgba(255,255,255,.08);
 }
 .palette-detail-eyebrow { letter-spacing: .16em; }
 :root:lang(ar) .palette-detail-eyebrow { letter-spacing: 0; }
@@ -2727,26 +2661,6 @@ h1 {
     color-mix(in oklab, var(--tint-ink) 92%, var(--text)) 78%,
     var(--tint-ink) 100%);
 }
-:root[data-palette="vivid"] .app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.28), rgba(255,255,255,.42));
-  --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.10));
-  background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 16%) calc(28% - var(--ty,0) * 11%), var(--icon-veil), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
-}
-:root[data-palette="vivid"] .app-icon-wrapper::before { opacity: calc(.24 * var(--icon-lift)); }
-:root[data-palette="vivid"][data-theme="light"] .app-icon-wrapper::before { opacity: calc(.18 * var(--icon-lift)); }
-:root[data-palette="vivid"] .app-icon-wrapper::after { opacity: calc(.42 * var(--icon-lift)); }
-:root[data-palette="vivid"] .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(10px + var(--icon-lift) * 8px) calc(22px + var(--icon-lift) * 14px) -10px color-mix(in oklab, var(--c1) 55%, transparent),
-    0 2px 5px -2px rgba(0,0,0,.35),
-    0 0 0 1px light-dark(rgba(255,255,255,.7), rgba(255,255,255,.05)),
-    inset 0 1px 0 rgba(255,255,255,.5),
-    inset 0 -1px 0 rgba(0,0,0,.28),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -6px 12px -6px rgba(0,0,0,.25);
-}
 :root[data-palette="vivid"] .app-icon { text-shadow: 0 1px 2px rgba(0,0,0,.35); filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
 :root[data-palette="vivid"][data-theme] .card-clip {
   background-image:
@@ -2858,16 +2772,6 @@ h1 {
 }
 :root[data-palette="vivid"] .palette-detail-slab::after { background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 50%, transparent), transparent); }
 :root[data-palette="vivid"] .palette-detail-watermark { color: color-mix(in oklab, var(--tint) 10%, transparent); }
-:root[data-palette="vivid"] .palette-detail .app-icon-wrapper {
-  box-shadow:
-    0 14px 30px -12px color-mix(in oklab, var(--c1) 70%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.45),
-    inset 0 0 0 1px rgba(255,255,255,.12);
-}
-:root[data-palette="vivid"] .palette-item.is-active .app-icon-wrapper {
-  box-shadow: 0 6px 16px -6px color-mix(in oklab, var(--c1) 80%, transparent), inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 1px rgba(255,255,255,.12);
-}
 :root[data-palette="vivid"] .palette-action.is-primary {
   background:
     linear-gradient(180deg, light-dark(rgba(255,255,255,.92), rgba(255,255,255,.07)), light-dark(rgba(255,255,255,.35), rgba(255,255,255,.01))),
@@ -3139,8 +3043,6 @@ h1 {
   }
   :root { --surface: light-dark(rgba(255,255,255,0.92), rgba(255,255,255,0.10)); }
   #lx-palette { background-color: light-dark(#f3f1ec, #0c0d10); }
-  
-  .app-icon-wrapper::before { display: none; }
 }
 
 @media (prefers-contrast: more) {
@@ -3169,7 +3071,7 @@ h1 {
   :root .card-qr:active { scale: none; }
   .app-card, .card-clip, .app-icon-wrapper, .app-title, .badges, .variant-chips,
   .tab-indicator, .tab-ghost, .variant-chip-indicator {
-    transition-property: opacity, color, background-color, border-color, box-shadow;
+    transition-property: opacity, color, background-color, border-color;
   }
   #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
   .lx-bar { transition-property: opacity; }
@@ -3632,38 +3534,7 @@ h1 {
 .badge { padding: .3rem .58rem; }
 .badge-closed { font-weight: 700; }
 .badge-closed .badge-dot { box-shadow: 0 0 0 2px color-mix(in oklab, var(--closed-ink) 18%, transparent); }
-
-.app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.14), rgba(255,255,255,.18));
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.035) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
-    radial-gradient(70% 55% at calc(50% - var(--tx,0) * 14%) calc(18% - var(--ty,0) * 10%), var(--icon-veil), transparent 70%),
-    linear-gradient(165deg, var(--c2) 0%, var(--tint) 46%, var(--c3) 100%);
-}
-.app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px color-mix(in oklab, var(--c3) 62%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.32)),
-    0 0 0 1px light-dark(rgba(255,255,255,.55), rgba(255,255,255,.03)),
-    inset 0 1px 0 rgba(255,255,255,.32),
-    inset 0 -1px 0 rgba(0,0,0,.2),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -10px 16px -12px rgba(0,0,0,.3);
-}
-.palette-item .app-icon-wrapper,
-.palette-detail .app-icon-wrapper {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.035) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
-    linear-gradient(165deg, var(--c2) 0%, var(--tint) 46%, var(--c3) 100%);
-}
 .app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.26)); }
-
-:root[data-palette="vivid"] .app-icon-wrapper {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.04) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 16%) calc(28% - var(--ty,0) * 11%), var(--icon-veil), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
-}
 
 .lx-bar-label { color: color-mix(in oklab, var(--text-muted) 88%, var(--text)); }
 .tab-indicator { transition: background-color var(--dur-base) var(--ease-lux), box-shadow var(--dur-base) var(--ease-lux); }
@@ -3838,45 +3709,7 @@ h1 {
     --tint-ink: oklch(from var(--tint) .34 .005 h);
   }
 }
-:root[data-palette="mono"] .app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.24), rgba(255,255,255,.22));
-  --icon-rim: light-dark(rgba(255,255,255,.3), rgba(255,255,255,.15));
-  background:
-    var(--noise) 0 0 / 96px 96px repeat,
-    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04) 42%, rgba(255,255,255,0) 62%, rgba(0,0,0,.05) 100%),
-    linear-gradient(115deg, transparent 36%, rgba(255,255,255,.045) 50%, transparent 64%),
-    radial-gradient(70% 55% at calc(50% - var(--tx,0) * 14%) calc(18% - var(--ty,0) * 10%), var(--icon-veil), transparent 70%),
-    linear-gradient(160deg, var(--c2) 0%, var(--tint) 48%, var(--c3) 100%);
-}
-:root[data-palette="mono"] .palette-item .app-icon-wrapper,
-:root[data-palette="mono"] .palette-detail .app-icon-wrapper {
-  background:
-    var(--noise) 0 0 / 96px 96px repeat,
-    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04) 42%, rgba(255,255,255,0) 62%, rgba(0,0,0,.05) 100%),
-    linear-gradient(115deg, transparent 36%, rgba(255,255,255,.045) 50%, transparent 64%),
-    linear-gradient(160deg, var(--c2) 0%, var(--tint) 48%, var(--c3) 100%);
-}
-:root[data-palette="mono"] .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px rgba(0,0,0,.55),
-    0 1px 2px light-dark(rgba(0,0,0,.16), rgba(0,0,0,.36)),
-    0 0 0 1px light-dark(rgba(255,255,255,.55), rgba(255,255,255,.035)),
-    inset 0 1px 0 rgba(255,255,255,.38),
-    inset 0 -1px 0 rgba(0,0,0,.26),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -10px 16px -12px rgba(0,0,0,.34);
-}
 :root[data-palette="mono"] .app-icon { color: light-dark(#fff, rgba(255,255,255,.94)); filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.38)); }
-:root[data-palette="mono"][data-theme="light"] .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px rgba(0,0,0,.42),
-    0 1px 2px rgba(0,0,0,.14),
-    0 0 0 1px rgba(255,255,255,.6),
-    inset 0 1px 0 rgba(255,255,255,.45),
-    inset 0 -1px 0 rgba(0,0,0,.18),
-    inset 0 0 0 1px rgba(255,255,255,.22),
-    inset 0 -10px 16px -12px rgba(0,0,0,.26);
-}
 :root[data-palette="mono"][data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.068); }
 :root[data-palette="mono"][data-theme] .card-clip {
   background-image:
@@ -4253,32 +4086,7 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
     --tint-ink: oklch(from var(--c1) .45 clamp(.08, c, .12) h);
   }
 }
-
-:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.16), rgba(255,255,255,.14));
-  --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.09));
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0) 48%, rgba(0,0,0,.06) 100%),
-    radial-gradient(80% 60% at calc(50% - var(--tx,0) * 14%) calc(12% - var(--ty,0) * 10%), var(--icon-veil), transparent 72%),
-    linear-gradient(160deg, var(--c2) 0%, var(--tint) 50%, var(--c3) 100%);
-}
-:root[data-palette]:not([data-palette="muted"]) .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(8px + var(--icon-lift) * 6px) calc(18px + var(--icon-lift) * 12px) -12px color-mix(in oklab, var(--c3) 70%, transparent),
-    0 1px 2px light-dark(rgba(30,24,16,.12), rgba(0,0,0,.35)),
-    inset 0 1px 0 rgba(255,255,255,.3),
-    inset 0 0 0 .5px var(--icon-rim),
-    inset 0 -8px 14px -10px rgba(0,0,0,.22);
-  transition: box-shadow var(--dur-base) var(--ease-lux);
-}
-:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::before { opacity: calc(.12 * var(--icon-lift)); }
-:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::after { opacity: calc(.16 * var(--icon-lift)); }
 :root[data-palette]:not([data-palette="muted"]) .app-icon { text-shadow: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.18)); }
-:root[data-palette="mono"] .app-icon-wrapper {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0) 48%, rgba(0,0,0,.06) 100%),
-    linear-gradient(160deg, var(--c2) 0%, var(--tint) 50%, var(--c3) 100%);
-}
 
 :root[data-palette]:not([data-palette="muted"]) .app-title {
   background-image: linear-gradient(135deg,
@@ -4844,9 +4652,8 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   border-radius: calc(var(--r-card) * .78);
   cursor: pointer;
 }
-:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .app-icon-wrapper,
-:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .icon-label { opacity: .5; }
-:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .app-icon-wrapper { filter: grayscale(1); }
+:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .app-icon-wrapper { opacity: .78; }
+:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .icon-label { opacity: .7; }
 :root .app-grid[data-layout="icons"] .app-card--icon { --icon-size: 64px; }
 :root .app-grid[data-layout="icons"] .app-card--icon .app-icon-wrapper {
   --icon-size: inherit;
@@ -5322,4 +5129,149 @@ html[data-lowend] .qr-stage::after { display: none; }
     line-clamp: 2;
     overflow: hidden;
   }
+}
+
+@supports (color: oklch(from red l c h)) {
+  :root[data-palette] .app-card.status-closed {
+    --tint: oklch(from var(--c1, #7c9bff) .56 .015 h);
+    --tile-hi: oklch(from var(--tint) min(calc(l + .15), .9) c calc(h - 12));
+    --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) c h);
+    --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) c calc(h + 14));
+    --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) c calc(h + 14));
+    --glyph-accent: oklch(from var(--tint) .94 c calc(h - 12));
+  }
+}
+:root[data-palette="mono"] .app-card,
+:root[data-palette="mono"] .palette-item,
+:root[data-palette="mono"] #paletteDetail,
+:root[data-palette="mono"] #lx-palette,
+:root[data-palette="mono"] #lx-qr {
+  --tile-hi: oklch(.78 0 0);
+  --tile-mid: oklch(.56 0 0);
+  --tile-lo: oklch(.34 0 0);
+  --tile-shade: oklch(.2 0 0);
+  --glyph-accent: oklch(.94 0 0);
+}
+
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper,
+:root[data-palette]:not([data-palette="muted"]) .app-card .app-icon-wrapper,
+:root[data-palette]:not([data-palette="muted"]) .palette-item .app-icon-wrapper,
+:root[data-palette]:not([data-palette="muted"]) .palette-detail .app-icon-wrapper {
+  background: none;
+  box-shadow: none;
+  isolation: isolate;
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::before {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  mix-blend-mode: normal;
+  opacity: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 52% at calc(30% - var(--tx, 0) * 12%) calc(6% - var(--ty, 0) * 8%), rgb(255 255 255 / .34), transparent 70%),
+    linear-gradient(180deg, rgb(255 255 255 / .16) 0%, rgb(255 255 255 / 0) 44%),
+    linear-gradient(158deg, var(--tile-hi) 0%, var(--tile-mid) 50%, var(--tile-lo) 100%);
+  box-shadow:
+    var(--tile-rim, 0 0 0 0 transparent),
+    inset 0 1px 0 rgb(255 255 255 / .45),
+    inset 0 0 0 .5px rgb(255 255 255 / .18),
+    inset 0 -1px 0 rgb(0 0 0 / .14),
+    inset 0 calc(var(--icon-size) * -.18) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.2) color-mix(in oklab, var(--tile-shade) 55%, transparent),
+    0 .5px 1px rgb(0 0 0 / .12),
+    0 calc(var(--icon-size) * .08) calc(var(--icon-size) * .22) calc(var(--icon-size) * -.1) color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent);
+}
+:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] .app-icon-wrapper::before {
+  box-shadow:
+    var(--tile-rim, 0 0 0 0 transparent),
+    inset 0 1px 0 rgb(255 255 255 / .3),
+    inset 0 0 0 .5px rgb(255 255 255 / .12),
+    inset 0 -1px 0 rgb(0 0 0 / .25),
+    inset 0 calc(var(--icon-size) * -.18) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.2) color-mix(in oklab, var(--tile-shade) 70%, transparent),
+    0 0 0 .5px rgb(255 255 255 / .05),
+    0 1px 2px rgb(0 0 0 / .45),
+    0 calc(var(--icon-size) * .1) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.12) color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5));
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 18% 12% -6%;
+  z-index: -2;
+  border-radius: inherit;
+  background: var(--tile-lo);
+  filter: blur(calc(var(--icon-size) * .16));
+  opacity: calc(.5 * var(--icon-lift, 0));
+  transform: translate3d(0, calc(var(--icon-lift, 0) * var(--icon-size) * .1), 0) scale(calc(.9 + .1 * var(--icon-lift, 0)));
+  pointer-events: none;
+}
+:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] .app-icon-wrapper::after {
+  opacity: calc(.38 * var(--icon-lift, 0));
+}
+:root[data-palette="mono"][data-theme="light"] .app-icon-wrapper { --tile-rim: inset 0 .5px 0 rgb(255 255 255 / .55); }
+
+@supports (corner-shape: squircle) {
+  :root:not([data-corners="crisp"]) .app-icon-wrapper,
+  :root:not([data-corners="crisp"]) .app-icon-wrapper::before,
+  :root:not([data-corners="crisp"]) .app-icon-wrapper::after {
+    corner-shape: squircle;
+  }
+  :root:not([data-corners="crisp"]) .app-icon-wrapper {
+    --icon-radius-sq: calc(var(--icon-size) * var(--r-icon, .27) * 1.7);
+    border-radius: var(--icon-radius-sq);
+  }
+}
+
+.app-icon-wrapper .lx-glyph { scale: var(--glyph-scale, 1); }
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper :is(svg.app-icon, svg.mark-glyph) {
+  fill: url(#lx-gf);
+  color: #fff;
+  --lx-ga: var(--glyph-accent);
+  filter: drop-shadow(0 1px 0 color-mix(in oklab, var(--tile-shade) 55%, transparent)) drop-shadow(0 calc(var(--icon-size) * .03) calc(var(--icon-size) * .05) color-mix(in oklab, var(--tile-shade) 40%, transparent));
+  text-shadow: none;
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper .lx-glyph.mark-glyph-atlas::before {
+  background: linear-gradient(180deg, #fff, rgb(255 255 255 / .82));
+}
+
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"] {
+  --ambient-mix: 25%;
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"]::before {
+  background: linear-gradient(180deg, light-dark(#ffffff, #2c2e33) 0%, light-dark(#f7f5f0, #212328) 100%);
+}
+@supports (color: oklch(from red l c h)) {
+  :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"]::before {
+    background: linear-gradient(180deg, light-dark(#ffffff, oklch(from var(--tint) .32 .012 h)) 0%, light-dark(oklch(.975 .006 85), oklch(from var(--tint) .26 .01 h)) 100%);
+  }
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"] .lx-fav {
+  inline-size: 68%;
+  block-size: 68%;
+  object-fit: contain;
+  border-radius: 22%;
+}
+:root[data-palette="mono"] .app-icon-wrapper[data-mark="favicon"] .lx-fav { filter: grayscale(1); }
+
+:root[data-palette="muted"] .app-icon-wrapper,
+:root[data-palette="muted"] .app-card .app-icon-wrapper,
+:root[data-palette="muted"] .palette-item .app-icon-wrapper,
+:root[data-palette="muted"] .palette-item.is-active .app-icon-wrapper,
+:root[data-palette="muted"] .palette-detail .app-icon-wrapper {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--tint) 14%, var(--bg)) 0%, color-mix(in oklab, var(--tint) 22%, var(--bg)) 100%);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--tint) 34%, transparent),
+    inset 0 1px 0 light-dark(rgba(255,255,255,.8), rgba(255,255,255,.07)),
+    inset 0 -1px 0 color-mix(in oklab, var(--tint) 18%, transparent),
+    0 0 0 .5px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.4)),
+    0 1px 2px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.35));
+}
+:root[data-palette="muted"] .app-card:not(.app-card--icon) .app-icon-wrapper,
+:root[data-palette="muted"] .palette-item .app-icon-wrapper {
+  translate: 0 calc(var(--icon-lift, 0) * -1px);
+}
+:root[data-palette="muted"] .app-icon-wrapper :is(svg.app-icon, svg.mark-glyph) {
+  --lx-ga: color-mix(in oklab, var(--tint-ink) 45%, var(--bg));
 }

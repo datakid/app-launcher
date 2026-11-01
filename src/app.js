@@ -265,7 +265,6 @@ const ensureIcon = (name) => {
       sym.setAttribute('viewBox', vb);
       paths.forEach((d) => {
         const p = document.createElementNS(NS, 'path');
-        p.setAttribute('fill', 'currentColor');
         p.setAttribute('d', d);
         sym.appendChild(p);
       });
@@ -449,14 +448,26 @@ const iconEntry = (key) => {
   return e && typeof e === 'object' ? e : null;
 };
 const cellRef = (a, pos, atlas) => (a && pos && Number.isInteger(pos.x) && Number.isInteger(pos.y) && pos.x >= 0 && pos.y >= 0 && pos.x < a.width && pos.y < a.height ? { atlas, c: pos.x / a.cell, r: pos.y / a.cell, sig: `${atlas}:${pos.x},${pos.y}` } : null);
+const glyphScaleOf = (e) => {
+  const ink = typeof e.ink === 'number' ? e.ink : 0;
+  return ink > 0 && ink <= 1 ? Math.round(Math.min(1.14, Math.max(0.86, Math.sqrt(0.3 / ink))) * 100) / 100 : null;
+};
+const syncGlyphScale = (node, scale) => {
+  const next = scale ? String(scale) : '';
+  if (node.style.getPropertyValue('--glyph-scale') === next) return;
+  if (next) node.style.setProperty('--glyph-scale', next);
+  else node.style.removeProperty('--glyph-scale');
+};
 const glyphRefFor = (key) => {
   const e = iconEntry(key);
   if (!e || e.status === 'default') return null;
   if (isV1Manifest(iconManifest)) return typeof e.glyph === 'string' && GLYPH_RE.test(e.glyph) ? { url: e.glyph, sig: `v1:${e.glyph}` } : null;
   const g = e.glyph;
   if (!g || typeof g !== 'object') return null;
-  if (typeof g.symbol === 'string' && SYM_RE.test(g.symbol)) return iconAssets.sprite && document.getElementById(g.symbol) ? { sym: g.symbol, sig: `s:${g.symbol}` } : null;
-  return iconAssets.glyphAtlas ? cellRef(iconManifest.glyphAtlas, g.atlas, 'g') : null;
+  const scale = glyphScaleOf(e);
+  if (typeof g.symbol === 'string' && SYM_RE.test(g.symbol)) return iconAssets.sprite && document.getElementById(g.symbol) ? { sym: g.symbol, sig: `s:${g.symbol}`, scale } : null;
+  const cell = iconAssets.glyphAtlas ? cellRef(iconManifest.glyphAtlas, g.atlas, 'g') : null;
+  return cell ? { ...cell, scale } : null;
 };
 const faviconRefFor = (key) => {
   const e = iconEntry(key);
@@ -498,8 +509,9 @@ const glyphHtml = (m, cls) => {
   const c = cls ? `${cls} ` : '';
   const r = m.ref;
   if (r.url) return `<span class="${c}lx-glyph" data-ms="${r.sig}" style="--glyph:url(${r.url})" aria-hidden="true"></span>`;
-  if (r.sym) return `<svg class="${c}lx-glyph mark-glyph" data-ms="${r.sig}" aria-hidden="true" focusable="false"><use href="#${r.sym}"></use></svg>`;
-  return `<span class="${c}lx-glyph mark-glyph-atlas" data-ms="${r.sig}" style="--ac:${r.c};--ar:${r.r}" aria-hidden="true"></span>`;
+  const scaleStyle = r.scale ? `--glyph-scale:${r.scale}` : '';
+  if (r.sym) return `<svg class="${c}lx-glyph mark-glyph" data-ms="${r.sig}"${scaleStyle ? ` style="${scaleStyle}"` : ''} aria-hidden="true" focusable="false"><use href="#${r.sym}"></use></svg>`;
+  return `<span class="${c}lx-glyph mark-glyph-atlas" data-ms="${r.sig}" style="--ac:${r.c};--ar:${r.r}${scaleStyle ? `;${scaleStyle}` : ''}" aria-hidden="true"></span>`;
 };
 const favHtml = (m, cls) => {
   const c = cls ? `${cls} ` : '';
@@ -522,9 +534,13 @@ const retileIcon = (host, app, variant, iconName, cls = 'app-icon') => {
   if (cur && markKind(cur) === m.kind) {
     if (m.kind === 'fa') { setIcon(cur, iconName); return cur; }
     const sig = m.ref.sig;
-    if (cur.dataset.ms === sig) return cur;
+    if (cur.dataset.ms === sig) {
+      if (m.kind === 'glyph') syncGlyphScale(cur, m.ref.scale);
+      return cur;
+    }
     if (m.ref.url && m.kind === 'glyph' && cur.tagName === 'SPAN' && !cur.classList.contains('mark-glyph-atlas')) {
       cur.style.setProperty('--glyph', `url(${m.ref.url})`);
+      syncGlyphScale(cur, m.ref.scale);
       cur.dataset.ms = sig;
       return cur;
     }
