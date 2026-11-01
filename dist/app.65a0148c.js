@@ -33,7 +33,7 @@
       ${v?`<div class="badges row-badges">${v}</div>`:""}
       ${et("card-qr--row")}
       <span class="open-affordance row-go" aria-hidden="true">${W(te())}</span>`,j=`
-      ${He(t,u)}${oe(t,u,S,"app-icon")}${V}${d&&!l?'<span class="icon-new-dot" aria-hidden="true"></span>':""}</div>
+      ${He(t,u)}${oe(t,u,S,"app-icon")}${V}${d&&!l?`<span class="icon-new-dot" aria-hidden="true"><span class="icon-new-text">${k(b("badgeNew"))}</span></span>`:""}</div>
       <span class="icon-label">${k(l?H(u.label):g)}</span>`;f?(o.innerHTML=`${_}${j}${et("card-qr--icon",!0)}`,t.closed&&(o.title=t.closedReason?`${b("badgeClosed")} \u2014 ${H(t.closedReason)}`:b("badgeClosed"))):o.innerHTML=`
     <div class="card-shadow" aria-hidden="true"></div>
     <div class="card-clip">
