@@ -227,7 +227,7 @@
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --reveal-r { syntax: '<length>'; inherits: true; initial-value: 230px; }
-@property --icon-lift { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --icon-lift { syntax: '<number>'; inherits: true; initial-value: 0; }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; font-synthesis: none; }
 a, button, [role="tab"], [role="option"] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
@@ -4547,7 +4547,7 @@ h1 {
   --ic-min: 104px;
   --ic-cap: 18px;
   --ic-gap: 16px;
-  --ic-tint: 6%;
+  --ic-tint: 5%;
   --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
   --lx-panel-shadow: 0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)), 0 14px 34px -28px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.72)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
   display: grid;
@@ -4612,11 +4612,11 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   inset-block: calc(-1 * var(--ic-cap) - 4px) -10px;
   inset-inline: calc(-1 * (var(--ic-gap) - 12px) / 2);
   z-index: -1;
-  border: 1px solid var(--hairline);
+  border: .5px solid var(--hairline);
   border-radius: min(var(--r-card), 16px);
-  background-color: color-mix(in oklab, var(--c1) var(--ic-tint, 6%), transparent);
+  background-color: color-mix(in oklab, var(--c1) var(--ic-tint, 5%), transparent);
   background-image: var(--lx-panel-glass);
-  box-shadow: var(--lx-panel-shadow);
+  box-shadow: 0 1px 2px light-dark(rgb(40 30 20 / .05), rgb(0 0 0 / .3)), 0 12px 32px -18px light-dark(rgb(40 30 20 / .18), rgb(0 0 0 / .6)), inset 0 1px 0 light-dark(rgb(255 255 255 / .8), rgb(255 255 255 / .06));
   -webkit-backdrop-filter: blur(22px) saturate(175%);
   backdrop-filter: blur(22px) saturate(175%);
   pointer-events: none;
@@ -4626,26 +4626,32 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   inset-inline-start: calc((100% + var(--ic-gap)) / (2 * var(--n, 1)));
 }
 .icon-plate.is-closed .icon-plate-cap-text { opacity: .5; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
-.icon-plate-cap .icon-plate-tag { flex: none; padding: 1px 6px; font-size: 9.5px; font-variant-caps: normal; letter-spacing: .03em; line-height: 1.3; background: transparent; box-shadow: none; }
+.icon-plate-cap .icon-plate-tag {
+  flex: none; padding: 2px 7px; border: 0; border-radius: 999px;
+  font-size: 9.5px; font-variant-caps: normal; letter-spacing: .03em; line-height: 1.3;
+  color: light-dark(oklch(.55 .12 25), oklch(.75 .1 25));
+  background: light-dark(oklch(.55 .12 25 / .08), oklch(.75 .1 25 / .12));
+  box-shadow: none;
+}
 .icon-plate-cap {
   position: absolute;
   inset-block-start: calc(-1 * var(--ic-cap) - 2px);
-  inset-inline: 10px;
+  inset-inline: 12px;
   block-size: var(--ic-cap);
   display: flex;
   align-items: center;
   gap: 6px;
   font: 600 11px/1 var(--ui-font);
   font-variant-caps: all-small-caps;
-  letter-spacing: .08em;
-  color: var(--text-muted);
+  letter-spacing: .1em;
+  color: color-mix(in oklab, var(--text-muted) 85%, transparent);
   white-space: nowrap;
   overflow: hidden;
   pointer-events: none;
 }
 :root:lang(ar) .icon-plate-cap { letter-spacing: 0; font-variant-caps: normal; font-size: 12px; }
 :root .app-grid[data-layout="icons"] .app-card--icon {
-  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
   grid-column: auto !important; grid-row: auto !important;
   min-inline-size: 0; inline-size: auto;
   padding: 4px 2px 2px;
@@ -4661,32 +4667,56 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   flex-shrink: 0;
   opacity: 1;
   transform: none;
-  transition: transform var(--dur-fast) var(--ease-lux);
+  transition: transform var(--dur-fast) var(--ease-lux), --icon-lift var(--dur-fast) var(--ease-lux), scale 320ms var(--ease-spring);
   pointer-events: none;
 }
 :root .app-grid[data-layout="icons"] .app-card--icon .app-icon { font-size: 1.7rem; }
 @media (hover: hover) and (pointer: fine) {
-  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { transform: translateY(-2px); }
+  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { transform: translateY(-3px); --icon-lift: 1; }
+  :root .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper {
+    scale: .94;
+    transition: transform var(--dur-fast) var(--ease-lux), --icon-lift var(--dur-fast) var(--ease-lux), scale 90ms var(--ease-lux);
+  }
   :root .app-grid[data-layout="icons"] .app-card--icon:hover .icon-label { color: var(--text); }
 }
 :root .app-grid[data-layout="icons"] .app-card--icon:has(.card-link-overlay:focus-visible) .icon-label { color: var(--text); }
 :root .app-grid[data-layout="icons"] .app-card--icon .icon-label {
   position: relative; z-index: 2;
   max-inline-size: 100%;
-  font: 500 12px/1.3 var(--ui-font);
+  font: 500 12.5px/1.3 var(--ui-font);
   text-align: center;
   text-wrap: balance;
-  color: var(--text-muted);
+  color: color-mix(in oklab, var(--text) 82%, var(--text-muted));
   pointer-events: none;
   transition: color var(--dur-fast) var(--ease-lux);
 }
 :root .app-grid[data-layout="icons"] .app-card--icon .icon-label.is-tight { font-size: 11px; }
+:root:lang(ar) .app-grid[data-layout="icons"] .app-card--icon .icon-label:not(.is-tight) { font-size: 13px; }
 .icon-new-dot {
   position: absolute; inset-block-start: -2px; inset-inline-end: -2px;
   inline-size: 8px; block-size: 8px; border-radius: 50%;
   background: var(--tab-accent);
   box-shadow: 0 0 0 2px var(--bg);
   z-index: 3;
+}
+:root .app-grid[data-layout="icons"] .app-card--icon .digit-badge { inset-block-start: auto; inset-block-end: -4px; inset-inline-end: -4px; }
+.icon-new-text { display: none; }
+@media (min-width: 361px) {
+  .app-card--icon .icon-new-dot {
+    inset-block-start: -4px; inset-inline-end: -4px;
+    inline-size: auto; block-size: auto;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--tab-accent) 22%, var(--bg));
+    color: var(--text);
+    font: 600 9.5px/1 var(--ui-font);
+    box-shadow: 0 0 0 .5px var(--hairline), 0 2px 6px -2px rgb(0 0 0 / .2);
+    pointer-events: none;
+  }
+  .app-card--icon .icon-new-text { display: block; }
+}
+@media (min-width: 361px) and (max-width: 420px) {
+  .app-card--icon .icon-new-dot { inset-inline-end: 0; }
 }
 .icon-plate-cap .icon-new-dot { position: static; flex: none; box-shadow: none; }
 @media (max-width: 360px) {
@@ -4699,6 +4729,7 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper {
     transform: none;
   }
+  :root .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper { scale: none; transition: none; }
 }
 }
 @media (max-width: 1024px) {
@@ -5274,4 +5305,28 @@ html[data-lowend] .qr-stage::after { display: none; }
 }
 :root[data-palette="muted"] .app-icon-wrapper :is(svg.app-icon, svg.mark-glyph) {
   --lx-ga: color-mix(in oklab, var(--tint-ink) 45%, var(--bg));
+}
+
+:root[data-palette] .card-glyph { opacity: calc(.85 * (.5 + .5 * var(--hov, 0))); }
+
+@media (hover: hover) and (pointer: fine) {
+  :root .app-card:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper { transition: scale var(--dur-fast) var(--ease-lux); }
+  :root .app-card:not(.app-card--row):not(.app-card--icon):active .app-icon-wrapper { scale: .96; transition-duration: 90ms; }
+  :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { transition: translate var(--dur-fast) var(--ease-lux); }
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .row-icon .app-icon-wrapper { translate: 0 -1px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .app-card:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper,
+  :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { transition: none; }
+}
+
+:root .app-grid[data-layout="list"] .app-icon-wrapper::after { display: none; }
+:root[data-palette]:not([data-palette="muted"]) body:not(.is-zen) .app-grid[data-layout="list"] .app-icon-wrapper::before,
+:root[data-palette]:not([data-palette="muted"]) .palette-item .app-icon-wrapper::before {
+  box-shadow:
+    var(--tile-rim, 0 0 0 0 transparent),
+    inset 0 1px 0 light-dark(rgb(255 255 255 / .45), rgb(255 255 255 / .3)),
+    inset 0 0 0 .5px light-dark(rgb(255 255 255 / .18), rgb(255 255 255 / .12)),
+    inset 0 -1px 0 light-dark(rgb(0 0 0 / .14), rgb(0 0 0 / .25)),
+    0 2px 6px -3px light-dark(color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent), color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5)));
 }

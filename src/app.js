@@ -1275,7 +1275,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       <span class="open-affordance row-go" aria-hidden="true">${icon(openModeIcon())}</span>`;
 
   const iconsBody = `
-      ${wrapOpen(app, activeVariant)}${markHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh && !isTile ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
+      ${wrapOpen(app, activeVariant)}${markHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh && !isTile ? `<span class="icon-new-dot" aria-hidden="true"><span class="icon-new-text">${escapeHtml(t('badgeNew'))}</span></span>` : ''}</div>
       <span class="icon-label">${escapeHtml(isTile ? loc(activeVariant.label) : title)}</span>`;
 
   if (iconsView) {

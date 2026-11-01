@@ -323,7 +323,7 @@ const closedPlate = (browser, base) => async () => {
       };
     });
     const want = lang === 'ar' ? 'مغلق' : 'Closed';
-    const ok = r && r.plate === 1 && r.filter === 'none' && r.panel === 1 && r.icons.length > 0 && r.icons.every((v) => v === 0.5) && r.gray.every(Boolean) && r.labels.every((v) => v === 0.5) && r.capText === 0.5 && r.tag === want && r.title.includes(want) && r.openTags === 0 && r.openDim === 0;
+    const ok = r && r.plate === 1 && r.filter === 'none' && r.panel === 1 && r.icons.length > 0 && r.icons.every((v) => v === 0.78) && !r.gray.some(Boolean) && r.labels.every((v) => v === 0.7) && r.capText === 0.5 && r.tag === want && r.title.includes(want) && r.openTags === 0 && r.openDim === 0;
     if (!ok) bad.push({ lang, ...r });
     await ctx.close();
   }
