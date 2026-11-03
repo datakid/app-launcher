@@ -746,7 +746,7 @@ kbd {
   transition: opacity var(--dur-base) var(--ease-lux), scale var(--dur-fast) var(--ease-lux);
   -webkit-tap-highlight-color: transparent;
 }
-.app-grid.has-dim-engine .app-card { transition: none; will-change: transform, opacity; }
+.app-grid.has-dim-engine .app-card { transition: none; }
 .app-card.is-live .app-icon-wrapper,
 .app-card.is-live .app-title,
 .app-card.is-live .header-end { will-change: transform; }
@@ -3537,7 +3537,7 @@ h1 {
 .app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.26)); }
 
 .lx-bar-label { color: color-mix(in oklab, var(--text-muted) 88%, var(--text)); }
-.tab-indicator { transition: background-color var(--dur-base) var(--ease-lux), box-shadow var(--dur-base) var(--ease-lux); }
+.tab-indicator { transition: background-color var(--dur-base) var(--ease-lux); }
 
 .palette-item-cat { color: color-mix(in oklab, var(--pal-ink-2) 85%, var(--text)); }
 .palette-detail-host { opacity: .92; }
@@ -5349,3 +5349,17 @@ html[data-lowend] .qr-stage::after { display: none; }
   .tab-btn svg { font-size: 15px; }
 }
 .tab-ghost { background: light-dark(rgb(20 18 15 / .05), rgb(255 255 255 / .07)); }
+
+:root[data-palette] .lx-bar::before {
+  inset-inline: 18%;
+  transform: scaleX(.75);
+  transition: opacity var(--dur-slow) var(--ease-lux), transform var(--dur-slow) var(--ease-lux);
+}
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette] .lx-bar:hover::before { transform: none; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-grid.has-dim-engine:hover .app-card { will-change: transform, opacity; }
+}
+.app-card:active { will-change: transform, opacity; }
