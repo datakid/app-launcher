@@ -328,6 +328,7 @@ const main = async () => {
     const e = v1.icons[key];
     const out = { favicon: fav.pos[key] || null, glyph: glyphEntry[key] ?? null, tint: e.tint ?? null };
     if (e.sourceTint) out.sourceTint = e.sourceTint;
+    for (const field of ['ink', 'bbox', 'layers', 'tintRole']) if (e[field] !== undefined) out[field] = e[field];
     out.shape = 'default';
     out.status = e.status;
     out.checkedAt = e.checkedAt;
