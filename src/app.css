@@ -174,28 +174,12 @@
   --border: light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.07));
   --border-highlight: light-dark(rgba(20,18,15,0.16), rgba(255,255,255,0.3));
   --text: light-dark(#15130f, #f6f5f2);
-  --text-muted: light-dark(rgba(21,19,15,0.60), rgba(246,245,242,0.52));
   --tint: var(--tab-accent);
   --shadow-soft: light-dark(0 1px 2px rgba(28,25,20,.05), 0 1px 2px rgba(0,0,0,.3)), light-dark(0 10px 28px -14px rgba(28,25,20,.14), 0 10px 30px -14px rgba(0,0,0,.6));
   --shadow-deep: light-dark(0 2px 8px rgba(28,25,20,.07), 0 2px 6px rgba(0,0,0,.34)), light-dark(0 30px 60px -22px rgba(28,25,20,.18), 0 30px 64px -22px rgba(0,0,0,.72));
-  --radius: 22px;
-  --gap: clamp(0.7rem, 1.6dvh, 1.15rem);
   --lx-panel-w: min(880px, 94vw);
-  --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-out: var(--ease-lux);
-  --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
-  --ease-spring: cubic-bezier(0.34, 1.4, 0.4, 1);
   --ease-io: cubic-bezier(.65, 0, .35, 1);
-  --ease-pill: linear(0, 0.42 8.4%, 1.04 24.4%, 0.92 39.6%, 1.015 56.4%, 0.99 73.2%, 1 100%);
-  --ease-in: cubic-bezier(.4, 0, 1, 1);
   --dur-tap: 70ms;
-  --dur-micro: 120ms;
-  --dur-fast: 190ms;
-  --dur-base: 260ms;
-  --tab-dur: 300ms;
-  --dur-slow: 400ms;
-  --dur-story: 460ms;
-  --dur-ambient: 480ms;
   --ease-snap: cubic-bezier(.2, .9, .2, 1);
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
   --ui-font: 'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
@@ -227,7 +211,7 @@
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --reveal-r { syntax: '<length>'; inherits: true; initial-value: 230px; }
-@property --icon-lift { syntax: '<number>'; inherits: false; initial-value: 0; }
+@property --icon-lift { syntax: '<number>'; inherits: true; initial-value: 0; }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; font-synthesis: none; }
 a, button, [role="tab"], [role="option"] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
@@ -291,17 +275,14 @@ a, button { cursor: pointer; }
 
 .scrim {
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
-  background: radial-gradient(circle at center, transparent 22%, color-mix(in oklab, var(--tab-accent) 2%, var(--bg)) 118%);
   transition: background var(--dur-ambient) var(--ease-smooth);
 }
 
 .scrim::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
   background-image: var(--noise);
-  background-repeat: repeat; background-size: 180px 180px;
-  opacity: 0.26; mix-blend-mode: overlay;
+  background-repeat: repeat; background-size: 180px 180px; mix-blend-mode: overlay;
 }
-:root[data-theme="light"] .scrim::after { opacity: 0.14; }
 
 .spotlight {
   position: fixed; left: 0; top: 0; z-index: 2; pointer-events: none;
@@ -313,7 +294,6 @@ a, button { cursor: pointer; }
   background: radial-gradient(closest-side, light-dark(rgba(255,252,245,0.22), rgba(255,255,255,0.03)), transparent 70%);
   background: radial-gradient(closest-side, color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 3%, light-dark(rgba(255,252,245,0.16), rgba(255,255,255,0.02))), transparent 70%);
   opacity: 0;
-  transition: opacity var(--dur-slow) var(--ease-lux), --hover-accent var(--dur-base) var(--ease-lux);
 }
 .spotlight::after {
   content: ''; position: absolute; left: 50%; top: 50%;
@@ -435,18 +415,12 @@ body.is-zen .site-header {
 h1 {
   font-family: var(--display-font);
   font-weight: 400; font-style: normal;
-  font-size: clamp(2.6rem, 5.4vw, 5.6rem);
-  letter-spacing: -0.008em; line-height: 1.1;
+  font-size: clamp(2.6rem, 5.4vw, 5.6rem); line-height: 1.1;
   background: linear-gradient(135deg, light-dark(#0f172a, #ffffff) 0%, light-dark(#2563eb, #b4c6ff) 40%, light-dark(#0f172a, #ffffff) 80%);
-  background-size: 200% auto;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 4px 14px light-dark(rgba(20,18,15,.1), rgba(0,0,0,.35)));
-  margin: 0 20px;
   padding: 0.15em 0;
 }
-
-.fonts-ready h1 { animation: shimmerText 3.6s var(--ease-lux) .35s 1 both; }
 :root:lang(en) h1 { font-style: italic; letter-spacing: -0.02em; }
 
 @keyframes shimmerText { to { background-position: 100% center; } }
@@ -459,21 +433,14 @@ h1 {
 .controls-pill {
   position: fixed; top: calc(1.5rem + env(safe-area-inset-top, 0px)); inset-inline-start: 1.5rem;
   display: flex; align-items: center;
-  background: light-dark(rgba(255,255,255,0.62), rgba(255,255,255,0.025));
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid var(--border);
-  border-radius: 50px; padding: 0.35rem; gap: 0.2rem;
   z-index: 100;
-  box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
   transition: transform var(--dur-base) var(--ease-lux), background var(--dur-slow) var(--ease-smooth), opacity var(--dur-base) var(--ease-out);
 }
 
 .controls-pill button {
-  background: transparent; border: none; color: var(--text-muted);
-  width: 40px; height: 40px; border-radius: 50%;
+  background: transparent; border: none;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
   touch-action: manipulation;
   transition:
     background-color var(--dur-base) var(--ease-lux),
@@ -487,7 +454,6 @@ h1 {
   .controls-pill:not(.is-magnetic) button:hover {
     background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.08));
     color: var(--text);
-    transform: scale(1.06);
   }
 }
 
@@ -499,84 +465,52 @@ h1 {
   }
 }
 
-.controls-pill button[aria-pressed="true"] { color: var(--text); background: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.1)); box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08)); }
-.controls-pill button[aria-pressed="true"] svg { color: color-mix(in oklab, var(--tab-accent) 70%, var(--text)); }
-.controls-pill button svg { transition: color var(--dur-base) var(--ease-lux); }
-.controls-divider { opacity: 0.7; }
-
 .lx-context-menu {
-  position: fixed; z-index: 300; min-width: 200px;
-  background: light-dark(rgba(252,251,248,0.94), rgba(18,19,23,0.94));
-  background-image: linear-gradient(180deg, light-dark(rgba(255,255,255,0.7), rgba(255,255,255,0.045)), transparent 40%);
-  backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.09)); border-radius: 15px; padding: 0.35rem;
-  box-shadow: 0 2px 4px light-dark(rgba(28,25,20,0.04), rgba(0,0,0,0.3)), 0 18px 40px -14px light-dark(rgba(28,25,20,0.2), rgba(0,0,0,0.65)), inset 0 1px 0 light-dark(rgba(255,255,255,0.95), rgba(255,255,255,0.07));
-  opacity: 0; transform: scale(0.92); transform-origin: top left; pointer-events: none;
-  transition: opacity var(--dur-micro) var(--ease-lux), transform var(--dur-micro) var(--ease-lux);
+  position: fixed; z-index: 300;
+  opacity: 0; transform-origin: top left; pointer-events: none;
 }
 :root[dir="rtl"] .lx-context-menu { transform-origin: top right; }
-.lx-context-menu.is-open { opacity: 1; transform: scale(1); pointer-events: auto; }
+.lx-context-menu.is-open { opacity: 1; pointer-events: auto; }
 .lx-context-menu:focus { outline: none; }
 .lx-toast {
   position: fixed; inset-inline: 0; bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
   margin-inline: auto; width: max-content; max-width: calc(100vw - 2rem);
-  z-index: 400; padding: 0.6rem 1rem; border-radius: 999px;
+  z-index: 400; border-radius: 999px;
   background: light-dark(rgba(252,251,248,0.95), rgba(18,19,23,0.95));
-  backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
   border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.09));
-  box-shadow: 0 2px 4px light-dark(rgba(28,25,20,0.04), rgba(0,0,0,0.3)), 0 18px 40px -14px light-dark(rgba(28,25,20,0.2), rgba(0,0,0,0.65)), inset 0 1px 0 light-dark(rgba(255,255,255,0.95), rgba(255,255,255,0.07));
-  color: var(--text); font-size: 0.85rem; font-weight: 500; text-align: center;
-  opacity: 0; transform: translateY(8px); pointer-events: none;
-  transition: opacity var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux);
+  color: var(--text); font-weight: 500; text-align: center;
+  opacity: 0; pointer-events: none;
 }
-.lx-toast.is-visible { opacity: 1; transform: translateY(0); }
+.lx-toast.is-visible { opacity: 1; }
 .lx-toast.is-error { border-color: color-mix(in srgb, #f87171 55%, var(--border)); }
-.lx-toast:empty { display: none; }
 .lx-context-menu button {
-  display: flex; align-items: center; gap: 0.7rem; width: 100%;
-  padding: 0.58rem 0.75rem; border-radius: 10px; background: transparent; border: none;
-  color: var(--text); font-family: var(--ui-font); font-size: 0.85rem; font-weight: 500; text-align: start;
+  display: flex; align-items: center; width: 100%; background: transparent; border: none; font-family: var(--ui-font); text-align: start;
   touch-action: manipulation;
   transition: opacity var(--dur-micro) var(--ease-lux), background-color var(--dur-micro) var(--ease-lux);
 }
-.lx-context-menu button:focus-visible { background: color-mix(in oklab, var(--tab-accent) 10%, light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05))); outline: none; }
+.lx-context-menu button:focus-visible { outline: none; }
 @media (hover: hover) and (pointer: fine) {
   .lx-context-menu button:hover {
-    background: color-mix(in oklab, var(--tab-accent) 10%, light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05)));
     outline: none;
   }
 }
-.lx-context-menu button:focus-visible svg { color: color-mix(in oklab, var(--tab-accent) 70%, var(--text)); }
-@media (hover: hover) and (pointer: fine) {
-  .lx-context-menu button:hover svg {
-    color: color-mix(in oklab, var(--tab-accent) 70%, var(--text));
-  }
-}
-.lx-context-menu button svg { width: 16px; text-align: center; color: var(--text-muted); font-size: 0.82rem; flex-shrink: 0; }
+.lx-context-menu button svg { text-align: center; flex-shrink: 0; }
 .lx-context-menu button.is-active svg { color: var(--tab-accent); }
 .lx-context-menu button:active { opacity: 0.7; transition-duration: var(--dur-tap); }
-.lx-context-menu-sep { height: 1px; background: var(--border); margin: 0.3rem 0.2rem; }
 
-.controls-divider { width: 1px; height: 20px; background: var(--border); margin: 0 0.2rem; }
+.controls-divider { width: 1px; margin: 0 0.2rem; }
 
 .lx-bar {
   width: var(--lx-panel-w); height: 64px;
   align-self: center; position: relative; z-index: 3; flex-shrink: 0;
   display: flex; align-items: center;
-  border-radius: 999px;
-  background: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.025));
-  backdrop-filter: blur(16px) saturate(150%);
-  -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-soft), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05));
   animation: slideDown var(--dur-story) var(--ease-out) 0.06s both;
   --tab-accent: #7c9bff;
   --c1: var(--tab-accent);
-  transition: --tab-accent var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux), transform var(--dur-micro) var(--ease-lux);
   font-family: var(--ui-font); color: var(--text);
 }
 body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: none; }
-.lx-bar.is-focused { border-color: var(--border-highlight); box-shadow: var(--shadow-deep), inset 0 1px 1px light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.05)); }
 .lx-bar.is-focused .tab-rail { opacity: .86; transition: opacity var(--dur-base) var(--ease-lux); }
 
 .lx-bar-search {
@@ -594,13 +528,9 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
     color: var(--text);
   }
 }
-.lx-bar-search svg.fa-magnifying-glass { font-size: 1.05rem; color: var(--text-muted); flex-shrink: 0; }
-.lx-bar-label { flex: 1; min-width: 0; text-align: start; font-size: 1.2rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: color var(--dur-micro) var(--ease-lux); }
+.lx-bar-search svg.fa-magnifying-glass { font-size: 1.05rem; flex-shrink: 0; }
+.lx-bar-label { flex: 1; min-width: 0; text-align: start; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lx-bar-label-short { display: none; }
-@media (max-width: 640px) {
-  .lx-bar-label-long { display: none; }
-  .lx-bar-label-short { display: inline; }
-}
 @supports (container-type: inline-size) {
   .lx-bar-search { container-type: inline-size; }
   @container (max-width: 250px) {
@@ -614,12 +544,7 @@ body.palette-open .lx-bar { opacity: 0; transform: scale(0.98); pointer-events: 
 }
 .lx-bar-kbd {
   margin-inline-start: auto; flex-shrink: 0;
-  display: inline-flex; align-items: center; height: 1.85em; padding: 0 0.6em;
-  font-size: 0.68rem; color: var(--text-muted);
-  border-radius: 7px;
-  background: linear-gradient(180deg, light-dark(#ffffff, rgba(255,255,255,0.075)), light-dark(rgba(20,18,15,0.035), rgba(255,255,255,0.03)));
-  border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.08));
-  box-shadow: 0 1px 0 light-dark(rgba(20,18,15,0.08), rgba(0,0,0,0.5)), inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,0.06));
+  display: inline-flex; align-items: center;
   transition: color var(--dur-micro) var(--ease-lux), transform var(--dur-micro) var(--ease-lux);
 }
 .lx-bar-search:focus-visible .lx-bar-kbd { color: var(--text); }
@@ -640,7 +565,7 @@ kbd {
   white-space: nowrap;
 }
 
-.lx-bar-divider { width: 1px; height: 26px; background: var(--border); margin-inline: 6px; flex-shrink: 0; }
+.lx-bar-divider { width: 1px; height: 26px; margin-inline: 6px; flex-shrink: 0; }
 
 .lx-bar::after {
   content: ''; position: absolute; inset: 0; border-radius: inherit;
@@ -689,21 +614,30 @@ kbd {
   --c2: var(--tint);
   --c3: var(--tint);
   --tint-ink: var(--c1, #7c9bff);
+  --tile-hi: var(--c2);
+  --tile-mid: var(--tint);
+  --tile-lo: var(--c3);
+  --tile-shade: var(--c3);
+  --glyph-accent: rgba(255,255,255,.62);
 }
 @supports (color: oklch(from red l c h)) {
   .app-card, .palette-item, #paletteDetail, #lx-palette, #lx-qr {
-    --tint: oklch(from var(--c1, #7c9bff) clamp(.60, l, .72) clamp(.055, c, .125) h);
-    --c2: oklch(from var(--tint) calc(l + .12) calc(c * .82) h);
-    --c3: oklch(from var(--tint) calc(l - .21) c h);
-    --tint-ink: var(--tint);
+    --tile-hi: oklch(from var(--tint) min(calc(l + .15), .9) calc(max(c, .085) * .8) calc(h - 12));
+    --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) max(c, .09) h);
+    --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) calc(max(c, .09) * 1.08) calc(h + 14));
+    --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) calc(c * .8) calc(h + 14));
+    --glyph-accent: oklch(from var(--tint) .94 calc(max(c, .06) * .5) calc(h - 12));
   }
-  :root[data-theme="light"] .app-card,
-  :root[data-theme="light"] .palette-item,
-  :root[data-theme="light"] #paletteDetail,
-  :root[data-theme="light"] #lx-palette,
-  :root[data-theme="light"] #lx-qr {
-    --tint: oklch(from var(--c1, #7c9bff) clamp(.52, l, .66) clamp(.08, c, .17) h);
-    --tint-ink: oklch(from var(--c1) clamp(.40, l, .52) clamp(.10, c, .19) h);
+  :root[data-palette="curated"] .app-card,
+  :root[data-palette="curated"] .palette-item,
+  :root[data-palette="curated"] #paletteDetail,
+  :root[data-palette="curated"] #lx-palette,
+  :root[data-palette="curated"] #lx-qr {
+    --tile-hi: oklch(from var(--tint) min(calc(l + .15), .9) calc(max(c, .085) * .8) calc(h - 6));
+    --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) max(c, .09) h);
+    --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) calc(max(c, .09) * 1.08) calc(h + 6));
+    --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) calc(c * .8) calc(h + 6));
+    --glyph-accent: oklch(from var(--tint) .94 calc(max(c, .06) * .5) calc(h - 6));
   }
 }
 @supports (color: oklch(from red l c h)) and (color: color(display-p3 1 1 1)) {
@@ -725,7 +659,7 @@ kbd {
   transition: opacity var(--dur-base) var(--ease-lux), scale var(--dur-fast) var(--ease-lux);
   -webkit-tap-highlight-color: transparent;
 }
-.app-grid.has-dim-engine .app-card { transition: none; will-change: transform, opacity; }
+.app-grid.has-dim-engine .app-card { transition: none; }
 .app-card.is-live .app-icon-wrapper,
 .app-card.is-live .app-title,
 .app-card.is-live .header-end { will-change: transform; }
@@ -785,24 +719,12 @@ kbd {
     border-color var(--dur-fast) var(--ease-lux),
     background-color var(--dur-fast) var(--ease-lux);
 }
-.app-card.is-kb-focus .card-clip {
-  background-color: var(--surface-hover);
-  border-color: var(--border-highlight);
-}
-@media (hover: hover) and (pointer: fine) {
-  .app-card:hover .card-clip {
-    background-color: var(--surface-hover);
-    border-color: var(--border-highlight);
-  }
-}
 
 :root[data-theme="light"] .card-clip {
   background-image:
     linear-gradient(90deg, transparent 8%, rgba(255,255,255,0.95) 50%, transparent 92%),
     linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0) 44%);
 }
-
-:root[data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.055); }
 
 @keyframes cardEnter {
   from { opacity: 0; scale: .985; translate: 0 14px; }
@@ -813,7 +735,7 @@ kbd {
   from { opacity: 0; scale: .965; translate: 0 18px; }
   to   { opacity: 1; scale: 1;    translate: 0 0; }
 }
-body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-duration: 520ms; }
+body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 
 .card-clip::before {
   content: ''; position: absolute; left: 0; top: 0;
@@ -821,7 +743,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   background: radial-gradient(closest-side, rgba(255,255,255,0.075), rgba(255,255,255,0.03) 38%, rgba(255,255,255,0.008) 62%, transparent 76%);
   transform: translate3d(var(--gx), var(--gy), 0);
   opacity: 0; pointer-events: none; z-index: 2;
-  transition: opacity var(--dur-base) var(--ease-lux);
 }
 :root[data-theme="light"] .card-clip::before {
   width: 520px; height: 520px; margin: -260px 0 0 -260px;
@@ -871,7 +792,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   background: radial-gradient(closest-side, var(--tint), transparent 62%);
   transform: translate3d(var(--gx), var(--gy), 0);
   opacity: 0; pointer-events: none; z-index: 0;
-  transition: opacity var(--dur-slow) var(--ease-lux);
 }
 .app-card:not(.has-pointer-pos) .card-glow { left: 50%; top: 118%; transform: none; }
 .app-card.is-tracking .card-glow,
@@ -881,36 +801,17 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit;
   overflow: hidden;
   opacity: var(--hov, 0);
-  background: linear-gradient(0deg, color-mix(in oklab, var(--tint) 7%, transparent), transparent 34%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
 }
 .card-sheen::before {
   content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 260%;
-  background: linear-gradient(115deg,
-    transparent 34%,
-    rgba(255,255,255,.10) 47%,
-    rgba(255,255,255,.03) 53%,
-    transparent 66%);
   transform: translate3d(calc(-80% + var(--hov, 0) * 160%), 0, 0);
 }
 :root[data-theme="light"] .card-sheen {
   background: linear-gradient(0deg, color-mix(in oklab, var(--tint) 6%, transparent), transparent 34%);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,1);
 }
-:root[data-theme="light"] .card-sheen::before {
-  background: linear-gradient(115deg,
-    transparent 34%,
-    rgba(255,255,255,.55) 47%,
-    rgba(255,255,255,.16) 53%,
-    transparent 66%);
-}
-
-.app-card.is-kb-focus .card-glow { opacity: 0.06; }
 :root[data-theme="light"] .app-card.is-kb-focus .card-glow { opacity: 0.065; }
 .app-card.is-kb-focus .card-clip::before { opacity: 1; }
 @media (hover: hover) and (pointer: fine) {
-  .app-card:hover .card-glow { opacity: 0.06; }
-  :root[data-theme="light"] .app-card:hover .card-glow { opacity: 0.065; }
   .app-card:hover .card-clip::before { opacity: 1; }
 }
 
@@ -943,17 +844,14 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .digit-badge {
   position: absolute; top: -6px; inset-inline-end: -6px; z-index: 6;
-  width: 22px; height: 22px; border-radius: 7px;
+  width: 22px; height: 22px;
   display: flex; align-items: center; justify-content: center;
-  background: rgba(8,9,12,0.72); color: #fff;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 6px -2px rgba(0,0,0,.4);
-  font-family: var(--ui-font); font-size: 0.72rem; font-weight: 700;
+  font-family: var(--ui-font); font-size: 0.72rem;
   font-variant-numeric: tabular-nums;
   opacity: 0; transform: translateY(-4px) scale(0.85);
-  transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring);
   pointer-events: none;
 }
-:root[data-theme="light"] .digit-badge { background: rgba(255,255,255,0.85); color: var(--text); }
+:root[data-theme="light"] .digit-badge { color: var(--text); }
 .app-grid:has(.card-link-overlay:focus-visible) .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
 @media (hover: hover) and (pointer: fine) {
   .app-grid:hover .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
@@ -967,29 +865,9 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .app-icon-wrapper {
   --icon-size: clamp(46px, 6.4dvh, 56px);
   --icon-radius: 13px;
-  --icon-veil: light-dark(rgba(255,255,255,.28), rgba(255,255,255,.42));
-  --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.10));
   width: var(--icon-size); height: var(--icon-size);
-  border-radius: var(--icon-radius);
-  background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 16%) calc(28% - var(--ty,0) * 11%),
-      var(--icon-veil), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
   display: flex; align-items: center; justify-content: center;
-  box-shadow:
-    0 calc(10px + var(--icon-lift) * 5px)
-      calc(24px + var(--icon-lift) * 10px) -10px
-      color-mix(in oklab, var(--c1) 45%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.42),
-    inset 0 -1px 0 rgba(0,0,0,.3),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
   position: relative; flex-shrink: 0;
-  transform:
-    translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0)
-    rotate(calc(var(--icon-lift) * -2deg))
-    scale(calc(1 + .05 * var(--icon-lift)));
 }
 
 .app-card .app-icon-wrapper { --icon-lift: var(--hov, 0); }
@@ -1002,72 +880,36 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   }
 }
 
-.app-icon-wrapper::before {
-  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background:
-    radial-gradient(72% 56% at calc(50% - var(--tx,0) * 15%) calc(24% - var(--ty,0) * 11%),
-      rgba(255,255,255,.5) 0%, rgba(255,255,255,.15) 44%, rgba(255,255,255,0) 80%);
-  mix-blend-mode: plus-lighter;
-  opacity: calc(.24 * var(--icon-lift));
-}
-
-:root[data-theme="light"] .app-icon-wrapper::before {
-  background:
-    radial-gradient(72% 56% at calc(50% - var(--tx,0) * 15%) calc(24% - var(--ty,0) * 11%),
-      rgba(255,255,255,.38) 0%, rgba(255,255,255,.11) 44%, rgba(255,255,255,0) 80%);
-  opacity: calc(.18 * var(--icon-lift));
-}
-
-.app-icon-wrapper::after {
-  content: ''; position: absolute; inset: -22px; border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in oklab, var(--tint) 70%, transparent), color-mix(in oklab, var(--tint) 22%, transparent) 45%, transparent 100%);
-  opacity: calc(.34 * var(--icon-lift)); z-index: -1; pointer-events: none;
-}
-
-.fa-svg, svg.fas { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; flex-shrink: 0; overflow: visible; }
+svg.fas { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; flex-shrink: 0; overflow: visible; }
 
 .app-icon {
   font-size: clamp(1.1rem, 2.5dvh, 1.4rem);
-  color: rgba(255,255,255,.96); text-shadow: 0 1px 2px rgba(0,0,0,.35);
-  filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));
   position: relative; z-index: 1;
   transition: opacity var(--dur-micro) var(--ease-lux);
 }
 
 .lx-fav { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; border-radius: inherit; position: relative; z-index: 1; }
 .app-icon-wrapper .lx-fav.app-icon { filter: none; text-shadow: none; }
-.app-icon-wrapper[data-mark="favicon"] {
-  background: light-dark(#ffffff, #171a21);
-  box-shadow:
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 0 0 1px light-dark(rgba(15,23,42,.16), rgba(255,255,255,.18));
-}
-.app-icon-wrapper[data-mark="favicon"]::before { display: none; }
 .card-glyph .lx-fav { inline-size: 1em; block-size: 1em; object-fit: contain; opacity: .14; filter: grayscale(1); border-radius: 22%; }
 .ctx-head-icon .lx-fav { inline-size: 100%; block-size: 100%; border-radius: inherit; object-fit: cover; }
 .ctx-head-icon[data-mark="favicon"] { background: light-dark(#ffffff, #171a21); box-shadow: inset 0 0 0 1px light-dark(rgba(15,23,42,.16), rgba(255,255,255,.18)); }
 .badges { display: flex; gap: 0.5rem; flex-direction: row; transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 1.3), calc(var(--ty, 0) * var(--depth, 0px) * 1.3), 0); }
 
 .badge {
-  display: inline-flex; align-items: center; gap: 0.35rem;
-  padding: 0.3rem 0.7rem; border-radius: 50px;
-  font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em;
+  display: inline-flex; align-items: center;
   background: light-dark(rgba(255,255,255,0.82), rgba(10,11,14,0.52));
-  box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.06));
   border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
-  font-variant-numeric: tabular-nums;
   transition: color var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux);
 }
 
-.badge-new { color: light-dark(#a8720f, #d9a83e); border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
-.badge-closed { color: var(--closed-ink); border-color: color-mix(in oklab, var(--closed-ink) 36%, transparent); background: color-mix(in oklab, var(--closed-ink) 14%, transparent); }
-.badge-variant { color: light-dark(#3b6fd6, #7ea4e8); border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
+.badge-new { color: light-dark(#a8720f, #d9a83e); }
+.badge-closed { color: var(--closed-ink); }
+.badge-variant { color: light-dark(#3b6fd6, #7ea4e8); }
 
 .badge-dot {
   width: 5px; height: 5px; border-radius: 50%; background: currentColor;
   box-shadow: 0 0 6px currentColor;
 }
-.badge-closed .badge-dot { box-shadow: 0 0 5px color-mix(in oklab, currentColor 60%, transparent); }
 
 .app-card.is-revealed { animation: revealPulse 1.1s var(--ease-lux); }
 
@@ -1084,19 +926,12 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .app-title {
   font-family: var(--display-font);
-  font-size: clamp(1.15rem, 2.6dvh, 1.45rem); font-weight: 600;
+  font-size: clamp(1.15rem, 2.6dvh, 1.45rem);
   color: var(--text);
   line-height: 1.3; margin: 0; padding-bottom: 0.15em;
-  letter-spacing: 0;
-  text-wrap: balance;
   text-rendering: optimizeLegibility;
   transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 1.6), calc(var(--ty, 0) * var(--depth, 0px) * 1.6), 0) scale(calc(1 + .006 * var(--hov, 0)));
   transition: background-position var(--dur-slow) var(--ease-lux);
-  background-image: linear-gradient(135deg,
-    var(--text) 0%,
-    var(--text) 38%,
-    color-mix(in oklab, var(--tint-ink) 92%, var(--text)) 78%,
-    var(--tint-ink) 100%);
   background-size: 200% auto;
   background-position: 0% center;
   background-repeat: no-repeat;
@@ -1121,33 +956,19 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .title-row { display: flex; align-items: center; gap: 0.6rem; }
 
 .open-affordance {
-  display: flex; align-items: center; justify-content: center;
-  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-  background: light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.08)); border: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.1));
-  color: color-mix(in oklab, var(--tint) 80%, var(--text)); font-size: 0.65rem;
-  opacity: 0; transform: translateY(4px) scale(0.8);
-  transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring);
-}
-
-.app-card.is-kb-focus .open-affordance { opacity: 0.9; transform: translateY(0) scale(1); }
-@media (hover: hover) and (pointer: fine) {
-  .app-card:hover .open-affordance { opacity: 0.9; transform: translateY(0) scale(1); }
+  display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; border: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.1));
+  opacity: 0;
 }
 
 .variant-chips {
   position: relative; z-index: 1;
-  display: flex; gap: 2px; padding: 3px;
-  border-radius: 999px; flex-shrink: 0;
-  background: light-dark(rgba(20,18,15,0.055), rgba(255,255,255,0.06));
+  display: flex; gap: 2px;
   anchor-scope: --active-chip;
   transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 0.7), calc(var(--ty, 0) * var(--depth, 0px) * 0.7), 0);
 }
 
 .variant-chip-indicator {
-  position: absolute; top: 3px; height: calc(100% - 6px);
-  border-radius: 999px;
-  background: light-dark(#ffffff, rgba(255,255,255,0.15));
-  box-shadow: 0 1px 2px light-dark(rgba(20,18,15,0.12), rgba(0,0,0,0.35)), inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,0.14)), inset 0 0 0 1px light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
+  position: absolute;
   pointer-events: none;
 }
 
@@ -1158,10 +979,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
     position-anchor: --active-chip;
     inset-inline-start: anchor(--active-chip start);
     inset-inline-end: anchor(--active-chip end);
-    transition: inset-inline-start var(--dur-base) var(--ease-pill), inset-inline-end var(--dur-fast) var(--ease-pill);
-  }
-  .variant-chips[data-dir="back"] .variant-chip-indicator {
-    transition: inset-inline-start var(--dur-fast) var(--ease-pill), inset-inline-end var(--dur-base) var(--ease-pill);
   }
 }
 @supports not (anchor-name: --a) {
@@ -1170,12 +987,9 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .variant-chip {
   position: relative; z-index: 1;
-  height: 26px; padding: 0 0.75rem; border-radius: 999px;
   border: none; background: transparent; cursor: pointer;
   color: var(--text-muted);
-  font-family: var(--ui-font); font-size: 0.68rem; font-weight: 600;
   touch-action: manipulation;
-  transition: color var(--dur-fast) var(--ease-lux), opacity var(--dur-micro) var(--ease-lux);
 }
 .variant-chip.is-active { color: var(--text); }
 .variant-chip:active { opacity: 0.7; transition-duration: var(--dur-tap); }
@@ -1189,17 +1003,17 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .card-hero .bento-footer { width: auto; flex: 1; justify-content: space-between; align-items: center; gap: clamp(1rem, 2.5dvh, 2rem); margin-inline-start: clamp(1rem, 2.5dvh, 2rem); }
 .card-hero .app-icon-wrapper { --icon-size: clamp(72px, 9.5dvh, 88px); --icon-radius: 18px; }
 .card-hero .app-icon { font-size: clamp(2rem, 4dvh, 2.4rem); }
-.card-hero .app-title { font-size: clamp(2.1rem, 4.4dvh, 3rem); font-weight: 700; letter-spacing: 0; }
-.card-hero .open-affordance { width: 32px; height: 32px; font-size: 0.75rem; }
+.card-hero .app-title { font-size: clamp(2.1rem, 4.4dvh, 3rem); letter-spacing: 0; }
 
 .card-tall .card-clip { justify-content: center; gap: clamp(1rem, 3dvh, 1.75rem); }
 .card-tall .app-icon-wrapper { --icon-size: clamp(64px, 8.4dvh, 84px); --icon-radius: 17px; }
 .card-tall .app-icon { font-size: clamp(1.7rem, 3.6dvh, 2.2rem); }
-.card-tall .app-title { font-size: clamp(1.5rem, 3.4dvh, 2.2rem); font-weight: 700; }
+.card-tall .app-title { font-size: clamp(1.5rem, 3.4dvh, 2.2rem); }
 
+.app-card.status-closed .app-icon-wrapper { opacity: .78; }
+.app-card.status-closed .app-title { opacity: .7; }
 .app-card.status-closed .app-icon-wrapper,
 .app-card.status-closed .app-title {
-  opacity: .7;
   transition: opacity var(--dur-fast) var(--ease-lux);
 }
 .app-card.status-closed.is-kb-focus .app-icon-wrapper,
@@ -1239,41 +1053,29 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 
 .tab-indicator {
   position: absolute; inset: 4px 100% 4px 0; z-index: 0; pointer-events: none;
-  border-radius: 999px;
   contain: layout paint style;
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,0.8), rgba(255,255,255,0.06)), transparent),
-    color-mix(in oklab, var(--tab-accent) 12%, color-mix(in oklab, var(--text) 7%, transparent));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 20%, transparent);
 }
 .tab-indicator::before {
   content: ''; position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
-  box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.08));
 }
 
 .tab-ghost {
   position: absolute; inset: 4px 0; z-index: 0; pointer-events: none;
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--text) 5%, transparent);
-  clip-path: inset(0 100% 0 0 round 999px);
   opacity: 0;
-  transition: clip-path var(--dur-fast) var(--ease-io), opacity var(--dur-micro) var(--ease-out);
 }
 
 .tab-btn {
   position: relative; z-index: 1;
   display: flex; align-items: center;
   background: transparent; border: none; color: var(--text-muted);
-  padding: 0.65rem 1.15rem; border-radius: 999px;
+  padding: 0.65rem 1.15rem;
   font-family: var(--ui-font);
-  font-size: 0.92rem; font-weight: 600; white-space: nowrap;
+  font-size: 0.92rem; white-space: nowrap;
   touch-action: manipulation;
-  transition: color var(--tab-dur) var(--ease-out), opacity var(--dur-micro) var(--ease-lux);
 }
 
 .tab-btn svg { font-size: 0.85rem; transition: color var(--tab-dur) var(--ease-out); }
 .tab-btn[aria-selected="true"] { color: var(--text); }
-.tab-btn[aria-selected="true"] svg { color: var(--tab-accent); }
 .tab-btn:active { opacity: 0.7; transition-duration: var(--dur-tap); }
 
 .tab-btn .label {
@@ -1284,11 +1086,10 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
 .tab-btn .label > span {
   display: inline-block; opacity: 0; transform: translateX(6px);
   padding-inline: 0.22em 0.32em;
-  transition: opacity var(--dur-micro) var(--ease-lux), transform var(--tab-dur) var(--ease-out);
 }
 :root[dir="rtl"] .tab-btn .label > span { transform: translateX(-6px); }
 .tab-btn[aria-selected="true"] .label { max-width: var(--tab-label-width, 220px); margin-inline-start: 0.5rem; }
-.tab-btn[aria-selected="true"] .label > span { opacity: 1; transform: translateX(0); transition-delay: 0.12s; }
+.tab-btn[aria-selected="true"] .label > span { opacity: 1; transform: translateX(0); }
 
 ::view-transition-old(grid) { animation: lx-grid-out var(--dur-fast) var(--ease-lux) both; }
 ::view-transition-new(grid) { animation: lx-grid-in var(--dur-fast) var(--ease-lux) both; }
@@ -1300,8 +1101,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; animation-dura
   from { transform: translateX(calc(var(--dir, 1) * 18px)) scale(0.98); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
-
-.app-grid.is-out { animation: lx-grid-out var(--dur-micro) var(--ease-lux) both; }
 
 ::view-transition-group(.tile) { animation-duration: var(--dur-fast); animation-timing-function: var(--ease-lux); }
 ::view-transition-old(.tile)   { animation: lx-tile-out var(--dur-micro) var(--ease-lux) both; }
@@ -1352,34 +1151,21 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 @keyframes zen-new-tile { from { opacity: 0; } }
 
 #lx-palette {
-  --pal-radius: 24px;
   --pal-line: light-dark(rgba(20,18,15,0.07), rgba(255,255,255,0.06));
   --pal-ink-2: light-dark(rgba(21,19,15,0.5), rgba(246,245,242,0.42));
   width: var(--lx-panel-w); max-height: min(76dvh, 640px);
   margin: min(15dvh, 140px) auto auto;
   display: flex; flex-direction: column;
-  background-color: light-dark(rgba(250,249,246,0.985), rgba(13,14,18,0.975));
-  background-image:
-    radial-gradient(80% 50% at 50% -18%, color-mix(in oklab, var(--live-accent) 11%, transparent), transparent 70%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,0.8), rgba(255,255,255,0.035)), transparent 120px);
   border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.08));
   border-radius: var(--pal-radius);
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,0.04), rgba(0,0,0,0.4)),
-    0 12px 24px -12px light-dark(rgba(28,25,20,0.14), rgba(0,0,0,0.55)),
-    0 48px 96px -32px light-dark(rgba(28,25,20,0.26), rgba(0,0,0,0.8)),
-    0 40px 120px -60px color-mix(in oklab, var(--live-accent) 40%, transparent),
-    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,0.07));
   padding: 0; overflow: hidden; color: var(--text);
   opacity: 0; transform: translateY(-6px) scale(0.985);
-  transition: opacity 150ms var(--ease-lux), transform 240ms var(--ease-lux), --live-accent var(--dur-base) var(--ease-lux), display 240ms allow-discrete, overlay 240ms allow-discrete;
 }
 #lx-palette:not([open]) { pointer-events: none; }
 
 #lx-palette::before {
-  content: ''; position: absolute; inset: 0 18% auto; height: 1px; z-index: 3;
+  content: ''; position: absolute; height: 1px; z-index: 3;
   background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 60%, light-dark(rgba(20,18,15,0.1), rgba(255,255,255,0.7))), transparent);
-  opacity: 0.7;
   pointer-events: none;
 }
 
@@ -1390,11 +1176,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 }
 
 #lx-palette::backdrop {
-  background:
-    radial-gradient(70% 55% at 50% 22%, color-mix(in oklab, var(--live-accent) 9%, transparent), transparent 75%),
-    light-dark(rgba(30,27,22,0.26), rgba(2,3,5,0.62));
   opacity: 0;
-  transition: opacity 200ms var(--ease-lux), display 200ms allow-discrete, overlay 200ms allow-discrete;
 }
 #lx-palette[open]::backdrop { opacity: 1; }
 @starting-style { #lx-palette[open]::backdrop { opacity: 0; } }
@@ -1407,16 +1189,14 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 
 .palette-input-row {
   position: relative;
-  display: flex; align-items: center; gap: 0.85rem;
-  min-height: 68px; padding: 0 1.15rem 0 1.5rem; flex-shrink: 0;
+  display: flex; align-items: center; gap: 0.85rem; padding: 0 1.15rem 0 1.5rem; flex-shrink: 0;
 }
 :root[dir="rtl"] .palette-input-row { padding: 0 1.5rem 0 1.15rem; }
 .palette-input-row::after {
   content: ''; position: absolute; inset-inline: 0; bottom: 0; height: 1px;
-  background: var(--pal-line);
 }
-.palette-input-row > svg { color: color-mix(in oklab, var(--live-accent) 45%, var(--text-muted)); font-size: 1.1rem; transition: color var(--dur-base) var(--ease-lux); }
-.palette-close { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-inline-start: auto; min-width: 36px; min-height: 36px; padding: 0; border: 0; border-radius: 10px; background: transparent; color: var(--pal-ink-2); touch-action: manipulation; transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux); }
+.palette-input-row > svg { font-size: 1.1rem; transition: color var(--dur-base) var(--ease-lux); }
+.palette-close { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-inline-start: auto; min-width: 36px; min-height: 36px; padding: 0; border: 0; background: transparent; color: var(--pal-ink-2); touch-action: manipulation; transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux); }
 @media (hover: hover) and (pointer: fine) {
   .palette-close:hover {
     background: color-mix(in oklab, var(--live-accent) 10%, transparent);
@@ -1425,13 +1205,13 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 }
 .palette-close-touch { display: none; font-size: 1.35rem; line-height: 1; }
 @media (pointer: coarse) { .palette-close { min-width: 44px; min-height: 44px; } .palette-close-touch { display: block; } .palette-close kbd { display: none !important; } }
-#paletteInput { flex: 1; min-width: 0; height: 100%; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--ui-font); font-size: 1.24rem; font-weight: 400; letter-spacing: -0.012em; caret-color: var(--live-accent); }
+#paletteInput { flex: 1; min-width: 0; height: 100%; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--ui-font); caret-color: var(--live-accent); }
 #paletteInput::placeholder { color: var(--pal-ink-2); opacity: 1; }
 #paletteInput:focus-visible { outline: none; }
 
 .palette-mode {
   display: inline-flex; align-items: center; gap: 0.4rem; flex-shrink: 0;
-  height: 26px; padding-inline: 0.5rem 0.65rem; border-radius: 8px;
+  height: 26px; padding-inline: 0.5rem 0.65rem;
   font-size: 0.72rem; font-weight: 600; letter-spacing: 0.01em;
   color: color-mix(in oklab, var(--live-accent) 65%, var(--text));
   background: color-mix(in oklab, var(--live-accent) 11%, transparent);
@@ -1448,9 +1228,6 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 20px; height: 20px; padding: 0 5px;
   font-size: 0.66rem; font-weight: 500; color: var(--pal-ink-2);
-  border-radius: 6px;
-  background: light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.05));
-  box-shadow: inset 0 0 0 1px light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.05)), inset 0 -1px 0 light-dark(rgba(20,18,15,0.06), rgba(0,0,0,0.3));
 }
 .palette-close kbd { height: 24px; padding: 0 8px; border-radius: 7px; font-size: 0.68rem; }
 
@@ -1458,7 +1235,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-input-wrap #paletteInput { position: relative; z-index: 1; }
 .palette-ghost {
   position: absolute; inset: 0; display: flex; align-items: center;
-  font-family: var(--ui-font); font-size: 1.24rem; font-weight: 400; letter-spacing: -0.012em; white-space: pre; pointer-events: none;
+  font-family: var(--ui-font); font-weight: 400; white-space: pre; pointer-events: none;
 }
 .palette-ghost .ghost-typed { color: transparent; }
 .palette-ghost .ghost-tail { color: var(--pal-ink-2); opacity: 0.6; }
@@ -1485,28 +1262,16 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 }
 
 .palette-group-header {
-  padding: 0.9rem 0.8rem 0.35rem;
-  font-size: 0.64rem; font-weight: 600; color: var(--pal-ink-2);
-  text-transform: uppercase; letter-spacing: 0.12em;
+  padding: 0.9rem 0.8rem 0.35rem; font-weight: 600; color: var(--pal-ink-2);
+  text-transform: uppercase;
 }
-:root:lang(ar) .palette-group-header { letter-spacing: 0; font-size: 0.72rem; }
 .palette-cursor + .palette-group-header { padding-top: 0.4rem; }
 
 .palette-cursor {
   position: absolute; top: 0; inset-inline: 0.5rem; z-index: 0;
-  height: 0; border-radius: 12px; pointer-events: none;
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.03)), light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0))),
-    color-mix(in oklab, var(--live-accent) 9%, light-dark(rgba(20,18,15,0.03), rgba(255,255,255,0.045)));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 16%, light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.04))),
-    0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.25));
+  height: 0; pointer-events: none;
   opacity: 0;
   will-change: transform;
-  transition:
-    transform 160ms var(--ease-snap),
-    height 160ms var(--ease-snap),
-    opacity var(--dur-micro) var(--ease-lux);
 }
 .palette-cursor.is-visible { opacity: 1; }
 .palette-cursor.is-dimmed { opacity: 0.4; }
@@ -1515,19 +1280,16 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-item {
   position: relative; z-index: 1;
   display: flex; align-items: center; gap: 0.8rem;
-  min-height: 52px; padding: 0.5rem 0.7rem; border-radius: 12px; cursor: pointer;
+  min-height: 52px; padding: 0.5rem 0.7rem; cursor: pointer;
   transition: background-color var(--dur-micro) var(--ease-lux);
   animation: paletteItemIn 220ms var(--ease-lux) both;
-  animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 12ms);
 }
 
 #paletteResults:not(.entrance-armed) .palette-item { animation: none; }
 
 @keyframes paletteItemIn { from { opacity: 0; transform: translateY(4px); } }
 
-.palette-item .app-icon-wrapper {
-  --icon-size: 34px; --icon-radius: 10px;
-  box-shadow: 0 2px 6px -2px color-mix(in oklab, var(--c1) 50%, transparent), inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.08);
+.palette-item .app-icon-wrapper { --icon-radius: 10px;
   transform: none;
 }
 .palette-item .app-icon-wrapper::after { display: none; }
@@ -1535,8 +1297,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-item-text { flex: 1; display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .palette-item-title { font-weight: 500; color: color-mix(in oklab, var(--text) 80%, transparent); font-size: 0.94rem; letter-spacing: -0.006em; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color var(--dur-micro) var(--ease-lux); }
 .palette-item.is-active .palette-item-title { color: var(--text); }
-.palette-item-title mark { background: none; color: var(--text); font-weight: 600; box-shadow: inset 0 -0.42em 0 color-mix(in oklab, var(--tint) 24%, transparent); border-radius: 2px; }
-.palette-item-cat { font-size: 0.72rem; color: var(--pal-ink-2); line-height: 1.3; }
+.palette-item-title mark { background: none; color: var(--text); font-weight: 600; }
+.palette-item-cat { font-size: 0.72rem; line-height: 1.3; }
 .palette-item-trail {
   display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0;
   opacity: 0; transform: translateX(-3px);
@@ -1565,44 +1327,40 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 
 .palette-detail-slab {
   position: absolute; inset: 0; z-index: 0;
-  background: radial-gradient(120% 80% at 50% -10%, color-mix(in oklab, var(--live-accent) 9%, transparent), transparent 62%);
   overflow: hidden; pointer-events: none;
 }
 .palette-detail-slab-noise { display: none; }
 .palette-detail-watermark {
   position: absolute; inset-inline-end: -1.2rem; bottom: -1.8rem;
   font-size: 9.5rem; transform: rotate(-8deg);
-  color: color-mix(in oklab, var(--tint) 6%, transparent);
   animation: watermarkIn var(--dur-story) var(--ease-lux) both;
 }
 @keyframes watermarkIn { from { opacity: 0; transform: rotate(-3deg) scale(0.94); } }
 
 .palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; animation: detailIn 280ms var(--ease-lux) both; }
-.palette-detail .app-icon-wrapper { --icon-size: 56px; --icon-radius: 15px; }
+.palette-detail .app-icon-wrapper { --icon-radius: 15px; }
 .palette-detail .app-icon { font-size: 1.25rem; }
 
 .palette-detail-title-wrap { min-width: 0; display: flex; flex-direction: column; }
 .palette-detail-eyebrow {
-  font-size: 0.64rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  font-size: 0.64rem; font-weight: 600; text-transform: uppercase;
   color: color-mix(in oklab, var(--tint-ink) 55%, var(--pal-ink-2));
   margin-bottom: 0.15rem;
 }
-:root:lang(ar) .palette-detail-eyebrow { letter-spacing: 0; font-size: 0.74rem; }
+:root:lang(ar) .palette-detail-eyebrow { font-size: 0.74rem; }
 .palette-detail-title {
-  font-family: var(--display-font);
-  font-size: 1.55rem; font-weight: 600; color: var(--text);
+  font-family: var(--display-font); font-weight: 600; color: var(--text);
   line-height: 1.2; letter-spacing: -0.005em;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   padding-block: 0.08em;
 }
-:root:lang(en) .palette-detail-title { font-size: 1.8rem; font-style: italic; letter-spacing: -0.015em; }
+:root:lang(en) .palette-detail-title { font-style: italic; letter-spacing: -0.015em; }
 :root:lang(ar) .palette-detail-title { line-height: 1.45; }
 .palette-detail-meta { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.4rem; flex-wrap: wrap; }
 
 .palette-facts {
   position: relative; z-index: 1; margin: 0;
   display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  border-radius: 12px;
   background: light-dark(rgba(255,255,255,0.6), rgba(255,255,255,0.02));
   box-shadow: inset 0 0 0 1px var(--pal-line);
   overflow: hidden;
@@ -1616,29 +1374,15 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-fact dd.is-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.76rem; text-align: start; }
 .palette-fact dd.is-quiet { color: var(--text-muted); }
 .palette-fact dd .palette-keys { vertical-align: middle; }
-.palette-detail-cat { font-size: 0.84rem; color: var(--text-muted); }
-.palette-detail-host {
-  display: inline-flex; align-items: center; max-width: 100%;
-  padding: 0.28rem 0.6rem; border-radius: 999px;
-  background: color-mix(in oklab, var(--live-accent) 7%, transparent);
-  border: 1px solid var(--border);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.74rem; color: var(--text-muted); opacity: 0.7;
-  unicode-bidi: isolate; direction: ltr; text-align: left;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  margin-top: 0.45rem;
-}
 .palette-detail-reason {
   position: relative; z-index: 1;
   font-size: 0.84rem; line-height: 1.5; color: color-mix(in oklab, var(--closed-ink) 55%, var(--text));
-  background: color-mix(in oklab, var(--closed-ink) 7%, transparent); border: 1px solid color-mix(in oklab, var(--closed-ink) 18%, transparent);
-  border-radius: 12px; padding: 0.65rem 0.9rem;
+  background: color-mix(in oklab, var(--closed-ink) 7%, transparent); border: 1px solid color-mix(in oklab, var(--closed-ink) 18%, transparent); padding: 0.65rem 0.9rem;
   animation: detailIn var(--dur-fast) var(--ease-lux) .05s both;
 }
 @keyframes detailIn { from { opacity: 0; translate: 0 8px; } }
 .palette-detail-badge {
-  display: inline-flex; align-items: center; gap: 0.35rem;
-  font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.65rem; border-radius: 50px;
+  display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem;
   background: light-dark(rgba(255,255,255,0.7), rgba(0,0,0,0.3)); border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
 }
 .palette-detail-badge.badge-new { color: light-dark(#a8720f, #d9a83e); border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
@@ -1650,7 +1394,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-action {
   display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 40px; text-align: start;
   background: transparent; border: 0; color: color-mix(in oklab, var(--text) 78%, transparent);
-  padding: 0.4rem 0.55rem; border-radius: 10px;
+  padding: 0.4rem 0.55rem;
   font-family: var(--ui-font); font-size: 0.87rem; font-weight: 500;
   touch-action: manipulation;
   transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux), box-shadow var(--dur-micro) var(--ease-lux), transform var(--dur-tap) var(--ease-lux);
@@ -1658,10 +1402,9 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-action:active { transform: scale(0.99); }
 .palette-action-icon {
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-  width: 28px; height: 28px; border-radius: 8px; font-size: 0.76rem;
+  width: 28px; height: 28px; font-size: 0.76rem;
   background: light-dark(rgba(20,18,15,0.04), rgba(255,255,255,0.045));
   color: var(--pal-ink-2);
-  transition: background-color var(--dur-fast) var(--ease-lux), color var(--dur-fast) var(--ease-lux);
 }
 .palette-action-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (hover: hover) and (pointer: fine) {
@@ -1672,16 +1415,9 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 }
 .palette-action:focus-visible { outline-offset: 2px; }
 .palette-action.is-primary {
-  color: var(--text); font-weight: 600;
-  min-height: 46px; margin-bottom: 0.35rem;
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,0.9), rgba(255,255,255,0.045)), light-dark(rgba(255,255,255,0.4), rgba(255,255,255,0.01))),
-    color-mix(in oklab, var(--live-accent) 16%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 34%, transparent), 0 6px 16px -10px color-mix(in oklab, var(--live-accent) 60%, transparent), 0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.3));
+  color: var(--text); font-weight: 600; margin-bottom: 0.35rem;
 }
 .palette-action.is-primary .palette-action-icon {
-  background: linear-gradient(160deg, color-mix(in oklab, #fff 16%, var(--live-accent)), color-mix(in oklab, #000 18%, var(--live-accent)));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 3px 8px -3px color-mix(in oklab, var(--live-accent) 70%, transparent);
   color: #fff;
 }
 .palette-action.is-active {
@@ -1689,18 +1425,16 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   background-color: color-mix(in oklab, var(--live-accent) 9%, light-dark(rgba(20,18,15,0.03), rgba(255,255,255,0.04)));
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 22%, transparent);
 }
-.palette-action.is-primary.is-active { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 40%, transparent), 0 0 0 3px color-mix(in oklab, var(--live-accent) 12%, transparent); }
 .palette-action.is-active:not(.is-primary) .palette-action-icon { color: color-mix(in oklab, var(--live-accent) 60%, var(--text)); background: color-mix(in oklab, var(--live-accent) 13%, transparent); }
 
 .palette-hints {
   position: relative;
   display: flex; align-items: center; justify-content: flex-end; gap: 1rem; flex-wrap: wrap;
   min-height: 40px; padding: 0.45rem 1.1rem; border-top: 1px solid var(--pal-line);
-  background: light-dark(rgba(20,18,15,0.018), rgba(0,0,0,0.16));
   font-size: 0.68rem; color: var(--pal-ink-2); flex-shrink: 0;
 }
 .palette-hints span { display: inline-flex; align-items: center; gap: 0.35rem; }
-.palette-hints > span:not(.palette-status) + span:not(.palette-status)::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: 0.35; margin-inline-end: 0.65rem; }
+.palette-hints > span:not(.palette-status) + span:not(.palette-status)::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: currentColor; margin-inline-end: 0.65rem; }
 @media (max-width: 960px) { .palette-hints > span:nth-child(3), .palette-hints > span:nth-child(5), .palette-hints > span:nth-child(6) { display: none; } }
 #lx-palette .palette-hints kbd { min-width: 18px; height: 18px; font-size: 0.62rem; transition: transform var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out); }
 #lx-palette .palette-hints kbd.is-pressed { transform: translateY(1px); color: var(--text); background-color: color-mix(in oklab, var(--live-accent) 18%, transparent); }
@@ -1710,9 +1444,8 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   font-size: 0.68rem; font-weight: 600; letter-spacing: 0.01em; color: var(--pal-ink-2); font-variant-numeric: tabular-nums;
 }
 .palette-status::before {
-  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  content: ''; border-radius: 50%;
   background: var(--live-accent);
-  box-shadow: 0 0 0 3px color-mix(in oklab, var(--live-accent) 16%, transparent);
   transition: background-color var(--dur-slow) var(--ease-lux);
 }
 .palette-status:empty { display: none; }
@@ -1729,15 +1462,6 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 
 .card-aura {
   position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
-  background:
-    radial-gradient(90% 75% at 0% 0%, color-mix(in oklab, var(--tint) 13%, transparent), transparent 62%),
-    radial-gradient(70% 60% at 100% 100%, color-mix(in oklab, var(--c3) 9%, transparent), transparent 70%);
-  opacity: calc(.55 + .45 * var(--hov, 0));
-}
-:root[dir="rtl"] .card-aura {
-  background:
-    radial-gradient(90% 75% at 100% 0%, color-mix(in oklab, var(--tint) 13%, transparent), transparent 62%),
-    radial-gradient(70% 60% at 0% 100%, color-mix(in oklab, var(--c3) 9%, transparent), transparent 70%);
 }
 :root[data-theme="light"] .card-aura { opacity: calc(.7 + .3 * var(--hov, 0)); }
 
@@ -1745,39 +1469,21 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   position: absolute; z-index: 0; pointer-events: none;
   inset-inline-end: -6%; bottom: -14%;
   font-size: clamp(7rem, 17dvh, 11rem); line-height: 1;
-  color: color-mix(in oklab, var(--tint) 11%, transparent);
-  -webkit-mask-image: linear-gradient(160deg, #000 20%, transparent 85%);
-          mask-image: linear-gradient(160deg, #000 20%, transparent 85%);
   transform:
     translate3d(calc(var(--tx, 0) * -14px), calc(var(--ty, 0) * -10px), 0)
     rotate(calc(-12deg + var(--hov, 0) * 4deg))
     scale(calc(1 + var(--hov, 0) * .05));
-  opacity: calc(.7 + .3 * var(--hov, 0));
 }
-:root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 13%, transparent); }
 .card-glyph svg, .card-glyph .lx-glyph { display: block; }
 .card-tall .card-glyph, .card-hero .card-glyph { font-size: clamp(9rem, 24dvh, 15rem); }
-.app-card.status-closed .card-glyph { color: color-mix(in oklab, var(--text) 5%, transparent); }
 
-.app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 34%, var(--border-highlight)); }
-:root[data-theme="dark"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 30%, rgba(255,255,255,.22)); }
-@media (hover: hover) and (pointer: fine) {
-  .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 34%, var(--border-highlight)); }
-  :root[data-theme="dark"] .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 30%, rgba(255,255,255,.22)); }
-}
-
-.title-stack { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.title-stack { display: flex; flex-direction: column; }
 .card-meta {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.66rem; letter-spacing: 0.01em;
-  color: var(--text-muted);
-  opacity: calc(.5 + .4 * var(--hov, 0));
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   unicode-bidi: isolate; text-align: start;
   transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px) * 1.2), calc(var(--ty, 0) * var(--depth, 0px) * 1.2), 0);
 }
 :root[dir="rtl"] .card-meta { text-align: end; }
-.card-hero .card-meta, .card-tall .card-meta { font-size: 0.72rem; }
 
 
 .badge-new .badge-dot { animation: newDot 2.4s var(--ease-io) 3; }
@@ -1801,21 +1507,15 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-scopes::-webkit-scrollbar { display: none; }
 .palette-scopes[hidden] { display: none; }
 .palette-scope-indicator {
-  position: absolute; top: 0.5rem; left: 0; height: 30px; width: 0;
-  border-radius: 9px; pointer-events: none;
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,0.95), rgba(255,255,255,0.06)), light-dark(rgba(255,255,255,0.6), rgba(255,255,255,0.02))),
-    color-mix(in oklab, var(--scope-accent, #7c9bff) 14%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--scope-accent, #7c9bff) 30%, transparent), 0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.3));
-  transition: transform 230ms var(--ease-snap), width 230ms var(--ease-snap), background-color var(--dur-base) var(--ease-lux);
+  position: absolute; top: 0.5rem; left: 0; height: 30px; width: 0; pointer-events: none;
   will-change: transform;
 }
 .palette-scope {
   position: relative; z-index: 1; flex-shrink: 0;
   display: inline-flex; align-items: center; gap: 0.45rem;
-  height: 30px; padding: 0 0.7rem; border: 0; border-radius: 9px;
+  height: 30px; padding: 0 0.7rem; border: 0;
   background: transparent; color: var(--pal-ink-2);
-  font-family: var(--ui-font); font-size: 0.78rem; font-weight: 600;
+  font-family: var(--ui-font); font-size: 0.78rem;
   transition: color var(--dur-micro) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux);
 }
 .palette-scope svg { font-size: 0.72rem; color: color-mix(in oklab, var(--scope-accent) 55%, var(--pal-ink-2)); }
@@ -1828,7 +1528,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-scope.is-active svg { color: var(--scope-accent); }
 .palette-scope.is-empty:not(.is-active) { opacity: 0.4; }
 .palette-scope-count {
-  min-width: 18px; height: 17px; padding: 0 5px; border-radius: 999px;
+  min-width: 18px; height: 17px; padding: 0 5px;
   display: inline-flex; align-items: center; justify-content: center;
   font-size: 0.62rem; font-variant-numeric: tabular-nums;
   background: light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.06));
@@ -1838,29 +1538,15 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .palette-scope.is-active .palette-scope-count { background: color-mix(in oklab, var(--scope-accent) 22%, transparent); color: var(--text); }
 
 .palette-detail-slab {
-  background:
-    radial-gradient(120% 90% at 50% -30%, color-mix(in oklab, var(--live-accent) 22%, transparent), transparent 60%),
-    linear-gradient(180deg, color-mix(in oklab, var(--live-accent) 6%, transparent), transparent 45%);
   transition: background-color var(--dur-slow) var(--ease-lux);
 }
 .palette-detail-slab::after {
   content: ''; position: absolute; inset-inline: 0; top: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 50%, transparent), transparent);
-}
-.palette-detail .app-icon-wrapper {
-  box-shadow:
-    0 14px 30px -12px color-mix(in oklab, var(--c1) 70%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.45),
-    inset 0 0 0 1px rgba(255,255,255,.12);
 }
 .palette-detail-watermark {
-  color: color-mix(in oklab, var(--tint) 10%, transparent);
   -webkit-mask-image: linear-gradient(200deg, #000 25%, transparent 90%);
           mask-image: linear-gradient(200deg, #000 25%, transparent 90%);
 }
-
-:root { --radius: 24px; }
 
 .scrim::before {
   content: ''; position: absolute; inset: 0; pointer-events: none;
@@ -1868,141 +1554,31 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   background-size: 28px 28px;
   -webkit-mask-image: radial-gradient(80% 65% at 50% 38%, #000 0%, rgba(0,0,0,.35) 55%, transparent 85%);
           mask-image: radial-gradient(80% 65% at 50% 38%, #000 0%, rgba(0,0,0,.35) 55%, transparent 85%);
-  opacity: .7;
-}
-
-h1 {
-  background-image: linear-gradient(135deg,
-    light-dark(#0f172a, #ffffff) 0%,
-    color-mix(in oklab, var(--tab-accent) 72%, light-dark(#0f172a, #ffffff)) 40%,
-    light-dark(#0f172a, #ffffff) 80%);
-}
-
-.controls-pill {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.82), rgba(255,255,255,.06)), light-dark(rgba(255,255,255,.55), rgba(255,255,255,.018)));
-  backdrop-filter: blur(20px) saturate(170%);
-  -webkit-backdrop-filter: blur(20px) saturate(170%);
-  border-color: light-dark(rgba(20,18,15,.07), rgba(255,255,255,.085));
-  box-shadow:
-    0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.35)),
-    0 14px 34px -18px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.75)),
-    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,.08)),
-    inset 0 -1px 0 light-dark(rgba(20,18,15,.03), rgba(0,0,0,.25));
 }
 .controls-pill button { position: relative; }
 .controls-pill button::after {
-  content: ''; position: absolute; left: 50%; bottom: 4px;
-  width: 4px; height: 4px; margin-left: -2px; border-radius: 50%;
+  content: ''; position: absolute; left: 50%; border-radius: 50%;
   background: var(--tab-accent);
-  box-shadow: 0 0 6px color-mix(in oklab, var(--tab-accent) 80%, transparent);
   opacity: 0; transform: scale(.4);
   transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring);
   pointer-events: none;
 }
 .controls-pill button[aria-pressed="true"]::after { opacity: 1; transform: scale(1); }
-.controls-pill button[aria-pressed="true"] {
-  background: color-mix(in oklab, var(--tab-accent) 12%, light-dark(rgba(20,18,15,.05), rgba(255,255,255,.07)));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 22%, transparent), inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.1));
-}
 .controls-divider { background: linear-gradient(180deg, transparent, var(--border) 25%, var(--border) 75%, transparent); }
-
-.lx-bar {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.84), rgba(255,255,255,.062)), light-dark(rgba(255,255,255,.56), rgba(255,255,255,.018))),
-    color-mix(in oklab, var(--tab-accent) 4%, transparent);
-  backdrop-filter: blur(22px) saturate(175%);
-  -webkit-backdrop-filter: blur(22px) saturate(175%);
-  border-color: light-dark(rgba(20,18,15,.075), rgba(255,255,255,.085));
-  box-shadow:
-    0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.35)),
-    0 18px 44px -24px light-dark(rgba(28,25,20,.24), rgba(0,0,0,.8)),
-    0 22px 50px -30px color-mix(in oklab, var(--tab-accent) 55%, transparent),
-    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,.09)),
-    inset 0 -1px 0 light-dark(rgba(20,18,15,.035), rgba(0,0,0,.3));
-}
 .lx-bar::before {
-  content: ''; position: absolute; inset-inline: 14%; bottom: -1px; height: 1px; z-index: 2;
+  content: ''; position: absolute; bottom: -1px; height: 1px; z-index: 2;
   pointer-events: none; border-radius: 1px;
-  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--tab-accent) 85%, transparent), transparent);
-  opacity: .6;
-  transition: opacity var(--dur-base) var(--ease-lux), inset-inline var(--dur-slow) var(--ease-lux);
-}
-@media (hover: hover) and (pointer: fine) {
-  .lx-bar:hover { border-color: light-dark(rgba(20,18,15,.12), rgba(255,255,255,.14)); }
-  .lx-bar:hover::before { opacity: 1; inset-inline: 8%; }
-}
-.lx-bar.is-focused {
-  border-color: color-mix(in oklab, var(--tab-accent) 38%, var(--border-highlight));
-  box-shadow:
-    0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.35)),
-    0 22px 50px -24px light-dark(rgba(28,25,20,.28), rgba(0,0,0,.85)),
-    0 0 0 4px color-mix(in oklab, var(--tab-accent) 14%, transparent),
-    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,.09));
-}
-.lx-bar-search svg.fa-magnifying-glass {
-  color: color-mix(in oklab, var(--tab-accent) 60%, var(--text-muted));
-  transition: color var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring);
-}
-.lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--tab-accent); transform: scale(1.1) rotate(-8deg); }
-@media (hover: hover) and (pointer: fine) {
-  .lx-bar-search:hover svg.fa-magnifying-glass {
-    color: var(--tab-accent);
-    transform: scale(1.1) rotate(-8deg);
-  }
 }
 .lx-bar-search:active svg.fa-magnifying-glass { transform: scale(.94); transition-duration: var(--dur-tap); }
-.lx-bar-label { letter-spacing: -0.01em; }
 .lx-bar-kbd {
-  height: 1.95em; padding: 0 0.65em; border-radius: 8px; font-size: 0.7rem;
-  background: linear-gradient(180deg, light-dark(#ffffff, rgba(255,255,255,.1)), light-dark(rgba(20,18,15,.04), rgba(255,255,255,.035)));
-  box-shadow: 0 1px 0 light-dark(rgba(20,18,15,.1), rgba(0,0,0,.55)), 0 2px 6px -3px light-dark(rgba(20,18,15,.18), rgba(0,0,0,.6)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.1));
+  height: 1.95em; padding: 0 0.65em;
 }
 .lx-bar-divider { background: linear-gradient(180deg, transparent, var(--border-highlight), transparent); opacity: .6; }
-
-.tab-indicator {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.96), rgba(255,255,255,.12)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.025))),
-    color-mix(in oklab, var(--tab-accent) 20%, color-mix(in oklab, var(--text) 5%, transparent));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 42%, transparent),
-    inset 0 -10px 18px -12px color-mix(in oklab, var(--tab-accent) 70%, transparent);
-}
-.tab-indicator::before { box-shadow: inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.16)); }
-.tab-ghost { background: color-mix(in oklab, var(--text) 6%, transparent); }
-.tab-btn { transition: color var(--tab-dur) var(--ease-out), opacity var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
-.tab-btn:active { transform: scale(.96); }
-.tab-btn[aria-selected="true"] svg { filter: drop-shadow(0 0 6px color-mix(in oklab, var(--tab-accent) 65%, transparent)); }
 @media (hover: hover) and (pointer: fine) {
   .tab-btn:not([aria-selected="true"]):hover {
     color: var(--text);
   }
 }
-
-:root[data-theme] .card-clip {
-  background-image:
-    linear-gradient(90deg, transparent 6%, light-dark(rgba(255,255,255,1), rgba(255,255,255,.17)) 50%, transparent 94%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.6), rgba(255,255,255,.065)), transparent 48%),
-    linear-gradient(0deg, color-mix(in oklab, var(--tint) 6%, transparent), transparent 42%);
-  background-size: 100% 1px, 100% 100%, 100% 100%;
-}
-:root[data-theme] .card-shadow {
-  box-shadow:
-    0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.32)),
-    0 12px 30px -18px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.7)),
-    0 16px 36px -26px color-mix(in oklab, var(--tint) 30%, transparent),
-    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,.07)),
-    inset 0 0 0 1px light-dark(rgba(20,18,15,.045), rgba(255,255,255,.04));
-}
-:root[data-theme] .card-shadow::after {
-  box-shadow:
-    0 2px 6px light-dark(rgba(28,25,20,.07), rgba(0,0,0,.36)),
-    0 30px 64px -28px light-dark(rgba(28,25,20,.26), rgba(0,0,0,.85)),
-    0 26px 60px -30px color-mix(in oklab, var(--tint) 62%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 26%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.18));
-}
-.card-aura { opacity: calc(.6 + .4 * var(--hov, 0)); }
 
 @supports (height: 1cqh) {
   .card-clip { container-type: size; }
@@ -2015,189 +1591,50 @@ h1 {
   }
 }
 .card-glyph {
-  color: color-mix(in oklab, var(--tint) 13%, transparent);
   -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,.95) 10%, rgba(0,0,0,.35) 70%, transparent 100%);
           mask-image: linear-gradient(to top, rgba(0,0,0,.95) 10%, rgba(0,0,0,.35) 70%, transparent 100%);
-  opacity: calc(.55 + .45 * var(--hov, 0));
-}
-.card-glyph svg, .card-glyph .lx-glyph { filter: drop-shadow(0 0 1px color-mix(in oklab, var(--tint) 30%, transparent)); }
-:root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 12%, transparent); }
-.app-card.status-closed .card-glyph { color: color-mix(in oklab, var(--text) 6%, transparent); }
-.card-sheen { box-shadow: inset 0 1px 0 color-mix(in oklab, var(--tint) 45%, rgba(255,255,255,.35)); }
-
-.app-icon-wrapper { border-radius: calc(var(--icon-size) * .3); }
-.app-icon-wrapper::after { opacity: calc(.42 * var(--icon-lift)); }
-.app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(10px + var(--icon-lift) * 8px) calc(22px + var(--icon-lift) * 14px) -10px color-mix(in oklab, var(--c1) 55%, transparent),
-    0 2px 5px -2px rgba(0,0,0,.35),
-    0 0 0 1px light-dark(rgba(255,255,255,.7), rgba(255,255,255,.05)),
-    inset 0 1px 0 rgba(255,255,255,.5),
-    inset 0 -1px 0 rgba(0,0,0,.28),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -6px 12px -6px rgba(0,0,0,.25);
 }
 
 .card-meta::before {
-  content: ''; display: inline-block; width: 5px; height: 5px; border-radius: 50%;
-  margin-inline-end: .5em; vertical-align: .12em;
-  background: var(--tint);
-  box-shadow: 0 0 0 2px color-mix(in oklab, var(--tint) 20%, transparent);
-}
-.app-card.status-closed .card-meta::before { background: var(--closed-ink); box-shadow: 0 0 0 2px color-mix(in oklab, var(--closed-ink) 20%, transparent); }
-
-.open-affordance {
-  background: color-mix(in oklab, var(--tint) 16%, light-dark(rgba(255,255,255,.85), rgba(255,255,255,.05)));
-  border-color: color-mix(in oklab, var(--tint) 32%, transparent);
-  box-shadow: 0 6px 14px -8px color-mix(in oklab, var(--tint) 75%, transparent), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.12));
-  transition: opacity var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-spring);
-}
-
-.badge {
-  box-shadow: inset 0 1px 0 light-dark(rgba(255,255,255,.95), rgba(255,255,255,.08)), 0 2px 8px -4px light-dark(rgba(28,25,20,.12), rgba(0,0,0,.5));
+  content: ''; display: inline-block;
 }
 
 .digit-badge {
-  border-radius: 8px;
-  background: light-dark(rgba(255,255,255,.92), rgba(12,13,17,.78));
   color: var(--text);
-  box-shadow: 0 0 0 1px light-dark(rgba(20,18,15,.08), rgba(255,255,255,.12)), 0 4px 10px -4px rgba(0,0,0,.45), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.14));
-  transition: opacity var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-spring);
 }
 :root[data-theme="light"] .digit-badge { background: rgba(255,255,255,.92); }
 
-.variant-chips {
-  background: light-dark(rgba(20,18,15,.05), rgba(0,0,0,.28));
-  box-shadow: inset 0 1px 2px light-dark(rgba(20,18,15,.06), rgba(0,0,0,.35)), 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.04));
-}
-.variant-chip-indicator {
-  background: linear-gradient(180deg, light-dark(#ffffff, rgba(255,255,255,.2)), light-dark(rgba(255,255,255,.88), rgba(255,255,255,.1)));
-  box-shadow:
-    0 1px 2px light-dark(rgba(20,18,15,.14), rgba(0,0,0,.4)),
-    0 4px 10px -6px color-mix(in oklab, var(--tint) 70%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 28%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.16));
-}
-@media (hover: hover) and (pointer: fine) {
-  .variant-chip:not(.is-active):hover {
-    color: var(--text);
-  }
-}
-
-#lx-palette {
-  --pal-radius: 26px;
-  background-color: light-dark(rgba(251,250,247,.99), rgba(12,13,17,.985));
-  background-image:
-    radial-gradient(90% 60% at 50% -22%, color-mix(in oklab, var(--live-accent) 15%, transparent), transparent 70%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.85), rgba(255,255,255,.04)), transparent 140px);
-  border-color: light-dark(rgba(20,18,15,.1), rgba(255,255,255,.09));
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.4)),
-    0 16px 32px -14px light-dark(rgba(28,25,20,.16), rgba(0,0,0,.6)),
-    0 56px 110px -36px light-dark(rgba(28,25,20,.3), rgba(0,0,0,.85)),
-    0 50px 140px -60px color-mix(in oklab, var(--live-accent) 55%, transparent),
-    0 0 0 1px color-mix(in oklab, var(--live-accent) 8%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.08));
-}
-#lx-palette::before { inset: 0 12% auto; opacity: .9; }
-#lx-palette::backdrop {
-  background:
-    radial-gradient(70% 55% at 50% 22%, color-mix(in oklab, var(--live-accent) 13%, transparent), transparent 75%),
-    light-dark(rgba(30,27,22,.3), rgba(2,3,5,.66));
-}
-
 .palette-input-row { min-height: 72px; }
-.palette-input-row > svg {
-  color: var(--live-accent);
-  filter: drop-shadow(0 0 8px color-mix(in oklab, var(--live-accent) 45%, transparent));
-}
 .palette-input-row::after { background: linear-gradient(90deg, transparent, var(--pal-line) 12%, var(--pal-line) 88%, transparent); }
-#paletteInput, .palette-ghost { font-size: 1.3rem; letter-spacing: -0.015em; }
-#paletteInput { font-weight: 500; }
 
 .palette-group-header { display: flex; align-items: center; gap: 0.6rem; }
 .palette-group-header::after { content: ''; flex: 1; height: 1px; background: var(--pal-line); }
-
-.palette-cursor {
-  border-radius: 13px;
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.95), rgba(255,255,255,.055)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.01))),
-    color-mix(in oklab, var(--live-accent) 13%, light-dark(rgba(20,18,15,.02), rgba(255,255,255,.035)));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 24%, light-dark(rgba(20,18,15,.05), rgba(255,255,255,.04))),
-    0 6px 16px -10px color-mix(in oklab, var(--live-accent) 60%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.28));
-}
 .palette-cursor::before {
-  content: ''; position: absolute; inset-inline-start: 0; top: 50%;
-  width: 3px; height: 52%; transform: translateY(-50%);
+  content: ''; position: absolute; inset-inline-start: 0; top: 50%; transform: translateY(-50%);
   border-start-end-radius: 3px; border-end-end-radius: 3px;
-  background: var(--live-accent);
-  box-shadow: 0 0 10px color-mix(in oklab, var(--live-accent) 75%, transparent);
   transition: opacity var(--dur-micro) var(--ease-lux);
 }
 .palette-cursor.is-dimmed::before { opacity: 0; }
-.palette-item { border-radius: 13px; }
-.palette-item .app-icon-wrapper { transition: --icon-lift var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
-.palette-item.is-active .app-icon-wrapper {
-  box-shadow: 0 6px 16px -6px color-mix(in oklab, var(--c1) 80%, transparent), inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 1px rgba(255,255,255,.12);
-  transform: scale(1.06);
-}
-.palette-item-title mark { box-shadow: inset 0 -0.42em 0 color-mix(in oklab, var(--tint) 32%, transparent); }
+.palette-item .app-icon-wrapper { transition: --icon-lift var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
 .palette-item.is-active .palette-item-cat { color: color-mix(in oklab, var(--tint-ink) 45%, var(--pal-ink-2)); }
-
-.palette-detail .app-icon-wrapper { --icon-size: 60px; }
 .palette-detail-title { font-size: 1.65rem; }
 :root:lang(en) .palette-detail-title { font-size: 1.95rem; }
-.palette-facts { border-radius: 14px; }
-.palette-action { border-radius: 11px; }
 .palette-action.is-primary {
-  min-height: 48px; border-radius: 13px;
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.92), rgba(255,255,255,.07)), light-dark(rgba(255,255,255,.35), rgba(255,255,255,.01))),
-    color-mix(in oklab, var(--live-accent) 22%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 40%, transparent),
-    0 10px 24px -14px color-mix(in oklab, var(--live-accent) 80%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
+  min-height: 48px;
 }
 @media (hover: hover) and (pointer: fine) {
   .palette-action.is-primary:hover {
     background-color: color-mix(in oklab, var(--live-accent) 8%, transparent);
   }
 }
-.palette-action.is-primary .palette-action-icon { width: 30px; height: 30px; border-radius: 9px; }
+.palette-action.is-primary .palette-action-icon { width: 30px; height: 30px; }
 .palette-action-icon { transition: background-color var(--dur-fast) var(--ease-lux), color var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
-.palette-action.is-active .palette-action-icon { transform: scale(1.06); }
-@media (hover: hover) and (pointer: fine) {
-  .palette-action:hover .palette-action-icon {
-    transform: scale(1.06);
-  }
-}
 
 .palette-hints { background: light-dark(rgba(20,18,15,.022), rgba(0,0,0,.22)); }
-.palette-status::before { animation: statusPulse 2.6s var(--ease-io) infinite; }
 #lx-palette:not([open]) .palette-status::before { animation-play-state: paused; }
-@keyframes statusPulse { 50% { box-shadow: 0 0 0 5px color-mix(in oklab, var(--live-accent) 6%, transparent); } }
-#lx-palette kbd {
-  background: linear-gradient(180deg, light-dark(#fff, rgba(255,255,255,.08)), light-dark(rgba(20,18,15,.03), rgba(255,255,255,.03)));
-  box-shadow: inset 0 0 0 1px light-dark(rgba(20,18,15,.08), rgba(255,255,255,.07)), 0 1px 0 light-dark(rgba(20,18,15,.08), rgba(0,0,0,.45));
-}
-
-.palette-scope-indicator {
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--scope-accent, #7c9bff) 36%, transparent),
-    0 4px 12px -8px color-mix(in oklab, var(--scope-accent, #7c9bff) 80%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
-}
-
-.lx-context-menu { border-radius: 16px; }
-.lx-toast { box-shadow: 0 2px 4px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)), 0 18px 40px -14px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.65)), 0 0 0 1px color-mix(in oklab, var(--tab-accent) 14%, transparent), inset 0 1px 0 light-dark(rgba(255,255,255,.95), rgba(255,255,255,.07)); }
 
 :root {
   --radius: 18px;
-  --hairline: light-dark(rgba(20,18,15,.085), rgba(255,255,255,.075));
-  --hairline-strong: light-dark(rgba(20,18,15,.22), rgba(255,255,255,.2));
   --text-muted: light-dark(rgba(21,19,15,0.58), rgba(246,245,242,0.5));
 }
 
@@ -2217,31 +1654,9 @@ h1 {
     --tint-ink: oklch(from var(--c1) clamp(.38, l, .48) clamp(.07, c, .14) h);
   }
 }
-
-@supports (color: oklch(from red l c h)) {
-  :root[data-palette="curated"] .app-card,
-  :root[data-palette="curated"] .palette-item,
-  :root[data-palette="curated"] #paletteDetail,
-  :root[data-palette="curated"] #lx-palette {
-    --tint: oklch(from var(--c1, #6d82ad) .665 min(c, .068) h);
-    --c2: oklch(from var(--tint) .73 calc(c * .8) h);
-    --c3: oklch(from var(--tint) .5 calc(c * .95) h);
-  }
-  :root[data-palette="curated"][data-theme="light"] .app-card,
-  :root[data-palette="curated"][data-theme="light"] .palette-item,
-  :root[data-palette="curated"][data-theme="light"] #paletteDetail,
-  :root[data-palette="curated"][data-theme="light"] #lx-palette {
-    --tint: oklch(from var(--c1, #6d82ad) .57 min(calc(c * 1.25), .09) h);
-    --tint-ink: oklch(from var(--c1, #6d82ad) .43 min(c, .085) h);
-  }
-}
-
-.scrim::before { opacity: .42; }
-
-.site-header { gap: clamp(1rem, 2.6vw, 2rem); }
 .site-header::before,
 .site-header::after {
-  content: ''; flex: 0 1 clamp(24px, 5vw, 72px); height: 1px; opacity: .7;
+  content: ''; flex: 0 1 clamp(24px, 5vw, 72px); height: 1px;
   background: linear-gradient(90deg, transparent, var(--hairline-strong));
 }
 .site-header::after { background: linear-gradient(270deg, transparent, var(--hairline-strong)); }
@@ -2259,79 +1674,19 @@ h1 {
 }
 :root:lang(ar) h1 { letter-spacing: 0; }
 .fonts-ready h1 { animation: none; }
-
-.controls-pill {
-  background: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.015)));
-  border-color: var(--hairline);
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)),
-    0 10px 28px -18px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.7)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
-}
 .controls-pill button::after { width: 3px; height: 3px; margin-left: -1.5px; bottom: 5px; box-shadow: none; }
-.controls-pill button[aria-pressed="true"] {
-  background: light-dark(rgba(20,18,15,.055), rgba(255,255,255,.065));
-  box-shadow: inset 0 0 0 1px var(--hairline);
-}
 @media (hover: hover) and (pointer: fine) {
   .controls-pill:not(.is-magnetic) button:hover {
     transform: none;
   }
 }
-
-.lx-bar {
-  background: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
-  border-color: var(--hairline);
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)),
-    0 16px 40px -26px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.8)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
-}
-.lx-bar::before {
-  inset-inline: 22%;
-  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--tab-accent) 60%, transparent), transparent);
-  opacity: .32;
-}
-@media (hover: hover) and (pointer: fine) {
-  .lx-bar:hover { border-color: light-dark(rgba(20,18,15,.13), rgba(255,255,255,.12)); }
-  .lx-bar:hover::before { opacity: .6; inset-inline: 16%; }
-}
-.lx-bar.is-focused {
-  border-color: color-mix(in oklab, var(--tab-accent) 24%, var(--border-highlight));
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)),
-    0 20px 44px -26px light-dark(rgba(28,25,20,.26), rgba(0,0,0,.85)),
-    0 0 0 3px color-mix(in oklab, var(--tab-accent) 8%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
-}
-.lx-bar-search svg.fa-magnifying-glass { color: var(--text-muted); }
-.lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); transform: none; }
-@media (hover: hover) and (pointer: fine) {
-  .lx-bar-search:hover svg.fa-magnifying-glass {
-    color: var(--text);
-    transform: none;
-  }
-}
-.lx-bar-label { font-size: 1.08rem; letter-spacing: -0.004em; }
+.lx-bar-label { letter-spacing: -0.004em; }
 :root:lang(ar) .lx-bar-label { letter-spacing: 0; }
 .lx-bar-kbd {
-  border-radius: 6px; font-weight: 500;
-  background: light-dark(rgba(20,18,15,.035), rgba(255,255,255,.045));
-  box-shadow: inset 0 0 0 1px var(--hairline);
   border: 0;
 }
-
-.tab-indicator {
-  background: linear-gradient(180deg, light-dark(#ffffff, rgba(255,255,255,.085)), light-dark(rgba(255,255,255,.78), rgba(255,255,255,.035)));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 28%, var(--hairline)),
-    0 1px 2px light-dark(rgba(28,25,20,.08), rgba(0,0,0,.35));
-}
-.tab-indicator::before { box-shadow: inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.08)); }
-.tab-btn[aria-selected="true"] svg { filter: none; color: color-mix(in oklab, var(--tab-accent) 80%, var(--text)); }
 .tab-btn:active { transform: scale(.98); }
-.tab-btn { font-weight: 500; letter-spacing: -0.003em; }
-.tab-btn[aria-selected="true"] { font-weight: 600; }
+.tab-btn { letter-spacing: -0.003em; }
 :root:lang(ar) .tab-btn { letter-spacing: 0; }
 
 :root[data-theme] .card-clip {
@@ -2340,46 +1695,16 @@ h1 {
     linear-gradient(180deg, light-dark(rgba(255,255,255,.4), rgba(255,255,255,.03)), transparent 52%);
   background-size: 100% 1px, 100% 100%;
 }
-:root[data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.05); }
-:root[data-theme] .card-shadow {
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.035), rgba(0,0,0,.28)),
-    0 10px 26px -18px light-dark(rgba(28,25,20,.16), rgba(0,0,0,.6)),
-    inset 0 1px 0 light-dark(rgba(255,255,255,.95), rgba(255,255,255,.045)),
-    inset 0 0 0 1px light-dark(rgba(20,18,15,.035), rgba(255,255,255,.025));
-}
-:root[data-theme] .card-shadow::after {
-  box-shadow:
-    0 2px 4px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.3)),
-    0 26px 52px -28px light-dark(rgba(28,25,20,.24), rgba(0,0,0,.82)),
-    0 22px 48px -32px color-mix(in oklab, var(--tint) 38%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 16%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.09));
-}
-.app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 22%, var(--border-highlight)); }
 :root[data-theme="dark"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 20%, rgba(255,255,255,.16)); }
 @media (hover: hover) and (pointer: fine) {
-  .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 22%, var(--border-highlight)); }
   :root[data-theme="dark"] .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 20%, rgba(255,255,255,.16)); }
-  .app-card:hover .card-glow { opacity: .045; }
   :root[data-theme="light"] .app-card:hover .card-glow { opacity: .05; }
 }
 .app-card.is-kb-focus .card-glow { opacity: .045; }
-
-.card-aura {
-  background:
-    radial-gradient(85% 70% at 0% 0%, color-mix(in oklab, var(--tint) 7%, transparent), transparent 64%),
-    radial-gradient(70% 60% at 100% 100%, color-mix(in oklab, var(--c3) 4%, transparent), transparent 72%);
-  opacity: calc(.6 + .4 * var(--hov, 0));
-}
 :root[dir="rtl"] .card-aura {
   background:
     radial-gradient(85% 70% at 100% 0%, color-mix(in oklab, var(--tint) 7%, transparent), transparent 64%),
     radial-gradient(70% 60% at 0% 100%, color-mix(in oklab, var(--c3) 4%, transparent), transparent 72%);
-}
-.card-sheen {
-  background: linear-gradient(0deg, color-mix(in oklab, var(--tint) 4%, transparent), transparent 30%);
-  box-shadow: inset 0 1px 0 color-mix(in oklab, var(--tint) 22%, rgba(255,255,255,.18));
 }
 .card-sheen::before {
   background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,.05) 48%, rgba(255,255,255,.015) 54%, transparent 64%);
@@ -2388,34 +1713,15 @@ h1 {
 :root[data-theme="light"] .card-sheen::before {
   background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,.34) 48%, rgba(255,255,255,.1) 54%, transparent 64%);
 }
-.card-glyph { color: color-mix(in oklab, var(--tint) 6%, transparent); opacity: calc(.5 + .5 * var(--hov, 0)); }
 .card-glyph svg, .card-glyph .lx-glyph { filter: none; }
 :root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 7%, transparent); }
-.app-card.status-closed .card-glyph { color: color-mix(in oklab, var(--text) 4%, transparent); }
 
 .app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.12), rgba(255,255,255,.16));
-  --icon-rim: light-dark(rgba(255,255,255,.2), rgba(255,255,255,.08));
-  border-radius: calc(var(--icon-size) * .27);
-  background:
-    radial-gradient(70% 55% at calc(50% - var(--tx,0) * 14%) calc(18% - var(--ty,0) * 10%), var(--icon-veil), transparent 70%),
-    linear-gradient(165deg, var(--c2) 0%, var(--tint) 46%, var(--c3) 100%);
   transform:
     translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0)
     scale(calc(1 + .03 * var(--icon-lift)));
 }
-.app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px color-mix(in oklab, var(--c3) 60%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.3)),
-    inset 0 1px 0 rgba(255,255,255,.26),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -10px 16px -12px rgba(0,0,0,.3);
-}
-.app-icon-wrapper::before { opacity: calc(.12 * var(--icon-lift)); }
-:root[data-theme="light"] .app-icon-wrapper::before { opacity: calc(.1 * var(--icon-lift)); }
-.app-icon-wrapper::after { opacity: calc(.14 * var(--icon-lift)); }
-.app-icon { color: rgba(255,255,255,.95); text-shadow: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.2)); }
+.app-icon { color: rgba(255,255,255,.95); text-shadow: none; }
 
 .app-title {
   background-image: linear-gradient(135deg,
@@ -2426,12 +1732,9 @@ h1 {
 }
 :root:lang(en) .app-title { letter-spacing: -0.008em; }
 :root:lang(en) .card-hero .app-title,
-:root:lang(en) .card-tall .app-title { font-weight: 600; letter-spacing: -0.016em; }
+:root:lang(en) .card-tall .app-title { font-weight: 600; }
 
-.open-affordance {
-  width: 24px; height: 24px; font-size: .6rem;
-  background: light-dark(rgba(20,18,15,.04), rgba(255,255,255,.05));
-  border-color: var(--hairline);
+.open-affordance { font-size: .6rem;
   box-shadow: none;
   color: color-mix(in oklab, var(--tint-ink) 70%, var(--text));
 }
@@ -2439,13 +1742,10 @@ h1 {
 
 .card-meta {
   font-family: var(--ui-font);
-  font-size: .7rem; font-weight: 500; letter-spacing: .015em;
   font-variant-numeric: tabular-nums;
-  opacity: calc(.66 + .3 * var(--hov, 0));
 }
 .card-hero .card-meta, .card-tall .card-meta { font-size: .74rem; }
-.card-meta::before {
-  width: 16px; height: 1px; border-radius: 0;
+.card-meta::before { height: 1px; border-radius: 0;
   vertical-align: .32em; margin-inline-end: .65em;
   background: color-mix(in oklab, var(--tint) 75%, var(--text-muted));
   box-shadow: none;
@@ -2454,104 +1754,41 @@ h1 {
 }
 .app-card.status-closed .card-meta::before { background: var(--closed-ink); box-shadow: none; }
 
-.badge {
-  border-radius: 6px; padding: .28rem .55rem; gap: .4rem;
-  font-size: .6rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-  box-shadow: none;
+.badge { gap: .4rem; text-transform: uppercase;
 }
 :root:lang(ar) .badge { letter-spacing: 0; font-size: .68rem; text-transform: none; }
 .badge .badge-dot { width: 4px; height: 4px; box-shadow: none; }
 .badge-new { background: color-mix(in oklab, currentColor 8%, transparent); border-color: color-mix(in oklab, currentColor 22%, transparent); }
 .badge-closed { background: color-mix(in oklab, var(--closed-ink) 8%, transparent); border-color: color-mix(in oklab, var(--closed-ink) 24%, transparent); }
 .badge-variant { background: color-mix(in oklab, currentColor 8%, transparent); border-color: color-mix(in oklab, currentColor 22%, transparent); }
-
-.variant-chips {
-  border-radius: 9px; padding: 2px;
-  background: light-dark(rgba(20,18,15,.045), rgba(0,0,0,.24));
-  box-shadow: inset 0 0 0 1px light-dark(rgba(20,18,15,.04), rgba(255,255,255,.035));
-}
-.variant-chip { height: 24px; padding: 0 .7rem; border-radius: 7px; font-weight: 500; letter-spacing: .01em; }
+.variant-chip { height: 24px; padding: 0 .7rem; }
 .variant-chip.is-active { font-weight: 600; }
 :root:lang(ar) .variant-chip { letter-spacing: 0; }
 .variant-chip-indicator {
-  top: 2px; height: calc(100% - 4px); border-radius: 7px;
-  background: light-dark(#ffffff, rgba(255,255,255,.12));
-  box-shadow:
-    0 1px 2px light-dark(rgba(20,18,15,.1), rgba(0,0,0,.4)),
-    inset 0 0 0 1px light-dark(rgba(20,18,15,.05), rgba(255,255,255,.06)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.08));
+  top: 2px; height: calc(100% - 4px);
 }
 
-.digit-badge { border-radius: 6px; font-weight: 600; box-shadow: 0 0 0 1px var(--hairline), 0 4px 10px -6px rgba(0,0,0,.4); }
-
-#lx-palette {
-  --pal-radius: 20px;
-  background-image:
-    radial-gradient(90% 60% at 50% -24%, color-mix(in oklab, var(--live-accent) 7%, transparent), transparent 70%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.03)), transparent 140px);
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.4)),
-    0 16px 32px -16px light-dark(rgba(28,25,20,.16), rgba(0,0,0,.6)),
-    0 56px 110px -40px light-dark(rgba(28,25,20,.28), rgba(0,0,0,.85)),
-    0 40px 120px -70px color-mix(in oklab, var(--live-accent) 24%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
-}
-#lx-palette::before { opacity: .45; inset: 0 20% auto; }
-#lx-palette::backdrop {
-  background:
-    radial-gradient(70% 55% at 50% 22%, color-mix(in oklab, var(--live-accent) 5%, transparent), transparent 75%),
-    light-dark(rgba(30,27,22,.28), rgba(2,3,5,.66));
-}
-.palette-input-row > svg { color: color-mix(in oklab, var(--live-accent) 50%, var(--text-muted)); filter: none; }
+.digit-badge { font-weight: 600; box-shadow: 0 0 0 1px var(--hairline), 0 4px 10px -6px rgba(0,0,0,.4); }
 #paletteInput, .palette-ghost { font-size: 1.22rem; letter-spacing: -0.01em; }
 #paletteInput { font-weight: 400; }
 :root:lang(ar) #paletteInput, :root:lang(ar) .palette-ghost { letter-spacing: 0; }
-.palette-mode { border-radius: 6px; }
 .palette-group-header { letter-spacing: .14em; font-size: .6rem; }
 :root:lang(ar) .palette-group-header { letter-spacing: 0; font-size: .72rem; }
-.palette-cursor {
-  border-radius: 10px;
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.92), rgba(255,255,255,.04)), light-dark(rgba(255,255,255,.62), rgba(255,255,255,.012))),
-    color-mix(in oklab, var(--live-accent) 7%, light-dark(rgba(20,18,15,.02), rgba(255,255,255,.035)));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 16%, var(--hairline)),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.28));
-}
-.palette-cursor::before { width: 2px; height: 44%; box-shadow: none; background: color-mix(in oklab, var(--live-accent) 85%, var(--text)); }
-.palette-item { border-radius: 10px; }
 .palette-item .app-icon-wrapper {
   --icon-size: 32px;
-  box-shadow: 0 1px 2px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.24), inset 0 0 0 1px rgba(255,255,255,.08);
 }
 .palette-item.is-active .app-icon-wrapper {
   transform: scale(1.03);
-  box-shadow: 0 4px 10px -6px color-mix(in oklab, var(--c3) 80%, transparent), inset 0 1px 0 rgba(255,255,255,.28), inset 0 0 0 1px rgba(255,255,255,.1);
 }
 .palette-item-title mark { box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--tint) 70%, transparent); border-radius: 0; }
-.palette-detail-slab {
-  background:
-    radial-gradient(120% 90% at 50% -30%, color-mix(in oklab, var(--live-accent) 10%, transparent), transparent 60%),
-    linear-gradient(180deg, color-mix(in oklab, var(--live-accent) 3%, transparent), transparent 45%);
-}
 .palette-detail-slab::after { background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 28%, transparent), transparent); }
-.palette-detail-watermark { color: color-mix(in oklab, var(--tint) 5%, transparent); }
 .palette-detail .app-icon-wrapper {
   --icon-size: 56px;
-  box-shadow:
-    0 10px 22px -14px color-mix(in oklab, var(--c3) 75%, transparent),
-    0 1px 2px rgba(0,0,0,.24),
-    inset 0 1px 0 rgba(255,255,255,.26),
-    inset 0 0 0 1px rgba(255,255,255,.08);
 }
 .palette-detail-eyebrow { letter-spacing: .16em; }
 :root:lang(ar) .palette-detail-eyebrow { letter-spacing: 0; }
-.palette-detail-host { border-radius: 6px; background: transparent; border-color: var(--hairline); font-family: var(--ui-font); font-size: .72rem; letter-spacing: .01em; opacity: .85; }
-.palette-detail-badge { border-radius: 6px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .62rem; }
+.palette-detail-badge { font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .62rem; }
 :root:lang(ar) .palette-detail-badge { letter-spacing: 0; text-transform: none; font-size: .7rem; }
-.palette-detail-reason { border-radius: 10px; }
-.palette-facts { border-radius: 10px; }
-.palette-action { border-radius: 9px; }
 .palette-action-icon { border-radius: 7px; }
 .palette-action.is-active .palette-action-icon { transform: none; }
 @media (hover: hover) and (pointer: fine) {
@@ -2559,36 +1796,17 @@ h1 {
     transform: none;
   }
 }
-.palette-action.is-primary {
-  border-radius: 11px;
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.9), rgba(255,255,255,.05)), light-dark(rgba(255,255,255,.5), rgba(255,255,255,.012))),
-    color-mix(in oklab, var(--live-accent) 13%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 28%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
-}
 .palette-action.is-primary.is-active { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 38%, transparent), 0 0 0 3px color-mix(in oklab, var(--live-accent) 9%, transparent); }
 .palette-action.is-primary .palette-action-icon {
   border-radius: 8px;
-  background: color-mix(in oklab, #000 12%, var(--live-accent));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.22);
 }
 .palette-scope { border-radius: 8px; font-weight: 500; }
 .palette-scope.is-active { font-weight: 600; }
 .palette-scope-indicator {
   border-radius: 8px;
-  background: linear-gradient(180deg, light-dark(#fff, rgba(255,255,255,.06)), light-dark(rgba(255,255,255,.7), rgba(255,255,255,.02)));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--scope-accent, #7c9bff) 26%, var(--hairline)),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
 }
-.palette-scope-count { border-radius: 5px; }
 .palette-status::before { animation: none; width: 5px; height: 5px; box-shadow: 0 0 0 3px color-mix(in oklab, var(--live-accent) 12%, transparent); }
-#lx-palette kbd { border-radius: 5px; background: light-dark(rgba(20,18,15,.035), rgba(255,255,255,.045)); box-shadow: inset 0 0 0 1px var(--hairline); }
-
-.lx-context-menu { border-radius: 12px; }
-.lx-context-menu button { border-radius: 8px; }
+#lx-palette kbd { background: light-dark(rgba(20,18,15,.035), rgba(255,255,255,.045)); box-shadow: inset 0 0 0 1px var(--hairline); }
 
 :root {
   --r-card: 18px; --r-pal: 20px; --r-icon: .27; --r-chip: 9px; --r-chip-in: 7px; --r-badge: 6px;
@@ -2609,7 +1827,6 @@ h1 {
 :root[data-corners] .app-icon-wrapper { border-radius: calc(var(--icon-size) * var(--r-icon)); }
 :root[data-corners] .badge,
 :root[data-corners] .palette-detail-badge,
-:root[data-corners] .palette-detail-host,
 :root[data-corners] .digit-badge,
 :root[data-corners] .palette-mode { border-radius: var(--r-badge); }
 :root[data-corners] .variant-chips { border-radius: var(--r-chip); }
@@ -2629,7 +1846,6 @@ h1 {
 :root[data-corners] #lx-palette kbd,
 :root[data-corners] .lx-bar-kbd,
 :root[data-corners] .palette-scope-count { border-radius: var(--r-kbd); }
-:root[data-corners] .lx-context-menu { border-radius: var(--r-menu); }
 :root[data-corners] .lx-context-menu button { border-radius: var(--r-menu-item); }
 :root[data-corners] .lx-bar { border-radius: var(--r-bar); }
 :root[data-corners] .tab-indicator,
@@ -2639,43 +1855,6 @@ h1 {
 :root[data-corners] .controls-pill { border-radius: var(--r-pill); }
 :root[data-corners] .controls-pill button { border-radius: var(--r-pill-btn); }
 :root[data-corners] .lx-toast { border-radius: max(var(--r-menu), min(var(--r-bar), 999px)); }
-
-@supports (color: oklch(from red l c h)) {
-  :root[data-palette="vivid"] .app-card,
-  :root[data-palette="vivid"] .palette-item,
-  :root[data-palette="vivid"] #paletteDetail,
-  :root[data-palette="vivid"] #lx-palette {
-    --tint: oklch(from var(--c1, #7c9bff) clamp(.62, l, .72) clamp(.07, c, .14) h);
-    --c2: oklch(from var(--tint) calc(l + .11) calc(c * .85) h);
-    --c3: oklch(from var(--tint) calc(l - .22) c h);
-    --tint-ink: var(--tint);
-  }
-  :root[data-palette="vivid"][data-theme="light"] .app-card,
-  :root[data-palette="vivid"][data-theme="light"] .palette-item,
-  :root[data-palette="vivid"][data-theme="light"] #paletteDetail,
-  :root[data-palette="vivid"][data-theme="light"] #lx-palette {
-    --tint: oklch(from var(--c1, #7c9bff) clamp(.52, l, .64) clamp(.09, c, .17) h);
-    --tint-ink: oklch(from var(--c1) clamp(.4, l, .5) clamp(.1, c, .18) h);
-  }
-  :root[data-palette="mono"] .app-card,
-  :root[data-palette="mono"] .palette-item,
-  :root[data-palette="mono"] #paletteDetail,
-  :root[data-palette="mono"] #lx-palette {
-    --tint: oklch(from var(--c1, #8b9099) .72 .01 h);
-    --c2: oklch(from var(--tint) .82 .006 h);
-    --c3: oklch(from var(--tint) .42 .008 h);
-    --tint-ink: var(--tint);
-  }
-  :root[data-palette="mono"][data-theme="light"] .app-card,
-  :root[data-palette="mono"][data-theme="light"] .palette-item,
-  :root[data-palette="mono"][data-theme="light"] #paletteDetail,
-  :root[data-palette="mono"][data-theme="light"] #lx-palette {
-    --tint: oklch(from var(--c1, #8b9099) .5 .01 h);
-    --c2: oklch(from var(--tint) .64 .006 h);
-    --c3: oklch(from var(--tint) .3 .008 h);
-    --tint-ink: oklch(from var(--c1, #8b9099) .32 .008 h);
-  }
-}
 :root[data-palette="vivid"] .card-glyph { color: color-mix(in oklab, var(--tint) 10%, transparent); }
 :root[data-palette="vivid"] .scrim::before { opacity: .55; }
 :root[data-palette="vivid"] .card-aura {
@@ -2700,16 +1879,11 @@ h1 {
 :root[data-palette="vivid"][data-theme="light"] .card-sheen { box-shadow: inset 0 1px 0 #fff; }
 :root[data-palette="vivid"] .tab-btn[aria-selected="true"] svg { color: var(--tab-accent); }
 :root[data-palette="vivid"] .palette-input-row > svg { color: var(--live-accent); }
-:root[data-palette="mono"] .lx-bar::before { opacity: .18; }
-:root[data-palette="mono"] .card-aura { opacity: calc(.35 + .3 * var(--hov, 0)); }
 @media (hover: hover) and (pointer: fine) {
   :root[data-palette="vivid"] .app-card:hover .card-glow { opacity: .075; }
-  :root[data-palette="mono"] .app-card:hover .card-glow { opacity: .03; }
 }
-:root[data-palette="mono"] .card-glyph { color: color-mix(in oklab, var(--text) 5%, transparent); }
 :root[data-palette="mono"] .badge-new,
 :root[data-palette="mono"] .badge-variant { color: color-mix(in oklab, var(--text) 72%, transparent); }
-:root[data-palette="mono"] .app-icon { color: light-dark(#fff, rgba(255,255,255,.92)); }
 
 :root[data-palette="vivid"] h1 {
   background-image: linear-gradient(135deg,
@@ -2726,26 +1900,6 @@ h1 {
     var(--text) 38%,
     color-mix(in oklab, var(--tint-ink) 92%, var(--text)) 78%,
     var(--tint-ink) 100%);
-}
-:root[data-palette="vivid"] .app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.28), rgba(255,255,255,.42));
-  --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.10));
-  background:
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 16%) calc(28% - var(--ty,0) * 11%), var(--icon-veil), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
-}
-:root[data-palette="vivid"] .app-icon-wrapper::before { opacity: calc(.24 * var(--icon-lift)); }
-:root[data-palette="vivid"][data-theme="light"] .app-icon-wrapper::before { opacity: calc(.18 * var(--icon-lift)); }
-:root[data-palette="vivid"] .app-icon-wrapper::after { opacity: calc(.42 * var(--icon-lift)); }
-:root[data-palette="vivid"] .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(10px + var(--icon-lift) * 8px) calc(22px + var(--icon-lift) * 14px) -10px color-mix(in oklab, var(--c1) 55%, transparent),
-    0 2px 5px -2px rgba(0,0,0,.35),
-    0 0 0 1px light-dark(rgba(255,255,255,.7), rgba(255,255,255,.05)),
-    inset 0 1px 0 rgba(255,255,255,.5),
-    inset 0 -1px 0 rgba(0,0,0,.28),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -6px 12px -6px rgba(0,0,0,.25);
 }
 :root[data-palette="vivid"] .app-icon { text-shadow: 0 1px 2px rgba(0,0,0,.35); filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
 :root[data-palette="vivid"][data-theme] .card-clip {
@@ -2858,16 +2012,6 @@ h1 {
 }
 :root[data-palette="vivid"] .palette-detail-slab::after { background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 50%, transparent), transparent); }
 :root[data-palette="vivid"] .palette-detail-watermark { color: color-mix(in oklab, var(--tint) 10%, transparent); }
-:root[data-palette="vivid"] .palette-detail .app-icon-wrapper {
-  box-shadow:
-    0 14px 30px -12px color-mix(in oklab, var(--c1) 70%, transparent),
-    0 2px 6px -2px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.45),
-    inset 0 0 0 1px rgba(255,255,255,.12);
-}
-:root[data-palette="vivid"] .palette-item.is-active .app-icon-wrapper {
-  box-shadow: 0 6px 16px -6px color-mix(in oklab, var(--c1) 80%, transparent), inset 0 1px 0 rgba(255,255,255,.45), inset 0 0 0 1px rgba(255,255,255,.12);
-}
 :root[data-palette="vivid"] .palette-action.is-primary {
   background:
     linear-gradient(180deg, light-dark(rgba(255,255,255,.92), rgba(255,255,255,.07)), light-dark(rgba(255,255,255,.35), rgba(255,255,255,.01))),
@@ -2892,12 +2036,9 @@ h1 {
   :root[data-palette="vivid"] .lx-bar:hover::before { opacity: 1; inset-inline: 8%; }
 }
 
-.lx-context-menu-label {
-  padding: .5rem .75rem .3rem;
-  font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--text-muted);
+.lx-context-menu-label { font-weight: 600; text-transform: uppercase;
 }
-:root:lang(ar) .lx-context-menu-label { letter-spacing: 0; text-transform: none; font-size: .72rem; }
+:root:lang(ar) .lx-context-menu-label { text-transform: none; }
 .look-swatches { display: inline-flex; gap: 3px; margin-inline-start: auto; padding-inline-start: .8rem; }
 .look-swatches span {
   width: 9px; height: 9px; border-radius: 50%; background: var(--sw);
@@ -2960,7 +2101,7 @@ h1 {
 @media (max-width: 640px) {
   html, body { height: auto; min-height: 100dvh; overflow-y: auto; overflow-x: hidden; }
   body { display: block; }
-  .container { height: auto; padding-top: 5rem; padding-bottom: 2rem; gap: 1rem; }
+  .container { height: auto; padding-bottom: 2rem; }
   .app-grid { flex: none; grid-template-columns: 1fr !important; grid-template-rows: none !important; grid-auto-rows: 180px; gap: 1rem; }
   .app-card, .app-card.card-wide, .app-card.card-hero, .app-card.card-tall { grid-column: 1 / -1 !important; grid-row: auto !important; }
   .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper, .card-tall .app-icon-wrapper { --icon-size: 60px; --icon-radius: 16px; }
@@ -2969,17 +2110,13 @@ h1 {
   h1 { font-size: 2.6rem; }
   .tab-rail { overflow-x: auto; scrollbar-width: none; overscroll-behavior-inline: contain; max-width: 64%; flex-shrink: 1; }
   .tab-rail::-webkit-scrollbar { display: none; }
-  .lx-bar-search { min-width: 0; padding-inline: 0.9rem; gap: 0.55rem; }
+  .lx-bar-search { min-width: 0; }
   .lx-bar-kbd { display: none; }
   .tab-btn { padding: 0.55rem 0.95rem; }
   .tab-btn[aria-selected="true"] .label > span { max-width: 9ch; text-overflow: ellipsis; overflow: hidden; display: inline-block; padding-block: 0.75em; margin-block: -0.75em; }
   :root:lang(ar) .tab-btn[aria-selected="true"] .label > span { max-width: none; overflow: visible; text-overflow: clip; }
   #lx-palette { margin-top: 8dvh; }
   .palette-status { display: none; }
-  .lx-bar-label { font-size: 1.05rem; }
-  .controls-pill { top: calc(1rem + env(safe-area-inset-top, 0px)); inset-inline-start: 1rem; }
-  .controls-pill button { width: 38px; height: 38px; }
-  .container { padding-top: calc(5rem + env(safe-area-inset-top, 0px)); }
 }
 
 @media (max-width: 640px) {
@@ -2996,10 +2133,8 @@ h1 {
     position: absolute;
     top: calc(0.75rem + env(safe-area-inset-top, 0px));
     inset-inline-start: auto; inset-inline-end: max(0.75rem, env(safe-area-inset-right, 0px));
-    padding: 0.25rem; gap: 0.1rem;
   }
   #zenToggle, #soundToggle, .controls-divider { display: none; }
-  .controls-pill button { width: 40px; height: 40px; }
 
   .container .site-header { justify-content: flex-start; padding-inline: 0.15rem; }
   body.is-zen .container .site-header { max-block-size: none; opacity: 1; transform: none; pointer-events: auto; overflow: visible; }
@@ -3017,7 +2152,6 @@ h1 {
   }
   .lx-bar-divider { display: none; }
   .lx-bar-search { padding-inline: 1.1rem; gap: 0.7rem; }
-  .lx-bar-label { font-size: 1rem; }
   .lx-bar-label-long { display: inline; }
   .lx-bar-label-short { display: none; }
 
@@ -3029,7 +2163,6 @@ h1 {
     gap: 0.25rem; overflow: visible; filter: none; border-radius: 0;
     padding: 0.35rem max(0.5rem, env(safe-area-inset-right, 0px)) calc(0.35rem + env(safe-area-inset-bottom, 0px)) max(0.5rem, env(safe-area-inset-left, 0px));
     background: light-dark(rgba(248,247,243,0.88), rgba(10,11,14,0.86));
-    backdrop-filter: blur(22px) saturate(170%); -webkit-backdrop-filter: blur(22px) saturate(170%);
     border-top: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.08));
     box-shadow: 0 -14px 32px -22px light-dark(rgba(28,25,20,0.3), rgba(0,0,0,0.9));
   }
@@ -3112,13 +2245,11 @@ h1 {
 }
 
 @media (max-width: 360px) {
-  .controls-pill { gap: 0.1rem; }
-  .controls-pill button { width: 34px; height: 34px; }
   .tab-btn { padding-inline: 0.7rem; }
 }
 
 @media (max-width: 720px) {
-  #lx-palette { width: calc(100vw - 24px); max-height: min(84dvh, 720px); --pal-radius: 20px; }
+  #lx-palette { width: calc(100vw - 24px); max-height: min(84dvh, 720px); }
   .palette-input-row { min-height: 60px; padding-inline: 1rem 0.6rem; gap: 0.6rem; }
   :root[dir="rtl"] .palette-input-row { padding-inline: 1rem 0.6rem; }
   #paletteInput, .palette-ghost { font-size: 1.05rem; }
@@ -3138,9 +2269,6 @@ h1 {
     -webkit-backdrop-filter: none;
   }
   :root { --surface: light-dark(rgba(255,255,255,0.92), rgba(255,255,255,0.10)); }
-  #lx-palette { background-color: light-dark(#f3f1ec, #0c0d10); }
-  
-  .app-icon-wrapper::before { display: none; }
 }
 
 @media (prefers-contrast: more) {
@@ -3152,10 +2280,22 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   #gradient-canvas { animation: none; opacity: 1; }
   .app-card.is-revealed, .app-card.is-returned { animation: none !important; }
-  h1, .site-header, .tab-rail, .card-glow, .lx-bar,
-  .app-card:not(.is-revealed), .palette-item, .badge-new .badge-dot,
-  .palette-live-dot, .palette-detail-header, .palette-detail-reason, .palette-actions, .grid-empty,
-  .palette-facts, .palette-detail-watermark, .palette-mode, .palette-status::before {
+  h1,
+.site-header,
+.tab-rail,
+.card-glow,
+.lx-bar,
+.app-card:not(.is-revealed),
+.palette-item,
+.badge-new .badge-dot,
+.palette-detail-header,
+.palette-detail-reason,
+.palette-actions,
+.grid-empty,
+.palette-facts,
+.palette-detail-watermark,
+.palette-mode,
+.palette-status::before {
     animation: none !important;
   }
   .palette-item.is-active .app-icon-wrapper, .lx-bar-search svg.fa-magnifying-glass, .tab-btn:active { transform: none !important; }
@@ -3169,15 +2309,13 @@ h1 {
   :root .card-qr:active { scale: none; }
   .app-card, .card-clip, .app-icon-wrapper, .app-title, .badges, .variant-chips,
   .tab-indicator, .tab-ghost, .variant-chip-indicator {
-    transition-property: opacity, color, background-color, border-color, box-shadow;
+    transition-property: opacity, color, background-color, border-color;
   }
-  #lx-palette, #lx-palette::backdrop { transition-property: opacity, --live-accent, box-shadow, border-color; }
-  .lx-bar { transition-property: opacity; }
   .container, .site-header { transition: none !important; }
   .tab-btn .label, .tab-btn .label > span { transition: none !important; }
   .tab-indicator { transition: none !important; }
   .palette-item::after { transition: opacity var(--dur-fast) var(--ease-out) !important; background-position: 50% 0 !important; }
-  .lx-context-menu { transition: opacity 0.01ms; transform: none !important; }
+  .lx-context-menu { transform: none !important; }
 }
 
 :root[data-palette="muted"] {
@@ -3212,7 +2350,7 @@ h1 {
     --tile: oklch(from var(--c1, #8c95b6) .92 clamp(.014, calc(c * .28), .032) h);
   }
 }
-:root[data-palette="muted"] .card-meta { color: var(--text-muted); opacity: calc(.85 + .15 * var(--hov, 0)); }
+:root[data-palette="muted"] .card-meta { opacity: calc(.85 + .15 * var(--hov, 0)); }
 :root[data-palette="muted"] .variant-chip { color: var(--text-muted); }
 :root[data-palette="muted"] .variant-chip.is-active { color: var(--text); }
 :root[data-palette="muted"][data-theme="dark"] .scrim { background: radial-gradient(circle at center, transparent 22%, #0a0807 118%); }
@@ -3236,12 +2374,6 @@ h1 {
 :root[data-palette="muted"] .palette-item .app-icon-wrapper,
 :root[data-palette="muted"] .palette-item.is-active .app-icon-wrapper,
 :root[data-palette="muted"] .palette-detail .app-icon-wrapper {
-  background: var(--tile, color-mix(in oklab, var(--tint) 18%, var(--bg)));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 34%, transparent),
-    inset 0 1px 0 light-dark(rgba(255,255,255,.8), rgba(255,255,255,.07)),
-    0 0 0 .5px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.4)),
-    0 1px 2px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.35));
   transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0);
 }
 :root[data-palette="muted"] .app-icon-wrapper::before,
@@ -3354,7 +2486,6 @@ h1 {
   background-image:
     radial-gradient(120% 60% at 50% -20%, color-mix(in oklab, var(--menu-accent) 9%, transparent), transparent 70%),
     linear-gradient(180deg, light-dark(rgba(255,255,255,.75), rgba(255,255,255,.05)), transparent 46px);
-  backdrop-filter: blur(28px) saturate(180%); -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid light-dark(rgba(20,18,15,.08), rgba(255,255,255,.085));
   box-shadow:
     0 0 0 .5px light-dark(rgba(20,18,15,.04), rgba(0,0,0,.6)),
@@ -3362,10 +2493,7 @@ h1 {
     0 12px 24px -10px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.5)),
     0 32px 64px -24px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.75)),
     inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
-  transform: scale(.96) translateY(-4px);
-  transition: opacity 140ms var(--ease-lux), transform 220ms var(--ease-lux);
 }
-.lx-context-menu.is-open { transform: none; }
 .lx-context-menu[data-owner="card"] { width: 276px; }
 .lx-context-menu[data-owner="look"] { width: 252px; }
 .lx-context-menu button {
@@ -3417,7 +2545,6 @@ h1 {
     linear-gradient(150deg, color-mix(in oklab, var(--tint) 70%, #fff), var(--tint) 55%, color-mix(in oklab, var(--tint) 60%, #000));
   box-shadow: 0 6px 14px -8px color-mix(in oklab, var(--tint) 85%, transparent), inset 0 1px 0 rgba(255,255,255,.4), inset 0 0 0 1px rgba(255,255,255,.12);
 }
-:root[data-palette="mono"] .ctx-head-icon { background: linear-gradient(150deg, #9aa0aa, #6b707a 55%, #45484f); }
 .ctx-head-icon svg { filter: drop-shadow(0 1px 1px rgba(0,0,0,.3)); }
 .ctx-head-text { display: flex; flex-direction: column; min-width: 0; gap: .12rem; }
 .ctx-head-title { display: flex; align-items: baseline; gap: .4rem; min-width: 0; font-family: var(--display-font); font-size: 1rem; font-weight: 600; line-height: 1.25; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -3459,7 +2586,6 @@ h1 {
   border-radius: var(--r-chip-in, 7px);
   background: light-dark(#fff, rgba(255,255,255,.13));
   box-shadow: 0 1px 2px light-dark(rgba(20,18,15,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--menu-accent) 24%, transparent);
-  transition: transform 260ms var(--ease-spring);
 }
 .ctx-seg[data-mode="same"] .ctx-seg-thumb { transform: translateX(100%); }
 :root[dir="rtl"] .ctx-seg[data-mode="same"] .ctx-seg-thumb { transform: translateX(-100%); }
@@ -3492,28 +2618,14 @@ h1 {
 .controls-pill button::after { display: none; }
 .controls-pill button[aria-pressed="true"] svg,
 .controls-pill button[aria-expanded="true"] svg { color: color-mix(in oklab, var(--tab-accent) 75%, var(--text)); }
-.controls-pill button[aria-expanded="true"] {
-  color: var(--text);
-  background: color-mix(in oklab, var(--tab-accent) 12%, light-dark(rgba(20,18,15,.05), rgba(255,255,255,.06)));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 24%, transparent);
-}
-.controls-pill button[aria-pressed="true"] {
-  background: color-mix(in oklab, var(--tab-accent) 10%, light-dark(rgba(20,18,15,.04), rgba(255,255,255,.05)));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 18%, transparent);
-}
 .controls-pill button svg { transition: color var(--dur-base) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
 @media (hover: hover) and (pointer: fine) {
-  .controls-pill button:hover svg { transform: scale(1.08); }
   #refreshToggle:hover svg { transform: rotate(40deg); }
 }
-
-.card-meta { opacity: calc(.78 + .22 * var(--hov, 0)); }
-.open-affordance { transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-spring), background-color var(--dur-fast) var(--ease-lux); }
 @media (hover: hover) and (pointer: fine) {
   .app-card:hover .open-affordance { background: color-mix(in oklab, var(--tint) 16%, transparent); border-color: color-mix(in oklab, var(--tint) 30%, transparent); }
   .variant-chip:not(.is-active):hover { color: var(--text); background: light-dark(rgba(20,18,15,.04), rgba(255,255,255,.05)); }
 }
-.variant-chip { transition: color var(--dur-micro) var(--ease-lux), background-color var(--dur-micro) var(--ease-lux); }
 
 .lx-toast {
   display: flex; align-items: center; gap: .55rem;
@@ -3524,8 +2636,6 @@ h1 {
     0 18px 40px -14px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.7)),
     0 0 0 1px color-mix(in oklab, var(--tab-accent) 10%, transparent),
     inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
-  transform: translateY(10px) scale(.97);
-  transition: opacity var(--dur-base) var(--ease-lux), transform 320ms var(--ease-spring);
 }
 :root[dir="rtl"] .lx-toast { padding: .55rem .8rem .55rem 1rem; }
 .lx-toast::before {
@@ -3534,18 +2644,15 @@ h1 {
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--tab-accent) 18%, transparent);
 }
 .lx-toast.is-error::before { background: #f87171; box-shadow: 0 0 0 3px rgba(248,113,113,.18); }
-.lx-toast.is-visible { transform: none; }
 .lx-toast:empty { display: none; }
 
 .palette-hints > span:not(.palette-status) + span:not(.palette-status)::before { opacity: .55; }
 .palette-detail-title { text-wrap: balance; }
 .app-grid { scrollbar-width: thin; scrollbar-color: color-mix(in oklab, var(--text) 14%, transparent) transparent; }
-.lx-bar-kbd { letter-spacing: .02em; }
 
 @media (prefers-reduced-motion: reduce) {
   .lx-context-menu, .lx-context-menu.is-open { transform: none !important; }
   .lx-context-menu.is-open .ctx-head, .lx-context-menu.is-open .ctx-group, .lx-context-menu.is-open .ctx-mode, .lx-context-menu.is-open > button { animation: none; }
-  .ctx-seg-thumb, .lx-toast { transition-duration: .01ms; }
 }
 
 @media (hover: none) { .ctx-kbd { display: none; } }
@@ -3582,11 +2689,6 @@ h1 {
 :root[data-theme="light"] .scrim::after { opacity: .16; }
 
 :root[data-theme="dark"]:not([data-palette="muted"]) h1 { filter: drop-shadow(0 8px 22px rgba(0,0,0,.42)); }
-.site-header::before, .site-header::after { opacity: .85; }
-
-.controls-pill button { color: color-mix(in oklab, var(--text) 64%, transparent); font-size: 1.02rem; }
-.controls-pill button[aria-pressed="true"], .controls-pill button[aria-expanded="true"] { color: var(--text); }
-.controls-divider { opacity: .85; }
 
 :root[data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.062); }
 :root[data-theme] .card-shadow {
@@ -3607,104 +2709,29 @@ h1 {
     inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.1)),
     inset 0 -1px 0 light-dark(rgba(20,18,15,.03), rgba(0,0,0,.3));
 }
-
-.card-meta { color: color-mix(in oklab, var(--text-muted) 72%, var(--text)); opacity: calc(.86 + .14 * var(--hov, 0)); }
 :root[data-theme="light"] .card-meta { color: color-mix(in oklab, var(--text-muted) 66%, var(--text)); }
 :root[data-theme="light"] .variant-chip:not(.is-active) { color: color-mix(in oklab, var(--text-muted) 82%, var(--text)); }
 .card-hero .card-meta, .card-tall .card-meta { opacity: calc(.9 + .1 * var(--hov, 0)); }
 :root[data-palette="muted"] .card-meta { color: var(--text-muted); }
-
-.variant-chips {
-  background: light-dark(rgba(20,18,15,.045), rgba(0,0,0,.3));
-  box-shadow:
-    inset 0 0 0 1px light-dark(rgba(20,18,15,.04), rgba(255,255,255,.04)),
-    inset 0 1px 1px light-dark(rgba(20,18,15,.035), rgba(0,0,0,.3)),
-    0 1px 0 light-dark(rgba(255,255,255,.85), rgba(255,255,255,.035));
-}
-.variant-chip-indicator {
-  box-shadow:
-    0 1px 2px light-dark(rgba(20,18,15,.1), rgba(0,0,0,.42)),
-    0 3px 8px -5px color-mix(in oklab, var(--tint) 45%, transparent),
-    inset 0 0 0 1px light-dark(rgba(20,18,15,.05), rgba(255,255,255,.07)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.1));
-}
-
-.badge { padding: .3rem .58rem; }
 .badge-closed { font-weight: 700; }
 .badge-closed .badge-dot { box-shadow: 0 0 0 2px color-mix(in oklab, var(--closed-ink) 18%, transparent); }
-
-.app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.14), rgba(255,255,255,.18));
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.035) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
-    radial-gradient(70% 55% at calc(50% - var(--tx,0) * 14%) calc(18% - var(--ty,0) * 10%), var(--icon-veil), transparent 70%),
-    linear-gradient(165deg, var(--c2) 0%, var(--tint) 46%, var(--c3) 100%);
-}
-.app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px color-mix(in oklab, var(--c3) 62%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.32)),
-    0 0 0 1px light-dark(rgba(255,255,255,.55), rgba(255,255,255,.03)),
-    inset 0 1px 0 rgba(255,255,255,.32),
-    inset 0 -1px 0 rgba(0,0,0,.2),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -10px 16px -12px rgba(0,0,0,.3);
-}
-.palette-item .app-icon-wrapper,
-.palette-detail .app-icon-wrapper {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.035) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
-    linear-gradient(165deg, var(--c2) 0%, var(--tint) 46%, var(--c3) 100%);
-}
 .app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.26)); }
 
-:root[data-palette="vivid"] .app-icon-wrapper {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.04) 40%, rgba(255,255,255,0) 60%, rgba(0,0,0,.04) 100%),
-    radial-gradient(60% 55% at calc(50% - var(--tx,0) * 16%) calc(28% - var(--ty,0) * 11%), var(--icon-veil), transparent 68%),
-    linear-gradient(150deg, var(--c2) 0%, var(--tint) 55%, var(--c3) 100%);
-}
-
 .lx-bar-label { color: color-mix(in oklab, var(--text-muted) 88%, var(--text)); }
-.tab-indicator { transition: background-color var(--dur-base) var(--ease-lux), box-shadow var(--dur-base) var(--ease-lux); }
+.tab-indicator { transition: background-color var(--dur-base) var(--ease-lux); }
 
 .palette-item-cat { color: color-mix(in oklab, var(--pal-ink-2) 85%, var(--text)); }
-.palette-detail-host { opacity: .92; }
-#lx-palette::before { opacity: .55; }
-#lx-palette {
-  background-color: light-dark(rgba(251,250,247,.99), rgba(15,16,20,.985));
-  border-color: light-dark(rgba(20,18,15,.1), rgba(255,255,255,.1));
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.4)),
-    0 16px 32px -16px light-dark(rgba(28,25,20,.16), rgba(0,0,0,.6)),
-    0 56px 110px -40px light-dark(rgba(28,25,20,.28), rgba(0,0,0,.88)),
-    0 40px 120px -70px color-mix(in oklab, var(--live-accent) 26%, transparent),
-    0 0 0 1px light-dark(rgba(255,255,255,.5), rgba(0,0,0,.5)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.075));
-}
-.palette-action.is-primary {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.9), rgba(255,255,255,.07)), light-dark(rgba(255,255,255,.5), rgba(255,255,255,.015))),
-    color-mix(in oklab, var(--live-accent) 16%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 34%, transparent),
-    0 8px 20px -14px color-mix(in oklab, var(--live-accent) 55%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
-}
 .palette-action.is-primary .palette-action-icon {
   background: linear-gradient(160deg, color-mix(in oklab, #fff 14%, var(--live-accent)), color-mix(in oklab, #000 16%, var(--live-accent)));
   box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 3px 8px -3px color-mix(in oklab, var(--live-accent) 60%, transparent);
 }
-:root[data-palette="mono"] #lx-palette { background-color: light-dark(rgba(250,250,249,.99), rgba(14,14,15,.985)); border-color: light-dark(rgba(0,0,0,.1), rgba(255,255,255,.1)); }
+:root[data-palette="mono"] #lx-palette { border-color: light-dark(rgba(0,0,0,.1), rgba(255,255,255,.1)); }
 :root[data-palette="mono"] .palette-action.is-primary {
   background: linear-gradient(180deg, light-dark(#fff, rgba(255,255,255,.1)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.03)));
   box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.12), rgba(255,255,255,.16)), 0 1px 2px light-dark(rgba(0,0,0,.06), rgba(0,0,0,.3));
 }
 
 :root[data-palette="curated"] {
-  --bg: light-dark(#f2efe9, #06070a);
-  --surface: light-dark(rgba(255,255,255,.58), rgba(255,255,255,.03));
-  --surface-hover: light-dark(rgba(255,255,255,.88), rgba(255,255,255,.06));
   --border: light-dark(rgba(20,18,15,.065), rgba(255,255,255,.075));
   --hairline: light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08));
   --hairline-strong: light-dark(rgba(20,18,15,.24), rgba(255,255,255,.22));
@@ -3838,45 +2865,7 @@ h1 {
     --tint-ink: oklch(from var(--tint) .34 .005 h);
   }
 }
-:root[data-palette="mono"] .app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.24), rgba(255,255,255,.22));
-  --icon-rim: light-dark(rgba(255,255,255,.3), rgba(255,255,255,.15));
-  background:
-    var(--noise) 0 0 / 96px 96px repeat,
-    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04) 42%, rgba(255,255,255,0) 62%, rgba(0,0,0,.05) 100%),
-    linear-gradient(115deg, transparent 36%, rgba(255,255,255,.045) 50%, transparent 64%),
-    radial-gradient(70% 55% at calc(50% - var(--tx,0) * 14%) calc(18% - var(--ty,0) * 10%), var(--icon-veil), transparent 70%),
-    linear-gradient(160deg, var(--c2) 0%, var(--tint) 48%, var(--c3) 100%);
-}
-:root[data-palette="mono"] .palette-item .app-icon-wrapper,
-:root[data-palette="mono"] .palette-detail .app-icon-wrapper {
-  background:
-    var(--noise) 0 0 / 96px 96px repeat,
-    linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.04) 42%, rgba(255,255,255,0) 62%, rgba(0,0,0,.05) 100%),
-    linear-gradient(115deg, transparent 36%, rgba(255,255,255,.045) 50%, transparent 64%),
-    linear-gradient(160deg, var(--c2) 0%, var(--tint) 48%, var(--c3) 100%);
-}
-:root[data-palette="mono"] .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px rgba(0,0,0,.55),
-    0 1px 2px light-dark(rgba(0,0,0,.16), rgba(0,0,0,.36)),
-    0 0 0 1px light-dark(rgba(255,255,255,.55), rgba(255,255,255,.035)),
-    inset 0 1px 0 rgba(255,255,255,.38),
-    inset 0 -1px 0 rgba(0,0,0,.26),
-    inset 0 0 0 1px var(--icon-rim),
-    inset 0 -10px 16px -12px rgba(0,0,0,.34);
-}
 :root[data-palette="mono"] .app-icon { color: light-dark(#fff, rgba(255,255,255,.94)); filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.38)); }
-:root[data-palette="mono"][data-theme="light"] .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(6px + var(--icon-lift) * 5px) calc(16px + var(--icon-lift) * 10px) -10px rgba(0,0,0,.42),
-    0 1px 2px rgba(0,0,0,.14),
-    0 0 0 1px rgba(255,255,255,.6),
-    inset 0 1px 0 rgba(255,255,255,.45),
-    inset 0 -1px 0 rgba(0,0,0,.18),
-    inset 0 0 0 1px rgba(255,255,255,.22),
-    inset 0 -10px 16px -12px rgba(0,0,0,.26);
-}
 :root[data-palette="mono"][data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.068); }
 :root[data-palette="mono"][data-theme] .card-clip {
   background-image:
@@ -4033,7 +3022,6 @@ h1 {
   --hairline: light-dark(rgba(24,20,14,.085), rgba(255,255,255,.065));
   --hairline-strong: light-dark(rgba(24,20,14,.2), rgba(255,255,255,.18));
   --lux-ink: light-dark(#17140f, #f4f2ee);
-  --lux-ink-soft: light-dark(rgba(23,20,15,.56), rgba(244,242,238,.5));
 }
 :root[data-palette="vivid"], :root[data-palette="curated"] {
   --bg: light-dark(#f4f2ee, #050608);
@@ -4063,11 +3051,9 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 .lx-bar { animation-duration: 900ms; animation-delay: .12s; }
 #gradient-canvas { animation-duration: 1600ms; }
 .controls-pill { animation: slideDown 900ms var(--ease-lux) .2s both; }
-
-.scrim::before { opacity: .22; }
 :root[data-palette] .scrim::before { opacity: .22; }
-:root[data-palette][data-theme] .scrim::after { opacity: .18; }
-:root[data-palette][data-theme="light"] .scrim::after { opacity: .1; }
+:root[data-palette][data-theme] .scrim::after { opacity: .108; }
+:root[data-palette][data-theme="light"] .scrim::after { opacity: .06; }
 :root[data-palette="vivid"] .scrim,
 :root[data-palette="curated"] .scrim {
   background:
@@ -4100,8 +3086,6 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 :root[data-palette] .controls-pill {
   padding: .3rem; gap: .1rem;
   background: light-dark(rgba(255,255,255,.66), rgba(22,23,27,.52));
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
   border-color: var(--hairline);
   box-shadow:
     0 1px 1px light-dark(rgba(30,24,16,.03), rgba(0,0,0,.3)),
@@ -4113,8 +3097,8 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 :root[data-palette] .controls-pill button[aria-pressed="true"],
 :root[data-palette] .controls-pill button[aria-expanded="true"] {
   color: var(--text);
-  background: light-dark(rgba(24,20,14,.05), rgba(255,255,255,.07));
-  box-shadow: inset 0 0 0 1px var(--hairline);
+  background: color-mix(in oklab, var(--tab-accent) 14%, light-dark(#fff, rgb(255 255 255 / .06)));
+  box-shadow: inset 0 0 0 .5px color-mix(in oklab, var(--tab-accent) 30%, transparent), inset 0 1px 0 light-dark(#fff, rgb(255 255 255 / .08));
 }
 @media (hover: hover) and (pointer: fine) {
   .controls-pill button:hover svg { transform: scale(1.04); }
@@ -4122,20 +3106,16 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 
 :root[data-palette] .lx-bar {
   background: light-dark(rgba(255,255,255,.7), rgba(20,21,25,.5));
-  backdrop-filter: blur(26px) saturate(160%);
-  -webkit-backdrop-filter: blur(26px) saturate(160%);
   border-color: var(--hairline);
   box-shadow:
     0 1px 1px light-dark(rgba(30,24,16,.03), rgba(0,0,0,.3)),
     0 22px 48px -30px light-dark(rgba(30,24,16,.26), rgba(0,0,0,.85)),
     inset 0 1px 0 light-dark(rgba(255,255,255,.95), rgba(255,255,255,.05));
-  transition: --tab-accent var(--dur-base) var(--ease-lux), border-color var(--dur-base) var(--ease-lux), box-shadow var(--dur-base) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-lux);
+  transition: --tab-accent var(--dur-base) var(--ease-lux), border-color var(--dur-base) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux), transform var(--dur-base) var(--ease-lux);
 }
 :root[data-palette] .lx-bar::before {
-  inset-inline: 26%;
   background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--tab-accent) 55%, transparent), transparent);
   opacity: .28;
-  transition: opacity var(--dur-slow) var(--ease-lux), inset-inline var(--dur-slow) var(--ease-lux);
 }
 @media (hover: hover) and (pointer: fine) {
   :root[data-palette] .lx-bar:hover { border-color: light-dark(rgba(24,20,14,.12), rgba(255,255,255,.11)); }
@@ -4145,20 +3125,19 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
   border-color: color-mix(in oklab, var(--tab-accent) 22%, var(--hairline-strong));
   box-shadow:
     0 1px 1px light-dark(rgba(30,24,16,.03), rgba(0,0,0,.3)),
-    0 24px 52px -30px light-dark(rgba(30,24,16,.3), rgba(0,0,0,.9)),
-    0 0 0 4px color-mix(in oklab, var(--tab-accent) 7%, transparent),
+    0 22px 48px -30px light-dark(rgba(30,24,16,.26), rgba(0,0,0,.85)),
     inset 0 1px 0 light-dark(rgba(255,255,255,.95), rgba(255,255,255,.05));
 }
-:root[data-palette] .lx-bar-search svg.fa-magnifying-glass { color: var(--lux-ink-soft); transition: color var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux); }
-:root[data-palette] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); transform: scale(1.05); }
+:root[data-palette] .lx-bar-search svg.fa-magnifying-glass { transition: color var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux); }
+:root[data-palette] .lx-bar-search:focus-visible svg.fa-magnifying-glass { transform: scale(1.05); }
 @media (hover: hover) and (pointer: fine) {
   :root[data-palette] .lx-bar-search:hover svg.fa-magnifying-glass {
-    color: var(--text);
     transform: scale(1.05);
   }
 }
 .lx-bar-label { font-size: 1.04rem; font-weight: 400; transition: color var(--dur-base) var(--ease-lux); }
 :root[data-palette] .lx-bar-kbd {
+  font-size: 11px; line-height: 1; font-variant-numeric: tabular-nums; align-self: center;
   font-weight: 500; letter-spacing: .04em;
   background: transparent;
   box-shadow: inset 0 0 0 1px var(--hairline);
@@ -4253,32 +3232,7 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
     --tint-ink: oklch(from var(--c1) .45 clamp(.08, c, .12) h);
   }
 }
-
-:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper {
-  --icon-veil: light-dark(rgba(255,255,255,.16), rgba(255,255,255,.14));
-  --icon-rim: light-dark(rgba(255,255,255,.22), rgba(255,255,255,.09));
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0) 48%, rgba(0,0,0,.06) 100%),
-    radial-gradient(80% 60% at calc(50% - var(--tx,0) * 14%) calc(12% - var(--ty,0) * 10%), var(--icon-veil), transparent 72%),
-    linear-gradient(160deg, var(--c2) 0%, var(--tint) 50%, var(--c3) 100%);
-}
-:root[data-palette]:not([data-palette="muted"]) .app-card .app-icon-wrapper {
-  box-shadow:
-    0 calc(8px + var(--icon-lift) * 6px) calc(18px + var(--icon-lift) * 12px) -12px color-mix(in oklab, var(--c3) 70%, transparent),
-    0 1px 2px light-dark(rgba(30,24,16,.12), rgba(0,0,0,.35)),
-    inset 0 1px 0 rgba(255,255,255,.3),
-    inset 0 0 0 .5px var(--icon-rim),
-    inset 0 -8px 14px -10px rgba(0,0,0,.22);
-  transition: box-shadow var(--dur-base) var(--ease-lux);
-}
-:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::before { opacity: calc(.12 * var(--icon-lift)); }
-:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::after { opacity: calc(.16 * var(--icon-lift)); }
 :root[data-palette]:not([data-palette="muted"]) .app-icon { text-shadow: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.18)); }
-:root[data-palette="mono"] .app-icon-wrapper {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,0) 48%, rgba(0,0,0,.06) 100%),
-    linear-gradient(160deg, var(--c2) 0%, var(--tint) 50%, var(--c3) 100%);
-}
 
 :root[data-palette]:not([data-palette="muted"]) .app-title {
   background-image: linear-gradient(135deg,
@@ -4297,7 +3251,6 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 :root[data-palette] .card-meta {
   font-size: .68rem; font-weight: 500; letter-spacing: .03em;
   color: var(--lux-ink-soft);
-  opacity: calc(.82 + .18 * var(--hov, 0));
 }
 .card-meta::before { width: 14px; transition: transform var(--dur-slow) var(--ease-lux); }
 
@@ -4317,11 +3270,8 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 
 :root[data-palette] .badge {
   padding: .26rem .55rem;
-  font-size: .58rem; font-weight: 600; letter-spacing: .12em;
   box-shadow: none;
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
-:root:lang(ar)[data-palette] .badge { letter-spacing: 0; font-size: .66rem; }
 
 :root[data-palette] .variant-chips {
   background: light-dark(rgba(24,20,14,.04), rgba(0,0,0,.26));
@@ -4338,12 +3288,10 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
   .variant-chip-indicator { transition: inset-inline-start var(--dur-slow) var(--ease-pill), inset-inline-end var(--dur-base) var(--ease-pill); }
   .variant-chips[data-dir="back"] .variant-chip-indicator { transition: inset-inline-start var(--dur-base) var(--ease-pill), inset-inline-end var(--dur-slow) var(--ease-pill); }
 }
-.variant-chip { font-weight: 500; transition: color var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux); }
+.variant-chip { transition: color var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux); }
 
 :root[data-palette] #lx-palette {
   background-color: light-dark(rgba(252,251,249,.97), rgba(14,15,18,.96));
-  backdrop-filter: blur(30px) saturate(160%);
-  -webkit-backdrop-filter: blur(30px) saturate(160%);
   background-image:
     radial-gradient(90% 60% at 50% -26%, color-mix(in oklab, var(--live-accent) 7%, transparent), transparent 70%),
     linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.025)), transparent 140px);
@@ -4415,7 +3363,6 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
 
 :root[data-palette] .digit-badge {
   background: light-dark(rgba(255,255,255,.94), rgba(18,19,23,.86));
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   transition: opacity var(--dur-base) var(--ease-lux), transform var(--dur-slow) var(--ease-lux);
 }
 
@@ -4506,7 +3453,7 @@ h1 {
 :root .app-grid[data-layout="list"] > .app-card.app-card--row { grid-column: auto !important; grid-row: auto !important; transform: none !important; inline-size: auto; min-inline-size: 0; block-size: auto; min-block-size: 56px; }
 :root .app-grid[data-layout="list"] > .app-card--row .card-clip::before, :root .app-grid[data-layout="list"] > .app-card--row .card-clip::after, :root .app-grid[data-layout="list"] > .app-card--row .card-shadow, :root .app-grid[data-layout="list"] > .app-card--row .card-aura, :root .app-grid[data-layout="list"] > .app-card--row .card-glow, :root .app-grid[data-layout="list"] > .app-card--row .card-sheen { display: none; }
 .row-icon { grid-area: icon; position: relative; z-index: 2; inline-size: var(--lx-row-icon, 40px); block-size: var(--lx-row-icon, 40px); pointer-events: none; }
-:root .app-grid[data-layout="list"] > .app-card--row .digit-badge { inset-block-start: auto; inset-inline-start: auto; inset-block-end: -4px; inset-inline-end: -4px; }
+:root .app-grid[data-layout="list"] > .app-card--row .digit-badge { inset-block-start: auto; inset-inline-start: auto; }
 .row-text { grid-area: text; position: relative; z-index: 2; min-inline-size: 0; display: flex; flex-direction: column; pointer-events: none; }
 :root .app-grid[data-layout="list"] > .app-card--row .app-title { margin: 0; font: 600 .98rem/1.3 var(--ui-font); font-style: normal; letter-spacing: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); background: none; -webkit-background-clip: border-box; background-clip: border-box; -webkit-text-fill-color: currentColor; text-shadow: none; transform: none; }
 :root:lang(ar) .app-grid[data-layout="list"] > .app-card--row .app-title { line-height: 1.55; }
@@ -4549,8 +3496,6 @@ h1 {
   border-radius: var(--lx-panel-r);
   background-color: transparent;
   background-image: var(--lx-panel-glass);
-  -webkit-backdrop-filter: blur(22px) saturate(175%);
-  backdrop-filter: blur(22px) saturate(175%);
   box-shadow: var(--lx-panel-shadow);
   overflow-x: hidden;
   overflow-y: auto;
@@ -4702,8 +3647,6 @@ h1 {
     background-image: none;
     border: 1px solid CanvasText;
     box-shadow: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
   }
   :root .app-grid[data-layout="list"] > .app-card--row .card-clip, :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: transparent; box-shadow: none; }
   @media (hover: hover) and (pointer: fine) {
@@ -4739,7 +3682,7 @@ h1 {
   --ic-min: 104px;
   --ic-cap: 18px;
   --ic-gap: 16px;
-  --ic-tint: 6%;
+  --ic-tint: 5%;
   --lx-panel-glass: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.045)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.016)));
   --lx-panel-shadow: 0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.3)), 0 14px 34px -28px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.72)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
   display: grid;
@@ -4804,13 +3747,11 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   inset-block: calc(-1 * var(--ic-cap) - 4px) -10px;
   inset-inline: calc(-1 * (var(--ic-gap) - 12px) / 2);
   z-index: -1;
-  border: 1px solid var(--hairline);
+  border: .5px solid var(--hairline);
   border-radius: min(var(--r-card), 16px);
-  background-color: color-mix(in oklab, var(--c1) var(--ic-tint, 6%), transparent);
+  background-color: color-mix(in oklab, var(--c1) var(--ic-tint, 5%), transparent);
   background-image: var(--lx-panel-glass);
-  box-shadow: var(--lx-panel-shadow);
-  -webkit-backdrop-filter: blur(22px) saturate(175%);
-  backdrop-filter: blur(22px) saturate(175%);
+  box-shadow: 0 1px 2px light-dark(rgb(40 30 20 / .05), rgb(0 0 0 / .3)), 0 12px 32px -18px light-dark(rgb(40 30 20 / .18), rgb(0 0 0 / .6)), inset 0 1px 0 light-dark(rgb(255 255 255 / .8), rgb(255 255 255 / .06));
   pointer-events: none;
 }
 :root .app-grid[data-layout="icons"] > .ic-half {
@@ -4818,35 +3759,40 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   inset-inline-start: calc((100% + var(--ic-gap)) / (2 * var(--n, 1)));
 }
 .icon-plate.is-closed .icon-plate-cap-text { opacity: .5; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
-.icon-plate-cap .icon-plate-tag { flex: none; padding: 1px 6px; font-size: 9.5px; font-variant-caps: normal; letter-spacing: .03em; line-height: 1.3; background: transparent; box-shadow: none; }
+.icon-plate-cap .icon-plate-tag {
+  flex: none; padding: 2px 7px; border: 0; border-radius: 999px;
+  font-size: 9.5px; font-variant-caps: normal; letter-spacing: .03em; line-height: 1.3;
+  color: light-dark(oklch(.55 .12 25), oklch(.75 .1 25));
+  background: light-dark(oklch(.55 .12 25 / .08), oklch(.75 .1 25 / .12));
+  box-shadow: none;
+}
 .icon-plate-cap {
   position: absolute;
   inset-block-start: calc(-1 * var(--ic-cap) - 2px);
-  inset-inline: 10px;
+  inset-inline: 12px;
   block-size: var(--ic-cap);
   display: flex;
   align-items: center;
   gap: 6px;
   font: 600 11px/1 var(--ui-font);
   font-variant-caps: all-small-caps;
-  letter-spacing: .08em;
-  color: var(--text-muted);
+  letter-spacing: .1em;
+  color: color-mix(in oklab, var(--text-muted) 85%, transparent);
   white-space: nowrap;
   overflow: hidden;
   pointer-events: none;
 }
 :root:lang(ar) .icon-plate-cap { letter-spacing: 0; font-variant-caps: normal; font-size: 12px; }
 :root .app-grid[data-layout="icons"] .app-card--icon {
-  display: flex; flex-direction: column; align-items: center; gap: 9px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
   grid-column: auto !important; grid-row: auto !important;
   min-inline-size: 0; inline-size: auto;
   padding: 4px 2px 2px;
   border-radius: calc(var(--r-card) * .78);
   cursor: pointer;
 }
-:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .app-icon-wrapper,
-:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .icon-label { opacity: .5; }
-:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .app-icon-wrapper { filter: grayscale(1); }
+:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .app-icon-wrapper { opacity: .78; }
+:root .app-grid[data-layout="icons"] .app-card--icon.status-closed .icon-label { opacity: .7; }
 :root .app-grid[data-layout="icons"] .app-card--icon { --icon-size: 64px; }
 :root .app-grid[data-layout="icons"] .app-card--icon .app-icon-wrapper {
   --icon-size: inherit;
@@ -4854,32 +3800,56 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   flex-shrink: 0;
   opacity: 1;
   transform: none;
-  transition: transform var(--dur-fast) var(--ease-lux);
+  transition: transform var(--dur-fast) var(--ease-lux), --icon-lift var(--dur-fast) var(--ease-lux), scale 320ms var(--ease-spring);
   pointer-events: none;
 }
 :root .app-grid[data-layout="icons"] .app-card--icon .app-icon { font-size: 1.7rem; }
 @media (hover: hover) and (pointer: fine) {
-  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { transform: translateY(-2px); }
+  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { transform: translateY(-3px); --icon-lift: 1; }
+  :root .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper {
+    scale: .94;
+    transition: transform var(--dur-fast) var(--ease-lux), --icon-lift var(--dur-fast) var(--ease-lux), scale 90ms var(--ease-lux);
+  }
   :root .app-grid[data-layout="icons"] .app-card--icon:hover .icon-label { color: var(--text); }
 }
 :root .app-grid[data-layout="icons"] .app-card--icon:has(.card-link-overlay:focus-visible) .icon-label { color: var(--text); }
 :root .app-grid[data-layout="icons"] .app-card--icon .icon-label {
   position: relative; z-index: 2;
   max-inline-size: 100%;
-  font: 500 12px/1.3 var(--ui-font);
+  font: 500 12.5px/1.3 var(--ui-font);
   text-align: center;
   text-wrap: balance;
-  color: var(--text-muted);
+  color: color-mix(in oklab, var(--text) 82%, var(--text-muted));
   pointer-events: none;
   transition: color var(--dur-fast) var(--ease-lux);
 }
 :root .app-grid[data-layout="icons"] .app-card--icon .icon-label.is-tight { font-size: 11px; }
+:root:lang(ar) .app-grid[data-layout="icons"] .app-card--icon .icon-label:not(.is-tight) { font-size: 13px; }
 .icon-new-dot {
   position: absolute; inset-block-start: -2px; inset-inline-end: -2px;
   inline-size: 8px; block-size: 8px; border-radius: 50%;
   background: var(--tab-accent);
   box-shadow: 0 0 0 2px var(--bg);
   z-index: 3;
+}
+:root .app-grid[data-layout="icons"] .app-card--icon .digit-badge { inset-block-start: auto; inset-block-end: -4px; inset-inline-end: -4px; }
+.icon-new-text { display: none; }
+@media (min-width: 361px) {
+  .app-card--icon .icon-new-dot {
+    inset-block-start: -4px; inset-inline-end: -4px;
+    inline-size: auto; block-size: auto;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--tab-accent) 22%, var(--bg));
+    color: var(--text);
+    font: 600 9.5px/1 var(--ui-font);
+    box-shadow: 0 0 0 .5px var(--hairline), 0 2px 6px -2px rgb(0 0 0 / .2);
+    pointer-events: none;
+  }
+  .app-card--icon .icon-new-text { display: block; }
+}
+@media (min-width: 361px) and (max-width: 420px) {
+  .app-card--icon .icon-new-dot { inset-inline-end: 0; }
 }
 .icon-plate-cap .icon-new-dot { position: static; flex: none; box-shadow: none; }
 @media (max-width: 360px) {
@@ -4892,6 +3862,7 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper {
     transform: none;
   }
+  :root .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper { scale: none; transition: none; }
 }
 }
 @media (max-width: 1024px) {
@@ -4917,7 +3888,6 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
 }
 @media (pointer: coarse) {
   .tab-btn { min-block-size: 44px; }
-  .variant-chips { padding: 2px; }
   .variant-chip { min-inline-size: 44px !important; }
   .variant-chip::after { content: ""; position: absolute; inset-block: calc((var(--chip-h) - 4px - 44px) / 2); inset-inline: 0; }
   .controls-pill button { inline-size: 44px; block-size: 44px; }
@@ -5122,7 +4092,6 @@ html[data-lowend] .qr-stage::after { display: none; }
 .card-qr-label { pointer-events: none; }
 .card-qr::after { content: ""; position: absolute; inset: calc((var(--chip-h) - 44px) / 2) -6px; }
 .card-qr:hover, .card-qr:focus-visible { background: color-mix(in oklab, var(--tint) 18%, transparent); border-color: color-mix(in oklab, var(--tint) 45%, transparent); }
-.header-end { display: flex; align-items: center; gap: .5rem; position: relative; z-index: 3; }
 .card-qr--row { grid-area: qr; }
 .card-qr--icon {
   position: absolute;
@@ -5323,3 +4292,209 @@ html[data-lowend] .qr-stage::after { display: none; }
     overflow: hidden;
   }
 }
+
+@supports (color: oklch(from red l c h)) {
+  :root[data-palette] .app-card.status-closed {
+    --tint: oklch(from var(--c1, #7c9bff) .56 .015 h);
+    --tile-hi: oklch(from var(--tint) min(calc(l + .15), .9) c calc(h - 12));
+    --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) c h);
+    --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) c calc(h + 14));
+    --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) c calc(h + 14));
+    --glyph-accent: oklch(from var(--tint) .94 c calc(h - 12));
+  }
+}
+:root[data-palette="mono"] .app-card,
+:root[data-palette="mono"] .palette-item,
+:root[data-palette="mono"] #paletteDetail,
+:root[data-palette="mono"] #lx-palette,
+:root[data-palette="mono"] #lx-qr {
+  --tile-hi: oklch(.78 0 0);
+  --tile-mid: oklch(.56 0 0);
+  --tile-lo: oklch(.34 0 0);
+  --tile-shade: oklch(.2 0 0);
+  --glyph-accent: oklch(.94 0 0);
+}
+
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper,
+:root[data-palette]:not([data-palette="muted"]) .app-card .app-icon-wrapper,
+:root[data-palette]:not([data-palette="muted"]) .palette-item .app-icon-wrapper,
+:root[data-palette]:not([data-palette="muted"]) .palette-detail .app-icon-wrapper {
+  background: none;
+  box-shadow: none;
+  isolation: isolate;
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::before {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  mix-blend-mode: normal;
+  opacity: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 52% at calc(30% - var(--tx, 0) * 12%) calc(6% - var(--ty, 0) * 8%), rgb(255 255 255 / .34), transparent 70%),
+    linear-gradient(180deg, rgb(255 255 255 / .16) 0%, rgb(255 255 255 / 0) 44%),
+    linear-gradient(158deg, var(--tile-hi) 0%, var(--tile-mid) 50%, var(--tile-lo) 100%);
+  box-shadow:
+    var(--tile-rim, 0 0 0 0 transparent),
+    inset 0 1px 0 rgb(255 255 255 / .45),
+    inset 0 0 0 .5px rgb(255 255 255 / .18),
+    inset 0 -1px 0 rgb(0 0 0 / .14),
+    inset 0 calc(var(--icon-size) * -.18) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.2) color-mix(in oklab, var(--tile-shade) 55%, transparent),
+    0 .5px 1px rgb(0 0 0 / .12),
+    0 calc(var(--icon-size) * .08) calc(var(--icon-size) * .22) calc(var(--icon-size) * -.1) color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent);
+}
+:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] .app-icon-wrapper::before {
+  box-shadow:
+    var(--tile-rim, 0 0 0 0 transparent),
+    inset 0 1px 0 rgb(255 255 255 / .3),
+    inset 0 0 0 .5px rgb(255 255 255 / .12),
+    inset 0 -1px 0 rgb(0 0 0 / .25),
+    inset 0 calc(var(--icon-size) * -.18) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.2) color-mix(in oklab, var(--tile-shade) 70%, transparent),
+    0 0 0 .5px rgb(255 255 255 / .05),
+    0 1px 2px rgb(0 0 0 / .45),
+    0 calc(var(--icon-size) * .1) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.12) color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5));
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 18% 12% -6%;
+  z-index: -2;
+  border-radius: inherit;
+  background: var(--tile-lo);
+  filter: blur(calc(var(--icon-size) * .16));
+  opacity: calc(.5 * var(--icon-lift, 0));
+  transform: translate3d(0, calc(var(--icon-lift, 0) * var(--icon-size) * .1), 0) scale(calc(.9 + .1 * var(--icon-lift, 0)));
+  pointer-events: none;
+}
+:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] .app-icon-wrapper::after {
+  opacity: calc(.38 * var(--icon-lift, 0));
+}
+:root[data-palette="mono"][data-theme="light"] .app-icon-wrapper { --tile-rim: inset 0 .5px 0 rgb(255 255 255 / .55); }
+
+@supports (corner-shape: squircle) {
+  :root:not([data-corners="crisp"]) .app-icon-wrapper,
+  :root:not([data-corners="crisp"]) .app-icon-wrapper::before,
+  :root:not([data-corners="crisp"]) .app-icon-wrapper::after {
+    corner-shape: squircle;
+  }
+  :root:not([data-corners="crisp"]) .app-icon-wrapper {
+    --icon-radius-sq: calc(var(--icon-size) * var(--r-icon, .27) * 1.7);
+    border-radius: var(--icon-radius-sq);
+  }
+}
+
+.app-icon-wrapper .lx-glyph { scale: var(--glyph-scale, 1); }
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper :is(svg.app-icon, svg.mark-glyph) {
+  fill: url(#lx-gf);
+  color: #fff;
+  --lx-ga: var(--glyph-accent);
+  filter: drop-shadow(0 1px 0 color-mix(in oklab, var(--tile-shade) 55%, transparent)) drop-shadow(0 calc(var(--icon-size) * .03) calc(var(--icon-size) * .05) color-mix(in oklab, var(--tile-shade) 40%, transparent));
+  text-shadow: none;
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper .lx-glyph.mark-glyph-atlas::before {
+  background: linear-gradient(180deg, #fff, rgb(255 255 255 / .82));
+}
+
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"] {
+  --ambient-mix: 25%;
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"]::before {
+  background: linear-gradient(180deg, light-dark(#ffffff, #2c2e33) 0%, light-dark(#f7f5f0, #212328) 100%);
+}
+@supports (color: oklch(from red l c h)) {
+  :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"]::before {
+    background: linear-gradient(180deg, light-dark(#ffffff, oklch(from var(--tint) .32 .012 h)) 0%, light-dark(oklch(.975 .006 85), oklch(from var(--tint) .26 .01 h)) 100%);
+  }
+}
+:root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"] .lx-fav {
+  inline-size: 68%;
+  block-size: 68%;
+  object-fit: contain;
+  border-radius: 22%;
+}
+:root[data-palette="mono"] .app-icon-wrapper[data-mark="favicon"] .lx-fav { filter: grayscale(1); }
+
+:root[data-palette="muted"] .app-icon-wrapper,
+:root[data-palette="muted"] .app-card .app-icon-wrapper,
+:root[data-palette="muted"] .palette-item .app-icon-wrapper,
+:root[data-palette="muted"] .palette-item.is-active .app-icon-wrapper,
+:root[data-palette="muted"] .palette-detail .app-icon-wrapper {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--tint) 14%, var(--bg)) 0%, color-mix(in oklab, var(--tint) 22%, var(--bg)) 100%);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in oklab, var(--tint) 34%, transparent),
+    inset 0 1px 0 light-dark(rgba(255,255,255,.8), rgba(255,255,255,.07)),
+    inset 0 -1px 0 color-mix(in oklab, var(--tint) 18%, transparent),
+    0 0 0 .5px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.4)),
+    0 1px 2px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.35));
+}
+:root[data-palette="muted"] .app-card:not(.app-card--icon) .app-icon-wrapper,
+:root[data-palette="muted"] .palette-item .app-icon-wrapper {
+  translate: 0 calc(var(--icon-lift, 0) * -1px);
+}
+:root[data-palette="muted"] .app-icon-wrapper :is(svg.app-icon, svg.mark-glyph) {
+  --lx-ga: color-mix(in oklab, var(--tint-ink) 45%, var(--bg));
+}
+
+:root[data-palette] .card-glyph { opacity: calc(.85 * (.5 + .5 * var(--hov, 0))); }
+
+@media (hover: hover) and (pointer: fine) {
+  :root .app-card:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper { transition: scale var(--dur-fast) var(--ease-lux); }
+  :root .app-card:not(.app-card--row):not(.app-card--icon):active .app-icon-wrapper { scale: .96; transition-duration: 90ms; }
+  :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { transition: translate var(--dur-fast) var(--ease-lux); }
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .row-icon .app-icon-wrapper { translate: 0 -1px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :root .app-card:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper,
+  :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { transition: none; }
+}
+
+:root .app-grid[data-layout="list"] .app-icon-wrapper::after { display: none; }
+:root[data-palette]:not([data-palette="muted"]) body:not(.is-zen) .app-grid[data-layout="list"] .app-icon-wrapper::before,
+:root[data-palette]:not([data-palette="muted"]) .palette-item .app-icon-wrapper::before {
+  box-shadow:
+    var(--tile-rim, 0 0 0 0 transparent),
+    inset 0 1px 0 light-dark(rgb(255 255 255 / .45), rgb(255 255 255 / .3)),
+    inset 0 0 0 .5px light-dark(rgb(255 255 255 / .18), rgb(255 255 255 / .12)),
+    inset 0 -1px 0 light-dark(rgb(0 0 0 / .14), rgb(0 0 0 / .25)),
+    0 2px 6px -3px light-dark(color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent), color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5)));
+}
+
+.lx-bar-ring {
+  position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--tab-accent) 22%, transparent);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-lux);
+}
+.lx-bar.is-focused .lx-bar-ring { opacity: 1; }
+
+.controls-pill button svg { width: 15px; height: 15px; }
+:root[data-palette] .lx-bar-search svg.fa-magnifying-glass { inline-size: 16px; block-size: 16px; color: var(--text-muted); }
+:root[data-palette] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette] .lx-bar-search:hover svg.fa-magnifying-glass { color: var(--text); }
+}
+@media (min-width: 641px) {
+  .tab-btn svg { font-size: 15px; }
+}
+.tab-ghost { background: light-dark(rgb(20 18 15 / .05), rgb(255 255 255 / .07)); }
+
+:root[data-palette] .lx-bar::before {
+  inset-inline: 18%;
+  transform: scaleX(.75);
+  transition: opacity var(--dur-slow) var(--ease-lux), transform var(--dur-slow) var(--ease-lux);
+}
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette] .lx-bar:hover::before { transform: none; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-grid.has-dim-engine:hover .app-card { will-change: transform, opacity; }
+}
+.app-card:active { will-change: transform, opacity; }
+.palette-item-cat { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.palette-item-via { direction: ltr; unicode-bidi: isolate; }
+.palette-item-via.is-prose { direction: inherit; }
+.palette-item-via mark { background: none; color: var(--text); font-weight: 600; box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--tint) 55%, transparent); }

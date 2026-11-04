@@ -145,7 +145,11 @@ const detectMidLevel = (alpha, width, height) => {
   return Math.round((Math.min(225, best * 10 + 5) / 255) * 100) / 100;
 };
 
-const symbolLayersMarkup = (key, layers) => `<symbol id="g-${key}" viewBox="0 0 24 24">${layers.map((l) => `<path${l.opacity < 1 ? ` fill-opacity="${l.opacity}"` : ''} fill-rule="evenodd" d="${l.d}"/>`).join('')}</symbol>`;
+const layerPath = (l) => (l.opacity < 1
+  ? `<path fill-opacity="${l.opacity}" style="fill:var(--lx-ga,currentColor)" fill-rule="evenodd" d="${l.d}"/>`
+  : `<path fill-rule="evenodd" d="${l.d}"/>`);
+
+const symbolLayersMarkup = (key, layers) => `<symbol id="g-${key}" viewBox="0 0 24 24">${layers.map(layerPath).join('')}</symbol>`;
 
 const symbolMarkup = (key, d) => `<symbol id="g-${key}" viewBox="0 0 24 24"><path fill-rule="evenodd" d="${d}"/></symbol>`;
 
@@ -171,7 +175,7 @@ const faSymbol = async (name) => {
   const vb = /viewBox="([^"]+)"/.exec(svg)?.[1];
   const ds = [...svg.matchAll(/<path d="([^"]+)"/g)].map((m) => m[1]);
   if (!vb || !ds.length) throw new Error(`bad FA svg ${name}`);
-  return `<symbol id="${name}" viewBox="${vb}">${ds.map((d) => `<path fill="currentColor" d="${d}"/>`).join('')}</symbol>`;
+  return `<symbol id="${name}" viewBox="${vb}">${ds.map((d) => `<path d="${d}"/>`).join('')}</symbol>`;
 };
 
 const packAtlas = async (items, cell) => {
@@ -324,6 +328,7 @@ const main = async () => {
     const e = v1.icons[key];
     const out = { favicon: fav.pos[key] || null, glyph: glyphEntry[key] ?? null, tint: e.tint ?? null };
     if (e.sourceTint) out.sourceTint = e.sourceTint;
+    for (const field of ['ink', 'bbox', 'layers', 'tintRole']) if (e[field] !== undefined) out[field] = e[field];
     out.shape = 'default';
     out.status = e.status;
     out.checkedAt = e.checkedAt;

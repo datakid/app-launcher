@@ -65,7 +65,11 @@
         "hash": { "type": "string" },
         "palette": { "type": ["string", "null"] },
         "seed": { "type": ["string", "null"], "pattern": "^[0-9a-f]{8}$" },
-        "locked": { "type": "boolean" }
+        "locked": { "type": "boolean" },
+        "ink": { "type": "number", "minimum": 0, "maximum": 1 },
+        "bbox": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "number", "minimum": 0, "maximum": 1 } },
+        "layers": { "enum": [1, 2] },
+        "tintRole": { "enum": ["brand", "authored"] }
       }
     }
   }

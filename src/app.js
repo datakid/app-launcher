@@ -1,5 +1,6 @@
 import { qrMatrix } from './qr.js';
 import { solveIconRows } from './icon-solver.js';
+import { buildIndex, search, flattenCatalogue, TIER } from './search.js';
 const LX_DEBUG = new URLSearchParams(location.search).get('lxdebug') === '1';
 const CATALOG_URL = 'links.json';
 const catalogRequest = (() => {
@@ -265,7 +266,6 @@ const ensureIcon = (name) => {
       sym.setAttribute('viewBox', vb);
       paths.forEach((d) => {
         const p = document.createElementNS(NS, 'path');
-        p.setAttribute('fill', 'currentColor');
         p.setAttribute('d', d);
         sym.appendChild(p);
       });
@@ -449,14 +449,26 @@ const iconEntry = (key) => {
   return e && typeof e === 'object' ? e : null;
 };
 const cellRef = (a, pos, atlas) => (a && pos && Number.isInteger(pos.x) && Number.isInteger(pos.y) && pos.x >= 0 && pos.y >= 0 && pos.x < a.width && pos.y < a.height ? { atlas, c: pos.x / a.cell, r: pos.y / a.cell, sig: `${atlas}:${pos.x},${pos.y}` } : null);
+const glyphScaleOf = (e) => {
+  const ink = typeof e.ink === 'number' ? e.ink : 0;
+  return ink > 0 && ink <= 1 ? Math.round(Math.min(1.14, Math.max(0.86, Math.sqrt(0.3 / ink))) * 100) / 100 : null;
+};
+const syncGlyphScale = (node, scale) => {
+  const next = scale ? String(scale) : '';
+  if (node.style.getPropertyValue('--glyph-scale') === next) return;
+  if (next) node.style.setProperty('--glyph-scale', next);
+  else node.style.removeProperty('--glyph-scale');
+};
 const glyphRefFor = (key) => {
   const e = iconEntry(key);
   if (!e || e.status === 'default') return null;
   if (isV1Manifest(iconManifest)) return typeof e.glyph === 'string' && GLYPH_RE.test(e.glyph) ? { url: e.glyph, sig: `v1:${e.glyph}` } : null;
   const g = e.glyph;
   if (!g || typeof g !== 'object') return null;
-  if (typeof g.symbol === 'string' && SYM_RE.test(g.symbol)) return iconAssets.sprite && document.getElementById(g.symbol) ? { sym: g.symbol, sig: `s:${g.symbol}` } : null;
-  return iconAssets.glyphAtlas ? cellRef(iconManifest.glyphAtlas, g.atlas, 'g') : null;
+  const scale = glyphScaleOf(e);
+  if (typeof g.symbol === 'string' && SYM_RE.test(g.symbol)) return iconAssets.sprite && document.getElementById(g.symbol) ? { sym: g.symbol, sig: `s:${g.symbol}`, scale } : null;
+  const cell = iconAssets.glyphAtlas ? cellRef(iconManifest.glyphAtlas, g.atlas, 'g') : null;
+  return cell ? { ...cell, scale } : null;
 };
 const faviconRefFor = (key) => {
   const e = iconEntry(key);
@@ -498,8 +510,9 @@ const glyphHtml = (m, cls) => {
   const c = cls ? `${cls} ` : '';
   const r = m.ref;
   if (r.url) return `<span class="${c}lx-glyph" data-ms="${r.sig}" style="--glyph:url(${r.url})" aria-hidden="true"></span>`;
-  if (r.sym) return `<svg class="${c}lx-glyph mark-glyph" data-ms="${r.sig}" aria-hidden="true" focusable="false"><use href="#${r.sym}"></use></svg>`;
-  return `<span class="${c}lx-glyph mark-glyph-atlas" data-ms="${r.sig}" style="--ac:${r.c};--ar:${r.r}" aria-hidden="true"></span>`;
+  const scaleStyle = r.scale ? `--glyph-scale:${r.scale}` : '';
+  if (r.sym) return `<svg class="${c}lx-glyph mark-glyph" data-ms="${r.sig}"${scaleStyle ? ` style="${scaleStyle}"` : ''} aria-hidden="true" focusable="false"><use href="#${r.sym}"></use></svg>`;
+  return `<span class="${c}lx-glyph mark-glyph-atlas" data-ms="${r.sig}" style="--ac:${r.c};--ar:${r.r}${scaleStyle ? `;${scaleStyle}` : ''}" aria-hidden="true"></span>`;
 };
 const favHtml = (m, cls) => {
   const c = cls ? `${cls} ` : '';
@@ -522,9 +535,13 @@ const retileIcon = (host, app, variant, iconName, cls = 'app-icon') => {
   if (cur && markKind(cur) === m.kind) {
     if (m.kind === 'fa') { setIcon(cur, iconName); return cur; }
     const sig = m.ref.sig;
-    if (cur.dataset.ms === sig) return cur;
+    if (cur.dataset.ms === sig) {
+      if (m.kind === 'glyph') syncGlyphScale(cur, m.ref.scale);
+      return cur;
+    }
     if (m.ref.url && m.kind === 'glyph' && cur.tagName === 'SPAN' && !cur.classList.contains('mark-glyph-atlas')) {
       cur.style.setProperty('--glyph', `url(${m.ref.url})`);
+      syncGlyphScale(cur, m.ref.scale);
       cur.dataset.ms = sig;
       return cur;
     }
@@ -638,11 +655,10 @@ const STRINGS = {
   commandPaletteLabel: { ar: 'لوحة الأوامر', en: 'Command Palette' },
   resultsLabel: { ar: 'النتائج', en: 'Results' },
   actionsLabel: { ar: 'الإجراءات', en: 'Actions' },
-  searchPlaceholder: { ar: 'ابحث عن تطبيق أو أداة…', en: 'Search for an app or tool…' },
+  searchPlaceholder: { ar: 'ابحث عن تطبيق أو رابط أو نطاق…', en: 'Search apps, links, hosts…' },
   barSearchLabel: { ar: 'ابحث في كل الأدوات…', en: 'Search all tools…' },
   barSearchLabelShort: { ar: 'ابحث…', en: 'Search…' },
   quickSearch: { ar: 'بحث سريع', en: 'Quick search' },
-  quickLaunch: { ar: 'وصول سريع', en: 'Quick launch' },
   soundEnable: { ar: 'تفعيل الصوت', en: 'Enable sound' },
   soundMute: { ar: 'كتم الصوت', en: 'Mute sound' },
   themeToDark: { ar: 'التبديل إلى المظهر الداكن', en: 'Switch to dark mode' },
@@ -673,7 +689,6 @@ const STRINGS = {
   ctxCopyLink: { ar: 'نسخ الرابط', en: 'Copy link' },
   ctxCopyName: { ar: 'نسخ الاسم', en: 'Copy name' },
   ctxDetails: { ar: 'عرض التفاصيل', en: 'Show details' },
-  ctxVersions: { ar: 'النسخة', en: 'Version' },
   ctxDefault: { ar: 'افتراضي', en: 'Default' },
   ctxCurrent: { ar: 'الحالية', en: 'Current' },
   ctxUseVersion: { ar: 'اعتمادها للبطاقة', en: 'Keep on card' },
@@ -750,8 +765,6 @@ const STRINGS = {
   view_icons: { ar: 'أيقونات', en: 'Icons' },
   cmdSwitchView: { ar: 'تبديل التخطيط', en: 'Switch layout' },
   viewChanged: { ar: 'تم تغيير التخطيط إلى {m}', en: 'Layout changed to {m}' },
-  cmdNextColors: { ar: 'الألوان التالية', en: 'Next colors' },
-  cmdNextCorners: { ar: 'الزوايا التالية', en: 'Next corners' },
   actionQr: { ar: 'رمز QR', en: 'QR code' },
   ctxQr: { ar: 'عرض رمز QR', en: 'Show QR code' },
   qrPng: { ar: 'تنزيل PNG', en: 'Download PNG' },
@@ -1259,7 +1272,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       <span class="open-affordance row-go" aria-hidden="true">${icon(openModeIcon())}</span>`;
 
   const iconsBody = `
-      ${wrapOpen(app, activeVariant)}${markHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh && !isTile ? '<span class="icon-new-dot" aria-hidden="true"></span>' : ''}</div>
+      ${wrapOpen(app, activeVariant)}${markHtml(app, activeVariant, iconClass, 'app-icon')}${digitHtml}${fresh && !isTile ? `<span class="icon-new-dot" aria-hidden="true"><span class="icon-new-text">${escapeHtml(t('badgeNew'))}</span></span>` : ''}</div>
       <span class="icon-label">${escapeHtml(isTile ? loc(activeVariant.label) : title)}</span>`;
 
   if (iconsView) {
@@ -2913,6 +2926,7 @@ const updateBarKbd = () => {
 
 const applyI18n = (opts = {}) => {
   const { rebuild = true } = opts;
+  invalidateSearchIndex();
 
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
@@ -3398,43 +3412,25 @@ const highlightTitle = (title, query) => {
   return out2;
 };
 
-const fuzzyScore = (query, target) => {
-  const t = normalizeAr(target), q = normalizeAr(query);
-  if (!q) return 0;
-  const i = t.indexOf(q);
-  if (i === 0) return 1000;
-  if (i > 0 && t[i - 1] === ' ') return 850;
-  if (i > 0) return 700 - i;
-  let qi = 0, run = 0, s = 0;
-  for (let k = 0; k < t.length && qi < q.length; k++) {
-    if (t[k] === q[qi]) { qi++; run++; s += 4 + run * 3; } else run = 0;
-  }
-  return qi === q.length ? s : -1;
-};
-
 try { localStorage.removeItem('lx-unlocked-secrets'); } catch (e) { if (LX_DEBUG) console.warn(e); }
 
-const allPaletteEntries = () => [...categories, ...paletteGroups].flatMap(cat => cat.apps.flatMap(app => {
-  if (app.variants) {
-    return app.variants.map((v, i) => ({
-      app: {
-        id: `${app.id}::${v.id}`,
-        title: { ar: `${app.title.ar} · ${v.label.ar}`, en: `${app.title.en} · ${v.label.en}` },
-        url: v.url,
-        icon: v.icon,
-        gradient: app.gradient,
-        isNew: app.isNew,
-        since: app.since,
-        closed: app.closed,
-        parentId: app.id,
-        parentTitle: app.title,
-        variantIndex: i
-      },
-      cat
-    }));
-  }
-  return [{ app, cat }];
-}));
+let paletteEntriesCache = null;
+let paletteIndexCache = null;
+
+const invalidateSearchIndex = () => {
+  paletteEntriesCache = null;
+  paletteIndexCache = null;
+};
+
+const allPaletteEntries = () => {
+  if (!paletteEntriesCache) paletteEntriesCache = flattenCatalogue([...categories, ...paletteGroups]);
+  return paletteEntriesCache;
+};
+
+const paletteSearchIndex = () => {
+  if (!paletteIndexCache) paletteIndexCache = buildIndex(allPaletteEntries(), { isFresh });
+  return paletteIndexCache;
+};
 
 const RECENTS_KEY = 'lx-recents';
 const RECENTS_CAP = 8;
@@ -3471,22 +3467,28 @@ const bumpFreq = (id) => {
   } catch (e) { if (LX_DEBUG) console.warn(e); }
 };
 
-const getRecentEntries = (allEntries, limit) => {
+const recentScores = () => {
   const ids = getRecentIds();
   const freq = getFreqMap();
+  const scores = new Map();
+  new Set([...ids, ...Object.keys(freq)]).forEach(id => {
+    const pos = ids.indexOf(id);
+    const recencyScore = pos === -1 ? 0 : (RECENTS_CAP - pos) / RECENTS_CAP;
+    const freqScore = Math.min(freq[id] || 0, FREQ_CAP) / FREQ_CAP;
+    scores.set(id, recencyScore * 0.6 + freqScore * 0.4);
+  });
+  return scores;
+};
+
+const getRecentEntries = (allEntries, limit) => {
   const byId = new Map();
   allEntries.forEach(e => { if (!byId.has(e.app.id)) byId.set(e.app.id, e); });
   allEntries.forEach(e => { if (e.app.parentId && !byId.has(e.app.parentId)) byId.set(e.app.parentId, e); });
 
-  const candidateIds = new Set([...ids, ...Object.keys(freq)]);
   const scored = [];
-  candidateIds.forEach(id => {
+  recentScores().forEach((score, id) => {
     const e = byId.get(id);
-    if (!e) return;
-    const pos = ids.indexOf(id);
-    const recencyScore = pos === -1 ? 0 : (RECENTS_CAP - pos) / RECENTS_CAP;
-    const freqScore = Math.min(freq[id] || 0, FREQ_CAP) / FREQ_CAP;
-    scored.push({ entry: e, score: recencyScore * 0.6 + freqScore * 0.4 });
+    if (e) scored.push({ entry: e, score });
   });
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, limit).map(s => s.entry);
@@ -3583,8 +3585,6 @@ const commandEntries = () => {
   return list;
 };
 
-const scoreCommand = (query, entry) => Math.max(fuzzyScore(query, entry.app.title.ar), fuzzyScore(query, entry.app.title.en));
-
 const keyGlyph = (k) => {
   const mac = isMacPlatform();
   if (k === 'Enter') return '↵';
@@ -3643,15 +3643,12 @@ const syncPaletteCursor = (instant = false) => {
   }
 };
 
-const scoreEntry = (query, entry) => {
-  const titleArScore = fuzzyScore(query, entry.app.title.ar);
-  const titleEnScore = fuzzyScore(query, entry.app.title.en);
-  const catScore = fuzzyScore(query, loc(entry.cat.label));
-  let hostScore = -1;
-  try { hostScore = fuzzyScore(query, new URL(entry.app.url).hostname) * 0.4; } catch (e) { if (LX_DEBUG) console.warn(e); }
-  let s = Math.max(titleArScore, titleEnScore, catScore, hostScore);
-  if (s >= 0 && entry.cat.id === currentTabId) s += 40;
-  return s;
+let commandIndexCache = null;
+
+const searchCommands = (commands, q) => {
+  const key = commands.map(e => `${e.app.title.en}\u0001${e.app.title.ar}`).join('\u0002');
+  if (!commandIndexCache || commandIndexCache.key !== key) commandIndexCache = { key, index: buildIndex(commands, { titlesOnly: true }) };
+  return search(commandIndexCache.index, q, {}).map(h => ({ app: commands[h.index].app, cat: commands[h.index].cat, score: h.score, hit: h }));
 };
 
 const paletteEntryKey = (e) => e.app.id;
@@ -3661,7 +3658,43 @@ const sanitizeDomId = (key) => String(key).replace(/[^a-zA-Z0-9_-]/g, '-');
 const paletteTrailHtml = (e) => e.app.command && e.app.kbd ? keycapsHtml(e.app.kbd) : '<kbd>↵</kbd>';
 const paletteTrailClass = (e) => 'palette-item-trail' + (e.app.command && e.app.kbd ? ' is-persistent' : '');
 
-const paletteItemContentHtml = (e, query) => `${wrapOpen(e.app, null)}${markHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${highlightTitle(loc(e.app.title), query)}</span><span class="palette-item-cat">${escapeHtml(loc(e.cat.label))}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span><button type="button" class="palette-qr" tabindex="-1" aria-label="${escapeHtml(t('ctxQr'))}"${e.app.command ? ' hidden' : ''}>${icon('fa-qrcode')}<span aria-hidden="true">QR</span></button>`;
+const markRanges = (text, ranges, offset = 0) => {
+  let out = '';
+  let pos = 0;
+  for (const [from, to] of ranges) {
+    const a = from + offset;
+    const b = to + offset;
+    if (a < pos || b > text.length || b <= a) continue;
+    out += `${escapeHtml(text.slice(pos, a))}<mark>${escapeHtml(text.slice(a, b))}</mark>`;
+    pos = b;
+  }
+  return out + escapeHtml(text.slice(pos));
+};
+
+const paletteTitleHtml = (e, query) => {
+  const title = loc(e.app.title);
+  const h = e.hit;
+  if (h && h.ranges.length) {
+    let offset = -1;
+    if (h.field === 'title' && h.text === title) offset = 0;
+    else if (h.field === 'parent' && e.app.parentTitle && h.text === loc(e.app.parentTitle) && title.startsWith(h.text)) offset = 0;
+    else if (h.field === 'variant' && e.app.variantLabel && h.text === loc(e.app.variantLabel) && title.endsWith(h.text)) offset = title.length - h.text.length;
+    if (offset >= 0) return markRanges(title, h.ranges, offset);
+  }
+  return highlightTitle(title, query);
+};
+
+const VIA_PROSE = new Set(['status', 'badge']);
+const VIA_FIELDS = new Set(['host', 'url', 'id', 'icon', 'acronym', 'status', 'badge']);
+
+const paletteCatHtml = (e) => {
+  const label = escapeHtml(loc(e.cat.label));
+  const h = e.hit;
+  if (!h || !h.text || !VIA_FIELDS.has(h.field)) return label;
+  return `${label} · <span class="palette-item-via${VIA_PROSE.has(h.field) ? ' is-prose' : ''}">${markRanges(h.text, h.ranges)}</span>`;
+};
+
+const paletteItemContentHtml = (e, query) => `${wrapOpen(e.app, null)}${markHtml(e.app, null, e.app.icon, 'app-icon')}</div><div class="palette-item-text"><span class="palette-item-title">${paletteTitleHtml(e, query)}</span><span class="palette-item-cat">${paletteCatHtml(e)}</span></div><span class="${paletteTrailClass(e)}" aria-hidden="true">${paletteTrailHtml(e)}</span><button type="button" class="palette-qr" tabindex="-1" aria-label="${escapeHtml(t('ctxQr'))}"${e.app.command ? ' hidden' : ''}>${icon('fa-qrcode')}<span aria-hidden="true">QR</span></button>`;
 
 const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   const li = document.createElement('li');
@@ -3685,9 +3718,9 @@ const updatePaletteItemNode = (li, e, globalIndex, query, isActive) => {
   const tileEl = li.querySelector('.app-icon-wrapper');
   if (tileEl) retileIcon(tileEl, e.app, null, e.app.icon);
   const titleEl = li.querySelector('.palette-item-title');
-  if (titleEl) titleEl.innerHTML = highlightTitle(loc(e.app.title), query);
+  if (titleEl) titleEl.innerHTML = paletteTitleHtml(e, query);
   const catEl = li.querySelector('.palette-item-cat');
-  if (catEl) catEl.textContent = loc(e.cat.label);
+  if (catEl) catEl.innerHTML = paletteCatHtml(e);
   const qrEl = li.querySelector('.palette-qr');
   if (qrEl) {
     qrEl.hidden = !!e.app.command;
@@ -3783,26 +3816,23 @@ const renderPaletteResults = (rawQuery) => {
   if (paletteScope !== 'all' && !categories.some(c => c.id === paletteScope)) paletteScope = 'all';
   const everyEntry = allPaletteEntries();
   const scopeCounts = { all: 0 };
+  const scoped = paletteScope !== 'all';
+  const scored = [];
   if (!isCmd) {
-    everyEntry.forEach((e) => {
-      if (query && scoreEntry(query, e) < 0) return;
+    const short = query.trim().length;
+    const hits = search(paletteSearchIndex(), query, { currentTabId, recents: short > 0 && short <= 2 ? recentScores() : null });
+    hits.forEach((h) => {
+      const e = everyEntry[h.index];
       scopeCounts.all++;
       scopeCounts[e.cat.id] = (scopeCounts[e.cat.id] || 0) + 1;
+      if (!scoped || e.cat.id === paletteScope) scored.push({ app: e.app, cat: e.cat, score: h.score, hit: h });
     });
   }
-  const scoped = paletteScope !== 'all';
   const allEntries = scoped ? everyEntry.filter(e => e.cat.id === paletteScope) : everyEntry;
   const commands = commandEntries();
-  const rankCommands = (q) => commands
-    .map(e => ({ app: e.app, cat: e.cat, score: scoreCommand(q, e) }))
-    .filter(e => e.score >= 0)
-    .sort((a, b) => b.score - a.score);
-  const scored = isCmd ? [] : allEntries
-    .map(e => ({ app: e.app, cat: e.cat, score: scoreEntry(query, e) }))
-    .filter(e => e.score >= 0)
-    .sort((a, b) => b.score - a.score);
+  const rankCommands = (q) => searchCommands(commands, q);
   const cmdHits = !isCmd && !scoped && query.trim().length >= 2
-    ? rankCommands(query).filter(e => e.score >= 100).slice(0, 3)
+    ? rankCommands(query).filter(e => e.hit.tier >= TIER.subsequence).slice(0, 3)
     : [];
 
   const prevActiveEntry = paletteItems[paletteActiveIndex];
@@ -5420,10 +5450,19 @@ const setupInteractions = () => {
     openPaletteItem(Number(li.dataset.index));
   });
 
-  let inputDebounce;
+  let searchFrame = 0;
+  let pendingRaw = '';
+  const cancelScheduledSearch = () => {
+    if (searchFrame) cancelAnimationFrame(searchFrame);
+    searchFrame = 0;
+  };
   const scheduleSearch = (raw) => {
-    clearTimeout(inputDebounce);
-    inputDebounce = setTimeout(() => renderPaletteResults(raw), 55);
+    pendingRaw = raw;
+    if (searchFrame) return;
+    searchFrame = requestAnimationFrame(() => {
+      searchFrame = 0;
+      renderPaletteResults(pendingRaw);
+    });
   };
 
   paletteInput.addEventListener('input', (e) => {
@@ -5431,14 +5470,14 @@ const setupInteractions = () => {
     if (!paletteCmdMode && paletteInput.value.startsWith('>')) {
       paletteCmdMode = true;
       paletteInput.value = paletteInput.value.slice(1).trimStart();
-      clearTimeout(inputDebounce);
+      cancelScheduledSearch();
       sfx.tick(4);
       renderPaletteResults(paletteInput.value);
       return;
     }
     const raw = paletteInput.value;
     if (!raw) {
-      clearTimeout(inputDebounce);
+      cancelScheduledSearch();
       renderPaletteResults('');
       return;
     }
@@ -5450,7 +5489,7 @@ const setupInteractions = () => {
     if (e.key === 'Backspace' && paletteCmdMode && !paletteInput.value) {
       e.preventDefault();
       paletteCmdMode = false;
-      clearTimeout(inputDebounce);
+      cancelScheduledSearch();
       sfx.tick(0);
       renderPaletteResults('');
       return;
@@ -5464,7 +5503,7 @@ const setupInteractions = () => {
       e.preventDefault();
       const completed = paletteInput.value + paletteGhostTail;
       paletteInput.value = completed;
-      clearTimeout(inputDebounce);
+      cancelScheduledSearch();
       renderPaletteResults(completed);
       return;
     }
@@ -5896,6 +5935,7 @@ const userCategory = (apps) => ({
 });
 
 const composeCategories = () => {
+  invalidateSearchIndex();
   const mine = readUserLinks();
   paletteGroups.splice(0, paletteGroups.length, ...baseCatalog.filter(isPaletteOnly));
   categories.splice(0, categories.length, ...baseCatalog.filter(c => !isPaletteOnly(c)), ...(mine.length ? [userCategory(mine)] : []));
