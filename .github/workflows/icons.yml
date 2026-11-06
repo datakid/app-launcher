@@ -17,6 +17,7 @@ jobs:
     with:
       set: launcher
       target: v4
+      studio-ref: main
       links-path: links.json
       icons-dir: icons
       base-sha: ${{ github.event.before }}
