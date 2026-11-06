@@ -4385,7 +4385,7 @@ html[data-lowend] .qr-stage::after { display: none; }
   }
 }
 
-.app-icon-wrapper .lx-glyph { scale: var(--glyph-scale, 1); }
+.app-icon-wrapper .lx-glyph, .ctx-head-icon .lx-glyph { scale: var(--glyph-scale, 1); }
 :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper :is(svg.app-icon, svg.mark-glyph) {
   fill: url(#lx-gf);
   color: #fff;

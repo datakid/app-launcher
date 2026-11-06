@@ -330,10 +330,50 @@ const closedPlate = (browser, base) => async () => {
   record('icons view: a closed plate keeps its panel at full strength, dims only its icons, labels and caption, and shows a Closed tag', bad.length === 0, bad);
 };
 
+const opticalSizing = (browser, base) => async () => {
+  const { ctx, page } = await open(browser, base, { view: 'icons', tab: 'core' });
+  const manifest = await page.evaluate(() => fetch('icons/manifest.v2.json', { cache: 'no-store' }).then((r) => r.json()));
+  const wanted = (ink) => (ink > 0 && ink <= 1 ? Math.round(Math.min(1.14, Math.max(0.86, Math.sqrt(0.29 / ink))) * 100) / 100 : 1);
+  const bySig = new Map();
+  for (const [key, e] of Object.entries(manifest.icons)) {
+    const g = e.glyph;
+    if (g && g.symbol) bySig.set(`s:${g.symbol}`, key);
+    else if (g && g.atlas) bySig.set(`g:${g.atlas.x},${g.atlas.y}`, key);
+  }
+  const marks = new Map();
+  for (const tab of ['core', 'tools', 'experimental']) {
+    await page.evaluate((id) => document.getElementById(`tab-${id}`).click(), tab);
+    await page.waitForFunction((id) => document.getElementById(`tab-${id}`).getAttribute('aria-selected') === 'true', tab);
+    await settle(page);
+    const rows = await page.evaluate(() => [...document.querySelectorAll('#appGrid .app-card--icon .app-icon-wrapper .lx-glyph')].map((g) => {
+      const r = g.getBoundingClientRect();
+      return { sig: g.dataset.ms, scale: parseFloat(getComputedStyle(g).scale) || 1, w: r.width, h: r.height, shown: r.width > 0 && getComputedStyle(g).visibility !== 'hidden' };
+    }));
+    for (const row of rows) {
+      const key = bySig.get(row.sig);
+      if (key && typeof manifest.icons[key].ink === 'number') marks.set(key, { key, ...row });
+    }
+  }
+  const cv = (a) => {
+    const mean = a.reduce((x, y) => x + y, 0) / a.length;
+    return Math.sqrt(a.reduce((x, y) => x + (y - mean) ** 2, 0) / a.length) / mean;
+  };
+  const all = [...marks.values()];
+  const scaled = all.filter((m) => m.scale !== 1);
+  record('optical sizing: at least 25 glyph marks render at a scale other than 1', scaled.length >= 25, { marks: all.length, scaled: scaled.length });
+  const off = all.filter((m) => Math.abs(m.scale - wanted(manifest.icons[m.key].ink)) > 0.005).map((m) => ({ key: m.key, scale: m.scale, want: wanted(manifest.icons[m.key].ink) }));
+  record('optical sizing: every rendered scale is the clamped square root of 0.29 over the manifest ink', off.length === 0 && all.length > 0, off.slice(0, 5));
+  const shown = all.filter((m) => m.shown);
+  const after = cv(shown.map((m) => manifest.icons[m.key].ink * m.w * m.h));
+  const before = cv(shown.map((m) => manifest.icons[m.key].ink * (m.w / m.scale) * (m.h / m.scale)));
+  record('optical sizing: the spread of painted glyph area across Icons tiles is at least 30% lower than without it', shown.length >= 25 && after <= before * 0.7, { tiles: shown.length, cvWithout: Math.round(before * 1000) / 10, cvWith: Math.round(after * 1000) / 10, reduction: Math.round((1 - after / before) * 1000) / 10 });
+  await ctx.close();
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await launchBrowser();
-  const steps = [popIn, noSnap, rowsCentred, ghostGone, rapid, reduced, narrow, spacing, closedPlate].map((make) => ({ name: make.name, run: make(browser, server.base) }));
+  const steps = [popIn, noSnap, rowsCentred, ghostGone, rapid, reduced, narrow, spacing, closedPlate, opticalSizing].map((make) => ({ name: make.name, run: make(browser, server.base) }));
   for (const step of steps) {
     try { await step.run(); } catch (e) { record(step.name, false, { error: String(e.message || e).slice(0, 240) }); }
   }

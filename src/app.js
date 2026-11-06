@@ -451,7 +451,7 @@ const iconEntry = (key) => {
 const cellRef = (a, pos, atlas) => (a && pos && Number.isInteger(pos.x) && Number.isInteger(pos.y) && pos.x >= 0 && pos.y >= 0 && pos.x < a.width && pos.y < a.height ? { atlas, c: pos.x / a.cell, r: pos.y / a.cell, sig: `${atlas}:${pos.x},${pos.y}` } : null);
 const glyphScaleOf = (e) => {
   const ink = typeof e.ink === 'number' ? e.ink : 0;
-  return ink > 0 && ink <= 1 ? Math.round(Math.min(1.14, Math.max(0.86, Math.sqrt(0.3 / ink))) * 100) / 100 : null;
+  return ink > 0 && ink <= 1 ? Math.round(Math.min(1.14, Math.max(0.86, Math.sqrt(0.29 / ink))) * 100) / 100 : null;
 };
 const syncGlyphScale = (node, scale) => {
   const next = scale ? String(scale) : '';
