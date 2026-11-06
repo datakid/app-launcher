@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: datakid/harvest-studio/.github/workflows/harvest-icons.yml@v0.2.0
+    uses: datakid/harvest-studio/.github/workflows/harvest-icons.yml@main
     with:
       set: launcher
       target: v4
