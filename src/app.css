@@ -211,7 +211,6 @@
 @property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
 @property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
 @property --reveal-r { syntax: '<length>'; inherits: true; initial-value: 230px; }
-@property --icon-lift { syntax: '<number>'; inherits: true; initial-value: 0; }
 
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; font-synthesis: none; }
 a, button, [role="tab"], [role="option"] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
@@ -868,16 +867,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   width: var(--icon-size); height: var(--icon-size);
   display: flex; align-items: center; justify-content: center;
   position: relative; flex-shrink: 0;
-}
-
-.app-card .app-icon-wrapper { --icon-lift: var(--hov, 0); }
-.palette-item .app-icon-wrapper,
-.palette-detail .app-icon-wrapper { transition: --icon-lift var(--dur-fast) var(--ease-lux); }
-.palette-item.is-active .app-icon-wrapper, .palette-detail .app-icon-wrapper { --icon-lift: 1; }
-@media (hover: hover) and (pointer: fine) {
-  .palette-item:hover .app-icon-wrapper {
-    --icon-lift: 1;
-  }
 }
 
 svg.fas { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125em; fill: currentColor; flex-shrink: 0; overflow: visible; }
@@ -1615,7 +1604,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   transition: opacity var(--dur-micro) var(--ease-lux);
 }
 .palette-cursor.is-dimmed::before { opacity: 0; }
-.palette-item .app-icon-wrapper { transition: --icon-lift var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
+.palette-item .app-icon-wrapper { transition: transform var(--dur-fast) var(--ease-spring), translate var(--dur-fast) var(--ease-lux); }
 .palette-item.is-active .palette-item-cat { color: color-mix(in oklab, var(--tint-ink) 45%, var(--pal-ink-2)); }
 .palette-detail-title { font-size: 1.65rem; }
 :root:lang(en) .palette-detail-title { font-size: 1.95rem; }
@@ -1717,9 +1706,7 @@ h1 {
 :root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 7%, transparent); }
 
 .app-icon-wrapper {
-  transform:
-    translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0)
-    scale(calc(1 + .03 * var(--icon-lift)));
+  transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0);
 }
 .app-icon { color: rgba(255,255,255,.95); text-shadow: none; }
 
@@ -1780,10 +1767,14 @@ h1 {
 .palette-item.is-active .app-icon-wrapper {
   transform: scale(1.03);
 }
+@media (hover: hover) and (pointer: fine) {
+  .palette-item:hover .app-icon-wrapper { transform: scale(1.03); }
+}
 .palette-item-title mark { box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--tint) 70%, transparent); border-radius: 0; }
 .palette-detail-slab::after { background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 28%, transparent), transparent); }
 .palette-detail .app-icon-wrapper {
   --icon-size: 56px;
+  transform: scale(1.03);
 }
 .palette-detail-eyebrow { letter-spacing: .16em; }
 :root:lang(ar) .palette-detail-eyebrow { letter-spacing: 0; }
@@ -3795,19 +3786,18 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
 :root .app-grid[data-layout="icons"] .app-card--icon { --icon-size: 64px; }
 :root .app-grid[data-layout="icons"] .app-card--icon .app-icon-wrapper {
   --icon-size: inherit;
-  --icon-lift: 0;
   flex-shrink: 0;
   opacity: 1;
   transform: none;
-  transition: transform var(--dur-fast) var(--ease-lux), --icon-lift var(--dur-fast) var(--ease-lux), scale 320ms var(--ease-spring);
+  transition: transform var(--dur-fast) var(--ease-lux), scale 320ms var(--ease-spring);
   pointer-events: none;
 }
 :root .app-grid[data-layout="icons"] .app-card--icon .app-icon { font-size: 1.7rem; }
 @media (hover: hover) and (pointer: fine) {
-  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { transform: translateY(-3px); --icon-lift: 1; }
+  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { transform: translateY(-3px); }
   :root .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper {
     scale: .94;
-    transition: transform var(--dur-fast) var(--ease-lux), --icon-lift var(--dur-fast) var(--ease-lux), scale 90ms var(--ease-lux);
+    transition: transform var(--dur-fast) var(--ease-lux), scale 90ms var(--ease-lux);
   }
   :root .app-grid[data-layout="icons"] .app-card--icon:hover .icon-label { color: var(--text); }
 }
@@ -4364,12 +4354,22 @@ html[data-lowend] .qr-stage::after { display: none; }
   border-radius: inherit;
   background: var(--tile-lo);
   filter: blur(calc(var(--icon-size) * .16));
-  opacity: calc(.5 * var(--icon-lift, 0));
-  transform: translate3d(0, calc(var(--icon-lift, 0) * var(--icon-size) * .1), 0) scale(calc(.9 + .1 * var(--icon-lift, 0)));
+  opacity: 0;
+  transform: translate3d(0, 0, 0) scale(.9);
+  transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-lux);
   pointer-events: none;
 }
-:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] .app-icon-wrapper::after {
-  opacity: calc(.38 * var(--icon-lift, 0));
+:root[data-palette]:not([data-palette="muted"]) { --blob-o: .5; }
+:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] { --blob-o: .38; }
+:root[data-palette]:not([data-palette="muted"]) :is(.app-card.is-hot, .palette-item.is-active, .palette-detail) .app-icon-wrapper::after {
+  opacity: var(--blob-o);
+  transform: translate3d(0, calc(var(--icon-size) * .1), 0) scale(1);
+}
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette]:not([data-palette="muted"]) :is(.palette-item:hover, .app-card--icon:hover) .app-icon-wrapper::after {
+    opacity: var(--blob-o);
+    transform: translate3d(0, calc(var(--icon-size) * .1), 0) scale(1);
+  }
 }
 :root[data-palette="mono"][data-theme="light"] .app-icon-wrapper { --tile-rim: inset 0 .5px 0 rgb(255 255 255 / .55); }
 
@@ -4429,9 +4429,11 @@ html[data-lowend] .qr-stage::after { display: none; }
     0 0 0 .5px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.4)),
     0 1px 2px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.35));
 }
-:root[data-palette="muted"] .app-card:not(.app-card--icon) .app-icon-wrapper,
-:root[data-palette="muted"] .palette-item .app-icon-wrapper {
-  translate: 0 calc(var(--icon-lift, 0) * -1px);
+:root[data-palette="muted"] :is(.app-card.is-hot:not(.app-card--icon), .palette-item.is-active) .app-icon-wrapper {
+  translate: 0 -1px;
+}
+@media (hover: hover) and (pointer: fine) {
+  :root[data-palette="muted"] .palette-item:hover .app-icon-wrapper { translate: 0 -1px; }
 }
 :root[data-palette="muted"] .app-icon-wrapper :is(svg.app-icon, svg.mark-glyph) {
   --lx-ga: color-mix(in oklab, var(--tint-ink) 45%, var(--bg));
@@ -4439,8 +4441,9 @@ html[data-lowend] .qr-stage::after { display: none; }
 
 :root[data-palette] .card-glyph { opacity: calc(.85 * (.5 + .5 * var(--hov, 0))); }
 
+:root .app-card.is-hot:not(.app-card--icon) .app-icon-wrapper { scale: 1.03; }
 @media (hover: hover) and (pointer: fine) {
-  :root .app-card:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper { transition: scale var(--dur-fast) var(--ease-lux); }
+  :root .app-card:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper { transition: scale var(--dur-fast) var(--ease-lux), translate var(--dur-fast) var(--ease-lux); }
   :root .app-card:not(.app-card--row):not(.app-card--icon):active .app-icon-wrapper { scale: .96; transition-duration: 90ms; }
   :root .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { transition: translate var(--dur-fast) var(--ease-lux); }
   :root .app-grid[data-layout="list"] > .app-card--row:hover .row-icon .app-icon-wrapper { translate: 0 -1px; }

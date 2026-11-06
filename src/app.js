@@ -2253,6 +2253,8 @@ const initPointerField = () => {
         const settled = !moving && s.dim.settled;
         const live = inside || moving;
         if (live !== !!c._wc) { c._wc = live; c.classList.toggle('is-live', live); }
+        const hot = !MQ.reducedMotion && s.hov.to > 0.5;
+        if (hot !== !!c._hot) { c._hot = hot; c.classList.toggle('is-hot', hot); }
 
         if (!settled) alive = true;
       });
@@ -3209,7 +3211,7 @@ const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab') => {
     ghost.classList.add('is-switching', 'grid-ghost');
     ghost.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
     ghost.classList.remove('has-dim-engine');
-    ghost.querySelectorAll('.app-card').forEach((c) => { c.classList.remove('is-tracking', 'is-live', 'is-kb-focus'); c.style.transform = ''; c.style.willChange = ''; });
+    ghost.querySelectorAll('.app-card').forEach((c) => { c.classList.remove('is-tracking', 'is-live', 'is-hot', 'is-kb-focus'); c.style.transform = ''; c.style.willChange = ''; });
     ghost.querySelectorAll('.card-clip, .card-shadow').forEach((n) => { n.style.opacity = ''; });
     ghost.style.cssText += `;contain:layout paint style;position:absolute;left:${g.offsetLeft}px;top:${g.offsetTop}px;width:${g.offsetWidth}px;height:${g.offsetHeight}px;margin:0;pointer-events:none;z-index:0;overflow:hidden;`;
     ghost.scrollTop = g.scrollTop;
