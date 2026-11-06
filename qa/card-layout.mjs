@@ -2,7 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
@@ -90,7 +90,7 @@ const main = async () => {
   realLinks = JSON.parse(await fs.readFile(path.join(root, 'links.json'), 'utf8'));
   const server = await serve();
   const origin = `http://127.0.0.1:${server.address().port}`;
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
 
   const open = async (vp, prefs, catalog, hash) => {
     const ctx = await browser.newContext({ viewport: { width: vp[0], height: vp[1] }, reducedMotion: 'reduce', serviceWorkers: 'block' });

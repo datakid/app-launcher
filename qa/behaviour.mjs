@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -177,7 +177,7 @@ const harvestEntry = async (browser, base) => {
 
 const main = async () => {
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   for (const step of [versionSwitches, legacyMotion, manifestRefresh, reducedMotion, versionColour, iconFallback, harvestEntry]) {
     try { await step(browser, server.base); } catch (e) { record(step.name, false, { error: String(e.message || e).slice(0, 200) }); }
   }

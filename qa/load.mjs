@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import fs from 'node:fs/promises';
 import zlib from 'node:zlib';
 import path from 'node:path';
@@ -18,11 +18,15 @@ const main = async () => {
   results.markersLeft = (html.toString().match(/<!--LX:/g) || []).length;
 
   const server = await startServer(site);
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
   const page = await ctx.newPage();
   const urls = new Set();
-  page.on('request', (r) => { if (r.url().startsWith(server.base)) urls.add(new URL(r.url()).pathname); });
+  const cdn = [];
+  page.on('request', (r) => {
+    if (r.url().startsWith(server.base)) urls.add(new URL(r.url()).pathname);
+    else if (r.url().startsWith('https://cdn.jsdelivr.net/')) cdn.push(r.url());
+  });
   await page.goto(server.base + '/');
   await page.waitForSelector('#appGrid .app-card');
   await page.waitForTimeout(2500);
@@ -39,6 +43,7 @@ const main = async () => {
   }
   results.firstLoadGzBytes = total;
   results.firstLoadRequests = urls.size;
+  results.cdnIconRequests = cdn.length;
   results.largest = parts.sort((a, b) => b[1] - a[1]);
 
   await page.evaluate(() => navigator.serviceWorker.ready);
@@ -58,7 +63,7 @@ const main = async () => {
   await browser.close();
   await server.close();
 
-  results.pass = results.htmlGzBytes <= LIMITS.htmlGz && results.firstLoadGzBytes <= LIMITS.firstLoadGz && results.markersLeft === 0 && results.repeatVisitNetworkRequestsBeforeGrid === 0 && results.offlineGridOk;
+  results.pass = results.htmlGzBytes <= LIMITS.htmlGz && results.firstLoadGzBytes <= LIMITS.firstLoadGz && results.markersLeft === 0 && results.cdnIconRequests === 0 && results.repeatVisitNetworkRequestsBeforeGrid === 0 && results.offlineGridOk;
   console.log(JSON.stringify(results));
   if (!results.pass) process.exit(1);
 };

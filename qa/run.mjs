@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import { createServer } from 'node:http';
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
@@ -50,7 +50,7 @@ for (const view of VIEWS) for (const theme of THEMES) for (const lang of LANGS) 
 
 const failures = [];
 const results = [];
-const browser = await chromium.launch();
+const browser = await launchBrowser();
 
 const runJob = async (job) => {
   const touch = job.w <= 1024;

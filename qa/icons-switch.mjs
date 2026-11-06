@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from '../perf/server.mjs';
@@ -332,7 +332,7 @@ const closedPlate = (browser, base) => async () => {
 
 const main = async () => {
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const steps = [popIn, noSnap, rowsCentred, ghostGone, rapid, reduced, narrow, spacing, closedPlate].map((make) => ({ name: make.name, run: make(browser, server.base) }));
   for (const step of steps) {
     try { await step.run(); } catch (e) { record(step.name, false, { error: String(e.message || e).slice(0, 240) }); }

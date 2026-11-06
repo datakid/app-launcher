@@ -27,6 +27,28 @@ const splitCss = (css) => {
 
 const minifyCss = async (css) => (await transform(css, { loader: 'css', minify: true })).code;
 
+const FA_SOLID = path.join(root, 'node_modules', '@fortawesome', 'fontawesome-free', 'svgs', 'solid');
+const FA_LITERAL = /(['"`])(fa-[a-z0-9]+(?:-[a-z0-9]+){0,6})\1/g;
+const FA_ANCHOR = '<symbol id="fa-arrow-right-to-bracket"';
+
+const inlineFontAwesome = async (html, sources) => {
+  const defined = new Set([...html.matchAll(/<symbol\b[^>]*\bid="(fa-[^"]+)"/g)].map((m) => m[1]));
+  const needed = new Set();
+  for (const text of sources) for (const m of text.matchAll(FA_LITERAL)) needed.add(m[2]);
+  const added = [];
+  for (const name of [...needed].filter((n) => !defined.has(n)).sort()) {
+    let svg;
+    try { svg = await fs.readFile(path.join(FA_SOLID, name.slice(3) + '.svg'), 'utf8'); } catch (e) { throw new Error(`icons: ${name} is referenced but is not in Font Awesome solid`); }
+    const viewBox = /viewBox="([\d.\s-]+)"/.exec(svg);
+    const paths = [...svg.matchAll(/<path\b[^>]*\bd="([^"]+)"/g)].map((m) => m[1]);
+    if (!viewBox || !paths.length) throw new Error(`icons: cannot read ${name}`);
+    added.push(`<symbol id="${name}" viewBox="${viewBox[1]}">${paths.map((d) => `<path d="${d}"/>`).join('')}</symbol>`);
+  }
+  if (!added.length) return { html, added: [] };
+  if (!html.includes(FA_ANCHOR)) throw new Error('icons: inline symbol anchor not found');
+  return { html: html.replace(FA_ANCHOR, () => added.join('') + FA_ANCHOR), added };
+};
+
 const copyDir = async (from, to) => {
   await fs.mkdir(to, { recursive: true });
   for (const e of await fs.readdir(from, { withFileTypes: true })) {
@@ -129,6 +151,8 @@ const main = async () => {
 
   const dataJson = JSON.stringify(links).replace(/</g, '\\u003c');
   let html = await fs.readFile(src('index.html'), 'utf8');
+  const inlined = await inlineFontAwesome(html, [JSON.stringify(links), await fs.readFile(src('app.js'), 'utf8')]);
+  html = inlined.html;
   const fill = (marker, value) => {
     if (!html.includes(marker)) throw new Error(`missing ${marker}`);
     html = html.replace(marker, () => value);
@@ -158,7 +182,7 @@ const main = async () => {
   for (const f of precache) parts.push(f + ':' + hash8(await fs.readFile(path.join(dist, f))));
   const cacheName = `lx-${hash8(Buffer.from(parts.join('|')))}`;
   await fs.writeFile(path.join(dist, 'sw.js'), swSource(cacheName, precache));
-  console.log(JSON.stringify({ cacheName, css: cssName, js: jsName, criticalBytes: criticalMin.length, restBytes: restMin.length, jsBytes: jsText.length, htmlBytes: html.length }));
+  console.log(JSON.stringify({ cacheName, css: cssName, js: jsName, criticalBytes: criticalMin.length, restBytes: restMin.length, jsBytes: jsText.length, htmlBytes: html.length, inlinedIcons: inlined.added.length }));
 };
 
 main().catch((e) => { console.error(e); process.exit(1); });

@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from './browser.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from './server.mjs';
@@ -9,7 +9,7 @@ const kind = process.argv[3] || 'tab';
 
 const main = async () => {
   const server = await startServer(root);
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
   await ctx.addInitScript(() => {
     Object.defineProperty(Navigator.prototype, 'hardwareConcurrency', { get: () => 8 });

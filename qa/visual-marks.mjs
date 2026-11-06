@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,7 +15,7 @@ const VIEWS = ['bento', 'list', 'icons'];
 const main = async () => {
   await fs.mkdir(outDir, { recursive: true });
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   let shots = 0;
   const errors = [];
   for (const theme of THEMES) {

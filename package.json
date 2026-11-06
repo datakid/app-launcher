@@ -6,6 +6,7 @@
     "qa": "node qa/run.mjs",
     "qa:quick": "node qa/run.mjs --quick",
     "perf": "node perf/measure.mjs",
+    "perf:recalc": "node perf/recalc.mjs",
     "check": "npm run qa:comments && npm run qa:search && npm run build && npm run qa:quick && npm run qa:cards && npm run qa:tiles && npm run qa:load && npm run qa:behaviour && npm run qa:qr && npm run qa:zen && npm run qa:icons && npm run perf -- --assert && npm run qa:motion",
     "qa:cards": "node qa/card-layout.mjs",
     "qa:tiles": "node qa/tile-contrast.mjs",
