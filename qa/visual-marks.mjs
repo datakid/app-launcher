@@ -7,7 +7,8 @@ import { siteRoot } from '../perf/site-root.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
-const outDir = path.join(here, 'out', 'visual-marks');
+const outArg = process.argv.indexOf('--out');
+const outDir = outArg > 0 ? path.resolve(process.argv[outArg + 1]) : path.join(here, 'out', 'visual-marks');
 const PALETTES = ['vivid', 'curated', 'muted', 'mono'];
 const THEMES = ['light', 'dark'];
 const VIEWS = ['bento', 'list', 'icons'];
