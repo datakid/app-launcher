@@ -3539,7 +3539,7 @@ h1 {
   transform: none !important;
   container-type: normal;
   perspective: none;
-  transition: background-color var(--dur-fast) var(--ease-lux), box-shadow var(--dur-fast) var(--ease-lux);
+  transition: background-color var(--dur-fast) var(--ease-lux);
 }
 :root .app-grid[data-layout="list"] > .app-card--row .closed-tint { display: none; }
 :root .app-grid[data-layout="list"] > .app-card--row .digit-badge {
@@ -3575,30 +3575,29 @@ h1 {
 }
 :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus::before,
 :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus + .app-card--row::before { opacity: 0; }
-:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip {
-  background: var(--lx-row-hover);
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: var(--lx-row-hover); }
+:root .app-grid[data-layout="list"] > .app-card--row::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  border-radius: calc(var(--lx-panel-r) - var(--lx-panel-pad));
   box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-lux);
 }
+:root[data-palette="mono"] .app-grid[data-layout="list"] > .app-card--row::after { box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.16), rgba(255,255,255,.2)); }
+:root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus::after { opacity: 1; }
 :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .row-go { opacity: 1; translate: 2px 0; }
 :root[dir="rtl"] .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .row-go { translate: -2px 0; }
 @media (hover: hover) and (pointer: fine) {
   :root .app-grid[data-layout="list"] > .app-card--row:hover::before,
   :root .app-grid[data-layout="list"] > .app-card--row:hover + .app-card--row::before { opacity: 0; }
-  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
-    background: var(--lx-row-hover);
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent);
-  }
+  :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip { background: var(--lx-row-hover); }
+  :root .app-grid[data-layout="list"] > .app-card--row:hover::after { opacity: 1; }
   :root .app-grid[data-layout="list"] > .app-card--row:hover .row-go { opacity: 1; translate: 2px 0; }
   :root[dir="rtl"] .app-grid[data-layout="list"] > .app-card--row:hover .row-go { translate: -2px 0; }
-  :root[data-palette="vivid"] .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent), 0 8px 20px -14px color-mix(in oklab, var(--tint) 45%, transparent);
-  }
-  :root[data-palette="mono"] .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
-    box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.16), rgba(255,255,255,.2));
-  }
-}
-:root[data-palette="mono"] .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip {
-  box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.16), rgba(255,255,255,.2));
 }
 :root .app-grid[data-layout="list"] > .app-card--row .row-go {
   inline-size: 16px;
@@ -3639,6 +3638,7 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   :root .app-grid[data-layout="list"] > .app-card--row .card-clip,
   :root .app-grid[data-layout="list"] > .app-card--row::before,
+  :root .app-grid[data-layout="list"] > .app-card--row::after,
   :root .app-grid[data-layout="list"] > .app-card--row .row-go { transition: none; }
 }
 @media (forced-colors: active) {
@@ -3648,11 +3648,10 @@ h1 {
     border: 1px solid CanvasText;
     box-shadow: none;
   }
-  :root .app-grid[data-layout="list"] > .app-card--row .card-clip, :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: transparent; box-shadow: none; }
+  :root .app-grid[data-layout="list"] > .app-card--row .card-clip, :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: transparent; }
   @media (hover: hover) and (pointer: fine) {
   :root .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
     background: transparent;
-    box-shadow: none;
   }
 }
   :root .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { outline: 2px solid Highlight; outline-offset: -2px; }
