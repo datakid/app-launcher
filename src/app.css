@@ -1270,6 +1270,7 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
   position: relative; z-index: 1;
   display: flex; align-items: center; gap: 0.8rem;
   min-height: 52px; padding: 0.5rem 0.7rem; cursor: pointer;
+  content-visibility: auto; contain-intrinsic-size: auto 52px;
   transition: background-color var(--dur-micro) var(--ease-lux);
   animation: paletteItemIn 220ms var(--ease-lux) both;
 }
@@ -4454,13 +4455,17 @@ html[data-lowend] .qr-stage::after { display: none; }
 }
 
 :root .app-grid[data-layout="list"] .app-icon-wrapper::after { display: none; }
-:root[data-palette]:not([data-palette="muted"]) body:not(.is-zen) .app-grid[data-layout="list"] .app-icon-wrapper::before,
-:root[data-palette]:not([data-palette="muted"]) .palette-item .app-icon-wrapper::before {
+:root[data-palette]:not([data-palette="muted"]) body:not(.is-zen) .app-grid[data-layout="list"] .app-icon-wrapper::before {
   box-shadow:
     var(--tile-rim, 0 0 0 0 transparent),
     inset 0 1px 0 light-dark(rgb(255 255 255 / .45), rgb(255 255 255 / .3)),
     inset 0 0 0 .5px light-dark(rgb(255 255 255 / .18), rgb(255 255 255 / .12)),
     inset 0 -1px 0 light-dark(rgb(0 0 0 / .14), rgb(0 0 0 / .25)),
+    0 2px 6px -3px light-dark(color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent), color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5)));
+}
+:root[data-palette]:not([data-palette="muted"]) .palette-item .app-icon-wrapper::before {
+  box-shadow:
+    inset 0 1px 0 light-dark(rgb(255 255 255 / .45), rgb(255 255 255 / .3)),
     0 2px 6px -3px light-dark(color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent), color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5)));
 }
 
