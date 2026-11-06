@@ -1310,22 +1310,28 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
     recordLaunch();
   });
   el.addEventListener('mouseenter', () => { sfx.hover(soundIndex, { octave, velocity: clamp(Math.abs(pointerVX) / 2000, 0, 1) }); setInteractionOrigin(el); });
+  const setRing = (on) => {
+    el.classList.toggle('is-ring', on);
+    const g = el.parentElement && el.parentElement.closest('.app-grid');
+    if (g) g.classList.toggle('has-ring', on || !!g.querySelector('.app-card.is-ring'));
+  };
   el.addEventListener('focusin', (e) => {
     let kb = false;
     try { kb = e.target.matches(':focus-visible'); } catch (err) { kb = true; }
     el.classList.toggle('is-kb-focus', kb);
+    setRing(kb && e.target.classList.contains('card-link-overlay'));
     if (kb) sfx.hover(soundIndex, { octave });
     setInteractionOrigin(el);
   });
   el.addEventListener('focusout', (e) => {
-    if (!e.relatedTarget || !el.contains(e.relatedTarget)) el.classList.remove('is-kb-focus');
+    if (!e.relatedTarget || !el.contains(e.relatedTarget)) { el.classList.remove('is-kb-focus'); setRing(false); }
   });
   el.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'touch') { el._pressed = true; Motion.wake(); } }, { passive: true });
   const releasePress = () => { if (el._pressed) { el._pressed = false; Motion.wake(); } };
   el.addEventListener('pointerup', releasePress, { passive: true });
   el.addEventListener('pointercancel', releasePress, { passive: true });
   el.addEventListener('pointerleave', releasePress, { passive: true });
-  el.addEventListener('pointerdown', () => { el._pdAt = performance.now(); el.classList.remove('is-kb-focus'); }, { passive: true, capture: true });
+  el.addEventListener('pointerdown', () => { el._pdAt = performance.now(); el.classList.remove('is-kb-focus'); setRing(false); }, { passive: true, capture: true });
   const qrBtn = el.querySelector('.card-qr');
   if (qrBtn) {
     qrBtn.addEventListener('click', (e) => {
@@ -3210,8 +3216,8 @@ const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab') => {
     ghost.inert = true;
     ghost.classList.add('is-switching', 'grid-ghost');
     ghost.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
-    ghost.classList.remove('has-dim-engine');
-    ghost.querySelectorAll('.app-card').forEach((c) => { c.classList.remove('is-tracking', 'is-live', 'is-hot', 'is-kb-focus'); c.style.transform = ''; c.style.willChange = ''; });
+    ghost.classList.remove('has-dim-engine', 'has-ring');
+    ghost.querySelectorAll('.app-card').forEach((c) => { c.classList.remove('is-tracking', 'is-live', 'is-hot', 'is-kb-focus', 'is-ring'); c.style.transform = ''; c.style.willChange = ''; });
     ghost.querySelectorAll('.card-clip, .card-shadow').forEach((n) => { n.style.opacity = ''; });
     ghost.style.cssText += `;contain:layout paint style;position:absolute;left:${g.offsetLeft}px;top:${g.offsetTop}px;width:${g.offsetWidth}px;height:${g.offsetHeight}px;margin:0;pointer-events:none;z-index:0;overflow:hidden;`;
     ghost.scrollTop = g.scrollTop;

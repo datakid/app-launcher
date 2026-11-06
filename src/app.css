@@ -779,7 +779,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   :root[data-theme="light"] .card-clip::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
 }
 
-.app-card:has(.card-link-overlay:focus-visible) .card-clip {
+.app-card.is-ring .card-clip {
   --reveal-o: 1 !important;
   --rx: 50% !important;
   --ry: 50% !important;
@@ -851,7 +851,7 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
   pointer-events: none;
 }
 :root[data-theme="light"] .digit-badge { color: var(--text); }
-.app-grid:has(.card-link-overlay:focus-visible) .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
+.app-grid.has-ring .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
 @media (hover: hover) and (pointer: fine) {
   .app-grid:hover .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
 }
@@ -1027,8 +1027,8 @@ svg.fas { width: 1em; height: 1em; display: inline-block; vertical-align: -0.125
   .app-card.status-closed:hover .closed-tint { opacity: .2; }
 }
 
-.app-grid:not(.has-dim-engine):has(.card-link-overlay:focus-visible) .app-card:not(:has(.card-link-overlay:focus-visible)) { opacity: 0.62; }
-.app-grid:not(.has-dim-engine):has(.card-link-overlay:focus-visible) .app-card.status-closed:not(:has(.card-link-overlay:focus-visible)) { opacity: 0.5; }
+:root .app-grid:not(.has-dim-engine).has-ring .app-card:not(.is-ring) { opacity: 0.62; }
+:root .app-grid:not(.has-dim-engine).has-ring .app-card.status-closed:not(.is-ring) { opacity: 0.5; }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
@@ -3802,7 +3802,7 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   }
   :root .app-grid[data-layout="icons"] .app-card--icon:hover .icon-label { color: var(--text); }
 }
-:root .app-grid[data-layout="icons"] .app-card--icon:has(.card-link-overlay:focus-visible) .icon-label { color: var(--text); }
+:root .app-grid[data-layout="icons"] .app-card--icon.is-ring .icon-label { color: var(--text); }
 :root .app-grid[data-layout="icons"] .app-card--icon .icon-label {
   position: relative; z-index: 2;
   max-inline-size: 100%;
