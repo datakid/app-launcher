@@ -170,6 +170,7 @@ const harvestEntry = async (browser, base) => {
   const popup = ctx.waitForEvent('page', { timeout: 4000 }).catch(() => null);
   await page.keyboard.press('Enter');
   const opened = await popup;
+  if (opened) await opened.waitForURL(/^https:\/\/harvest-studio-phi\.vercel\.app\//, { timeout: 4000 }).catch(() => null);
   const url = opened ? opened.url() : null;
   record('palette Harvest entry opens Harvest Studio', active === 'harvest' && !!url && url.startsWith('https://harvest-studio-phi.vercel.app/'), { active, url });
   await ctx.close();
