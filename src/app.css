@@ -621,22 +621,21 @@ kbd {
 }
 @supports (color: oklch(from red l c h)) {
   .app-card, .palette-item, #paletteDetail, #lx-palette, #lx-qr {
-    --tile-hi: oklch(from var(--tint) min(calc(l + .15), .9) calc(max(c, .085) * .8) calc(h - 12));
+    --tile-hi: oklch(from var(--tint) min(calc(l + .17), .92) calc(max(c, .085) * .8) calc(h - 12));
     --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) max(c, .09) h);
-    --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) calc(max(c, .09) * 1.08) calc(h + 14));
+    --tile-lo: oklch(from var(--tint) clamp(.28, calc(l - .22), .44) calc(max(c, .09) * 1.08) calc(h + 14));
     --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) calc(c * .8) calc(h + 14));
-    --glyph-accent: oklch(from var(--tint) .94 calc(max(c, .06) * .5) calc(h - 12));
+    --glyph-accent: color-mix(in oklab, #fff 74%, var(--tile-hi));
   }
   :root[data-palette="curated"] .app-card,
   :root[data-palette="curated"] .palette-item,
   :root[data-palette="curated"] #paletteDetail,
   :root[data-palette="curated"] #lx-palette,
   :root[data-palette="curated"] #lx-qr {
-    --tile-hi: oklch(from var(--tint) min(calc(l + .15), .9) calc(max(c, .085) * .8) calc(h - 6));
+    --tile-hi: oklch(from var(--tint) min(calc(l + .17), .92) calc(max(c, .085) * .8) calc(h - 6));
     --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) max(c, .09) h);
-    --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) calc(max(c, .09) * 1.08) calc(h + 6));
+    --tile-lo: oklch(from var(--tint) clamp(.28, calc(l - .22), .44) calc(max(c, .09) * 1.08) calc(h + 6));
     --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) calc(c * .8) calc(h + 6));
-    --glyph-accent: oklch(from var(--tint) .94 calc(max(c, .06) * .5) calc(h - 6));
   }
 }
 @supports (color: oklch(from red l c h)) and (color: color(display-p3 1 1 1)) {
@@ -1801,16 +1800,16 @@ h1 {
 #lx-palette kbd { background: light-dark(rgba(20,18,15,.035), rgba(255,255,255,.045)); box-shadow: inset 0 0 0 1px var(--hairline); }
 
 :root {
-  --r-card: 18px; --r-pal: 20px; --r-icon: .27; --r-chip: 9px; --r-chip-in: 7px; --r-badge: 6px;
+  --r-card: 18px; --r-pal: 20px; --r-icon: .28; --r-chip: 9px; --r-chip-in: 7px; --r-badge: 6px;
   --r-item: 10px; --r-kbd: 5px; --r-menu: 12px; --r-menu-item: 8px;
   --r-bar: 999px; --r-rail: 999px; --r-pill: 50px; --r-pill-btn: 50%;
 }
 :root[data-corners="soft"] {
-  --r-card: 24px; --r-pal: 26px; --r-icon: .31; --r-chip: 999px; --r-chip-in: 999px; --r-badge: 999px;
+  --r-card: 24px; --r-pal: 26px; --r-icon: .32; --r-chip: 999px; --r-chip-in: 999px; --r-badge: 999px;
   --r-item: 13px; --r-kbd: 7px; --r-menu: 16px; --r-menu-item: 10px;
 }
 :root[data-corners="crisp"] {
-  --r-card: 10px; --r-pal: 12px; --r-icon: .2; --r-chip: 6px; --r-chip-in: 4px; --r-badge: 3px;
+  --r-card: 10px; --r-pal: 12px; --r-icon: .22; --r-chip: 6px; --r-chip-in: 4px; --r-badge: 3px;
   --r-item: 6px; --r-kbd: 3px; --r-menu: 8px; --r-menu-item: 4px;
   --r-bar: 12px; --r-rail: 8px; --r-pill: 12px; --r-pill-btn: 8px;
 }
@@ -3775,7 +3774,7 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
 }
 :root:lang(ar) .icon-plate-cap { letter-spacing: 0; font-variant-caps: normal; font-size: 12px; }
 :root .app-grid[data-layout="icons"] .app-card--icon {
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
   grid-column: auto !important; grid-row: auto !important;
   min-inline-size: 0; inline-size: auto;
   padding: 4px 2px 2px;
@@ -3790,15 +3789,16 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   flex-shrink: 0;
   opacity: 1;
   transform: none;
-  transition: transform var(--dur-fast) var(--ease-lux), scale 320ms var(--ease-spring);
+  --ak: 1;
+  transition: translate var(--dur-fast) var(--ease-lux), scale 320ms var(--ease-spring);
   pointer-events: none;
 }
 :root .app-grid[data-layout="icons"] .app-card--icon .app-icon { font-size: 1.7rem; }
 @media (hover: hover) and (pointer: fine) {
-  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { transform: translateY(-3px); }
+  :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { translate: 0 -3px; }
   :root .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper {
     scale: .94;
-    transition: transform var(--dur-fast) var(--ease-lux), scale 90ms var(--ease-lux);
+    transition: translate var(--dur-fast) var(--ease-lux), scale 90ms var(--ease-lux);
   }
   :root .app-grid[data-layout="icons"] .app-card--icon:hover .icon-label { color: var(--text); }
 }
@@ -3809,7 +3809,7 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   font: 500 12.5px/1.3 var(--ui-font);
   text-align: center;
   text-wrap: balance;
-  color: color-mix(in oklab, var(--text) 82%, var(--text-muted));
+  color: color-mix(in oklab, var(--text) 86%, var(--text-muted));
   pointer-events: none;
   transition: color var(--dur-fast) var(--ease-lux);
 }
@@ -3830,10 +3830,10 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
     inline-size: auto; block-size: auto;
     padding: 2px 6px;
     border-radius: 999px;
-    background: color-mix(in oklab, var(--tab-accent) 22%, var(--bg));
-    color: var(--text);
+    background: linear-gradient(180deg, color-mix(in oklab, var(--tab-accent) 18%, var(--bg)), color-mix(in oklab, var(--tab-accent) 26%, var(--bg)));
+    color: color-mix(in oklab, var(--tab-accent) 60%, var(--text));
     font: 600 9.5px/1 var(--ui-font);
-    box-shadow: 0 0 0 .5px var(--hairline), 0 2px 6px -2px rgb(0 0 0 / .2);
+    box-shadow: 0 0 0 .5px color-mix(in oklab, var(--tab-accent) 35%, transparent), 0 2px 6px -2px rgb(0 0 0 / .2);
     pointer-events: none;
   }
   .app-card--icon .icon-new-text { display: block; }
@@ -3850,7 +3850,7 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   :root .app-grid[data-layout="icons"] .app-card--icon .icon-label { transition: none; }
   @media (hover: hover) and (pointer: fine) {
   :root .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper {
-    transform: none;
+    translate: none;
   }
   :root .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper { scale: none; transition: none; }
 }
@@ -4290,7 +4290,6 @@ html[data-lowend] .qr-stage::after { display: none; }
     --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) c h);
     --tile-lo: oklch(from var(--tint) clamp(.3, calc(l - .2), .46) c calc(h + 14));
     --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) c calc(h + 14));
-    --glyph-accent: oklch(from var(--tint) .94 c calc(h - 12));
   }
 }
 :root[data-palette="mono"] .app-card,
@@ -4302,7 +4301,6 @@ html[data-lowend] .qr-stage::after { display: none; }
   --tile-mid: oklch(.56 0 0);
   --tile-lo: oklch(.34 0 0);
   --tile-shade: oklch(.2 0 0);
-  --glyph-accent: oklch(.94 0 0);
 }
 
 :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper,
@@ -4312,6 +4310,11 @@ html[data-lowend] .qr-stage::after { display: none; }
   background: none;
   box-shadow: none;
   isolation: isolate;
+  --tile-ring: 0 0 0 .5px light-dark(rgb(15 23 42 / .08), rgb(255 255 255 / .1));
+  --tile-contact: 0 1px 2px light-dark(color-mix(in oklab, var(--tile-shade) calc(13% * var(--sk, 1)), transparent), rgb(0 0 0 / .35));
+  --tile-ambient: 0 calc(var(--icon-size) * .16) calc(var(--icon-size) * .34) calc(var(--icon-size) * -.16) light-dark(color-mix(in oklab, var(--tile-lo) calc(36% * var(--sk, 1) * var(--ak, 1)), transparent), color-mix(in oklab, var(--tile-lo) calc(24% * var(--ak, 1)), rgb(0 0 0 / .5)));
+  --tile-rim-hi: inset 0 1px 0 light-dark(rgb(255 255 255 / .38), rgb(255 255 255 / .16));
+  --tile-rim-lo: inset 0 -1px 0 color-mix(in oklab, var(--tile-shade) 30%, transparent);
 }
 :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::before {
   content: '';
@@ -4324,55 +4327,42 @@ html[data-lowend] .qr-stage::after { display: none; }
   opacity: 1;
   pointer-events: none;
   background:
-    radial-gradient(70% 52% at calc(30% - var(--tx, 0) * 12%) calc(6% - var(--ty, 0) * 8%), rgb(255 255 255 / .34), transparent 70%),
-    linear-gradient(180deg, rgb(255 255 255 / .16) 0%, rgb(255 255 255 / 0) 44%),
-    linear-gradient(158deg, var(--tile-hi) 0%, var(--tile-mid) 50%, var(--tile-lo) 100%);
-  box-shadow:
-    var(--tile-rim, 0 0 0 0 transparent),
-    inset 0 1px 0 rgb(255 255 255 / .45),
-    inset 0 0 0 .5px rgb(255 255 255 / .18),
-    inset 0 -1px 0 rgb(0 0 0 / .14),
-    inset 0 calc(var(--icon-size) * -.18) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.2) color-mix(in oklab, var(--tile-shade) 55%, transparent),
-    0 .5px 1px rgb(0 0 0 / .12),
-    0 calc(var(--icon-size) * .08) calc(var(--icon-size) * .22) calc(var(--icon-size) * -.1) color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent);
+    radial-gradient(60% 44% at var(--tile-sx, 30%) 0%, light-dark(rgb(255 255 255 / .22), rgb(255 255 255 / .1)), transparent 60%),
+    linear-gradient(var(--tile-ang, 160deg), var(--tile-hi) 0%, var(--tile-mid) 50%, var(--tile-lo) 100%);
+  box-shadow: var(--tile-ring), var(--tile-contact), var(--tile-ambient), var(--tile-rim-hi), var(--tile-rim-lo);
 }
-:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] .app-icon-wrapper::before {
-  box-shadow:
-    var(--tile-rim, 0 0 0 0 transparent),
-    inset 0 1px 0 rgb(255 255 255 / .3),
-    inset 0 0 0 .5px rgb(255 255 255 / .12),
-    inset 0 -1px 0 rgb(0 0 0 / .25),
-    inset 0 calc(var(--icon-size) * -.18) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.2) color-mix(in oklab, var(--tile-shade) 70%, transparent),
-    0 0 0 .5px rgb(255 255 255 / .05),
-    0 1px 2px rgb(0 0 0 / .45),
-    0 calc(var(--icon-size) * .1) calc(var(--icon-size) * .26) calc(var(--icon-size) * -.12) color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5));
-}
+:root[dir="rtl"] { --tile-sx: 70%; --tile-ang: 200deg; }
+:root[data-palette="curated"] { --sk: .8; }
+.app-card .app-icon-wrapper { --ak: .85; }
 :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::after {
   content: '';
   position: absolute;
-  inset: 18% 12% -6%;
+  inset: 20% 12% -10%;
   z-index: -2;
   border-radius: inherit;
   background: var(--tile-lo);
-  filter: blur(calc(var(--icon-size) * .16));
+  filter: blur(10px);
   opacity: 0;
-  transform: translate3d(0, 0, 0) scale(.9);
-  transition: opacity var(--dur-fast) var(--ease-lux), transform var(--dur-fast) var(--ease-lux);
+  transition: opacity var(--dur-fast) var(--ease-lux), translate var(--dur-fast) var(--ease-lux);
   pointer-events: none;
 }
-:root[data-palette]:not([data-palette="muted"]) { --blob-o: .5; }
-:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] { --blob-o: .38; }
+:root[data-palette]:not([data-palette="muted"]) { --blob-o: .55; }
+:root[data-palette]:not([data-palette="muted"])[data-theme="dark"] { --blob-o: .42; }
 :root[data-palette]:not([data-palette="muted"]) :is(.app-card.is-hot, .palette-item.is-active, .palette-detail) .app-icon-wrapper::after {
   opacity: var(--blob-o);
-  transform: translate3d(0, calc(var(--icon-size) * .1), 0) scale(1);
+  translate: 0 2px;
 }
 @media (hover: hover) and (pointer: fine) {
   :root[data-palette]:not([data-palette="muted"]) :is(.palette-item:hover, .app-card--icon:hover) .app-icon-wrapper::after {
     opacity: var(--blob-o);
-    transform: translate3d(0, calc(var(--icon-size) * .1), 0) scale(1);
+    translate: 0 2px;
   }
 }
-:root[data-palette="mono"][data-theme="light"] .app-icon-wrapper { --tile-rim: inset 0 .5px 0 rgb(255 255 255 / .55); }
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  :root .app-icon-wrapper::after { display: none; }
+}
+html[data-lowend] .app-icon-wrapper::after, html.lx-scrolling .app-icon-wrapper::after { opacity: 0 !important; }
+:root[data-palette="mono"][data-theme="light"] .app-icon-wrapper { --tile-rim-hi: inset 0 1px 0 rgb(255 255 255 / .55); }
 
 @supports (corner-shape: squircle) {
   :root:not([data-corners="crisp"]) .app-icon-wrapper,
@@ -4391,15 +4381,15 @@ html[data-lowend] .qr-stage::after { display: none; }
   fill: url(#lx-gf);
   color: #fff;
   --lx-ga: var(--glyph-accent);
-  filter: drop-shadow(0 1px 0 color-mix(in oklab, var(--tile-shade) 55%, transparent)) drop-shadow(0 calc(var(--icon-size) * .03) calc(var(--icon-size) * .05) color-mix(in oklab, var(--tile-shade) 40%, transparent));
+  filter: drop-shadow(0 1px 1px color-mix(in oklab, var(--tile-shade) 35%, transparent));
   text-shadow: none;
 }
 :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper .lx-glyph.mark-glyph-atlas::before {
-  background: linear-gradient(180deg, #fff, rgb(255 255 255 / .82));
+  background: linear-gradient(180deg, #fff, rgb(255 255 255 / .88));
 }
 
 :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"] {
-  --ambient-mix: 25%;
+  --ak: .5;
 }
 :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"]::before {
   background: linear-gradient(180deg, light-dark(#ffffff, #2c2e33) 0%, light-dark(#f7f5f0, #212328) 100%);
@@ -4430,6 +4420,7 @@ html[data-lowend] .qr-stage::after { display: none; }
     0 0 0 .5px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.4)),
     0 1px 2px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.35));
 }
+:root .app-card.is-hot:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper { translate: 0 -3px; scale: 1.02; }
 :root[data-palette="muted"] :is(.app-card.is-hot:not(.app-card--icon), .palette-item.is-active) .app-icon-wrapper {
   translate: 0 -1px;
 }
@@ -4442,7 +4433,6 @@ html[data-lowend] .qr-stage::after { display: none; }
 
 :root[data-palette] .card-glyph { opacity: calc(.85 * (.5 + .5 * var(--hov, 0))); }
 
-:root .app-card.is-hot:not(.app-card--icon) .app-icon-wrapper { scale: 1.03; }
 @media (hover: hover) and (pointer: fine) {
   :root .app-card:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper { transition: scale var(--dur-fast) var(--ease-lux), translate var(--dur-fast) var(--ease-lux); }
   :root .app-card:not(.app-card--row):not(.app-card--icon):active .app-icon-wrapper { scale: .96; transition-duration: 90ms; }
@@ -4456,17 +4446,10 @@ html[data-lowend] .qr-stage::after { display: none; }
 
 :root .app-grid[data-layout="list"] .app-icon-wrapper::after { display: none; }
 :root[data-palette]:not([data-palette="muted"]) body:not(.is-zen) .app-grid[data-layout="list"] .app-icon-wrapper::before {
-  box-shadow:
-    var(--tile-rim, 0 0 0 0 transparent),
-    inset 0 1px 0 light-dark(rgb(255 255 255 / .45), rgb(255 255 255 / .3)),
-    inset 0 0 0 .5px light-dark(rgb(255 255 255 / .18), rgb(255 255 255 / .12)),
-    inset 0 -1px 0 light-dark(rgb(0 0 0 / .14), rgb(0 0 0 / .25)),
-    0 2px 6px -3px light-dark(color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent), color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5)));
+  box-shadow: var(--tile-ring), var(--tile-contact), var(--tile-rim-hi), var(--tile-rim-lo);
 }
 :root[data-palette]:not([data-palette="muted"]) .palette-item .app-icon-wrapper::before {
-  box-shadow:
-    inset 0 1px 0 light-dark(rgb(255 255 255 / .45), rgb(255 255 255 / .3)),
-    0 2px 6px -3px light-dark(color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 45%), transparent), color-mix(in oklab, var(--tile-lo) var(--ambient-mix, 38%), rgb(0 0 0 / .5)));
+  box-shadow: var(--tile-rim-hi), var(--tile-contact);
 }
 
 .lx-bar-ring {

@@ -307,7 +307,7 @@ const loadSide = async (label) => {
 };
 
 const saveSide = async (label, meta, results) => {
-  const prior = MERGE || SKIP_DONE ? await loadSide(label) : null;
+  const prior = await loadSide(label);
   const merged = prior ? prior.results : {};
   for (const [profile, byName] of Object.entries(results)) Object.assign((merged[profile] ||= {}), byName);
   const runMeta = { ...(prior ? prior.meta : {}), ...meta, profiles: Object.keys(merged), scenarios: [...new Set(Object.values(merged).flatMap((m) => Object.keys(m)))] };
