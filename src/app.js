@@ -1766,7 +1766,7 @@ const centerIconRows = (rows, cols) => {
     const left = cols - used;
     const start = left > 0 ? Math.floor(left / 2) + 1 : 1;
     row.forEach((it, i) => {
-      if (i === 0 && start > 1) it.el.style.setProperty('grid-column', `${start} / span ${Math.min(it.n, cols)}`, 'important');
+      if (i === 0 && left > 0) it.el.style.setProperty('grid-column', `${start} / span ${Math.min(it.n, cols)}`, 'important');
       else it.el.style.removeProperty('grid-column');
       it.el.classList.toggle('ic-half', left > 0 && left % 2 === 1);
     });

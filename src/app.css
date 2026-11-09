@@ -2198,7 +2198,7 @@ h1 {
   .app-grid > .app-card.card-wide,
   .app-grid > .app-card.card-hero,
   .app-grid > .app-card.card-tall { grid-column: auto !important; grid-row: auto !important; display: flex; }
-  .app-grid > .app-card.app-card:last-child:nth-child(odd) { grid-column: 1 / -1 !important; }
+  .app-grid:not([data-layout="icons"]) > .app-card.app-card:last-child:nth-child(odd) { grid-column: 1 / -1 !important; }
 
   .app-grid .app-card .card-clip {
     position: relative; inset: auto; flex: 1 1 auto;

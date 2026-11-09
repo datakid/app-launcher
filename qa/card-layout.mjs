@@ -76,6 +76,7 @@ const auditIcons = () => {
     const issues = [];
     if (!p.qr) issues.push('qr-missing');
     for (const k of ['dot', 'digit', 'label']) if (hit(p.qr, p[k])) issues.push('qr-overlaps-' + k);
+    for (const k of ['dot', 'digit']) if (p[k] && !inside(p[k], gridBox)) issues.push(k + '-outside-grid ' + JSON.stringify({ box: p[k], gridBox }));
     if (p.qr && !inside(p.qr, gridBox)) issues.push('qr-outside-grid ' + JSON.stringify({ gridBox, qr: p.qr, w: innerWidth, sw: document.documentElement.scrollWidth, n: document.querySelectorAll('.app-grid .app-card--icon').length }));
     if (issues.length) out.push({ title: card.querySelector('.icon-label')?.textContent.trim(), cls: 'icon', issues });
   }
