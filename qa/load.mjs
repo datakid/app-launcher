@@ -7,8 +7,8 @@ import { startServer } from '../perf/server.mjs';
 import { siteRoot } from '../perf/site-root.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const TEXT = /\.(html|css|js|json|svg|mjs)$/;
-const LIMITS = { htmlGz: 61440, firstLoadGz: 275456 };
+const TEXT = /\.(html|css|js|json|svg|mjs|webmanifest)$/;
+const LIMITS = { htmlGz: 30720, firstLoadGz: 266240 };
 
 const main = async () => {
   const site = siteRoot(root);

@@ -172,9 +172,10 @@ const main = async () => {
   await copyDir(path.join(root, 'fonts'), path.join(dist, 'fonts'));
   for (const f of ['links.json', 'compare.html', 'favicon.ico']) await fs.copyFile(path.join(root, f), path.join(dist, f));
   await fs.copyFile(src('apple-touch-icon.png'), path.join(dist, 'apple-touch-icon.png'));
+  await fs.copyFile(src('manifest.webmanifest'), path.join(dist, 'manifest.webmanifest'));
 
   const needsAtlas = Object.values(manifest.icons).some((e) => e && e.favicon && !e.glyph && e.status !== 'default');
-  const precache = ['index.html', cssName, jsName, spriteFile, 'favicon.ico', 'links.json', 'icons/manifest.v2.json',
+  const precache = ['index.html', cssName, jsName, spriteFile, 'favicon.ico', 'links.json', 'manifest.webmanifest', 'icons/manifest.v2.json',
     'fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2', 'fonts/el-messiri-arabic-700-normal.woff2', 'fonts/inter-latin-400-normal.woff2', 'fonts/cormorant-garamond-latin-400-italic.woff2'];
   if (manifest.glyphAtlas) precache.push(manifest.glyphAtlas.file);
   if (needsAtlas) precache.push(manifest.atlas.file);

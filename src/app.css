@@ -474,7 +474,7 @@ h1 {
 .lx-toast {
   position: fixed; inset-inline: 0; bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
   margin-inline: auto; width: max-content; max-width: calc(100vw - 2rem);
-  z-index: 400; border-radius: 999px;
+  z-index: 400;
   background: light-dark(rgba(252,251,248,0.95), rgba(18,19,23,0.95));
   border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.09));
   color: var(--text); font-weight: 500; text-align: center;
@@ -691,11 +691,6 @@ kbd {
 @media (hover: hover) and (pointer: fine) {
   .app-card:hover .card-shadow::after { opacity: 1; }
 }
-:root[data-theme="light"] .card-shadow::after {
-  box-shadow: var(--shadow-deep),
-    0 18px 40px -22px color-mix(in oklab, var(--tint) 42%, transparent),
-    inset 0 2px 10px rgba(255,255,255,0.95);
-}
 
 .card-clip {
   position: absolute; inset: 0;
@@ -803,9 +798,6 @@ body.is-booted .app-card.is-boot-card { animation-name: cardBoot; }
 .card-sheen::before {
   content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 260%;
   transform: translate3d(calc(-80% + var(--hov, 0) * 160%), 0, 0);
-}
-:root[data-theme="light"] .card-sheen {
-  background: linear-gradient(0deg, color-mix(in oklab, var(--tint) 6%, transparent), transparent 34%);
 }
 :root[data-theme="light"] .app-card.is-kb-focus .card-glow { opacity: 0.065; }
 .app-card.is-kb-focus .card-clip::before { opacity: 1; }
@@ -1452,7 +1444,6 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 .card-aura {
   position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
 }
-:root[data-theme="light"] .card-aura { opacity: calc(.7 + .3 * var(--hov, 0)); }
 
 .card-glyph {
   position: absolute; z-index: 0; pointer-events: none;
@@ -1654,7 +1645,6 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 
 h1 {
   margin: 0;
-  letter-spacing: -0.012em;
   background-image: linear-gradient(180deg,
     light-dark(#1a1814, #f7f6f3) 28%,
     color-mix(in oklab, var(--tab-accent) 14%, light-dark(#57524a, #a6a49e)) 100%);
@@ -1677,24 +1667,7 @@ h1 {
 .tab-btn:active { transform: scale(.98); }
 .tab-btn { letter-spacing: -0.003em; }
 :root:lang(ar) .tab-btn { letter-spacing: 0; }
-
-:root[data-theme] .card-clip {
-  background-image:
-    linear-gradient(90deg, transparent 12%, light-dark(rgba(255,255,255,.95), rgba(255,255,255,.1)) 50%, transparent 88%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.4), rgba(255,255,255,.03)), transparent 52%);
-  background-size: 100% 1px, 100% 100%;
-}
-:root[data-theme="dark"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 20%, rgba(255,255,255,.16)); }
-@media (hover: hover) and (pointer: fine) {
-  :root[data-theme="dark"] .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 20%, rgba(255,255,255,.16)); }
-  :root[data-theme="light"] .app-card:hover .card-glow { opacity: .05; }
-}
 .app-card.is-kb-focus .card-glow { opacity: .045; }
-:root[dir="rtl"] .card-aura {
-  background:
-    radial-gradient(85% 70% at 100% 0%, color-mix(in oklab, var(--tint) 7%, transparent), transparent 64%),
-    radial-gradient(70% 60% at 0% 100%, color-mix(in oklab, var(--c3) 4%, transparent), transparent 72%);
-}
 .card-sheen::before {
   background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,.05) 48%, rgba(255,255,255,.015) 54%, transparent 64%);
 }
@@ -1703,7 +1676,6 @@ h1 {
   background: linear-gradient(115deg, transparent 38%, rgba(255,255,255,.34) 48%, rgba(255,255,255,.1) 54%, transparent 64%);
 }
 .card-glyph svg, .card-glyph .lx-glyph { filter: none; }
-:root[data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 7%, transparent); }
 
 .app-icon-wrapper {
   transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0);
@@ -1743,7 +1715,7 @@ h1 {
 
 .badge { gap: .4rem; text-transform: uppercase;
 }
-:root:lang(ar) .badge { letter-spacing: 0; font-size: .68rem; text-transform: none; }
+:root:lang(ar) .badge { text-transform: none; }
 .badge .badge-dot { width: 4px; height: 4px; box-shadow: none; }
 .badge-new { background: color-mix(in oklab, currentColor 8%, transparent); border-color: color-mix(in oklab, currentColor 22%, transparent); }
 .badge-closed { background: color-mix(in oklab, var(--closed-ink) 8%, transparent); border-color: color-mix(in oklab, var(--closed-ink) 24%, transparent); }
@@ -1846,33 +1818,9 @@ h1 {
 :root[data-corners] .controls-pill { border-radius: var(--r-pill); }
 :root[data-corners] .controls-pill button { border-radius: var(--r-pill-btn); }
 :root[data-corners] .lx-toast { border-radius: max(var(--r-menu), min(var(--r-bar), 999px)); }
-:root[data-palette="vivid"] .card-glyph { color: color-mix(in oklab, var(--tint) 10%, transparent); }
-:root[data-palette="vivid"] .scrim::before { opacity: .55; }
-:root[data-palette="vivid"] .card-aura {
-  background:
-    radial-gradient(90% 75% at 0% 0%, color-mix(in oklab, var(--tint) 13%, transparent), transparent 62%),
-    radial-gradient(70% 60% at 100% 100%, color-mix(in oklab, var(--c3) 9%, transparent), transparent 70%);
-}
-:root[data-palette="vivid"][dir="rtl"] .card-aura {
-  background:
-    radial-gradient(90% 75% at 100% 0%, color-mix(in oklab, var(--tint) 13%, transparent), transparent 62%),
-    radial-gradient(70% 60% at 0% 100%, color-mix(in oklab, var(--c3) 9%, transparent), transparent 70%);
-}
-:root[data-palette="vivid"][data-theme] .card-shadow::after {
-  box-shadow:
-    0 2px 6px light-dark(rgba(28,25,20,.07), rgba(0,0,0,.36)),
-    0 30px 64px -28px light-dark(rgba(28,25,20,.26), rgba(0,0,0,.85)),
-    0 26px 60px -30px color-mix(in oklab, var(--tint) 62%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 26%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.18));
-}
-:root[data-palette="vivid"] .card-sheen { box-shadow: inset 0 1px 0 color-mix(in oklab, var(--tint) 45%, rgba(255,255,255,.35)); }
 :root[data-palette="vivid"][data-theme="light"] .card-sheen { box-shadow: inset 0 1px 0 #fff; }
 :root[data-palette="vivid"] .tab-btn[aria-selected="true"] svg { color: var(--tab-accent); }
 :root[data-palette="vivid"] .palette-input-row > svg { color: var(--live-accent); }
-@media (hover: hover) and (pointer: fine) {
-  :root[data-palette="vivid"] .app-card:hover .card-glow { opacity: .075; }
-}
 :root[data-palette="mono"] .badge-new,
 :root[data-palette="mono"] .badge-variant { color: color-mix(in oklab, var(--text) 72%, transparent); }
 
@@ -1885,30 +1833,6 @@ h1 {
   filter: drop-shadow(0 4px 14px light-dark(rgba(20,18,15,.1), rgba(0,0,0,.35)));
 }
 :root.fonts-ready[data-palette="vivid"] h1 { animation: shimmerText 3.6s var(--ease-lux) .35s 1 both; }
-:root[data-palette="vivid"] .app-title {
-  background-image: linear-gradient(135deg,
-    var(--text) 0%,
-    var(--text) 38%,
-    color-mix(in oklab, var(--tint-ink) 92%, var(--text)) 78%,
-    var(--tint-ink) 100%);
-}
-:root[data-palette="vivid"] .app-icon { text-shadow: 0 1px 2px rgba(0,0,0,.35); filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
-:root[data-palette="vivid"][data-theme] .card-clip {
-  background-image:
-    linear-gradient(90deg, transparent 6%, light-dark(rgba(255,255,255,1), rgba(255,255,255,.17)) 50%, transparent 94%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.6), rgba(255,255,255,.065)), transparent 48%),
-    linear-gradient(0deg, color-mix(in oklab, var(--tint) 6%, transparent), transparent 42%);
-  background-size: 100% 1px, 100% 100%, 100% 100%;
-}
-:root[data-palette="vivid"][data-theme] .card-shadow {
-  box-shadow:
-    0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.32)),
-    0 12px 30px -18px light-dark(rgba(28,25,20,.2), rgba(0,0,0,.7)),
-    0 16px 36px -26px color-mix(in oklab, var(--tint) 30%, transparent),
-    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,.07)),
-    inset 0 0 0 1px light-dark(rgba(20,18,15,.045), rgba(255,255,255,.04));
-}
-:root[data-palette="vivid"] .card-sheen { background: linear-gradient(0deg, color-mix(in oklab, var(--tint) 7%, transparent), transparent 34%); }
 :root[data-palette="vivid"] .card-sheen::before {
   background: linear-gradient(115deg, transparent 34%, rgba(255,255,255,.10) 47%, rgba(255,255,255,.03) 53%, transparent 66%);
 }
@@ -1916,116 +1840,9 @@ h1 {
 :root[data-palette="vivid"][data-theme="light"] .card-sheen::before {
   background: linear-gradient(115deg, transparent 34%, rgba(255,255,255,.55) 47%, rgba(255,255,255,.16) 53%, transparent 66%);
 }
-:root[data-palette="vivid"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 34%, var(--border-highlight)); }
 :root[data-palette="vivid"][data-theme="dark"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 30%, rgba(255,255,255,.22)); }
-:root[data-palette="vivid"] .variant-chip-indicator {
-  background: linear-gradient(180deg, light-dark(#ffffff, rgba(255,255,255,.2)), light-dark(rgba(255,255,255,.88), rgba(255,255,255,.1)));
-  box-shadow:
-    0 1px 2px light-dark(rgba(20,18,15,.14), rgba(0,0,0,.4)),
-    0 4px 10px -6px color-mix(in oklab, var(--tint) 70%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 28%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.16));
-}
-:root[data-palette="vivid"] .lx-bar {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.84), rgba(255,255,255,.062)), light-dark(rgba(255,255,255,.56), rgba(255,255,255,.018))),
-    color-mix(in oklab, var(--tab-accent) 4%, transparent);
-  box-shadow:
-    0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.35)),
-    0 18px 44px -24px light-dark(rgba(28,25,20,.24), rgba(0,0,0,.8)),
-    0 22px 50px -30px color-mix(in oklab, var(--tab-accent) 55%, transparent),
-    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,.09)),
-    inset 0 -1px 0 light-dark(rgba(20,18,15,.035), rgba(0,0,0,.3));
-}
-:root[data-palette="vivid"] .lx-bar::before {
-  inset-inline: 14%;
-  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--tab-accent) 85%, transparent), transparent);
-  opacity: .6;
-}
-:root[data-palette="vivid"] .lx-bar.is-focused {
-  border-color: color-mix(in oklab, var(--tab-accent) 38%, var(--border-highlight));
-  box-shadow:
-    0 1px 2px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.35)),
-    0 22px 50px -24px light-dark(rgba(28,25,20,.28), rgba(0,0,0,.85)),
-    0 0 0 4px color-mix(in oklab, var(--tab-accent) 14%, transparent),
-    inset 0 1px 0 light-dark(rgba(255,255,255,1), rgba(255,255,255,.09));
-}
-:root[data-palette="vivid"] .lx-bar-search svg.fa-magnifying-glass { color: color-mix(in oklab, var(--tab-accent) 60%, var(--text-muted)); }
-:root[data-palette="vivid"] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--tab-accent); }
-@media (hover: hover) and (pointer: fine) {
-  :root[data-palette="vivid"] .lx-bar-search:hover svg.fa-magnifying-glass {
-    color: var(--tab-accent);
-  }
-}
-:root[data-palette="vivid"] .tab-indicator {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.96), rgba(255,255,255,.12)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.025))),
-    color-mix(in oklab, var(--tab-accent) 20%, color-mix(in oklab, var(--text) 5%, transparent));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 42%, transparent),
-    inset 0 -10px 18px -12px color-mix(in oklab, var(--tab-accent) 70%, transparent);
-}
-:root[data-palette="vivid"] .tab-indicator::before { box-shadow: inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.16)); }
-:root[data-palette="vivid"] .tab-btn[aria-selected="true"] svg { filter: drop-shadow(0 0 6px color-mix(in oklab, var(--tab-accent) 65%, transparent)); }
-:root[data-palette="vivid"] #lx-palette {
-  background-image:
-    radial-gradient(90% 60% at 50% -22%, color-mix(in oklab, var(--live-accent) 15%, transparent), transparent 70%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.85), rgba(255,255,255,.04)), transparent 140px);
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.4)),
-    0 16px 32px -14px light-dark(rgba(28,25,20,.16), rgba(0,0,0,.6)),
-    0 56px 110px -36px light-dark(rgba(28,25,20,.3), rgba(0,0,0,.85)),
-    0 50px 140px -60px color-mix(in oklab, var(--live-accent) 55%, transparent),
-    0 0 0 1px color-mix(in oklab, var(--live-accent) 8%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.08));
-}
-:root[data-palette="vivid"] #lx-palette::before { opacity: .9; inset: 0 12% auto; }
-:root[data-palette="vivid"] #lx-palette::backdrop {
-  background:
-    radial-gradient(70% 55% at 50% 22%, color-mix(in oklab, var(--live-accent) 13%, transparent), transparent 75%),
-    light-dark(rgba(30,27,22,.3), rgba(2,3,5,.66));
-}
-:root[data-palette="vivid"] .palette-input-row > svg { filter: drop-shadow(0 0 8px color-mix(in oklab, var(--live-accent) 45%, transparent)); }
-:root[data-palette="vivid"] .palette-cursor {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.95), rgba(255,255,255,.055)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.01))),
-    color-mix(in oklab, var(--live-accent) 13%, light-dark(rgba(20,18,15,.02), rgba(255,255,255,.035)));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 24%, light-dark(rgba(20,18,15,.05), rgba(255,255,255,.04))),
-    0 6px 16px -10px color-mix(in oklab, var(--live-accent) 60%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.28));
-}
-:root[data-palette="vivid"] .palette-cursor::before { background: var(--live-accent); box-shadow: 0 0 10px color-mix(in oklab, var(--live-accent) 75%, transparent); }
-:root[data-palette="vivid"] .palette-detail-slab {
-  background:
-    radial-gradient(120% 90% at 50% -30%, color-mix(in oklab, var(--live-accent) 22%, transparent), transparent 60%),
-    linear-gradient(180deg, color-mix(in oklab, var(--live-accent) 6%, transparent), transparent 45%);
-}
+:root[data-palette="vivid"] .palette-cursor::before { background: var(--live-accent); }
 :root[data-palette="vivid"] .palette-detail-slab::after { background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--live-accent) 50%, transparent), transparent); }
-:root[data-palette="vivid"] .palette-detail-watermark { color: color-mix(in oklab, var(--tint) 10%, transparent); }
-:root[data-palette="vivid"] .palette-action.is-primary {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.92), rgba(255,255,255,.07)), light-dark(rgba(255,255,255,.35), rgba(255,255,255,.01))),
-    color-mix(in oklab, var(--live-accent) 22%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 40%, transparent),
-    0 10px 24px -14px color-mix(in oklab, var(--live-accent) 80%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
-}
-:root[data-palette="vivid"] .palette-scope-indicator {
-  background:
-    linear-gradient(180deg, light-dark(rgba(255,255,255,0.95), rgba(255,255,255,0.06)), light-dark(rgba(255,255,255,0.6), rgba(255,255,255,0.02))),
-    color-mix(in oklab, var(--scope-accent, #7c9bff) 14%, transparent);
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--scope-accent, #7c9bff) 36%, transparent),
-    0 4px 12px -8px color-mix(in oklab, var(--scope-accent, #7c9bff) 80%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.06), rgba(0,0,0,.3));
-}
-@media (hover: hover) and (pointer: fine) {
-  :root[data-palette="vivid"] .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 34%, var(--border-highlight)); }
-  :root[data-palette="vivid"][data-theme="dark"] .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 30%, rgba(255,255,255,.22)); }
-  :root[data-palette="vivid"] .lx-bar:hover::before { opacity: 1; inset-inline: 8%; }
-}
 
 .lx-context-menu-label { font-weight: 600; text-transform: uppercase;
 }
@@ -2136,8 +1953,6 @@ h1 {
     width: 100%; height: 52px;
     top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
     animation: none; transform: none;
-    backdrop-filter: none; -webkit-backdrop-filter: none;
-    background: light-dark(rgba(255,255,255,0.94), rgba(22,23,28,0.92));
     border-color: light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.09));
     box-shadow: 0 1px 2px light-dark(rgba(28,25,20,0.06), rgba(0,0,0,0.4)), 0 14px 30px -18px light-dark(rgba(28,25,20,0.3), rgba(0,0,0,0.85));
   }
@@ -2341,13 +2156,10 @@ h1 {
     --tile: oklch(from var(--c1, #8c95b6) .92 clamp(.014, calc(c * .28), .032) h);
   }
 }
-:root[data-palette="muted"] .card-meta { opacity: calc(.85 + .15 * var(--hov, 0)); }
 :root[data-palette="muted"] .variant-chip { color: var(--text-muted); }
 :root[data-palette="muted"] .variant-chip.is-active { color: var(--text); }
 :root[data-palette="muted"][data-theme="dark"] .scrim { background: radial-gradient(circle at center, transparent 22%, #0a0807 118%); }
-:root[data-palette="muted"] .scrim::before { opacity: .35; }
 :root[data-palette="muted"] .scrim::after { opacity: .42; }
-:root[data-palette="muted"][data-theme="light"] .scrim::after { opacity: .22; }
 
 :root[data-palette="muted"] h1,
 :root.fonts-ready[data-palette="muted"] h1 {
@@ -2381,46 +2193,18 @@ h1 {
 :root[data-palette="muted"] .ctx-head-icon svg { filter: none; }
 
 :root[data-palette="muted"][data-theme] .card-clip {
-  background-image: linear-gradient(90deg, transparent, color-mix(in oklab, var(--tint) 38%, transparent) 50%, transparent);
-  background-size: 56% 1px;
   background-position: 50% 0;
-}
-:root[data-palette="muted"][data-theme] .card-shadow {
-  box-shadow:
-    0 1px 2px light-dark(rgba(60,48,36,.05), rgba(0,0,0,.3)),
-    0 10px 24px -18px light-dark(rgba(60,48,36,.18), rgba(0,0,0,.7)),
-    inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.035));
-}
-:root[data-palette="muted"][data-theme] .card-shadow::after {
-  box-shadow:
-    0 2px 4px light-dark(rgba(60,48,36,.06), rgba(0,0,0,.32)),
-    0 22px 44px -26px light-dark(rgba(60,48,36,.28), rgba(0,0,0,.8)),
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 22%, transparent);
-}
-:root[data-palette="muted"] .card-aura {
-  background: radial-gradient(120% 90% at 50% 120%, color-mix(in oklab, var(--tint) 8%, transparent), transparent 70%);
-  opacity: calc(.6 + .4 * var(--hov, 0));
 }
 :root[data-palette="muted"] .card-sheen,
 :root[data-palette="muted"] .card-glow { display: none; }
 :root[data-palette="muted"] .card-clip::before { opacity: 0 !important; }
-:root[data-palette="muted"] .card-glyph { color: color-mix(in oklab, var(--tint) 7%, transparent); }
 :root[data-palette="muted"] .card-meta::before { background: color-mix(in oklab, var(--tint) 85%, var(--text-muted)); }
-@media (hover: hover) and (pointer: fine) {
-  :root[data-palette="muted"] .app-card:hover .card-clip { border-color: color-mix(in oklab, var(--tint) 36%, var(--border-highlight)); }
-}
-:root[data-palette="muted"] .app-card.is-kb-focus .card-clip { border-color: color-mix(in oklab, var(--tint) 36%, var(--border-highlight)); }
 
 :root[data-palette="muted"] .badge,
 :root[data-palette="muted"] .palette-detail-badge { background: transparent; }
 :root[data-palette="muted"] .badge-new { color: light-dark(#8a6d3b, #c9b07e); }
 :root[data-palette="muted"] .badge-variant { color: light-dark(#5d6a86, #a3adc6); }
 :root[data-palette="muted"] .badge .badge-dot { animation: none; }
-
-:root[data-palette="muted"] .variant-chip-indicator {
-  background: light-dark(#fffdf9, rgba(255,248,240,.1));
-  box-shadow: 0 1px 2px light-dark(rgba(60,48,36,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--tint) 26%, transparent);
-}
 
 :root[data-palette="muted"] .lx-bar,
 :root[data-palette="muted"] .controls-pill {
@@ -2430,38 +2214,10 @@ h1 {
     0 12px 30px -20px light-dark(rgba(60,48,36,.2), rgba(0,0,0,.75)),
     inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.05));
 }
-:root[data-palette="muted"] .lx-bar::before { opacity: .35; }
-:root[data-palette="muted"] .tab-indicator {
-  background: light-dark(#fffdf9, rgba(255,248,240,.08));
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 28%, var(--hairline)),
-    0 1px 2px light-dark(rgba(60,48,36,.1), rgba(0,0,0,.35));
-}
-:root[data-palette="muted"] .tab-btn[aria-selected="true"] svg { color: var(--tab-accent); filter: none; }
-:root[data-palette="muted"] .lx-bar-search svg.fa-magnifying-glass { color: color-mix(in oklab, var(--tab-accent) 55%, var(--text-muted)); }
-
-:root[data-palette="muted"] #lx-palette {
-  background-color: light-dark(rgba(250,247,242,.94), rgba(22,20,18,.92));
-  background-image: linear-gradient(180deg, light-dark(rgba(255,255,255,.7), rgba(255,248,240,.03)), transparent 140px);
-  box-shadow:
-    0 1px 1px light-dark(rgba(60,48,36,.04), rgba(0,0,0,.4)),
-    0 16px 32px -16px light-dark(rgba(60,48,36,.16), rgba(0,0,0,.6)),
-    0 56px 110px -40px light-dark(rgba(60,48,36,.28), rgba(0,0,0,.85)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.05));
-}
-:root[data-palette="muted"] #lx-palette::backdrop { background: light-dark(rgba(40,32,24,.24), rgba(4,3,2,.66)); }
-:root[data-palette="muted"] .palette-cursor {
-  background: light-dark(#fffdf9, rgba(255,248,240,.055));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 22%, var(--hairline)), 0 1px 2px light-dark(rgba(60,48,36,.08), rgba(0,0,0,.3));
-}
-:root[data-palette="muted"] .palette-cursor::before { background: var(--live-accent); box-shadow: none; }
-:root[data-palette="muted"] .palette-detail-slab { background: linear-gradient(180deg, color-mix(in oklab, var(--live-accent) 7%, transparent), transparent 55%); }
-:root[data-palette="muted"] .palette-action.is-primary {
-  background: color-mix(in oklab, var(--live-accent) 12%, light-dark(#fffdf9, rgba(255,248,240,.03)));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 30%, transparent);
-}
+:root[data-palette="muted"] .tab-btn[aria-selected="true"] svg { color: var(--tab-accent); }
+:root[data-palette="muted"] .palette-cursor::before { background: var(--live-accent); }
 :root[data-palette="muted"] .palette-action.is-primary .palette-action-icon { background: var(--tile, var(--live-accent)); color: var(--tint-ink); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 30%, transparent); }
-:root[data-palette="muted"] .palette-input-row > svg { color: var(--live-accent); filter: none; }
+:root[data-palette="muted"] .palette-input-row > svg { color: var(--live-accent); }
 
 :root[data-palette="muted"] .lx-context-menu {
   background: light-dark(rgba(251,248,243,.94), rgba(24,22,20,.92));
@@ -2677,33 +2433,10 @@ h1 {
     radial-gradient(circle at center, transparent 24%, color-mix(in oklab, var(--tab-accent) 2%, var(--bg)) 120%);
 }
 .scrim::after { opacity: .3; }
-:root[data-theme="light"] .scrim::after { opacity: .16; }
 
 :root[data-theme="dark"]:not([data-palette="muted"]) h1 { filter: drop-shadow(0 8px 22px rgba(0,0,0,.42)); }
-
-:root[data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.062); }
-:root[data-theme] .card-shadow {
-  box-shadow:
-    0 1px 1px light-dark(rgba(28,25,20,.035), rgba(0,0,0,.3)),
-    0 10px 26px -18px light-dark(rgba(28,25,20,.16), rgba(0,0,0,.62)),
-    0 1px 0 light-dark(rgba(255,255,255,.55), rgba(255,255,255,.018)),
-    inset 0 1px 0 light-dark(rgba(255,255,255,.96), rgba(255,255,255,.055)),
-    inset 0 -1px 0 light-dark(rgba(20,18,15,.025), rgba(0,0,0,.26)),
-    inset 0 0 0 1px light-dark(rgba(20,18,15,.035), rgba(255,255,255,.028));
-}
-:root[data-theme] .card-shadow::after {
-  box-shadow:
-    0 2px 4px light-dark(rgba(28,25,20,.05), rgba(0,0,0,.3)),
-    0 26px 52px -28px light-dark(rgba(28,25,20,.24), rgba(0,0,0,.84)),
-    0 22px 48px -32px color-mix(in oklab, var(--tint) 36%, transparent),
-    inset 0 0 0 1px color-mix(in oklab, var(--tint) 15%, transparent),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.1)),
-    inset 0 -1px 0 light-dark(rgba(20,18,15,.03), rgba(0,0,0,.3));
-}
-:root[data-theme="light"] .card-meta { color: color-mix(in oklab, var(--text-muted) 66%, var(--text)); }
 :root[data-theme="light"] .variant-chip:not(.is-active) { color: color-mix(in oklab, var(--text-muted) 82%, var(--text)); }
 .card-hero .card-meta, .card-tall .card-meta { opacity: calc(.9 + .1 * var(--hov, 0)); }
-:root[data-palette="muted"] .card-meta { color: var(--text-muted); }
 .badge-closed { font-weight: 700; }
 .badge-closed .badge-dot { box-shadow: 0 0 0 2px color-mix(in oklab, var(--closed-ink) 18%, transparent); }
 .app-icon { filter: drop-shadow(0 1px 1px rgba(0,0,0,.26)); }
@@ -2715,11 +2448,6 @@ h1 {
 .palette-action.is-primary .palette-action-icon {
   background: linear-gradient(160deg, color-mix(in oklab, #fff 14%, var(--live-accent)), color-mix(in oklab, #000 16%, var(--live-accent)));
   box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 3px 8px -3px color-mix(in oklab, var(--live-accent) 60%, transparent);
-}
-:root[data-palette="mono"] #lx-palette { border-color: light-dark(rgba(0,0,0,.1), rgba(255,255,255,.1)); }
-:root[data-palette="mono"] .palette-action.is-primary {
-  background: linear-gradient(180deg, light-dark(#fff, rgba(255,255,255,.1)), light-dark(rgba(255,255,255,.6), rgba(255,255,255,.03)));
-  box-shadow: inset 0 0 0 1px light-dark(rgba(0,0,0,.12), rgba(255,255,255,.16)), 0 1px 2px light-dark(rgba(0,0,0,.06), rgba(0,0,0,.3));
 }
 
 :root[data-palette="curated"] {
@@ -2765,30 +2493,6 @@ h1 {
   }
 }
 :root[data-palette="curated"] .card-clip { background-color: color-mix(in oklab, var(--tint) 2%, var(--surface)); }
-:root[data-palette="curated"][data-theme="light"] .card-clip { background-color: color-mix(in oklab, var(--tint) 1.4%, var(--surface)); }
-:root[data-palette="curated"] .app-card.is-kb-focus .card-clip { background-color: color-mix(in oklab, var(--tint) 4%, var(--surface-hover)); }
-@media (hover: hover) and (pointer: fine) {
-  :root[data-palette="curated"] .app-card:hover .card-clip { background-color: color-mix(in oklab, var(--tint) 4%, var(--surface-hover)); }
-}
-:root[data-palette="curated"][data-theme] .card-clip {
-  background-image:
-    linear-gradient(90deg, transparent 10%, light-dark(rgba(255,255,255,.96), rgba(255,255,255,.11)) 50%, transparent 90%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.42), rgba(255,255,255,.032)), transparent 54%),
-    linear-gradient(0deg, color-mix(in oklab, var(--tint) 3.5%, transparent), transparent 40%);
-  background-size: 100% 1px, 100% 100%, 100% 100%;
-}
-:root[data-palette="curated"] .card-aura {
-  background:
-    radial-gradient(85% 70% at 0% 0%, color-mix(in oklab, var(--tint) 8%, transparent), transparent 64%),
-    radial-gradient(70% 60% at 100% 100%, color-mix(in oklab, var(--c3) 5%, transparent), transparent 72%);
-}
-:root[data-palette="curated"][dir="rtl"] .card-aura {
-  background:
-    radial-gradient(85% 70% at 100% 0%, color-mix(in oklab, var(--tint) 8%, transparent), transparent 64%),
-    radial-gradient(70% 60% at 0% 100%, color-mix(in oklab, var(--c3) 5%, transparent), transparent 72%);
-}
-:root[data-palette="curated"] .card-glyph { color: color-mix(in oklab, var(--tint) 6.5%, transparent); }
-:root[data-palette="curated"][data-theme="light"] .card-glyph { color: color-mix(in oklab, var(--tint) 8%, transparent); }
 :root[data-palette="curated"] .badge-new { color: light-dark(#8f6a2a, #cfae66); }
 :root[data-palette="curated"] .badge-variant { color: light-dark(#4f6690, #9fb1d4); }
 :root[data-palette="curated"] h1 {
@@ -2796,21 +2500,6 @@ h1 {
     light-dark(#1a1814, #f8f7f4) 26%,
     color-mix(in oklab, var(--tab-accent) 18%, light-dark(#544f47, #a9a7a1)) 100%);
 }
-:root[data-palette="curated"] .app-title {
-  background-image: linear-gradient(135deg,
-    var(--text) 0%,
-    var(--text) 48%,
-    color-mix(in oklab, var(--tint-ink) 58%, var(--text)) 88%,
-    color-mix(in oklab, var(--tint-ink) 76%, var(--text)) 100%);
-}
-:root[data-palette="curated"] .lx-bar::before { opacity: .38; }
-:root[data-palette="curated"] .tab-indicator {
-  box-shadow:
-    inset 0 0 0 1px color-mix(in oklab, var(--tab-accent) 30%, var(--hairline)),
-    inset 0 -8px 14px -12px color-mix(in oklab, var(--tab-accent) 36%, transparent),
-    0 1px 2px light-dark(rgba(28,25,20,.08), rgba(0,0,0,.35));
-}
-:root[data-palette="curated"] #lx-palette { background-color: light-dark(rgba(251,250,247,.99), rgba(11,12,15,.985)); }
 :root[data-palette="curated"] .lx-context-menu { background: light-dark(rgba(253,252,250,.9), rgba(18,19,23,.88)); }
 
 :root[data-palette="mono"] {
@@ -2834,8 +2523,6 @@ h1 {
     radial-gradient(circle at center, transparent 22%, light-dark(#eaeae9, #000) 128%);
 }
 :root[data-palette="mono"] .scrim::after { opacity: .36; }
-:root[data-palette="mono"][data-theme="light"] .scrim::after { opacity: .2; }
-:root[data-palette="mono"] .scrim::before { opacity: .5; }
 @supports (color: oklch(from red l c h)) {
   :root[data-palette="mono"] .app-card,
   :root[data-palette="mono"] .palette-item,
@@ -2856,89 +2543,21 @@ h1 {
     --tint-ink: oklch(from var(--tint) .34 .005 h);
   }
 }
-:root[data-palette="mono"] .app-icon { color: light-dark(#fff, rgba(255,255,255,.94)); filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.38)); }
-:root[data-palette="mono"][data-theme="dark"] .card-clip { border-color: rgba(255,255,255,.068); }
-:root[data-palette="mono"][data-theme] .card-clip {
-  background-image:
-    linear-gradient(90deg, transparent 10%, light-dark(rgba(255,255,255,.98), rgba(255,255,255,.13)) 50%, transparent 90%),
-    linear-gradient(180deg, light-dark(rgba(255,255,255,.46), rgba(255,255,255,.036)), transparent 54%);
-  background-size: 100% 1px, 100% 100%;
-}
-:root[data-palette="mono"][data-theme] .card-shadow::after {
-  box-shadow:
-    0 2px 4px light-dark(rgba(0,0,0,.05), rgba(0,0,0,.3)),
-    0 26px 52px -28px light-dark(rgba(0,0,0,.22), rgba(0,0,0,.86)),
-    inset 0 0 0 1px light-dark(rgba(0,0,0,.08), rgba(255,255,255,.1)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.12)),
-    inset 0 -1px 0 light-dark(rgba(0,0,0,.03), rgba(0,0,0,.3));
-}
-:root[data-palette="mono"] .card-aura {
-  background:
-    radial-gradient(85% 70% at 0% 0%, light-dark(rgba(255,255,255,.5), rgba(255,255,255,.035)), transparent 64%),
-    radial-gradient(70% 60% at 100% 100%, light-dark(rgba(0,0,0,.025), rgba(0,0,0,.18)), transparent 72%);
-  opacity: calc(.5 + .4 * var(--hov, 0));
-}
-:root[data-palette="mono"][dir="rtl"] .card-aura {
-  background:
-    radial-gradient(85% 70% at 100% 0%, light-dark(rgba(255,255,255,.5), rgba(255,255,255,.035)), transparent 64%),
-    radial-gradient(70% 60% at 0% 100%, light-dark(rgba(0,0,0,.025), rgba(0,0,0,.18)), transparent 72%);
-}
-:root[data-palette="mono"] .card-sheen { box-shadow: inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.22)); }
-:root[data-palette="mono"] .card-glyph { color: color-mix(in oklab, var(--text) 5.5%, transparent); }
-:root[data-palette="mono"] .app-card.is-kb-focus .card-clip { border-color: light-dark(rgba(0,0,0,.2), rgba(255,255,255,.2)); }
-@media (hover: hover) and (pointer: fine) {
-  :root[data-palette="mono"] .app-card:hover .card-clip { border-color: light-dark(rgba(0,0,0,.2), rgba(255,255,255,.2)); }
-  :root[data-palette="mono"] .app-card:hover .card-glow { opacity: .035; }
-}
+:root[data-palette="mono"] .app-icon { color: light-dark(#fff, rgba(255,255,255,.94)); }
 :root[data-palette="mono"] .card-glow { background: radial-gradient(closest-side, light-dark(#fff, #fff), transparent 62%); }
 :root[data-palette="mono"] h1 {
   background-image: linear-gradient(180deg, light-dark(#101010, #fbfbfa) 28%, light-dark(#5c5c5a, #9c9c9a) 100%);
-}
-:root[data-palette="mono"] .app-title {
-  background-image: linear-gradient(135deg, var(--text) 0%, var(--text) 52%, color-mix(in oklab, var(--text) 78%, transparent) 100%);
 }
 :root[data-palette="mono"] .card-meta::before { background: color-mix(in oklab, var(--text) 42%, transparent); }
 :root[data-palette="mono"] .app-card.status-closed .card-meta::before { background: var(--closed-ink); }
 :root[data-palette="mono"] .open-affordance { color: color-mix(in oklab, var(--text) 82%, transparent); }
 :root[data-palette="mono"] .badge-closed { color: var(--closed-ink); }
 :root[data-palette="mono"] .variant-chip:not(.is-active) { color: color-mix(in oklab, var(--text-muted) 80%, var(--text)); }
-:root[data-palette="mono"] .variant-chip-indicator {
-  background: light-dark(#fff, rgba(255,255,255,.15));
-  box-shadow:
-    0 1px 2px light-dark(rgba(0,0,0,.1), rgba(0,0,0,.45)),
-    inset 0 0 0 1px light-dark(rgba(0,0,0,.06), rgba(255,255,255,.09)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.12));
-}
 :root[data-palette="mono"] .lx-bar,
 :root[data-palette="mono"] .controls-pill {
   background: linear-gradient(180deg, light-dark(rgba(255,255,255,.82), rgba(255,255,255,.05)), light-dark(rgba(255,255,255,.62), rgba(255,255,255,.018)));
 }
-:root[data-palette="mono"] .lx-bar::before {
-  background: linear-gradient(90deg, transparent, light-dark(rgba(0,0,0,.35), rgba(255,255,255,.6)), transparent);
-  opacity: .22;
-}
-:root[data-palette="mono"] .lx-bar.is-focused {
-  border-color: light-dark(rgba(0,0,0,.2), rgba(255,255,255,.22));
-  box-shadow:
-    0 1px 1px light-dark(rgba(0,0,0,.04), rgba(0,0,0,.3)),
-    0 20px 44px -26px light-dark(rgba(0,0,0,.26), rgba(0,0,0,.85)),
-    0 0 0 3px light-dark(rgba(0,0,0,.05), rgba(255,255,255,.06)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
-}
-:root[data-palette="mono"] .tab-indicator {
-  background: linear-gradient(180deg, light-dark(#fff, rgba(255,255,255,.1)), light-dark(rgba(255,255,255,.8), rgba(255,255,255,.04)));
-  box-shadow:
-    inset 0 0 0 1px light-dark(rgba(0,0,0,.1), rgba(255,255,255,.14)),
-    0 1px 2px light-dark(rgba(0,0,0,.08), rgba(0,0,0,.4));
-}
-:root[data-palette="mono"] .tab-btn[aria-selected="true"] svg { color: var(--text); filter: none; }
-:root[data-palette="mono"] .lx-bar-search svg.fa-magnifying-glass { color: var(--text-muted); }
-:root[data-palette="mono"] .lx-bar-search:focus-visible svg.fa-magnifying-glass { color: var(--text); }
-@media (hover: hover) and (pointer: fine) {
-  :root[data-palette="mono"] .lx-bar-search:hover svg.fa-magnifying-glass {
-    color: var(--text);
-  }
-}
+:root[data-palette="mono"] .tab-btn[aria-selected="true"] svg { color: var(--text); }
 :root[data-palette="mono"] .controls-pill button { color: color-mix(in oklab, var(--text) 72%, transparent); }
 :root[data-palette="mono"] .controls-pill button[aria-pressed="true"] svg,
 :root[data-palette="mono"] .controls-pill button[aria-expanded="true"] svg { color: var(--text); }
@@ -2948,17 +2567,7 @@ h1 {
   background: light-dark(rgba(0,0,0,.06), rgba(255,255,255,.08));
   box-shadow: inset 0 0 0 1px var(--hairline);
 }
-:root[data-palette="mono"] #lx-palette {
-  background-color: light-dark(rgba(250,250,249,.99), rgba(11,11,12,.985));
-  background-image: linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.035)), transparent 140px);
-  box-shadow:
-    0 1px 1px light-dark(rgba(0,0,0,.04), rgba(0,0,0,.4)),
-    0 16px 32px -16px light-dark(rgba(0,0,0,.16), rgba(0,0,0,.6)),
-    0 56px 110px -40px light-dark(rgba(0,0,0,.28), rgba(0,0,0,.88)),
-    inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
-}
-:root[data-palette="mono"] #lx-palette::before { background: linear-gradient(90deg, transparent, light-dark(rgba(0,0,0,.3), rgba(255,255,255,.6)), transparent); opacity: .4; }
-:root[data-palette="mono"] #lx-palette::backdrop { background: light-dark(rgba(20,20,20,.28), rgba(0,0,0,.7)); }
+:root[data-palette="mono"] #lx-palette::before { background: linear-gradient(90deg, transparent, light-dark(rgba(0,0,0,.3), rgba(255,255,255,.6)), transparent); }
 :root[data-palette="mono"] .palette-cursor::before { background: var(--text); }
 :root[data-palette="mono"] .palette-item-title mark { box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--text) 60%, transparent); }
 :root[data-palette="mono"] .palette-action.is-primary .palette-action-icon {
@@ -2987,7 +2596,6 @@ h1 {
 }
 
 :root[data-palette="vivid"] .scrim::after { opacity: .28; }
-:root[data-palette="vivid"][data-theme="light"] .scrim::after { opacity: .14; }
 
 @media (prefers-reduced-transparency: reduce) {
   .scrim::after { display: none; }
@@ -3233,7 +2841,7 @@ body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
     color-mix(in oklab, var(--tint-ink) 72%, var(--text)) 100%);
   transition: background-position 900ms var(--ease-lux);
 }
-.app-title { font-weight: 600; letter-spacing: -0.01em; }
+.app-title { font-weight: 600; }
 :root:lang(ar) .app-title { letter-spacing: 0; }
 .card-hero .app-title, .card-tall .app-title { font-weight: 600; }
 :root:lang(en) .card-hero .app-title, :root:lang(en) .card-tall .app-title { letter-spacing: -0.02em; }

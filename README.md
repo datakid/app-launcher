@@ -78,7 +78,7 @@ A bilingual (Arabic/English) launchpad for internal tools. A static site built f
 
 ## Files and URLs
 - `src/index.html`, `src/app.css`, `src/app.js`: the app sources. `#<categoryId>` opens a tab (`#core`, `#tools`, `#experimental`, `#mine`). `?lxdebug=1` shows debug warnings. `?palette=` and `?corners=` preview a look
-- `build/build.mjs`: `npm run build` writes `dist/` (committed, so regenerate it with the build and never edit it by hand): `index.html` with the data, the icon sprite and a small inline stylesheet, hashed `app.<hash>.css` and `app.<hash>.js`, `icons/`, `fonts/`, `links.json`, `compare.html`, `favicon.ico`, `apple-touch-icon.png` and the generated service worker `sw.js`
+- `build/build.mjs`: `npm run build` writes `dist/` (committed, so regenerate it with the build and never edit it by hand): `index.html` with the data, the icon sprite and a small inline stylesheet, hashed `app.<hash>.css` and `app.<hash>.js`, `icons/`, `fonts/`, `links.json`, `compare.html`, `favicon.ico`, `apple-touch-icon.png`, `manifest.webmanifest` (its icon is `apple-touch-icon.png`, so the 11 KB picture is no longer embedded in the page) and the generated service worker `sw.js`
 - `vercel.json`: the Vercel build command and output directory, and the cache headers
 - `perf/` and `qa/`: the performance harness and the Playwright checks (see Checks)
 - `tools/icons-v2.mjs`: the icon asset generator described above
@@ -95,7 +95,7 @@ A bilingual (Arabic/English) launchpad for internal tools. A static site built f
 ## Build, deploy and cache
 - `npm ci && npm run build` writes `dist/`. Vercel runs the same command on every push (`vercel.json`: `npm run build`, output directory `dist`); the project's root directory is the repository root. Harvest Studio is a separate Vercel project
 - Hashed files (`app.<hash>.css`, `app.<hash>.js`, the icon atlases and sprite) and fonts are served with `Cache-Control: public, max-age=31536000, immutable`; `index.html`, `sw.js`, `links.json` and `icons/manifest.v2.json` are served with `no-cache`
-- The service worker precaches the page, its hashed files, the icon sprite, the glyph atlas, four fonts and `favicon.ico`. Navigations are answered from the cache, so a repeat visit makes no network request before the grid appears and the page reloads offline. `links.json` and the icon manifest are answered from the cache and refreshed about two seconds later. Each new build gets a new cache name and old `lx-` caches are removed when it activates. It registers only on `https:` and on localhost
+- The service worker precaches the page, its hashed files, the icon sprite, the glyph atlas, four fonts, `favicon.ico` and `manifest.webmanifest`. Navigations are answered from the cache, so a repeat visit makes no network request before the grid appears and the page reloads offline. `links.json` and the icon manifest are answered from the cache and refreshed about two seconds later. Each new build gets a new cache name and old `lx-` caches are removed when it activates. It registers only on `https:` and on localhost
 - Fonts: only the two faces used above the fold for the current language are preloaded (IBM Plex Sans Arabic and El Messiri for Arabic, Inter and Cormorant Garamond for English), and every web font uses `font-display: swap`
 
 ## Harvest export contract
@@ -114,7 +114,7 @@ Harvest Studio is a separate project. The launcher keeps accepting the current m
 
 ## Checks
 - `npm run qa` runs the Playwright matrix (themes, languages, corners, viewports) against `dist/` when it exists; `npm run qa:quick` runs a subset. They check horizontal overflow, cut labels, tap targets, card presence and that `lx-data` equals `links.json`
-- `npm run qa:load` checks the page weight (`dist/index.html` gzipped, total first-load transfer), that a repeat visit makes no network request before the grid, and the offline reload
+- `npm run qa:load` checks the page weight (`dist/index.html` gzipped, at most 30,720 bytes, and the total first-load transfer, at most 266,240 bytes), that a repeat visit makes no network request before the grid, and the offline reload
 - `npm run perf` measures the interactions in `perf/interactions.mjs` on a mobile and a desktop profile and writes `perf/out/latest.json`; `--assert` compares it with `perf/targets.json`. When the `CI` environment variable is set the timing targets are skipped, because shared runners have no GPU, and only the image request and decode targets are asserted. Run it on real hardware for the timing numbers
 - `node qa/visual-marks.mjs` writes screenshots of every icon surface in each palette and theme, and `node qa/shot-diff.mjs <before> <after>` compares two sets
 - `npm run qa:behaviour` runs `qa/behaviour.mjs` and `qa/rapid-switch.mjs`: twenty version switches with no image request, the `?motion=legacy` timings, focus and scroll surviving an icon-manifest change, no running animation after any interaction under reduced motion, and ten tab clicks 40 ms apart ending on the last tab. Add `--timing` to `qa/behaviour.mjs` and `--strict` to `qa/rapid-switch.mjs` on real hardware to also assert the frame and settle times

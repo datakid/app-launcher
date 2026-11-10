@@ -38,7 +38,7 @@ out += `
 | Measure | Value |
 |---|---|
 | \`dist/index.html\`, gzipped | ${load.htmlGzBytes} bytes (limit 61440) |
-| First load, gzipped total over ${load.firstLoadRequests} requests | ${load.firstLoadGzBytes} bytes (limit 256000) |
+| First load, gzipped total over ${load.firstLoadRequests} requests | ${load.firstLoadGzBytes} bytes (limit 266240) |
 | Repeat visit, network requests before the grid appears | ${load.repeatVisitNetworkRequestsBeforeGrid} |
 | Offline reload shows the grid | ${load.offlineGridOk ? 'yes' : 'no'} |
 | Before this work, \`index.html\` alone, gzipped | 129671 bytes |
