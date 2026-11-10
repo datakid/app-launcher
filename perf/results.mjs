@@ -15,7 +15,7 @@ const change = (a, b) => (a === null || b === null ? 'n/a' : a === 0 ? (b === 0 
 
 let out = `# Results
 
-Final values against \`perf/baseline.json\`, from \`perf/out/latest.json\`. Both runs are in the same sandbox (one CPU core, no GPU, about 15 frames per second when idle), so the frame-time rows only show the direction of change. The CI run skips the timing targets for the same reason; run \`npm run perf\` on real hardware for absolute values. Each cell is the median of 6 measured runs, with the worst run in brackets.
+Final values against \`perf/baseline.json\`, from \`perf/out/latest.json\`. The baseline run came from a one-core sandbox and the final run from a two-core sandbox, neither with a GPU (about 15 frames per second when idle), so the frame-time rows only show the direction of change and the two columns are not a like-for-like timing comparison. The CI run skips the timing targets for the same reason; run \`npm run perf\` on real hardware for absolute values. Each final cell is the median of 7 measured runs, with the worst run in brackets.
 
 \`settleGridMs\` and \`medianFrameMs\` did not exist in the baseline run, so their baseline cells are empty. \`settleMs\` includes every finite animation on the page, including the hover and accent transitions that start when the pointer reaches the clicked control.
 `;
@@ -37,7 +37,7 @@ out += `
 
 | Measure | Value |
 |---|---|
-| \`dist/index.html\`, gzipped | ${load.htmlGzBytes} bytes (limit 61440) |
+| \`dist/index.html\`, gzipped | ${load.htmlGzBytes} bytes (limit 30720) |
 | First load, gzipped total over ${load.firstLoadRequests} requests | ${load.firstLoadGzBytes} bytes (limit 266240) |
 | Repeat visit, network requests before the grid appears | ${load.repeatVisitNetworkRequestsBeforeGrid} |
 | Offline reload shows the grid | ${load.offlineGridOk ? 'yes' : 'no'} |
