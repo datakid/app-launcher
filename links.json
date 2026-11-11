@@ -100,7 +100,14 @@
           ],
           "defaultVariant": 0
         },
-        { "id": "to-do", "title": { "ar": "المهام", "en": "To Do" }, "url": "https://to-do-cyan-theta.vercel.app/", "icon": "fa-file-lines", "gradient": ["#9d72c4", "#ddd6fe", "#4c1d95"], "isNew": true, "since": "2026-08-11" },
+        {
+          "id": "typing", "title": { "ar": "تدريب الكتابة", "en": "Typing Trainer" }, "icon": "fa-keyboard", "gradient": ["#e36653", "#fda1a1", "#893a11"], "isNew": true, "since": "2026-11-11",
+          "variants": [
+            { "id": "tarq", "label": { "ar": "طرق", "en": "Tarq" }, "url": "https://typing-practice-wine-eta.vercel.app/", "icon": "fa-keyboard" },
+            { "id": "platen", "label": { "ar": "بلاتن", "en": "Platen" }, "url": "https://platen-2zj1.vercel.app/#/t/python/values-types/assignment/a", "icon": "fa-code" }
+          ],
+          "defaultVariant": 0
+        },
         {
           "id": "pharmacy-tools", "title": { "ar": "أدوات الصيدلية", "en": "Pharmacy Tools" }, "icon": "fa-pills", "gradient": ["#5fa05a", "#c9f0c0", "#1f4d1c"], "isNew": true, "since": "2026-10-02",
           "variants": [
@@ -109,7 +116,7 @@
           ],
           "defaultVariant": 0
         },
-        { "id": "entity-tracker", "title": { "ar": "بيان جهات متعاقدة", "en": "Entity Tracker" }, "url": "https://entity-tracker-pi.vercel.app/", "icon": "fa-file-contract", "gradient": ["#c15b67", "#fecdd3", "#881337"], "isNew": true, "since": "2026-08-11" },
+        { "id": "quoin", "title": { "ar": "باور كويري", "en": "Quoin" }, "url": "https://power-query-manager.vercel.app/", "icon": "fa-table", "gradient": ["#4c9f87", "#91c7aa", "#055e56"], "isNew": true, "since": "2026-11-11" },
         { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18" }
       ]
     },
