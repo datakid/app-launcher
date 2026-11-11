@@ -1,0 +1,38 @@
+{
+  "name": "app-launcher",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "qa": "node qa/run.mjs",
+    "qa:quick": "node qa/run.mjs --quick",
+    "perf": "node perf/measure.mjs",
+    "perf:recalc": "node perf/recalc.mjs",
+    "check": "npm run qa:comments && npm run qa:search && npm run build && npm run qa:quick && npm run qa:cards && npm run qa:tiles && npm run qa:load && npm run qa:behaviour && npm run qa:qr && npm run qa:zen && npm run qa:icons && npm run perf -- --assert && npm run qa:motion",
+    "qa:cards": "node qa/card-layout.mjs",
+    "qa:tiles": "node qa/tile-contrast.mjs",
+    "qa:motion": "node qa/motion-lint.mjs",
+    "qa:smooth": "node qa/smooth.mjs",
+    "qa:comments": "node qa/no-comments.mjs",
+    "qa:search": "node qa/search.mjs",
+    "build": "node build/build.mjs",
+    "qa:load": "node qa/load.mjs",
+    "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs && node qa/search-ui.mjs",
+    "qa:qr": "node qa/qr-encoder.mjs && node qa/qr.mjs && node qa/qr-stress.mjs",
+    "qa:zen": "node qa/zen.mjs",
+    "qa:icons": "node qa/icon-solver.mjs && node qa/icons-switch.mjs && node qa/icons-schema.mjs"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@resvg/resvg-js": "^2.6.2",
+    "ajv": "^8.20.0",
+    "esbuild": "^0.28.2",
+    "jsqr": "^1.4.0",
+    "pixelmatch": "^8.0.0",
+    "playwright": "^1.56.1",
+    "pngjs": "^7.0.0",
+    "postcss": "^8.5.31",
+    "potrace": "^2.1.8",
+    "sharp": "^0.35.5",
+    "svgo": "^4.1.0"
+  }
+}
