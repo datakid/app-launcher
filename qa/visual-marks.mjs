@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -7,7 +7,8 @@ import { siteRoot } from '../perf/site-root.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '..');
-const outDir = path.join(here, 'out', 'visual-marks');
+const outArg = process.argv.indexOf('--out');
+const outDir = outArg > 0 ? path.resolve(process.argv[outArg + 1]) : path.join(here, 'out', 'visual-marks');
 const PALETTES = ['vivid', 'curated', 'muted', 'mono'];
 const THEMES = ['light', 'dark'];
 const VIEWS = ['bento', 'list', 'icons'];
@@ -15,7 +16,7 @@ const VIEWS = ['bento', 'list', 'icons'];
 const main = async () => {
   await fs.mkdir(outDir, { recursive: true });
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   let shots = 0;
   const errors = [];
   for (const theme of THEMES) {

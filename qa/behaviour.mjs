@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -170,6 +170,7 @@ const harvestEntry = async (browser, base) => {
   const popup = ctx.waitForEvent('page', { timeout: 4000 }).catch(() => null);
   await page.keyboard.press('Enter');
   const opened = await popup;
+  if (opened) await opened.waitForURL(/^https:\/\/harvest-studio-phi\.vercel\.app\//, { timeout: 4000 }).catch(() => null);
   const url = opened ? opened.url() : null;
   record('palette Harvest entry opens Harvest Studio', active === 'harvest' && !!url && url.startsWith('https://harvest-studio-phi.vercel.app/'), { active, url });
   await ctx.close();
@@ -177,7 +178,7 @@ const harvestEntry = async (browser, base) => {
 
 const main = async () => {
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   for (const step of [versionSwitches, legacyMotion, manifestRefresh, reducedMotion, versionColour, iconFallback, harvestEntry]) {
     try { await step(browser, server.base); } catch (e) { record(step.name, false, { error: String(e.message || e).slice(0, 200) }); }
   }

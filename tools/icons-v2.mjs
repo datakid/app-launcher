@@ -218,7 +218,81 @@ const cleanOld = async (keep) => {
   }
 };
 
+const METRIC_FIELDS = ['bbox', 'ink', 'layers', 'tintRole'];
+
+const rasterSymbol = (spriteText, id, size) => {
+  const hit = new RegExp(`<symbol id="${id}"[^>]*>([\\s\\S]*?)</symbol>`).exec(spriteText);
+  if (!hit) return null;
+  const body = hit[1].replace(/style="fill:var\(--lx-ga,currentColor\)"/g, 'fill="#000"');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${size}" height="${size}" fill="#000">${body}</svg>`;
+  const px = new Resvg(svg, { fitTo: { mode: 'width', value: size } }).render().pixels;
+  const alpha = new Uint8Array(size * size);
+  for (let i = 0; i < alpha.length; i++) alpha[i] = px[i * 4 + 3];
+  return { alpha, width: size, height: size };
+};
+
+const glyphMetrics = (alpha, width, height) => {
+  let count = 0;
+  let minX = width;
+  let minY = height;
+  let maxX = -1;
+  let maxY = -1;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (alpha[y * width + x] < 128) continue;
+      count++;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+  }
+  if (!count) return null;
+  const r3 = (v) => Math.round(v * 1000) / 1000;
+  return {
+    ink: r3(count / (width * height)),
+    bbox: [r3(minX / width), r3(minY / height), r3((maxX - minX + 1) / width), r3((maxY - minY + 1) / height)],
+    layers: detectMidLevel(alpha, width, height) !== null ? 2 : 1
+  };
+};
+
+const metricsOnly = async () => {
+  const v1 = JSON.parse(await fs.readFile(path.join(ICONS, 'manifest.json'), 'utf8'));
+  const file = path.join(ICONS, 'manifest.v2.json');
+  const manifest = JSON.parse(await fs.readFile(file, 'utf8'));
+  const sprite = await fs.readFile(path.join(root, manifest.glyphSprite.file), 'utf8');
+  const filled = { ink: 0, bbox: 0, layers: 0, tintRole: 0 };
+  const kept = [];
+  const missing = [];
+  for (const key of Object.keys(manifest.icons).sort()) {
+    const entry = manifest.icons[key];
+    const old = v1.icons[key] || {};
+    const png = path.join(ICONS, `${key}.glyph.png`);
+    let source = null;
+    if (await fs.stat(png).then(() => true, () => false)) source = { from: 'png', ...(await alphaMask(png)) };
+    else if (entry.glyph && entry.glyph.symbol) {
+      const sym = rasterSymbol(sprite, entry.glyph.symbol, 128);
+      if (sym) source = { from: 'symbol', ...sym };
+    }
+    const computed = source ? glyphMetrics(source.alpha, source.width, source.height) : null;
+    if (!computed) missing.push(key);
+    const brand = Array.isArray(old.tint) || Array.isArray(entry.sourceTint);
+    const values = { ...(computed || {}), tintRole: brand ? 'brand' : 'authored' };
+    for (const field of METRIC_FIELDS) {
+      if (old[field] !== undefined) entry[field] = old[field];
+      if (entry[field] !== undefined) { kept.push(`${key}.${field}`); continue; }
+      if (values[field] === undefined) continue;
+      entry[field] = values[field];
+      filled[field]++;
+    }
+    manifest.icons[key] = Object.fromEntries(Object.keys(entry).sort().map((k) => [k, entry[k]]));
+  }
+  await fs.writeFile(file, JSON.stringify(manifest, null, 2) + '\n');
+  console.log(JSON.stringify({ mode: 'metrics', entries: Object.keys(manifest.icons).length, filled, keptExisting: kept.length, noMetrics: missing }, null, 2));
+};
+
 const main = async () => {
+  if (process.argv.includes('--metrics')) return metricsOnly();
   const v1 = JSON.parse(await fs.readFile(path.join(ICONS, 'manifest.json'), 'utf8'));
   const config = JSON.parse(await fs.readFile(path.join(root, 'tools', 'icons-v2.config.json'), 'utf8').catch(() => '{}'));
   const forceImage = new Set(config.forceImage || []);
