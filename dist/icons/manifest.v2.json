@@ -5,7 +5,7 @@
     "height": 768,
     "width": 768
   },
-  "generatedAt": "2026-10-31T05:24:57.930Z",
+  "generatedAt": "2026-11-11T21:14:44.091Z",
   "glyphAtlas": {
     "cell": 128,
     "file": "icons/glyph-atlas.85619065.webp",
@@ -13,9 +13,9 @@
     "width": 384
   },
   "glyphSprite": {
-    "file": "icons/glyphs.f3066055.svg"
+    "file": "icons/glyphs.0718a9f3.svg"
   },
-  "hash": "060cb136",
+  "hash": "b6740765",
   "icons": {
     "alt": {
       "bbox": [
@@ -252,41 +252,6 @@
         "#908abd",
         "#cfcbf2",
         "#413a66"
-      ],
-      "tintRole": "brand"
-    },
-    "entity-tracker": {
-      "bbox": [
-        0.094,
-        0.117,
-        0.813,
-        0.758
-      ],
-      "checkedAt": "2026-10-31T05:23:35.595Z",
-      "favicon": {
-        "x": 128,
-        "y": 128
-      },
-      "glyph": {
-        "symbol": "g-entity-tracker"
-      },
-      "hash": "9e5f4e2b8410ecf6ad36bf1da309e6fb82fdd682326c314838cdbd7492c69473",
-      "ink": 0.318,
-      "layers": 1,
-      "locked": false,
-      "palette": null,
-      "seed": "1f2e3d4c",
-      "shape": "default",
-      "sourceTint": [
-        "#569db6",
-        "#a6daee",
-        "#014a5d"
-      ],
-      "status": "found",
-      "tint": [
-        "#5992b0",
-        "#a5cfe6",
-        "#0d4157"
       ],
       "tintRole": "brand"
     },
@@ -922,6 +887,38 @@
       ],
       "tintRole": "brand"
     },
+    "quoin": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-11-11T05:52:35.131Z",
+      "favicon": null,
+      "glyph": {
+        "symbol": "g-quoin"
+      },
+      "hash": "83fede528285696d1e2177f951d5992d77c5cef52887da9af2a7ff3282dcfef3",
+      "ink": 0.387,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#64a08d",
+        "#adddcd",
+        "#094e3e"
+      ],
+      "status": "found",
+      "tint": [
+        "#4c9f87",
+        "#91c7aa",
+        "#055e56"
+      ],
+      "tintRole": "brand"
+    },
     "roi--express": {
       "bbox": [
         0.094,
@@ -1170,38 +1167,67 @@
       ],
       "tintRole": "brand"
     },
-    "to-do": {
+    "typing--platen": {
       "bbox": [
         0.094,
-        0.203,
+        0.094,
         0.813,
-        0.594
+        0.813
       ],
-      "checkedAt": "2026-10-31T05:23:35.595Z",
-      "favicon": {
-        "x": 256,
-        "y": 640
-      },
+      "checkedAt": "2026-11-11T05:51:46.787Z",
+      "favicon": null,
       "glyph": {
-        "symbol": "g-to-do"
+        "symbol": "g-typing--platen"
       },
-      "hash": "b74e65bf30885a917acdd0067b75a443fc1dddb6e4347cb644bf581a33fd511c",
-      "ink": 0.168,
+      "hash": "dcee23e1e68dd4d08681f42bd8059f3c5ac19f978bdab8a1b31d4bccf8dc2555",
+      "ink": 0.144,
       "layers": 1,
       "locked": false,
       "palette": null,
       "seed": "1f2e3d4c",
       "shape": "default",
       "sourceTint": [
-        "#9d72c4",
-        "#ddd6fe",
-        "#4c1d95"
+        "#b98923",
+        "#efcb8c",
+        "#563d06"
       ],
       "status": "found",
       "tint": [
-        "#aa7aca",
-        "#e9e1ff",
-        "#59279b"
+        "#c1842c",
+        "#ebaf7f",
+        "#6d5005"
+      ],
+      "tintRole": "brand"
+    },
+    "typing--tarq": {
+      "bbox": [
+        0.094,
+        0.38,
+        0.813,
+        0.24
+      ],
+      "checkedAt": "2026-11-11T05:52:57.240Z",
+      "favicon": null,
+      "glyph": {
+        "symbol": "g-typing--tarq"
+      },
+      "hash": "0bb9a107d99da108b10137d7fcab4b2ba47416d7a607fe599153c93199eaa8c0",
+      "ink": 0.182,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#dc6d52",
+        "#fec0b0",
+        "#75220d"
+      ],
+      "status": "found",
+      "tint": [
+        "#e36653",
+        "#fda1a1",
+        "#893a11"
       ],
       "tintRole": "brand"
     },
