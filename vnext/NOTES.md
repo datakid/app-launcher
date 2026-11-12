@@ -111,6 +111,12 @@ The scroll-time strip was narrowed from five surfaces to `.lx-bar`, because the 
 
 The old `prefers-reduced-transparency` rule never switched off the bar and palette blur because `:root .lx-bar` outranked it. A new rule covers both reduced transparency and forced colors; forced-colors emulation confirms the blur is off, and reduced transparency cannot be emulated here.
 
+### T8 complete (reduced to what was missing)
+
+Press feedback already exists on every target the plan lists: cards (`:active` transform in the touch block, `scale: .96` in the coarse block, and the JS press spring `s.sc.to = 0.988` for mouse), icon plates (via the icon wrapper), tab buttons, variant chips, pill buttons, context-menu buttons (opacity) and the QR trigger. A touch-media press trace showed a visible change on the first frame for all of them except one gap: tab buttons, variant chips, pill buttons and the search bar took the 260ms `--dur-fast` to reach their pressed scale. That press-in now uses `--dur-tap` (70ms). No new shared rule was added.
+
+Findings that differ from the plan: `--sc` is not consumed by any CSS `scale:` declaration (the pointer renderer builds the inline transform), so the `--press` multiplication was not applicable. The card's overlay link is an `<a>`, which the global `touch-action` and tap-highlight rule already covers. On touch the card press compounds `transform: scale(.982)` with `scale: .96`, a depth of about .943, and tabs compound .98 with .96. That is existing behaviour and a deliberate visual change would need owner approval. Release has no ease-out on those four element types because their base transition lists do not include `scale`, so they snap back. Both are left as ideas.
+
 ## Post-plan check (owner request, do after T0–T10 are done, not before)
 
 Search highlighting bug, reported against the old code: typing "alt" can highlight text on a different item than the one actually being matched, and the highlight itself can be wrong, covering more or less of the item than the match. Reproduce first on the finished beta (en and ar, palette search and any in-grid search), find whether it is the match ranges, the item they are applied to, or the rendering. `src/search.js` is out of scope for the plan (N9), so this is a separate, owner-approved fix after the plan is complete.

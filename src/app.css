@@ -3453,7 +3453,7 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   .app-card:active { scale: .96; }
   .tab-btn:active, .variant-chip:active, .controls-pill button:active, .lx-bar-search:active {
     scale: .96;
-    transition: scale var(--dur-fast) var(--ease-lux);
+    transition: scale var(--dur-tap) var(--ease-lux);
   }
 }
 @media (pointer: coarse) {
