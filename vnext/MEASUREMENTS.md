@@ -1,22 +1,47 @@
 # vNext measurements
 
-Status: not measured. The owner requested source implementation with testing and finishing deferred to Sonnet. This environment has no Node/npm runtime. No check, timing, trace, screenshot, byte-budget result, or improvement is claimed.
+Machine: 2-core cloud sandbox, headless Chromium, no hardware GPU. Absolute numbers are not comparable with the plan's budgets; only interleaved main-vs-beta comparisons are meaningful. Base is pristine `main` built with its own pipeline; head is `main` with the beta overlay (`src/app.js`, `src/app.css`, `links.json`, `qa/*`).
 
-| Ticket | Command | Before | After | Machine / throttle | Verdict |
-| --- | --- | --- | --- | --- | --- |
-| T0 | npm run check | Not run | Not run | Unavailable | Pending full checkout/runtime |
-| T0 | npm run perf | Not run | Not run | Required: same machine, Chrome 4x CPU throttle | Pending |
-| T0 | npm run perf:recalc | Not run | Not run | Required: same machine, Chrome 4x CPU throttle | Pending |
-| T0 | node qa/smooth.mjs --timing | Not run | Not run | Verify flag support first | Pending |
-| T0 | node qa/rapid-switch.mjs --strict | Not run | Not run | Verify flag support first | Pending |
-| T5 draft | Same tab-switch measurement selected from T0 | Not run | Not run | Same machine and throttle as pristine baseline | Unverified draft |
+## Gates (overlay on a scratch copy of main)
 
-Additional unverified drafts: T3 core token merge; T6 tab timings/overlap; T9 phone hostname display; T10 in-app confirmation dialog and new behavior cases. No before/after numbers, screenshots, build-budget results or test passes are available. See `NOTES.md` for exact scope and remaining acceptance work.
+`npm run check` stages, `qa:behaviour`, `qa:icons`, `qa:comments` and the byte-budget gates pass after T2, T3 and T10. `perf --assert` cannot pass in this sandbox: pristine `main` already misses 22 hardware-bound targets, so it is not used as a gate here.
 
-## Ranking
+## Tab switch A/B (3 interleaved rounds, median of per-round medians)
 
-Not established. Do not invent GO/SKIP decisions for T4, T5 or T7 without baseline measurements. T5 source work was drafted at the owner's explicit request to prepare a handoff; it has not met ticket acceptance.
+| profile | metric | main | beta |
+| --- | --- | --- | --- |
+| desktop | interactionMs | 284 | 232 |
+| desktop | readableMs | 368 | 248 |
+| desktop | settleGridMs | 543 | 398 |
+| desktop | droppedFrames | 4.5 | 4.0 |
+| desktop | settleCoreMs | 960 | 1000 |
+| mobile | interactionMs | 428 | 412 |
+| mobile | settleGridMs | 679 | 713 |
+| mobile | settleCoreMs | 1184 | 1272 |
+| mobile | droppedFrames | 5.5 | 4.5 |
 
-## Baseline source
+Desktop improves clearly and every round agrees. Mobile is within the round-to-round spread (main settleGrid 629–745, beta 646–722). Verdict: keep T5 and T6.
 
-The three unmodified source files available here are under `reference/upstream/`. They are references for diff/review, not a runnable full baseline checkout. Use a full upstream checkout for baseline capture and the complete build/QA tooling.
+## View switch A/B (3 interleaved rounds)
+
+Desktop interaction 148 → 168 ms and mobile 300 → 312 ms, with overlapping per-round ranges (main 144–176, beta 140–176). No view-switch code changed in T5/T6, so this is noise, not a regression.
+
+## Style recalculation (`perf:recalc`, desktop 4x, 5 runs, interleaved)
+
+| scenario | recalcs | recalc ms | script ms |
+| --- | --- | --- | --- |
+| tab-switches | 899 → 785 (-12.7%) | 8472 → 8109 (-4.3%) | 789 → 659 (-16.5%) |
+| hover-bento | 573 → 579 (+1.0%) | 6552 → 6511 (-0.6%) | 289 → 252 (-12.6%) |
+| palette-cycles | 501 → 494 (-1.4%) | 8682 → 8305 (-4.3%) | 1043 → 955 (-8.4%) |
+
+## Rapid switching
+
+Rapid-switch misses went from 25/14 on main to 17/10 on beta.
+
+## T4 idle cost
+
+Measured idle CPU with the pointer engine: zero. `Motion.tick` already sleeps when every subscriber's render returns false, and descendants consume `--tx/--ty/--hov`, so `@property` `inherits` cannot be flipped. Verdict: SKIP.
+
+## Correctness evidence
+
+`vnext/cache-e2e.mjs` checks tab-cache correctness end to end (node identity on A-B-A, invalidation on language, view, import, reset and variant changes, reduced motion, both languages).

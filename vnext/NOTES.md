@@ -95,6 +95,14 @@ All 12 `@media (prefers-reduced-motion: reduce)` blocks are now one block at the
 
 NOT done, on purpose: the two `.card-qr` rule sets are not merged. `.card-qr--icon` sets its own `transition` between them, and because both are single-class selectors the later `.card-qr` transition currently overrides it. Merging the two would move that override and change how the icon-variant QR button fades in. Observed latent issue for later: the icon-variant QR's own opacity/transform transition is currently dead code.
 
+### T4 SKIP
+
+The pointer engine is not perpetual here: `Motion.tick` stops when every subscriber's `render()` returns false, and the idle CPU test measured zero cost. Flipping the `@property` `inherits` flag on `--tx/--ty/--hov` would break descendants that read them for parallax. Nothing to fix, so no change was made. Evidence in `vnext/MEASUREMENTS.md`.
+
+### T5 and T6 measured
+
+Interleaved A/B against main (3 rounds): desktop tab switch is faster on every round, mobile is neutral within noise. Both stay. Numbers in `vnext/MEASUREMENTS.md`.
+
 ## Post-plan check (owner request, do after T0–T10 are done, not before)
 
 Search highlighting bug, reported against the old code: typing "alt" can highlight text on a different item than the one actually being matched, and the highlight itself can be wrong, covering more or less of the item than the match. Reproduce first on the finished beta (en and ar, palette search and any in-grid search), find whether it is the match ranges, the item they are applied to, or the rendering. `src/search.js` is out of scope for the plan (N9), so this is a separate, owner-approved fix after the plan is complete.
