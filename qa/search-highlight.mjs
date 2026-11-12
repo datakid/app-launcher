@@ -97,6 +97,16 @@ const closePalette = async (page) => {
   await page.waitForTimeout(500);
 };
 const settle = (page, ms = 160) => page.waitForTimeout(ms);
+const settleCursor = async (page) => {
+  await page.waitForTimeout(140);
+  await page.waitForFunction(() => {
+    const list = document.getElementById('paletteResults');
+    const c = list.querySelector('.palette-cursor');
+    if (c && c.getAnimations().length) return false;
+    return ![...list.querySelectorAll('.palette-item')].some((li) => li.getAnimations().length);
+  }, null, { timeout: 4000 }).catch(() => {});
+  await page.waitForTimeout(60);
+};
 
 const run = async (browser, base, lang, steps) => {
   const L = (name) => `${lang}: ${name}`;
@@ -137,7 +147,7 @@ const run = async (browser, base, lang, steps) => {
   }
   s = await snap(page);
   record(L('typing "alt" highlights the first result at every keystroke'), bad.length === 0 && s.firstKey === 'alt' && s.activeKeys[0] === 'alt', bad.join(' | ') || `first ${s.firstKey}, active ${s.activeKeys}`);
-  await settle(page, 450);
+  await settleCursor(page);
   record(L('the highlight stays on the row after typing settles'), aligned(await snap(page)).length === 0, aligned(await snap(page)).join('; '));
 
   await page.keyboard.press('Control+KeyA');
@@ -151,7 +161,7 @@ const run = async (browser, base, lang, steps) => {
   record(L('replacing "harv" with "alt" moves the highlight off Harvest'), harv.activeKeys[0] === 'harvest' && s.activeKeys[0] === 'alt' && s.activeIndex === 0, `harv->${harv.activeKeys}, alt->${s.activeKeys}`);
 
   await page.keyboard.press('ArrowDown');
-  await settle(page, 400);
+  await settleCursor(page);
   s = await snap(page);
   record(L('ArrowDown moves the highlight to the second result and the cursor follows'), s.activeIndex === 1 && sound(s).length === 0 && aligned(s).length === 0, JSON.stringify({ i: s.activeIndex, p: [...sound(s), ...aligned(s)] }));
   await closePalette(page);
@@ -159,15 +169,15 @@ const run = async (browser, base, lang, steps) => {
   s = await snap(page);
   record(L('a reopened palette starts on its first row, not the row left highlighted before'), s.activeIndex === 0 && s.scrollTop === 0 && aligned(s).length === 0, JSON.stringify({ i: s.activeIndex, top: s.scrollTop, p: aligned(s) }));
   await page.keyboard.type('alt');
-  await settle(page, 300);
+  await settleCursor(page);
   s = await snap(page);
   record(L('typing "alt" in a reopened palette highlights Alt, not Harvest'), s.activeKeys[0] === 'alt' && aligned(s).length === 0, JSON.stringify({ a: s.activeKeys, p: aligned(s) }));
   await page.keyboard.press('Control+KeyA');
   await page.keyboard.press('Backspace');
-  await settle(page, 300);
+  await settleCursor(page);
 
   for (let i = 0; i < 6; i++) await page.keyboard.press('ArrowDown');
-  await settle(page, 450);
+  await settleCursor(page);
   s = await snap(page);
   const deep = s.activeIndex;
   await page.evaluate(() => {
@@ -191,19 +201,19 @@ const run = async (browser, base, lang, steps) => {
   record(L('the highlight jumps to the top result instead of sliding across the list'), frames.length >= 3 && worst <= 1.5, `worst ${Math.round(worst * 10) / 10}px over ${frames.length} frames`);
   await page.keyboard.press('Control+KeyA');
   await page.keyboard.press('Backspace');
-  await settle(page, 300);
+  await settleCursor(page);
 
   for (let i = 0; i < 28; i++) await page.keyboard.press('ArrowDown');
-  await settle(page, 600);
+  await settleCursor(page);
   s = await snap(page);
   record(L('the highlight stays on its row while arrowing through a long list'), s.activeIndex === 28 && s.inView && aligned(s).length === 0, JSON.stringify({ i: s.activeIndex, inView: s.inView, p: aligned(s) }));
   for (let i = 0; i < 28; i++) await page.keyboard.press('ArrowUp');
-  await settle(page, 600);
+  await settleCursor(page);
   s = await snap(page);
   record(L('and back to the top'), s.activeIndex === 0 && s.inView && aligned(s).length === 0, JSON.stringify({ i: s.activeIndex, inView: s.inView, p: aligned(s) }));
 
   await page.keyboard.type('alt');
-  await settle(page, 400);
+  await settleCursor(page);
   const target = await page.evaluate(() => {
     const li = document.querySelectorAll('#paletteResults .palette-item')[1];
     const r = li.getBoundingClientRect();
@@ -211,12 +221,12 @@ const run = async (browser, base, lang, steps) => {
   });
   await page.mouse.move(target.x, target.y);
   await page.mouse.move(target.x + 3, target.y + 1);
-  await settle(page, 300);
+  await settleCursor(page);
   s = await snap(page);
   record(L('moving the pointer over a row highlights it'), s.activeKeys[0] === target.key && s.activeIndex === 1, JSON.stringify({ a: s.activeKeys, want: target.key }));
   await page.keyboard.press('Control+KeyA');
   await page.keyboard.type('harv');
-  await settle(page, 300);
+  await settleCursor(page);
   await page.evaluate(({ x, y }) => {
     const el = document.elementFromPoint(x, y);
     const row = el && el.closest('.palette-item');
@@ -226,12 +236,12 @@ const run = async (browser, base, lang, steps) => {
   s = await snap(page);
   record(L('results re-ranking under a still pointer do not steal the highlight'), s.activeIndex === 0 && s.activeKeys[0] === s.firstKey, JSON.stringify({ a: s.activeKeys, first: s.firstKey }));
   await page.mouse.move(target.x + 40, target.y + 40);
-  await settle(page, 300);
+  await settleCursor(page);
   s = await snap(page);
   record(L('a real pointer movement still highlights the hovered row'), sound(s).length === 0 && aligned(s).length === 0, JSON.stringify([...sound(s), ...aligned(s)]));
   await page.keyboard.press('Control+KeyA');
   await page.keyboard.press('Backspace');
-  await settle(page, 300);
+  await settleCursor(page);
 
   const rng = mulberry(lang === 'en' ? 20261112 : 7);
   const pool = lang === 'en' ? ['a', 'l', 't', 'h', 'r', 'd', 'x', 'p', 'q', ' '] : ['ا', 'ل', 'ت', 'ب', 'ر', 'د', 'ع', 'a', 'd'];
@@ -289,7 +299,7 @@ const run = async (browser, base, lang, steps) => {
     log.push(action);
     const t = await check(action, top);
     if (i % 5 === 4) {
-      await settle(page, 380);
+      await settleCursor(page);
       const u = await snap(page);
       const a = aligned(u);
       if (a.length) failures.push(`${log.length}. after ${action} settled [${JSON.stringify(u.q)}]: ${a.join('; ')}`);
@@ -313,7 +323,7 @@ const runPhone = async (browser, base) => {
     const t = await snap(page);
     if (t.rows && t.activeIndex !== 0) bad.push(`${t.q} -> ${t.activeKeys}`);
   }
-  await settle(page, 450);
+  await settleCursor(page);
   s = await snap(page);
   bad.push(...aligned(s));
   record('phone: the highlight starts on the first row, follows typing and stays aligned', bad.length === 0 && s.activeKeys[0] === 'alt', bad.join(' | ') || s.activeKeys.join(','));
