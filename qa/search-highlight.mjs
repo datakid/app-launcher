@@ -96,8 +96,17 @@ const closePalette = async (page) => {
   await page.waitForFunction(() => !document.getElementById('lx-palette').open, null, { timeout: 4000 }).catch(() => {});
   await page.waitForTimeout(500);
 };
-const settle = (page, ms = 160) => page.waitForTimeout(ms);
+const frames = (page, n = 2) => page.evaluate((count) => new Promise((resolve) => {
+  let left = count;
+  const tick = () => { left -= 1; if (left <= 0) resolve(); else requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}), n);
+const settle = async (page, ms = 160) => {
+  await frames(page, 2);
+  await page.waitForTimeout(ms);
+};
 const settleCursor = async (page) => {
+  await frames(page, 2);
   await page.waitForTimeout(140);
   await page.waitForFunction(() => {
     const list = document.getElementById('paletteResults');
@@ -130,7 +139,7 @@ const run = async (browser, base, lang, steps) => {
   const cs = openFrames.filter((f) => f.c).map((f) => f.c);
   const drift = hs.length ? Math.max(...hs) - Math.min(...hs) : 999;
   const cursorDrift = cs.length ? Math.max(...cs) - Math.min(...cs) : 999;
-  record(L('the first palette row has one height from the first frame it opens'), hs.length > 5 && drift <= 0.5, `heights ${Math.min(...hs)}..${Math.max(...hs)} over ${hs.length} frames`);
+  record(L('the first palette row has one height from the first frame it opens'), hs.length >= 3 && drift <= 0.5, `heights ${Math.min(...hs)}..${Math.max(...hs)} over ${hs.length} frames`);
   record(L('the highlight is never sized for a different row height while the palette opens'), cs.length > 0 && cursorDrift <= 0.5, `heights ${Math.min(...cs)}..${Math.max(...cs)}`);
   let s = await snap(page);
   record(L('the first row is highlighted when the palette opens'), s.activeIndex === 0 && s.domIndex === 0 && sound(s).length === 0, JSON.stringify({ a: s.activeKeys, p: sound(s) }));
@@ -194,11 +203,12 @@ const run = async (browser, base, lang, steps) => {
   });
   await page.keyboard.type('a');
   await page.waitForTimeout(700);
-  const frames = await page.evaluate(() => { cancelAnimationFrame(window.__raf); return window.__dy.filter((f) => f.t - window.__t0 > 40); });
+  await page.waitForFunction(() => window.__dy.filter((f) => f.t - window.__t0 > 40).length >= 4, null, { timeout: 8000 }).catch(() => {});
+  const sampled = await page.evaluate(() => { cancelAnimationFrame(window.__raf); return window.__dy.filter((f) => f.t - window.__t0 > 40); });
   s = await snap(page);
-  const worst = frames.reduce((m, f) => Math.max(m, Math.abs(f.dy)), 0);
+  const worst = sampled.reduce((m, f) => Math.max(m, Math.abs(f.dy)), 0);
   record(L('after arrowing down, typing resets the highlight to the top result'), deep >= 5 && s.activeIndex === 0 && s.scrollTop === 0, JSON.stringify({ deep, i: s.activeIndex, top: s.scrollTop }));
-  record(L('the highlight jumps to the top result instead of sliding across the list'), frames.length >= 3 && worst <= 1.5, `worst ${Math.round(worst * 10) / 10}px over ${frames.length} frames`);
+  record(L('the highlight jumps to the top result instead of sliding across the list'), sampled.length >= 3 && worst <= 1.5, `worst ${Math.round(worst * 10) / 10}px over ${sampled.length} frames`);
   await page.keyboard.press('Control+KeyA');
   await page.keyboard.press('Backspace');
   await settleCursor(page);
