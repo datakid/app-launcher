@@ -125,6 +125,10 @@ Two real defects fixed. First, on phones every `.card-clip` is `container-type: 
 
 Not changed, with reasons: the plan's "fully rounded pills" differs from the current 9px chip and QR radius, which would be a visible redesign for owner approval. One Arabic card at 1280px has its footer 3px higher than its neighbours because its title wraps in a narrow card. At 320px a few long hostnames still truncate; shrinking the separator would gain only about one character.
 
+### T10 tests completed
+
+Added `confirmationEdges` to `qa/behaviour.mjs` (nothing existing was weakened): reset and import abort when the stored links change while the dialog is open (both languages; a mutation test removing the reset guard makes it fail), a prefs-only import opens no dialog and leaves links untouched, and at 390px in light and dark and in both languages the dialog and its buttons fit inside the viewport, buttons are at least 44px tall, the fill is opaque, and the direction matches the language. The `open` helper gained an optional `scheme` that defaults to the old behaviour.
+
 ## Post-plan check (owner request, do after T0–T10 are done, not before)
 
 Search highlighting bug, reported against the old code: typing "alt" can highlight text on a different item than the one actually being matched, and the highlight itself can be wrong, covering more or less of the item than the match. Reproduce first on the finished beta (en and ar, palette search and any in-grid search), find whether it is the match ranges, the item they are applied to, or the rendering. `src/search.js` is out of scope for the plan (N9), so this is a separate, owner-approved fix after the plan is complete.
