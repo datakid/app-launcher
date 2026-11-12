@@ -44,4 +44,4 @@ Measured idle CPU with the pointer engine: zero. `Motion.tick` already sleeps wh
 
 ## Correctness evidence
 
-`vnext/cache-e2e.mjs` checks tab-cache correctness end to end (node identity on A-B-A, invalidation on language, view, import, reset and variant changes, reduced motion, both languages).
+`vnext/cache-e2e.mjs` (run with the path of a full checkout as its argument) checks tab-cache correctness in en and ar: content identical across A-B-A-C laps, DOM node reuse and cache hit on return, no stale cards after a language switch, view held across tab switches, variant choice surviving a round trip, a 60-click burst ending consistent, no stale cards after an import, and a fully visible grid under reduced motion.
