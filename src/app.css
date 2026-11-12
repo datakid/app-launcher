@@ -3481,15 +3481,24 @@ body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-du
   background-position: calc(var(--ac) / var(--adx) * 100%) calc(var(--ar) / var(--ady) * 100%);
 }
 
-:root .controls-pill, :root[data-palette] .controls-pill, :root .lx-bar, :root[data-palette] .lx-bar, .lx-context-menu, .lx-toast, :root[data-palette] #lx-palette, :root .app-grid[data-layout="list"], .container .lx-bar .tab-rail {
+:root .lx-bar, :root[data-palette] .lx-bar, :root[data-palette] #lx-palette {
   -webkit-backdrop-filter: blur(12px) saturate(150%);
           backdrop-filter: blur(12px) saturate(150%);
+}
+@media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+  :root .lx-bar, :root[data-palette] .lx-bar, :root[data-palette] #lx-palette {
+    -webkit-backdrop-filter: none;
+            backdrop-filter: none;
+  }
+}
+:root .controls-pill, :root[data-palette] .controls-pill, :root .lx-context-menu, :root[data-palette] .lx-context-menu, :root .lx-toast, :root[data-palette] .lx-toast {
+  background-color: color-mix(in oklab, var(--bg) 92%, transparent);
 }
 :root[data-palette] .badge, :root[data-palette] .digit-badge, .icon-plate::before {
   -webkit-backdrop-filter: none;
           backdrop-filter: none;
 }
-html.lx-scrolling :is(.controls-pill, .lx-bar, .tab-rail, .app-grid[data-layout="list"]),
+html.lx-scrolling .lx-bar,
 html[data-lowend] :is(.controls-pill, .lx-bar, .tab-rail, .app-grid[data-layout="list"], .lx-context-menu, .lx-toast, #lx-palette) {
   -webkit-backdrop-filter: none !important;
           backdrop-filter: none !important;

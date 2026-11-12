@@ -103,6 +103,14 @@ The pointer engine is not perpetual here: `Motion.tick` stops when every subscri
 
 Interleaved A/B against main (3 rounds): desktop tab switch is faster on every round, mobile is neutral within noise. Both stay. Numbers in `vnext/MEASUREMENTS.md`.
 
+### T7 complete
+
+Blur now only on `.lx-bar` and `#lx-palette`. Removed from `.controls-pill`, `.tab-rail` (it was nested inside the blurred bar), the list layout, `.lx-context-menu` and `.lx-toast`; those three overlay surfaces and the pill get `color-mix(in oklab, var(--bg) 92%, transparent)` as the plan specifies, at palette-attribute specificity so the Muted, Mono and Curated overrides no longer leave them near transparent. Computed fills and `backdrop-filter` were checked in light and dark across all four palettes. Before/after screenshots (40 per side, en and ar, light and dark, bento, list and icons, 1280 and 390) differ only inside the context menu, which now shows slightly more of the card behind it. The owner still needs to approve that side by side.
+
+The scroll-time strip was narrowed from five surfaces to `.lx-bar`, because the others no longer have a blur to strip and stripping them only made their fill pop on every scroll. Removing the bar's strip too was tried and showed about 12% more frames over 33ms in dark mode over three interleaved 8s traces on this sandbox, so it stays. The `lx-scrolling` class toggle also stays: `app.js` and the icon-wrapper rule use it.
+
+The old `prefers-reduced-transparency` rule never switched off the bar and palette blur because `:root .lx-bar` outranked it. A new rule covers both reduced transparency and forced colors; forced-colors emulation confirms the blur is off, and reduced transparency cannot be emulated here.
+
 ## Post-plan check (owner request, do after T0–T10 are done, not before)
 
 Search highlighting bug, reported against the old code: typing "alt" can highlight text on a different item than the one actually being matched, and the highlight itself can be wrong, covering more or less of the item than the match. Reproduce first on the finished beta (en and ar, palette search and any in-grid search), find whether it is the match ranges, the item they are applied to, or the rendering. `src/search.js` is out of scope for the plan (N9), so this is a separate, owner-approved fix after the plan is complete.
