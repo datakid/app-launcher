@@ -6404,7 +6404,15 @@ const confirmDialog = ({ title, body, confirmLabel, cancelLabel = t('confirmCanc
     confirm.addEventListener('click', () => close(true));
     dialog.addEventListener('cancel', e => { e.preventDefault(); close(false); });
     dialog.addEventListener('close', finish, { once: true });
-    dialog.addEventListener('keydown', e => e.stopPropagation());
+    dialog.addEventListener('keydown', e => {
+      e.stopPropagation();
+      if (e.key !== 'Tab') return;
+      const stops = [cancel, confirm];
+      const at = stops.indexOf(document.activeElement);
+      const next = at === -1 ? 0 : (at + (e.shiftKey ? stops.length - 1 : 1)) % stops.length;
+      e.preventDefault();
+      stops[next].focus({ preventScroll: true });
+    });
     const outside = e => {
       const r = dialog.getBoundingClientRect();
       return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;

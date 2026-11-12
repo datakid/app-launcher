@@ -83,6 +83,10 @@ Added behavior tests for both languages: safe focus, Tab/Shift+Tab containment, 
 
 Card hostnames now have separate full and compact spans. Below 641px only the compact label displays, removing the five hosting suffixes specified in the plan. Overlay links retain the complete URL in title and accessible name. Both stacked and non-stacked variant changes update hostname markup, URL titles and accessible link labels. URLs and catalogue schema are unchanged. Check actual truncation at 320px/390px, RTL and all themes; no contrast or anatomy pass is claimed.
 
+## Post-plan check (owner request, do after T0–T10 are done, not before)
+
+Search highlighting bug, reported against the old code: typing "alt" can highlight text on a different item than the one actually being matched, and the highlight itself can be wrong, covering more or less of the item than the match. Reproduce first on the finished beta (en and ar, palette search and any in-grid search), find whether it is the match ranges, the item they are applied to, or the rendering. `src/search.js` is out of scope for the plan (N9), so this is a separate, owner-approved fix after the plan is complete.
+
 ## Ideas
 
 None implemented beyond the authorized scope.
