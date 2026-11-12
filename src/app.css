@@ -244,11 +244,11 @@
   --display-font: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
 }
 :root:lang(en) .app-title { font-feature-settings: "liga", "calt"; }
-.card-host-full, .card-host-short { display: inline-block; min-inline-size: 0; max-inline-size: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-host-full, .card-host-short { white-space: nowrap; }
 .card-host-short { display: none; }
 @media (max-width: 640px) {
   .card-host-full { display: none; }
-  .card-host-short { display: inline-block; }
+  .card-host-short { display: inline; }
 }
 
 :root[data-theme="light"] { color-scheme: light; --closed-ink: oklch(50% 0.12 28); }
@@ -2077,6 +2077,7 @@ h1 {
     flex-direction: column; align-items: stretch; justify-content: space-between;
     gap: 0.85rem; padding: 0.85rem;
   }
+  .app-grid:not([data-layout]) .app-card .card-clip { container-type: inline-size; }
   .app-grid .app-card .bento-header { width: 100%; justify-content: space-between; align-items: flex-start; gap: 0.4rem; }
   .app-grid .app-card .bento-footer {
     width: 100%; flex: 0 0 auto; margin: 0;
