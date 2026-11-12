@@ -3639,17 +3639,24 @@ const syncPaletteCursor = (instant = false) => {
   if (!li) { cursor.classList.remove('is-visible'); return; }
   const h = li.offsetHeight;
   if (!h) return;
+  const y = li.offsetTop;
+  cursor.classList.toggle('is-dimmed', paletteZone === 'actions');
+  if (cursor.classList.contains('is-visible') && cursor.dataset.y === String(y) && cursor.dataset.h === String(h)) return;
   const snap = instant || !cursor.classList.contains('is-visible');
   if (snap) cursor.classList.add('is-snapping');
-  cursor.style.transform = `translate3d(0, ${li.offsetTop}px, 0)`;
+  cursor.dataset.y = String(y);
+  cursor.dataset.h = String(h);
+  cursor.style.transform = `translate3d(0, ${y}px, 0)`;
   cursor.style.height = `${h}px`;
   cursor.classList.add('is-visible');
-  cursor.classList.toggle('is-dimmed', paletteZone === 'actions');
   if (snap) {
     void cursor.offsetHeight;
     cursor.classList.remove('is-snapping');
   }
 };
+
+const paletteRowObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(() => syncPaletteCursor(true)) : null;
+let paletteRenderKey = null;
 
 let commandIndexCache = null;
 
@@ -3714,6 +3721,7 @@ const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   li.dataset.index = String(globalIndex);
   li.setAttribute('style', `${gradVars(appGradient(e.app))}--n:${globalIndex};`);
   li.innerHTML = paletteItemContentHtml(e, query);
+  paletteRowObserver?.observe(li);
   return li;
 };
 
@@ -3895,7 +3903,10 @@ const renderPaletteResults = (rawQuery) => {
     paletteTryPicks.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
   }
 
-  let newActiveIndex = prevActiveKey ? paletteItems.findIndex(e => paletteEntryKey(e) === prevActiveKey) : -1;
+  const renderKey = `${isCmd ? 1 : 0}\u0001${paletteScope}\u0001${query}`;
+  const sameView = renderKey === paletteRenderKey;
+  paletteRenderKey = renderKey;
+  let newActiveIndex = sameView && prevActiveKey ? paletteItems.findIndex(e => paletteEntryKey(e) === prevActiveKey) : -1;
   if (newActiveIndex === -1) newActiveIndex = paletteItems.length ? 0 : -1;
   paletteActiveIndex = newActiveIndex;
   paletteActionIndex = 0;
@@ -3904,7 +3915,10 @@ const renderPaletteResults = (rawQuery) => {
   paletteResults.classList.toggle('entrance-armed', paletteEntranceArmed);
   paletteEntranceArmed = false;
 
+  if (!sameView) paletteResults.scrollTop = 0;
+
   if (!rows.length) {
+    paletteRowObserver?.disconnect();
     paletteResults.innerHTML = `<li class="palette-empty">${escapeHtml(t('noResults'))}</li>`;
   } else {
     const pool = new Map();
@@ -3928,7 +3942,11 @@ const renderPaletteResults = (rawQuery) => {
       usedKeys.add(key);
       paletteResults.appendChild(li);
     });
-    pool.forEach((li, key) => { if (!usedKeys.has(key)) li.remove(); });
+    pool.forEach((li, key) => {
+      if (usedKeys.has(key)) return;
+      paletteRowObserver?.unobserve(li);
+      li.remove();
+    });
   }
 
   updateActiveDescendant();
@@ -3938,7 +3956,7 @@ const renderPaletteResults = (rawQuery) => {
   updatePaletteStatus(query, isCmd ? paletteItems.length : scored.length + cmdHits.length, isCmd);
   updatePaletteMode(isCmd);
   renderPaletteScopes(scopeCounts, isCmd);
-  syncPaletteCursor();
+  syncPaletteCursor(!sameView);
   scheduleWarmActiveEntry();
 };
 
@@ -4759,6 +4777,9 @@ const openPalette = (seed = '') => {
   lastDetailKey = null;
   paletteScope = 'all';
   paletteEntranceArmed = true;
+  paletteRenderKey = null;
+  paletteItems = [];
+  paletteActiveIndex = -1;
 
   if (hero && !heroRestBox) heroRestBox = hero.getBoundingClientRect();
 
@@ -5437,8 +5458,13 @@ const setupInteractions = () => {
   const paletteInput = document.getElementById('paletteInput');
   const paletteResultsList = document.getElementById('paletteResults');
 
+  let lastPointerX = -1;
+  let lastPointerY = -1;
   paletteResultsList.addEventListener('pointermove', (e) => {
     if (e.pointerType === 'touch') return;
+    if (e.clientX === lastPointerX && e.clientY === lastPointerY) return;
+    lastPointerX = e.clientX;
+    lastPointerY = e.clientY;
     const li = e.target.closest('.palette-item');
     if (!li || !paletteResultsList.contains(li)) return;
     const idx = Number(li.dataset.index);

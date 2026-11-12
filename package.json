@@ -16,7 +16,7 @@
     "qa:search": "node qa/search.mjs",
     "build": "node build/build.mjs",
     "qa:load": "node qa/load.mjs",
-    "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs && node qa/search-ui.mjs",
+    "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs && node qa/search-ui.mjs && node qa/search-highlight.mjs",
     "qa:qr": "node qa/qr-encoder.mjs && node qa/qr.mjs && node qa/qr-stress.mjs",
     "qa:zen": "node qa/zen.mjs",
     "qa:icons": "node qa/icon-solver.mjs && node qa/icons-switch.mjs && node qa/icons-schema.mjs"
