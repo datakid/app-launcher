@@ -83,6 +83,10 @@ Added behavior tests for both languages: safe focus, Tab/Shift+Tab containment, 
 
 Card hostnames now have separate full and compact spans. Below 641px only the compact label displays, removing the five hosting suffixes specified in the plan. Overlay links retain the complete URL in title and accessible name. Both stacked and non-stacked variant changes update hostname markup, URL titles and accessible link labels. URLs and catalogue schema are unchanged. Check actual truncation at 320px/390px, RTL and all themes; no contrast or anatomy pass is claimed.
 
+### T2 complete: one source of truth for motion
+
+Removed `.lx-switching`, `switchClamp`, `clampTargets`, the `--lx-switch-ms` writes and every `clampMs` field. `--qr-ease` now resolves to `--ease-lux`, so `cubic-bezier(0.16, 1, 0.3, 1)` no longer exists anywhere in `src/`, and `cubic-bezier(0.22, 1, 0.36, 1)` is defined once in CSS and read once by JS. The only table values that duplicated a duration token were `MOTION_NEW.hover.inMs` (`--dur-micro`) and `MOTION_LEGACY.view.inMs` (`--dur-slow`); both now read the token. All other table entries are standalone durations or delays and were left. Deliberate visible change: during a tab or view switch the bar and pill no longer have their `--dur-*` clamped to 120–240ms, so their colour transitions use the normal token lengths. Owner sign-off of palette and QR open/close at 0.25x is still pending, as the plan requires.
+
 ## Post-plan check (owner request, do after T0–T10 are done, not before)
 
 Search highlighting bug, reported against the old code: typing "alt" can highlight text on a different item than the one actually being matched, and the highlight itself can be wrong, covering more or less of the item than the match. Reproduce first on the finished beta (en and ar, palette search and any in-grid search), find whether it is the match ranges, the item they are applied to, or the rendering. `src/search.js` is out of scope for the plan (N9), so this is a separate, owner-approved fix after the plan is complete.

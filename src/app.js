@@ -933,9 +933,9 @@ const isLowEnd = () => navigator.hardwareConcurrency <= 4 || (typeof navigator.d
 const MOTION_SHARED = { outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', travelOut: 10, travelIn: 14, liftIn: 8, scaleOut: 0.988, scaleIn: 0.982 };
 const MOTION_LEGACY = {
   ...MOTION_SHARED,
-  tab: { outMs: motionMs('--lx-tab-out', 120), inMs: motionMs('--lx-tab-in', 240), inDelay: 0, stagger: 0, railMs: 460, clampMs: 0 },
-  view: { outMs: 190, inMs: 620, inDelay: 60, stagger: 150, railMs: 460, clampMs: 0 },
-  version: { inMs: 240, clampMs: 0 },
+  tab: { outMs: motionMs('--lx-tab-out', 120), inMs: motionMs('--lx-tab-in', 240), inDelay: 0, stagger: 0, railMs: 460 },
+  view: { outMs: 190, inMs: motionMs('--dur-slow', 620), inDelay: 60, stagger: 150, railMs: 460 },
+  version: { inMs: 240 },
   paletteOpen: { inMs: 420 },
   paletteClose: { outMs: 250 },
   qr: { inMs: 420, outMs: 250, variantMs: 240 },
@@ -946,16 +946,16 @@ const MOTION_LEGACY = {
 };
 const MOTION_NEW = {
   ...MOTION_SHARED,
-  tab: { outMs: motionMs('--lx-tab-out', 120), inMs: motionMs('--lx-tab-in', 240), inDelay: 0, stagger: 0, railMs: 220, clampMs: 240 },
-  view: { outMs: 120, inMs: 220, inDelay: 60, stagger: 0, railMs: 220, clampMs: 220 },
-  version: { inMs: 120, clampMs: 120 },
+  tab: { outMs: motionMs('--lx-tab-out', 120), inMs: motionMs('--lx-tab-in', 240), inDelay: 0, stagger: 0, railMs: 220 },
+  view: { outMs: 120, inMs: 220, inDelay: 60, stagger: 0, railMs: 220 },
+  version: { inMs: 120 },
   paletteOpen: { inMs: 200 },
   paletteClose: { outMs: 140 },
   qr: { inMs: 220, outMs: 150, variantMs: 160 },
   crossfade: { inMs: 200 },
   theme: { inMs: 320 },
   boot: { inMs: 360, offset: 120, spread: 180 },
-  hover: { inMs: 160 }
+  hover: { inMs: motionMs('--dur-micro', 160) }
 };
 const MOTION = document.documentElement.dataset.motion === 'legacy' ? MOTION_LEGACY : MOTION_NEW;
 document.documentElement.style.setProperty('--lx-version-ms', `${MOTION.version.inMs}ms`);
@@ -973,18 +973,6 @@ const onAnyScroll = () => {
 };
 document.addEventListener('scroll', onAnyScroll, { passive: true, capture: true });
 if (isLowEnd()) document.documentElement.setAttribute('data-lowend', '');
-let switchClampTimer = 0;
-const clampTargets = () => document.querySelectorAll('.lx-bar, .controls-pill');
-const switchClamp = (kind) => {
-  const m = MOTION[kind];
-  if (!m || !m.clampMs || MQ.reducedMotion) return;
-  clampTargets().forEach((el) => {
-    el.style.setProperty('--lx-switch-ms', `${m.clampMs}ms`);
-    el.classList.add('lx-switching');
-  });
-  clearTimeout(switchClampTimer);
-  switchClampTimer = setTimeout(() => clampTargets().forEach((el) => el.classList.remove('lx-switching')), (m.inDelay || 0) + (m.inMs || 0) + 100);
-};
 const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
 
 class Spring {
@@ -2736,7 +2724,6 @@ const setViewMode = (mode, { silent = false, persist = true } = {}) => {
     grid.querySelectorAll('.app-card, .icon-plate').forEach((c) => c.classList.add('no-enter'));
     if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
   } else {
-    switchClamp('view');
     runGridSwitch(grid, run, 0, mode, 'view');
   }
   pointerFieldDirty = true;
@@ -3384,7 +3371,6 @@ const activateTab = (id, opts = {}) => {
 
   const cat = categories.find(c => c.id === id);
 
-  if (!instant && prevId && prevId !== id) switchClamp('tab');
   flipTabRail(() => setActiveButtonStates(id));
   applyTabAccent(cat, prevId && prevId !== id ? dir : 0);
   moveIndicator(id, instant ? id : prevId);
