@@ -1,5 +1,5 @@
-const CACHE = "lx-767b39ce";
-const PRECACHE = ["index.html","app.76d54fd2.css","app.5ada7f3d.js","icons/glyphs.f3066055.svg","favicon.ico","links.json","manifest.webmanifest","icons/manifest.v2.json","fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2","fonts/el-messiri-arabic-700-normal.woff2","fonts/inter-latin-400-normal.woff2","fonts/cormorant-garamond-latin-400-italic.woff2","icons/glyph-atlas.85619065.webp"];
+const CACHE = "lx-145b9377";
+const PRECACHE = ["index.html","app.76d54fd2.css","app.5ada7f3d.js","icons/glyphs.0718a9f3.svg","favicon.ico","links.json","manifest.webmanifest","icons/manifest.v2.json","fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2","fonts/el-messiri-arabic-700-normal.woff2","fonts/inter-latin-400-normal.woff2","fonts/cormorant-garamond-latin-400-italic.woff2","icons/glyph-atlas.85619065.webp"];
 const HASHED = /\/(app\.[0-9a-f]{8}\.(css|js)|icons\/(atlas|glyph-atlas|glyphs)\.[0-9a-f]{8}\.(webp|svg)|fonts\/[^/]+\.woff2)$/;
 const REVALIDATED = /\/(links\.json|icons\/manifest\.v2\.json)$/;
 const REVALIDATE_DELAY_MS = 2000;

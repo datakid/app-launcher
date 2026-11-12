@@ -74,11 +74,11 @@ const experimental = byKey('experimental');
 const expectWidths = [
   ['core', core, 8, [6, 5]],
   ['core', core, 6, [6, 5]],
-  ['experimental', experimental, 8, [5, 4]],
-  ['experimental', experimental, 4, [3, 3, 3]],
+  ['experimental', experimental, 8, [5, 5]],
+  ['experimental', experimental, 4, [4, 3, 3]],
   ['tools', tools, 8, [6, 6]]
 ];
-record('solver: the real categories balance as planned (Core 6+5, Experimental 5+4 and 3+3+3, Tools 6+6)', (() => {
+record('solver: the real categories balance as planned (Core 6+5, Experimental 5+5 and 4+3+3, Tools 6+6)', (() => {
   const bad = [];
   expectWidths.forEach(([name, items, cols, want]) => {
     const got = widths(solveIconRows(items, cols), cols);
