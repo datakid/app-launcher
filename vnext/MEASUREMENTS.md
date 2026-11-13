@@ -45,3 +45,10 @@ Measured idle CPU with the pointer engine: zero. `Motion.tick` already sleeps wh
 ## Correctness evidence
 
 `vnext/cache-e2e.mjs` (run with the path of a full checkout as its argument) checks tab-cache correctness in en and ar: content identical across A-B-A-C laps, DOM node reuse and cache hit on return, no stale cards after a language switch, view held across tab switches, variant choice surviving a round trip, a 60-click burst ending consistent, no stale cards after an import, and a fully visible grid under reduced motion.
+
+## Ranking
+
+1. T5/T6 tab switch: GO, kept. Desktop interaction, readable and grid settle are 18% to 33% faster on every interleaved round; mobile is neutral within noise; style recalcs on tab switches drop 12.7%.
+2. T7 glass: GO, done. Blur only remains on the bar and palette; the scroll-time strip stays on the bar because removing it showed about 12% more frames over 33ms in dark mode. No measurable frame-time gain was visible in this sandbox because it has no GPU, so the benefit is unproven here and the change is justified by removing nested and scroll-popping blur, not by a number.
+3. T4 pointer field: SKIP. Idle cost is zero and the `@property` inheritance cannot be flipped.
+4. Palette open: not measured separately; no change made.

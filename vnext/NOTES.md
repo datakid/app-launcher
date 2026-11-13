@@ -2,9 +2,7 @@
 
 ## Status
 
-Untested source draft, not a completed release. The owner explicitly requested implementation here and deferred builds, tests, measurements, screenshots, and finishing work to Sonnet. Nothing was deployed or pushed to datakid/app-launcher. No performance improvement is claimed.
-
-This workspace is a focused source copy, NOT a complete GitHub checkout. Its files were fetched from public main on 2026-11-11. It does not contain the build pipeline, complete QA suite, lockfile, HTML template, imported modules, fonts, or icon assets. The behavior test file alone has now been copied and extended. Do not attempt to deploy this workspace as-is.
+Plan T0 to T10 worked through on the `beta` branch, one commit per ticket, verified by overlaying this branch on a scratch copy of `main` (the complete toolchain) and running the plan's gates. Nothing was deployed or pushed to `main`. T4 was skipped on evidence. Owner approvals still outstanding are listed in each ticket's section below, and the post-plan search-highlight check is still to do.
 
 ## Files to integrate into a full checkout
 
