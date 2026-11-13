@@ -578,16 +578,21 @@ const renderMarkStack = (app, cls) => {
   return `<span class="mark-stack" aria-hidden="true">${items.join('')}</span>`;
 };
 const cardMarkHtml = (app, activeVariant, iconName, cls, stacked) => (stacked ? renderMarkStack(app, cls) : markHtml(app, activeVariant, iconName, cls));
+const cardHostMarkup = host => {
+  const short = host.replace(/\.(?:vercel\.app|netlify\.app|github\.io|pages\.dev|workers\.dev)$/i, '');
+  return `<span class="card-host-full">${escapeHtml(host)}</span><span class="card-host-short" aria-hidden="true">${escapeHtml(short || host)}</span>`;
+};
 const setActiveVariant = (cardEl, variantId, patch) => {
   cardEl.dataset.activeVariant = variantId;
   if (!patch) return;
   const link = cardEl.querySelector('.card-link-overlay');
   if (link) {
     link.href = patch.href;
-    link.setAttribute('aria-label', patch.label);
+    link.setAttribute('aria-label', `${patch.label} — ${patch.href}`);
+    link.title = patch.href;
   }
   const meta = cardEl.querySelector('.card-meta');
-  if (meta) meta.textContent = patch.host;
+  if (meta) { meta.innerHTML = cardHostMarkup(patch.host); meta.title = patch.href; }
   if (patch.c1) cardEl.style.setProperty('--c1', patch.c1);
 };
 const refreshStack = (card, app) => {
@@ -722,6 +727,10 @@ const STRINGS = {
   exportDone: { ar: 'تم تصدير بياناتك', en: 'Your data was exported' },
   resetConfirm: { ar: 'حذف كل روابطك المستوردة؟', en: 'Remove all your imported links?' },
   resetDone: { ar: 'تم حذف روابطك', en: 'Your links were removed' },
+  confirmCancel: { ar: 'إلغاء', en: 'Cancel' },
+  confirmImport: { ar: 'استيراد', en: 'Import' },
+  confirmRemove: { ar: 'حذف الروابط', en: 'Remove links' },
+  dataChanged: { ar: 'تغيرت روابطك أثناء التأكيد. راجعها ثم حاول مجددًا.', en: 'Your links changed while confirming. Review them and try again.' },
   importTooLarge: { ar: 'الملف أكبر من {n} كيلوبايت.', en: 'File is larger than {n} KB.' },
   importTooMany: { ar: 'الحد الأقصى {n} رابطًا.', en: 'Maximum is {n} links.' },
   importEmpty: { ar: 'لا توجد روابط صالحة (يجب أن تبدأ بـ https://).', en: 'No valid links (must start with https://).' },
@@ -905,7 +914,15 @@ const MQ = (() => {
   return state;
 })();
 
-const EASE_LUX = 'cubic-bezier(0.16, 1, 0.3, 1)';
+const motionStyle = getComputedStyle(document.documentElement);
+const motionMs = (name, fallback) => {
+  const value = motionStyle.getPropertyValue(name).trim();
+  const number = Number.parseFloat(value);
+  return Number.isFinite(number) && /m?s$/.test(value) ? number * (value.endsWith('ms') ? 1 : 1000) : fallback;
+};
+const EASE_LUX = motionStyle.getPropertyValue('--ease-lux').trim() || 'cubic-bezier(0.22, 1, 0.36, 1)';
+const EASE_ENTER = motionStyle.getPropertyValue('--ease-enter').trim() || EASE_LUX;
+const EASE_EXIT = motionStyle.getPropertyValue('--ease-exit').trim() || EASE_LUX;
 const nativeAnimate = Element.prototype.animate;
 Element.prototype.animate = function (keyframes, options) {
   if (!MQ.reducedMotion) return nativeAnimate.call(this, keyframes, options);
@@ -916,9 +933,9 @@ const isLowEnd = () => navigator.hardwareConcurrency <= 4 || (typeof navigator.d
 const MOTION_SHARED = { outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', travelOut: 10, travelIn: 14, liftIn: 8, scaleOut: 0.988, scaleIn: 0.982 };
 const MOTION_LEGACY = {
   ...MOTION_SHARED,
-  tab: { outMs: 190, inMs: 620, inDelay: 60, stagger: 150, railMs: 460, clampMs: 0 },
-  view: { outMs: 190, inMs: 620, inDelay: 60, stagger: 150, railMs: 460, clampMs: 0 },
-  version: { inMs: 240, clampMs: 0 },
+  tab: { outMs: motionMs('--lx-tab-out', 120), inMs: motionMs('--lx-tab-in', 240), inDelay: 0, stagger: 0, railMs: 460 },
+  view: { outMs: 190, inMs: motionMs('--dur-slow', 620), inDelay: 60, stagger: 150, railMs: 460 },
+  version: { inMs: 240 },
   paletteOpen: { inMs: 420 },
   paletteClose: { outMs: 250 },
   qr: { inMs: 420, outMs: 250, variantMs: 240 },
@@ -929,16 +946,16 @@ const MOTION_LEGACY = {
 };
 const MOTION_NEW = {
   ...MOTION_SHARED,
-  tab: { outMs: 120, inMs: 220, inDelay: 60, stagger: 0, railMs: 220, clampMs: 220 },
-  view: { outMs: 120, inMs: 220, inDelay: 60, stagger: 0, railMs: 220, clampMs: 220 },
-  version: { inMs: 120, clampMs: 120 },
+  tab: { outMs: motionMs('--lx-tab-out', 120), inMs: motionMs('--lx-tab-in', 240), inDelay: 0, stagger: 0, railMs: 220 },
+  view: { outMs: 120, inMs: 220, inDelay: 60, stagger: 0, railMs: 220 },
+  version: { inMs: 120 },
   paletteOpen: { inMs: 200 },
   paletteClose: { outMs: 140 },
   qr: { inMs: 220, outMs: 150, variantMs: 160 },
   crossfade: { inMs: 200 },
   theme: { inMs: 320 },
   boot: { inMs: 360, offset: 120, spread: 180 },
-  hover: { inMs: 160 }
+  hover: { inMs: motionMs('--dur-micro', 160) }
 };
 const MOTION = document.documentElement.dataset.motion === 'legacy' ? MOTION_LEGACY : MOTION_NEW;
 document.documentElement.style.setProperty('--lx-version-ms', `${MOTION.version.inMs}ms`);
@@ -956,18 +973,6 @@ const onAnyScroll = () => {
 };
 document.addEventListener('scroll', onAnyScroll, { passive: true, capture: true });
 if (isLowEnd()) document.documentElement.setAttribute('data-lowend', '');
-let switchClampTimer = 0;
-const clampTargets = () => document.querySelectorAll('.lx-bar, .controls-pill');
-const switchClamp = (kind) => {
-  const m = MOTION[kind];
-  if (!m || !m.clampMs || MQ.reducedMotion) return;
-  clampTargets().forEach((el) => {
-    el.style.setProperty('--lx-switch-ms', `${m.clampMs}ms`);
-    el.classList.add('lx-switching');
-  });
-  clearTimeout(switchClampTimer);
-  switchClampTimer = setTimeout(() => clampTargets().forEach((el) => el.classList.remove('lx-switching')), (m.inDelay || 0) + (m.inMs || 0) + 100);
-};
 const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
 
 class Spring {
@@ -1232,7 +1237,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
 
   const overlayLabel = app.closed ? `${activeLabel} — ${t('badgeClosed')}` : activeLabel;
   const overlayTarget = openMode() === 'same' ? '' : ' target="_blank"';
-  const overlayAttrs = `href="${escapeHtml(activeUrl)}"${overlayTarget} rel="noopener noreferrer" aria-label="${escapeHtml(overlayLabel)}"`;
+  const overlayAttrs = `href="${escapeHtml(activeUrl)}"${overlayTarget} rel="noopener noreferrer" title="${escapeHtml(activeUrl)}" aria-label="${escapeHtml(overlayLabel)} — ${escapeHtml(activeUrl)}"`;
 
   const overlayHtml = `<a class="card-link-overlay" ${overlayAttrs} data-open-mode="${openMode()}"${carriesDigit ? ` aria-keyshortcuts="${idx + 1}"` : ''}></a>`;
   const surfaceHtml = `
@@ -1243,7 +1248,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       ${app.closed ? '<div class="closed-tint" aria-hidden="true"></div>' : ''}`;
   const iconHtml = `${wrapOpen(app, activeVariant)}${cardMarkHtml(app, activeVariant, iconClass, 'app-icon', stackable)}${digitHtml}</div>`;
   const titleHtml = `<h3 class="app-title">${escapeHtml(title)}</h3>`;
-  const hostHtml = host ? `<span class="card-meta" dir="ltr">${escapeHtml(host)}</span>` : '';
+  const hostHtml = host ? `<span class="card-meta" dir="ltr" title="${escapeHtml(activeUrl)}">${cardHostMarkup(host)}</span>` : '';
 
   const bentoBody = `
       <div class="bento-header">
@@ -1300,6 +1305,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
       try { localStorage.setItem('lx-last-open', app.id); } catch (err) { if (LX_DEBUG) console.warn(err); }
       if (launched && isTile) {
         try { localStorage.setItem('lx-variant-' + app.id, String(variantIndex)); } catch (err) { if (LX_DEBUG) console.warn(err); }
+        invalidateGridCache();
       }
       if (launched) recordLaunch();
     }, 0);
@@ -1375,8 +1381,9 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
         setActiveVariant(el, String(v.id), { href: v.url, host: hostOf(v.url), label: ariaLabel, c1: tone(appGradient(app, v)[0]) });
       } else {
         linkEl.href = v.url;
-        if (metaEl) metaEl.textContent = hostOf(v.url);
-        linkEl.setAttribute('aria-label', ariaLabel);
+        if (metaEl) { metaEl.innerHTML = cardHostMarkup(hostOf(v.url)); metaEl.title = v.url; }
+        linkEl.setAttribute('aria-label', `${ariaLabel} — ${v.url}`);
+        linkEl.title = v.url;
         clearTimeout(el._iconTimer);
         cancelAnimationFrame(el._iconRaf);
         const outgoing = tileEl.querySelector('.app-icon');
@@ -1396,6 +1403,7 @@ const createCard = (app, idx, placement, cat, opts = {}) => {
         }, 120);
       }
       try { localStorage.setItem('lx-variant-' + app.id, String(i)); } catch (e) { if (LX_DEBUG) console.warn(e); }
+      invalidateGridCache();
       sfx.click();
     };
 
@@ -1858,10 +1866,87 @@ const iconsRO = typeof ResizeObserver === 'function' ? new ResizeObserver((entri
   });
 }) : null;
 
-const renderCards = (grid, categoryId) => {
+const gridCache = new Map();
+let gridDataVersion = 0;
+const invalidateGridCache = () => {
+  gridDataVersion += 1;
+  gridCache.clear();
+  const grid = document.getElementById('appGrid');
+  if (grid) grid._cacheKey = null;
+};
+
+const stashGrid = (grid) => {
+  if (!grid._cacheKey) return;
+  const entry = {
+    fragment: document.createDocumentFragment(),
+    columns: grid.style.gridTemplateColumns,
+    rows: grid.style.gridTemplateRows,
+    layout: grid.dataset.layout,
+    rowCount: grid.dataset.rows,
+    classes: ['is-auto-flow', 'has-overflow', 'at-bottom'].filter(c => grid.classList.contains(c)),
+    items: grid._icItems,
+    iconCols: grid._icCols,
+    iconColumns: grid.style.getPropertyValue('--ic-cols'),
+    scrollTop: grid.scrollTop,
+    scrollLeft: grid.scrollLeft
+  };
+  while (grid.firstChild) entry.fragment.appendChild(grid.firstChild);
+  gridCache.set(grid._cacheKey, entry);
+};
+
+const renderCards = (grid, categoryId, { useCache = false } = {}) => {
   const cat = categories.find(c => c.id === categoryId);
   if (!cat) return false;
+  if (!useCache) invalidateGridCache();
+  const key = `${categoryId}|${lang}|${viewMode()}|${gridDataVersion}`;
   const hadFocusInGrid = grid.contains(document.activeElement) && document.activeElement !== grid;
+  const cached = gridCache.get(key);
+  grid._cacheHit = !!cached;
+  if (iconsRO) iconsRO.unobserve(grid);
+  stashGrid(grid);
+  grid._cacheKey = key;
+  if (cached) {
+    grid.replaceChildren(cached.fragment);
+    gridCache.delete(key);
+    grid.style.gridTemplateColumns = cached.columns;
+    grid.style.gridTemplateRows = cached.rows;
+    if (cached.layout === undefined) delete grid.dataset.layout;
+    else grid.dataset.layout = cached.layout;
+    if (cached.rowCount === undefined) delete grid.dataset.rows;
+    else grid.dataset.rows = cached.rowCount;
+    ['is-auto-flow', 'has-overflow', 'at-bottom'].forEach(c => grid.classList.toggle(c, cached.classes.includes(c)));
+    grid._icItems = cached.items;
+    grid._icCols = cached.iconCols;
+    grid._icDeferred = false;
+    if (cached.iconColumns) grid.style.setProperty('--ic-cols', cached.iconColumns);
+    else grid.style.removeProperty('--ic-cols');
+    grid.querySelectorAll('.app-card, .icon-plate').forEach(c => {
+      c.classList.add('no-enter');
+      c.classList.remove('is-boot-card', 'is-tracking', 'is-live', 'is-hot', 'is-kb-focus', 'is-ring');
+      c._pressed = false;
+      c._wc = false;
+      c._hot = false;
+      c.style.willChange = '';
+      c.style.transform = '';
+      c.style.opacity = '';
+      c.style.setProperty('--tx', '0');
+      c.style.setProperty('--ty', '0');
+      c.style.setProperty('--hov', '0');
+      c._last = {};
+      if (c._springs) Object.entries(c._springs).forEach(([name, s]) => { s.to = name === 'sc' ? 1 : 0; s.snap(); });
+    });
+    if (grid._icItems) {
+      repackIcons(grid);
+      fitIconLabels(grid);
+      if (iconsRO) iconsRO.observe(grid);
+    }
+    grid.scrollTop = cached.scrollTop;
+    grid.scrollLeft = cached.scrollLeft;
+    pointerFieldDirty = true;
+    if (hadFocusInGrid) (grid.querySelector('.card-link-overlay') || document.getElementById(`tab-${categoryId}`))?.focus({ preventScroll: true });
+    return false;
+  }
+  grid._icDeferred = false;
   grid.classList.remove('has-overflow', 'at-bottom');
 
   if (!cat.apps.length) {
@@ -1869,6 +1954,10 @@ const renderCards = (grid, categoryId) => {
     grid.style.gridTemplateColumns = '';
     grid.style.gridTemplateRows = '';
     delete grid.dataset.layout;
+    delete grid.dataset.rows;
+    grid._icItems = null;
+    grid._icCols = undefined;
+    grid.style.removeProperty('--ic-cols');
     grid.innerHTML = `<div class="grid-empty">${icon('fa-box-open')}<span>${escapeHtml(t('emptyCategory'))}</span></div>`;
     pointerFieldDirty = true;
     if (hadFocusInGrid) document.getElementById(`tab-${categoryId}`)?.focus({ preventScroll: true });
@@ -1968,13 +2057,14 @@ const cardDistances = (cards) => {
 };
 
 const staggerCardEntry = (grid, isBootBatch) => {
+  if (grid._cacheHit) return;
   const cards = gridUnits(grid);
   const skipEntryAnim = MQ.reducedMotion;
   const isAutoFlow = grid.classList.contains('is-auto-flow');
   const scrollDriven = supportsViewTimeline && isNarrowViewport();
 
   const overflowAmount = isAutoFlow ? grid.scrollHeight - grid.clientHeight : 0;
-  const { dists, max } = cardDistances(cards);
+  const { dists, max } = isBootBatch ? cardDistances(cards) : { dists: [], max: 1 };
 
   if (isAutoFlow) grid.classList.toggle('has-overflow', overflowAmount > 4);
   cards.forEach((c, i) => {
@@ -1995,7 +2085,7 @@ const initPointerField = () => {
 
   const paletteEl = document.getElementById('lx-palette');
   const qrEl = document.getElementById('lx-qr');
-  const isSuspended = () => !!((paletteEl && paletteEl.open) || (qrEl && qrEl.open));
+  const isSuspended = () => confirmationPending || !!((paletteEl && paletteEl.open) || (qrEl && qrEl.open));
   let REVEAL_RADIUS = Math.max(150, Math.min(260, window.innerWidth * 0.22));
   let cards = [];
   let px = -9999, py = -9999;
@@ -2549,6 +2639,7 @@ const withCrossfade = (apply) => {
 };
 
 const retintUI = () => {
+  invalidateGridCache();
   const appById = new Map();
   categories.forEach(c => c.apps.forEach(a => appById.set(a.id, a)));
   document.querySelectorAll('#appGrid .app-card[data-app-id]').forEach((el) => {
@@ -2598,6 +2689,7 @@ const setCornersMode = (mode, { silent = false, persist = true } = {}) => {
   if (!CORNERS.includes(mode) || root.dataset.corners === mode) return;
   withCrossfade(() => {
     root.dataset.corners = mode;
+    invalidateGridCache();
     pointerFieldDirty = true;
     updateLookButtonLabel();
     requestAnimationFrame(() => measureRail());
@@ -2632,7 +2724,6 @@ const setViewMode = (mode, { silent = false, persist = true } = {}) => {
     grid.querySelectorAll('.app-card, .icon-plate').forEach((c) => c.classList.add('no-enter'));
     if (grid.classList.contains('is-auto-flow')) grid.classList.toggle('has-overflow', grid.scrollHeight - grid.clientHeight > 4);
   } else {
-    switchClamp('view');
     runGridSwitch(grid, run, 0, mode, 'view');
   }
   pointerFieldDirty = true;
@@ -2646,6 +2737,7 @@ const setViewMode = (mode, { silent = false, persist = true } = {}) => {
 const cycle = (list, cur) => list[(list.indexOf(cur) + 1) % list.length];
 
 const syncOpenModeUI = () => {
+  invalidateGridCache();
   const m = openMode();
   document.documentElement.dataset.openMode = m;
   document.querySelectorAll('#appGrid .card-link-overlay').forEach((a) => {
@@ -2933,6 +3025,7 @@ const updateBarKbd = () => {
 };
 
 const applyI18n = (opts = {}) => {
+  invalidateGridCache();
   const { rebuild = true } = opts;
   invalidateSearchIndex();
 
@@ -3223,8 +3316,8 @@ const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab') => {
     ghost.scrollTop = g.scrollTop;
     container.insertBefore(ghost, g);
     const out = ghost.animate(
-      [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * MOTION.travelOut}px,0,0) scale(${MOTION.scaleOut})` }],
-      { duration: mo.outMs, easing: MOTION.outEase, fill: 'forwards' }
+      [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * (kind === 'tab' ? 8 : MOTION.travelOut)}px,0,0) scale(${MOTION.scaleOut})` }],
+      { duration: mo.outMs, easing: kind === 'tab' ? EASE_EXIT : MOTION.outEase, fill: 'forwards' }
     );
     anims.push(out);
   }
@@ -3232,18 +3325,20 @@ const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab') => {
   const wasBoot = run();
   const scrollDriven = supportsViewTimeline && isNarrowViewport();
   const cards = gridUnits(g);
-  const { dists, max } = mo.stagger ? cardDistances(cards) : { dists: [], max: 1 };
+  const { dists, max } = !g._cacheHit && mo.stagger ? cardDistances(cards) : { dists: [], max: 1 };
 
   if (g.classList.contains('is-auto-flow')) g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
 
-  if (!scrollDriven) {
+  if (g._cacheHit) {
+    if (!MQ.reducedMotion) anims.push(g.animate([{ opacity: 0 }, { opacity: 1 }], { duration: motionMs('--dur-micro', 160), easing: EASE_LUX }));
+  } else if (!scrollDriven || kind === 'tab') {
     cards.forEach((c, i) => {
       c.classList.add('no-enter');
       c.style.willChange = 'opacity, translate, scale';
-      const from = inFlat && !travel ? `0 ${MOTION.liftIn}px` : `${travel * MOTION.travelIn}px 0`;
+      const from = inFlat && !travel ? `0 ${MOTION.liftIn}px` : `${travel * (kind === 'tab' ? 8 : MOTION.travelIn)}px 0`;
       const a = c.animate(
         [{ opacity: 0, translate: from, scale: String(MOTION.scaleIn) }, { opacity: 1, translate: '0 0', scale: '1' }],
-        { duration: mo.inMs, delay: mo.inDelay + staggerDelay(kind, dists[i], max), easing: EASE_LUX, fill: 'backwards' }
+        { duration: mo.inMs, delay: mo.inDelay + staggerDelay(kind, dists[i], max), easing: kind === 'tab' ? EASE_ENTER : EASE_LUX, fill: 'backwards' }
       );
       anims.push(a);
     });
@@ -3276,7 +3371,6 @@ const activateTab = (id, opts = {}) => {
 
   const cat = categories.find(c => c.id === id);
 
-  if (!instant && prevId && prevId !== id) switchClamp('tab');
   flipTabRail(() => setActiveButtonStates(id));
   applyTabAccent(cat, prevId && prevId !== id ? dir : 0);
   moveIndicator(id, instant ? id : prevId);
@@ -3293,7 +3387,7 @@ const activateTab = (id, opts = {}) => {
   const rtl = document.documentElement.dir === 'rtl';
   document.documentElement.style.setProperty('--dir', String(dir * (rtl ? 1 : -1)));
 
-  const run = () => renderCards(g, id);
+  const run = () => renderCards(g, id, { useCache: prevId !== id });
 
   let rendered;
   if (instant || reducedMotion || !prevId || prevId === id || typeof g.animate !== 'function') {
@@ -5112,6 +5206,7 @@ const setZenMode = (enabled) => {
   if (paletteDialog && paletteDialog.open) return;
   if (document.getElementById('lx-qr')?.open) return;
   if (isZen() === enabled && !document.documentElement.classList.contains('is-zen-transitioning')) return;
+  invalidateGridCache();
 
   const zenBtn = document.getElementById('zenToggle');
   zenFocusReturn = document.activeElement === zenBtn;
@@ -5969,6 +6064,7 @@ const userCategory = (apps) => ({
 });
 
 const composeCategories = () => {
+  invalidateGridCache();
   invalidateSearchIndex();
   const mine = readUserLinks();
   paletteGroups.splice(0, paletteGroups.length, ...baseCatalog.filter(isPaletteOnly));
@@ -6073,6 +6169,7 @@ const warmGlyphs = () => {
 };
 
 const refreshMarks = () => {
+  invalidateGridCache();
   document.querySelectorAll('#appGrid .app-card[data-app-id]').forEach((card) => {
     const app = findAppById(card.dataset.appId);
     const wrap = card.querySelector('.app-icon-wrapper');
@@ -6119,6 +6216,7 @@ const commitIconManifest = (next, assets) => {
     iconAssets.glyphAtlas = assets.glyphAtlas;
   }
   iconManifest = next;
+  invalidateGridCache();
   try { localStorage.setItem(ICONS_KEY, JSON.stringify(next)); } catch (e) { if (LX_DEBUG) console.warn(e); }
   if (document.querySelector('#appGrid .app-card')) refreshMarks();
   warmGlyphs();
@@ -6226,6 +6324,7 @@ const setSoundEnabled = (on) => {
 
 const applyImportedPrefs = (p) => {
   if (!isObj(p)) return;
+  invalidateGridCache();
   try {
     if (p.sound === '0' || p.sound === '1') {
       localStorage.setItem('lx-sound', p.sound);
@@ -6269,6 +6368,81 @@ const pickFile = () => new Promise((resolve) => {
   input.click();
 });
 
+let confirmationPending = false;
+const confirmDialog = ({ title, body, confirmLabel, cancelLabel = t('confirmCancel'), danger = false }) => {
+  if (confirmationPending) return Promise.resolve(false);
+  confirmationPending = true;
+  const previousFocus = document.activeElement;
+  const dialog = document.createElement('dialog');
+  dialog.id = 'lx-confirm';
+  dialog.setAttribute('aria-labelledby', 'lx-confirm-title');
+  dialog.setAttribute('aria-describedby', 'lx-confirm-body');
+  const heading = document.createElement('h2');
+  heading.id = 'lx-confirm-title';
+  heading.textContent = title;
+  const description = document.createElement('p');
+  description.id = 'lx-confirm-body';
+  description.textContent = body;
+  const actions = document.createElement('div');
+  actions.className = 'confirm-actions';
+  const cancel = document.createElement('button');
+  cancel.type = 'button';
+  cancel.dataset.confirmAction = 'cancel';
+  cancel.textContent = cancelLabel;
+  cancel.autofocus = true;
+  const confirm = document.createElement('button');
+  confirm.type = 'button';
+  confirm.dataset.confirmAction = 'confirm';
+  confirm.className = danger ? 'is-danger' : 'is-primary';
+  confirm.textContent = confirmLabel;
+  actions.append(cancel, confirm);
+  dialog.append(heading, description, actions);
+  document.body.appendChild(dialog);
+  return new Promise(resolve => {
+    let accepted = false;
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      confirmationPending = false;
+      dialog.remove();
+      pointerFieldDirty = true;
+      Motion.wake();
+      if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
+      resolve(accepted);
+    };
+    const close = value => { if (!dialog.open) return; accepted = value; dialog.close(); };
+    cancel.addEventListener('click', () => close(false));
+    confirm.addEventListener('click', () => close(true));
+    dialog.addEventListener('cancel', e => { e.preventDefault(); close(false); });
+    dialog.addEventListener('close', finish, { once: true });
+    dialog.addEventListener('keydown', e => {
+      e.stopPropagation();
+      if (e.key !== 'Tab') return;
+      const stops = [cancel, confirm];
+      const at = stops.indexOf(document.activeElement);
+      const next = at === -1 ? 0 : (at + (e.shiftKey ? stops.length - 1 : 1)) % stops.length;
+      e.preventDefault();
+      stops[next].focus({ preventScroll: true });
+    });
+    const outside = e => {
+      const r = dialog.getBoundingClientRect();
+      return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+    };
+    let backdropPress = false;
+    dialog.addEventListener('pointerdown', e => { backdropPress = e.target === dialog && outside(e); });
+    dialog.addEventListener('click', e => { if (backdropPress && e.target === dialog && outside(e)) close(false); backdropPress = false; });
+    try {
+      dialog.showModal();
+      cancel.focus({ preventScroll: true });
+      Motion.wake();
+    } catch (e) {
+      if (LX_DEBUG) console.warn(e);
+      finish();
+    }
+  });
+};
+
 const importUserLinks = async () => {
   const file = await pickFile();
   if (!file) return;
@@ -6280,11 +6454,13 @@ const importUserLinks = async () => {
     const prefs = isObj(raw) && isObj(raw.prefs) ? raw.prefs : null;
     if (!links.length && !prefs) fail('importEmpty');
     if (links.length) {
+      const beforeConfirm = localStorage.getItem(USER_LINKS_KEY);
       const current = readUserLinks().length;
       const question = current
         ? fmt('importConfirm', { n: links.length, m: current })
         : fmt('importConfirmNew', { n: links.length });
-      if (!window.confirm(question)) return;
+      if (!await confirmDialog({ title: t('dataImport'), body: question, confirmLabel: t('confirmImport') })) return;
+      if (localStorage.getItem(USER_LINKS_KEY) !== beforeConfirm) { showToast(t('dataChanged'), true); return; }
       try { localStorage.setItem(USER_LINKS_KEY, JSON.stringify(links)); } catch (e) { fail('storageFailed'); }
     }
     if (prefs) applyImportedPrefs(prefs);
@@ -6331,9 +6507,14 @@ const exportUserData = () => {
   showToast(t('exportDone'));
 };
 
-const resetUserLinks = () => {
-  if (!window.confirm(t('resetConfirm'))) return;
-  try { localStorage.removeItem(USER_LINKS_KEY); } catch (e) { if (LX_DEBUG) console.warn(e); }
+const resetUserLinks = async () => {
+  let beforeConfirm;
+  try { beforeConfirm = localStorage.getItem(USER_LINKS_KEY); } catch (e) { showToast(t('storageFailed'), true); return; }
+  if (!await confirmDialog({ title: t('dataReset'), body: t('resetConfirm'), confirmLabel: t('confirmRemove'), danger: true })) return;
+  try {
+    if (localStorage.getItem(USER_LINKS_KEY) !== beforeConfirm) { showToast(t('dataChanged'), true); return; }
+  } catch (e) { showToast(t('storageFailed'), true); return; }
+  try { localStorage.removeItem(USER_LINKS_KEY); } catch (e) { showToast(t('storageFailed'), true); return; }
   composeCategories();
   rebuildCatalogUI();
   showToast(t('resetDone'));
@@ -6512,6 +6693,7 @@ const initLookMenu = () => {
     openLookMenu(btn, kb);
   });
   window.addEventListener('storage', (e) => {
+    if (e.key?.startsWith('lx-variant-')) invalidateGridCache();
     if (e.key === 'lx-palette' && PALETTES.includes(e.newValue)) setPaletteMode(e.newValue, { silent: true, persist: false });
     if (e.key === 'lx-corners' && CORNERS.includes(e.newValue)) setCornersMode(e.newValue, { silent: true, persist: false });
     if (e.key === 'lx-view' && VIEWS.includes(e.newValue) && !document.documentElement.dataset.viewLocked) setViewMode(e.newValue, { silent: true, persist: false });
