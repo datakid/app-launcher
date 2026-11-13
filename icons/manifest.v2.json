@@ -1,0 +1,1245 @@
+{
+  "atlas": {
+    "cell": 128,
+    "file": "icons/atlas.02b8d85c.webp",
+    "height": 768,
+    "width": 768
+  },
+  "generatedAt": "2026-10-31T05:24:57.930Z",
+  "glyphAtlas": {
+    "cell": 128,
+    "file": "icons/glyph-atlas.85619065.webp",
+    "height": 256,
+    "width": 384
+  },
+  "glyphSprite": {
+    "file": "icons/glyphs.f3066055.svg"
+  },
+  "hash": "060cb136",
+  "icons": {
+    "alt": {
+      "bbox": [
+        0.117,
+        0.094,
+        0.766,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-alt"
+      },
+      "hash": "0976f4802cd59f8a1f10e87e7d61af74d22faf3c5355ebea22cc7caf2e49604c",
+      "ink": 0.172,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#e36652",
+        "#febfb3",
+        "#752114"
+      ],
+      "status": "found",
+      "tint": [
+        "#e75e63",
+        "#febdbb",
+        "#781821"
+      ],
+      "tintRole": "brand"
+    },
+    "criteria-builder--meridian": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 128,
+        "y": 0
+      },
+      "glyph": {
+        "atlas": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "hash": "a2ee6180d4334375c01ba3760408301a15b7bfab7be3261fa6ba3ebc89e4fc11",
+      "ink": 0.188,
+      "layers": 2,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#9989b7",
+        "#d6caee",
+        "#483962"
+      ],
+      "status": "found",
+      "tint": [
+        "#837ba6",
+        "#c0bbdb",
+        "#352d52"
+      ],
+      "tintRole": "brand"
+    },
+    "criteria-builder--rubric": {
+      "bbox": [
+        0.133,
+        0.094,
+        0.727,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 256,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-criteria-builder--rubric"
+      },
+      "hash": "60f94864f922bdc5f99cec9ec9dbd260602d4f48edbe5bca93bd778d73f986af",
+      "ink": 0.222,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#9884ce",
+        "#d5c8fd",
+        "#493375"
+      ],
+      "status": "found",
+      "tint": [
+        "#9983d4",
+        "#d4ccf0",
+        "#4a3278"
+      ],
+      "tintRole": "brand"
+    },
+    "dafter": {
+      "bbox": [
+        0.172,
+        0.094,
+        0.648,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 384,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-dafter"
+      },
+      "hash": "21f3ebab2ed72523fad91802fec932e4cb437635fdc6e495b541403b7258a08d",
+      "ink": 0.389,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "status": "found",
+      "tint": [
+        "#698cf0",
+        "#bed0fd",
+        "#273c81"
+      ],
+      "tintRole": "brand"
+    },
+    "draw": {
+      "bbox": [
+        0.094,
+        0.18,
+        0.813,
+        0.641
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-draw"
+      },
+      "hash": "fb7a6ca202a5b1b9a87d7549f3a92575977669489a75d61848651aaa71bb9247",
+      "ink": 0.137,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "status": "found",
+      "tint": [
+        "#b45cc9",
+        "#f0aef0",
+        "#5b1a66"
+      ],
+      "tintRole": "authored"
+    },
+    "drug-list--free": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 640,
+        "y": 0
+      },
+      "glyph": {
+        "symbol": "g-drug-list--free"
+      },
+      "hash": "30f142c87fb0aa2579acccc7ce29a796a69b26afb9104a68e6e57320d77989ec",
+      "ink": 0.271,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#de6e39",
+        "#ffc1a7",
+        "#702900"
+      ],
+      "status": "found",
+      "tint": [
+        "#e26c29",
+        "#f2c7b4",
+        "#6e2c02"
+      ],
+      "tintRole": "brand"
+    },
+    "drug-list--full": {
+      "bbox": [
+        0.258,
+        0.195,
+        0.484,
+        0.68
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-drug-list--full"
+      },
+      "hash": "34655de126886eba6de836c226c3f371b9b467906bf49c37a32c1bf55eabb612",
+      "ink": 0.179,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#928bba",
+        "#d1ccf0",
+        "#433b65"
+      ],
+      "status": "found",
+      "tint": [
+        "#908abd",
+        "#cfcbf2",
+        "#413a66"
+      ],
+      "tintRole": "brand"
+    },
+    "entity-tracker": {
+      "bbox": [
+        0.094,
+        0.117,
+        0.813,
+        0.758
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 128,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-entity-tracker"
+      },
+      "hash": "9e5f4e2b8410ecf6ad36bf1da309e6fb82fdd682326c314838cdbd7492c69473",
+      "ink": 0.318,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#569db6",
+        "#a6daee",
+        "#014a5d"
+      ],
+      "status": "found",
+      "tint": [
+        "#5992b0",
+        "#a5cfe6",
+        "#0d4157"
+      ],
+      "tintRole": "brand"
+    },
+    "harvest": {
+      "bbox": [
+        0.141,
+        0.094,
+        0.711,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-studio"
+      },
+      "hash": "51513be39b2d5412a3e21f6dc0a4024619d2db6e6d2ae3de012d93c55e8f3700",
+      "ink": 0.23,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#de6e2c",
+        "#fec2a4",
+        "#6d2c00"
+      ],
+      "status": "found",
+      "tint": [
+        "#c06508",
+        "#e7b28c",
+        "#4f2704"
+      ],
+      "tintRole": "brand"
+    },
+    "id-dates--contacts": {
+      "bbox": [
+        0.094,
+        0.188,
+        0.813,
+        0.617
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 256,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-id-dates--contacts"
+      },
+      "hash": "da73c74da06a3988157336bffeaae60651966dfc45a630a38a9047dc7b47753e",
+      "ink": 0.24,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#e3674b",
+        "#fec0b1",
+        "#75220e"
+      ],
+      "status": "found",
+      "tint": [
+        "#d05a2d",
+        "#ecb19c",
+        "#5e1e02"
+      ],
+      "tintRole": "brand"
+    },
+    "id-dates--id": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 384,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-id-dates--id"
+      },
+      "hash": "1d91b6211bd3749cc5bcac1c93978e8e9e25231b3dceeb66fed47cf0e0919e0b",
+      "ink": 0.383,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#cc7b49",
+        "#fdc3a2",
+        "#693005"
+      ],
+      "status": "found",
+      "tint": [
+        "#c17c40",
+        "#f3c39d",
+        "#5f3203"
+      ],
+      "tintRole": "brand"
+    },
+    "index-builder": {
+      "bbox": [
+        0.117,
+        0.094,
+        0.766,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 128
+      },
+      "glyph": {
+        "symbol": "g-index-builder"
+      },
+      "hash": "499b1490f8e1815a88c92d4b4926822db70024fd5730008eeb90067a60f234a3",
+      "ink": 0.269,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#6b9f8f",
+        "#b4dbce",
+        "#184d3f"
+      ],
+      "status": "found",
+      "tint": [
+        "#689884",
+        "#afd4c4",
+        "#164736"
+      ],
+      "tintRole": "brand"
+    },
+    "ledger-form--folio": {
+      "bbox": [
+        0.117,
+        0.094,
+        0.758,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 640,
+        "y": 128
+      },
+      "glyph": {
+        "atlas": {
+          "x": 128,
+          "y": 0
+        }
+      },
+      "hash": "f694dcac0028175dafc943a7d3dac3bdb01b7844bb95f50bc677d07d79e42dde",
+      "ink": 0.131,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "status": "found",
+      "tint": [
+        "#707a8c",
+        "#7c9bff",
+        "#1c2f8f"
+      ],
+      "tintRole": "authored"
+    },
+    "ledger-form--tally": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-ledger-form--tally"
+      },
+      "hash": "62c3b624a8ebcb1aba7645127ef527360b25cac63c06ec69452944b63d037c3b",
+      "ink": 0.133,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d77250",
+        "#fdc1ad",
+        "#742302"
+      ],
+      "status": "found",
+      "tint": [
+        "#d37059",
+        "#f0c2b7",
+        "#702111"
+      ],
+      "tintRole": "brand"
+    },
+    "paid-calculator--calc": {
+      "bbox": [
+        0.219,
+        0.094,
+        0.555,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 128,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-paid-calculator--calc"
+      },
+      "hash": "441aa434f3ea89bc8c4b0dcb51978d2923cb1ab69a12ef853ea3d263a3ea74b3",
+      "ink": 0.156,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#8092b8",
+        "#c3d1ef",
+        "#334263"
+      ],
+      "status": "found",
+      "tint": [
+        "#7992b5",
+        "#bcd0ec",
+        "#2c4160"
+      ],
+      "tintRole": "brand"
+    },
+    "paid-calculator--daleel": {
+      "bbox": [
+        0.195,
+        0.094,
+        0.609,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 256,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-paid-calculator--daleel"
+      },
+      "hash": "2ae1357196651fb631280d3414d8a4b38e97e1406429012b485dd4514e291f7d",
+      "ink": 0.207,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "status": "found",
+      "tint": [
+        "#c96b8b",
+        "#ffb3d9",
+        "#8a1150"
+      ],
+      "tintRole": "authored"
+    },
+    "parser": {
+      "bbox": [
+        0.125,
+        0.094,
+        0.742,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 384,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-parser"
+      },
+      "hash": "7eb7d20c906296d915386dca4a1d143a6fc2053ca1ba7896c4f7c877631b160b",
+      "ink": 0.295,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#bc73be",
+        "#f4baf4",
+        "#612664"
+      ],
+      "status": "found",
+      "tint": [
+        "#b574bf",
+        "#ebbdf0",
+        "#5b2764"
+      ],
+      "tintRole": "brand"
+    },
+    "pharmacy-tools--bugvert": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-pharmacy-tools--bugvert"
+      },
+      "hash": "8caaf28a471ee043abe43cca0aa5fb4952025cafead26b0bddf7708a9e3edc25",
+      "ink": 0.298,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c97a64",
+        "#fec0af",
+        "#6f2914"
+      ],
+      "status": "found",
+      "tint": [
+        "#c07463",
+        "#f6b8ab",
+        "#672415"
+      ],
+      "tintRole": "brand"
+    },
+    "pharmacy-tools--pillbug": {
+      "bbox": [
+        0.148,
+        0.094,
+        0.703,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 640,
+        "y": 256
+      },
+      "glyph": {
+        "symbol": "g-pharmacy-tools--pillbug"
+      },
+      "hash": "17e59a7b20ec13bcd60e664618b6cf4452bfc10dcd6b9646ec0e429e3dc3a680",
+      "ink": 0.284,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d27556",
+        "#fdc1ad",
+        "#742301"
+      ],
+      "status": "found",
+      "tint": [
+        "#c16f42",
+        "#edb99f",
+        "#5d2703"
+      ],
+      "tintRole": "brand"
+    },
+    "plan-maker--express": {
+      "bbox": [
+        0.203,
+        0.094,
+        0.594,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-plan-maker--express"
+      },
+      "hash": "7418b3b3aa96716f8ed15363f6fb2341296b9f68f215ee1650fafdd136984196",
+      "ink": 0.291,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#5c9eac",
+        "#acdae4",
+        "#034b57"
+      ],
+      "status": "found",
+      "tint": [
+        "#6099aa",
+        "#aed5e1",
+        "#0f4755"
+      ],
+      "tintRole": "brand"
+    },
+    "plan-maker--full": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 128,
+        "y": 384
+      },
+      "glyph": {
+        "atlas": {
+          "x": 256,
+          "y": 0
+        }
+      },
+      "hash": "899ef21546f264408d6258dc56b81afd0903ed596d9778f86574594af2741c0e",
+      "ink": 0.16,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#af82a1",
+        "#eac4dd",
+        "#5a334f"
+      ],
+      "status": "found",
+      "tint": [
+        "#a47597",
+        "#dfb6d2",
+        "#502746"
+      ],
+      "tintRole": "brand"
+    },
+    "prep--floe": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 256,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-prep--floe"
+      },
+      "hash": "0aed3d22a0d007e9f334f63eeb88c8606e3530e6c57e5c1dc9942613a73b7c8c",
+      "ink": 0.48,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c47f59",
+        "#fac3a6",
+        "#6b2e01"
+      ],
+      "status": "found",
+      "tint": [
+        "#c07f54",
+        "#eac7b1",
+        "#643105"
+      ],
+      "tintRole": "brand"
+    },
+    "prep--prep": {
+      "bbox": [
+        0.094,
+        0.125,
+        0.813,
+        0.75
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 384,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-prep--prep"
+      },
+      "hash": "c272c0264d03b92a49d303524d6fda9bcdfbb958ba4e811b894136e6bbb45300",
+      "ink": 0.244,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#e36462",
+        "#ffbeba",
+        "#751f22"
+      ],
+      "status": "found",
+      "tint": [
+        "#d75550",
+        "#f4b0aa",
+        "#6a0d12"
+      ],
+      "tintRole": "brand"
+    },
+    "protocols": {
+      "bbox": [
+        0.094,
+        0.148,
+        0.813,
+        0.695
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 384
+      },
+      "glyph": {
+        "atlas": {
+          "x": 0,
+          "y": 128
+        }
+      },
+      "hash": "9110aea8fde4c0077c48384fa17b8e9fb986360292d1daa26ea360d3d1d56390",
+      "ink": 0.187,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#cf8350",
+        "#fdba74",
+        "#7c2d12"
+      ],
+      "status": "found",
+      "tint": [
+        "#be7834",
+        "#eaaf58",
+        "#672901"
+      ],
+      "tintRole": "brand"
+    },
+    "qisma-mizan--express": {
+      "bbox": [
+        0.094,
+        0.172,
+        0.813,
+        0.648
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 640,
+        "y": 384
+      },
+      "glyph": {
+        "symbol": "g-qisma-mizan--express"
+      },
+      "hash": "54b6649134ec2c70089f49c3bd29c29d5bf46ed16ff55cbe916e3abd2ac1ca6b",
+      "ink": 0.206,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d47452",
+        "#fdc1ac",
+        "#722604"
+      ],
+      "status": "found",
+      "tint": [
+        "#c16350",
+        "#e9b0a3",
+        "#601507"
+      ],
+      "tintRole": "brand"
+    },
+    "qisma-mizan--full": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 512
+      },
+      "glyph": {
+        "atlas": {
+          "x": 128,
+          "y": 128
+        }
+      },
+      "hash": "815310e519114a7a23103cd8d02ad4e6d6d4ad2f8986163998504e858f1bb268",
+      "ink": 0.421,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d47354",
+        "#fdc1ad",
+        "#742302"
+      ],
+      "status": "found",
+      "tint": [
+        "#d77245",
+        "#ffc1a6",
+        "#702900"
+      ],
+      "tintRole": "brand"
+    },
+    "roi--express": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 128,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-roi--express"
+      },
+      "hash": "51b0ab7b686bf042d5e7eeeb478939acc8c18b5f2395e4d7377b5fe1a19060fb",
+      "ink": 0.529,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d27556",
+        "#fdc1ad",
+        "#742400"
+      ],
+      "status": "found",
+      "tint": [
+        "#d36e5f",
+        "#fcbdb2",
+        "#741b11"
+      ],
+      "tintRole": "brand"
+    },
+    "roi--full": {
+      "bbox": [
+        0.094,
+        0.203,
+        0.813,
+        0.703
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 256,
+        "y": 512
+      },
+      "glyph": {
+        "atlas": {
+          "x": 256,
+          "y": 128
+        }
+      },
+      "hash": "84baa82a9b2e152993ac4dba542c4972cca4a5c4c3f78dfa053fdb9350c19c78",
+      "ink": 0.058,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#cb7a5b",
+        "#fdc1ab",
+        "#702805"
+      ],
+      "status": "found",
+      "tint": [
+        "#ca7b50",
+        "#f8c3aa",
+        "#6a2d03"
+      ],
+      "tintRole": "brand"
+    },
+    "solver": {
+      "bbox": [
+        0.094,
+        0.188,
+        0.813,
+        0.617
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 384,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-solver"
+      },
+      "hash": "5bc60de1b2f223da79107d48ff982c2c275908a516e2d06e023d7c66c6efeb6e",
+      "ink": 0.123,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#66a091",
+        "#afdcd0",
+        "#0e4d41"
+      ],
+      "status": "found",
+      "tint": [
+        "#61978d",
+        "#a6d4ca",
+        "#08463d"
+      ],
+      "tintRole": "brand"
+    },
+    "studio": {
+      "bbox": [
+        0.141,
+        0.094,
+        0.711,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 512,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-studio"
+      },
+      "hash": "51513be39b2d5412a3e21f6dc0a4024619d2db6e6d2ae3de012d93c55e8f3700",
+      "ink": 0.23,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#de6e2c",
+        "#fec2a4",
+        "#6d2c00"
+      ],
+      "status": "found",
+      "tint": [
+        "#c06508",
+        "#e7b28c",
+        "#4f2704"
+      ],
+      "tintRole": "brand"
+    },
+    "survival-mirror": {
+      "bbox": [
+        0.094,
+        0.188,
+        0.813,
+        0.625
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 640,
+        "y": 512
+      },
+      "glyph": {
+        "symbol": "g-survival-mirror"
+      },
+      "hash": "ae5d24b1f4412da3744b3990ce3beaaa46d7f889365cbd5e5a83e53c2cccb9b3",
+      "ink": 0.109,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#8a8dbd",
+        "#cacdf5",
+        "#3c3d67"
+      ],
+      "status": "found",
+      "tint": [
+        "#888dbc",
+        "#c9cdea",
+        "#3a3d66"
+      ],
+      "tintRole": "brand"
+    },
+    "text-tools--text": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 0,
+        "y": 640
+      },
+      "glyph": {
+        "symbol": "g-text-tools--text"
+      },
+      "hash": "bba1eaf510904581e42d0221113554435f6d6ecadec431c7748a25c8e61d7ae9",
+      "ink": 0.279,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c18510",
+        "#f9c880",
+        "#5a3b00"
+      ],
+      "status": "found",
+      "tint": [
+        "#bd8809",
+        "#f1cc8d",
+        "#573e07"
+      ],
+      "tintRole": "brand"
+    },
+    "text-tools--weft": {
+      "bbox": [
+        0.094,
+        0.094,
+        0.813,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 128,
+        "y": 640
+      },
+      "glyph": {
+        "symbol": "g-text-tools--weft"
+      },
+      "hash": "9e097f4fc0a4560e66fba3b08ed20f2df984b410af7d435463e8b1d909de14dc",
+      "ink": 0.106,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#d47354",
+        "#fdc1ad",
+        "#742302"
+      ],
+      "status": "found",
+      "tint": [
+        "#d2754b",
+        "#e9cabc",
+        "#6e2b05"
+      ],
+      "tintRole": "brand"
+    },
+    "to-do": {
+      "bbox": [
+        0.094,
+        0.203,
+        0.813,
+        0.594
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 256,
+        "y": 640
+      },
+      "glyph": {
+        "symbol": "g-to-do"
+      },
+      "hash": "b74e65bf30885a917acdd0067b75a443fc1dddb6e4347cb644bf581a33fd511c",
+      "ink": 0.168,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#9d72c4",
+        "#ddd6fe",
+        "#4c1d95"
+      ],
+      "status": "found",
+      "tint": [
+        "#aa7aca",
+        "#e9e1ff",
+        "#59279b"
+      ],
+      "tintRole": "brand"
+    },
+    "workspace": {
+      "bbox": [
+        0.266,
+        0.094,
+        0.461,
+        0.813
+      ],
+      "checkedAt": "2026-10-31T05:23:35.595Z",
+      "favicon": {
+        "x": 384,
+        "y": 640
+      },
+      "glyph": {
+        "symbol": "g-workspace"
+      },
+      "hash": "6537dd315dd6e3f7d83fdd4cd756e5a8277fc8661a687e6e6f6b6dbbaa9ff8e7",
+      "ink": 0.208,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#c18412",
+        "#fbc77c",
+        "#5b3b00"
+      ],
+      "status": "found",
+      "tint": [
+        "#a97803",
+        "#e5b86a",
+        "#463004"
+      ],
+      "tintRole": "brand"
+    }
+  },
+  "version": 2
+}
