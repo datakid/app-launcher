@@ -1,6 +1,6 @@
 export const KIND = { title: 0, variant: 1, parent: 2, acronym: 3, host: 4, url: 5, category: 6, id: 7, icon: 8, status: 9, badge: 10 };
 export const KIND_NAMES = ['title', 'variant', 'parent', 'acronym', 'host', 'url', 'category', 'id', 'icon', 'status', 'badge'];
-export const TIER = { typo: 1, subsequence: 2, substring: 3, acronym: 4, wordStart: 5, prefix: 6, exact: 7 };
+export const TIER = { split: 1, typo: 2, subsequence: 3, substring: 4, acronym: 5, wordStart: 6, prefix: 7, exact: 8 };
 
 const WEIGHT = [1, 0.95, 0.9, 0.85, 0.7, 0.55, 0.5, 0.5, 0.3, 0.4, 0.4];
 const ALT_FACTOR = 0.97;
@@ -10,6 +10,13 @@ const MAX_TOKEN_LEN = 48;
 const MAX_QUERY_LEN = 256;
 const TYPO_CAP = 5;
 const RANGE_LIMIT = 60;
+const SPLIT_CHUNK = 3;
+const SPLIT_MIN_QUERY = SPLIT_CHUNK * 2;
+const SPLIT_MAX_QUERY = 32;
+const SPLIT_BASE = 360;
+const SPLIT_STEP = 30;
+const SPLIT_ALIGNED = 40;
+const SPLIT_TYPO_COST = 120;
 const PLATFORM_SUFFIXES = ['vercel.app', 'netlify.app', 'github.io', 'pages.dev', 'web.app'];
 const ARTICLE_PREFIXES = ['بال', 'وال', 'فال', 'كال', 'لل', 'ال'];
 const LETTER = /[\p{L}\p{N}]/u;
@@ -478,6 +485,149 @@ const evalToken = (qs, id) => {
   c.tier[id] = tier;
 };
 
+const SPLIT_KINDS = (1 << KIND.title) | (1 << KIND.variant) | (1 << KIND.parent) | (1 << KIND.id);
+const SPLIT_TYPO_MIN = 5;
+const SPLIT_MAX_SCORE = SPLIT_BASE + SPLIT_ALIGNED;
+const splitBest = { score: 0, spans: null };
+
+const oneEdit = (p, pl, str, si, sl) => {
+  const m = pl < sl ? pl : sl;
+  let k = 0;
+  while (k < m && p.charCodeAt(k) === str.charCodeAt(si + k)) k++;
+  if (sl === pl) {
+    if (k === pl) return false;
+    let j = k + 1;
+    while (j < pl && p.charCodeAt(j) === str.charCodeAt(si + j)) j++;
+    if (j === pl) return true;
+    if (k + 1 < pl && p.charCodeAt(k) === str.charCodeAt(si + k + 1) && p.charCodeAt(k + 1) === str.charCodeAt(si + k)) {
+      j = k + 2;
+      while (j < pl && p.charCodeAt(j) === str.charCodeAt(si + j)) j++;
+      return j === pl;
+    }
+    return false;
+  }
+  if (sl === pl - 1) {
+    for (let j = k; j < sl; j++) if (p.charCodeAt(j + 1) !== str.charCodeAt(si + j)) return false;
+    return true;
+  }
+  for (let j = k; j < pl; j++) if (p.charCodeAt(j) !== str.charCodeAt(si + j + 1)) return false;
+  return true;
+};
+
+const approxSpans = (p, str) => {
+  const pl = p.length;
+  const last = str.length;
+  const c0 = p.charCodeAt(0);
+  const c1 = p.charCodeAt(1);
+  const out = [];
+  for (let i = 0; i < last; i++) {
+    const s0 = str.charCodeAt(i);
+    const s1 = i + 1 < last ? str.charCodeAt(i + 1) : -1;
+    if (s0 !== c0 && s0 !== c1 && s1 !== c0 && s1 !== c1) continue;
+    const sp = str.indexOf(' ', i);
+    const room = (sp < 0 ? last : sp) - i;
+    if (pl <= room && oneEdit(p, pl, str, i, pl)) out.push([i, i + pl]);
+    else if (pl - 1 <= room && oneEdit(p, pl, str, i, pl - 1)) out.push([i, i + pl - 1]);
+    else if (pl + 1 <= room && i + pl + 1 <= last && oneEdit(p, pl, str, i, pl + 1)) out.push([i, i + pl + 1]);
+  }
+  return out;
+};
+
+const PIECE_SPAN = SPLIT_MAX_QUERY + 1;
+const pieceStamp = new Int32Array(PIECE_SPAN * PIECE_SPAN);
+const pieceMemo = new Array(PIECE_SPAN * PIECE_SPAN);
+const orderBuf = [null, null, null];
+let pieceGen = 0;
+
+const pieceAt = (str, q, a, b) => {
+  const key = a * PIECE_SPAN + b;
+  if (pieceStamp[key] === pieceGen) return pieceMemo[key];
+  const piece = q.slice(a, b);
+  const exact = [];
+  let at = str.indexOf(piece);
+  while (at >= 0) {
+    exact.push(at);
+    at = str.indexOf(piece, at + 1);
+  }
+  const e = { piece, exact, approx: null };
+  pieceStamp[key] = pieceGen;
+  pieceMemo[key] = e;
+  return e;
+};
+
+const overlaps = (spans, at, end) => {
+  for (let i = 0; i < spans.length; i++) if (at < spans[i][1] && end > spans[i][0]) return true;
+  return false;
+};
+
+const placePieces = (str, count, k, spans, aligned, base) => {
+  if (k === count) {
+    const sc = base + (aligned ? SPLIT_ALIGNED : 0);
+    if (sc > splitBest.score) {
+      splitBest.score = sc;
+      splitBest.spans = spans.map((x) => x.slice());
+    }
+    return;
+  }
+  const e = orderBuf[k];
+  if (e.exact.length) {
+    const len = e.piece.length;
+    for (let i = 0; i < e.exact.length; i++) {
+      const at = e.exact[i];
+      if (overlaps(spans, at, at + len)) continue;
+      spans.push([at, at + len]);
+      placePieces(str, count, k + 1, spans, aligned && (at === 0 || str.charCodeAt(at - 1) === 32), base);
+      spans.pop();
+    }
+    return;
+  }
+  if (e.approx === null) e.approx = approxSpans(e.piece, str);
+  for (let i = 0; i < e.approx.length; i++) {
+    const at = e.approx[i][0];
+    const end = e.approx[i][1];
+    if (overlaps(spans, at, end)) continue;
+    spans.push([at, end]);
+    placePieces(str, count, k + 1, spans, aligned && (at === 0 || str.charCodeAt(at - 1) === 32), base - SPLIT_TYPO_COST);
+    spans.pop();
+  }
+};
+
+const tryPartition = (str, q, a, b, n) => {
+  const count = b ? 3 : 2;
+  let filled = 0;
+  let missing = null;
+  for (let i = 0; i < count; i++) {
+    const from = i === 0 ? 0 : i === 1 ? a : b;
+    const to = i === 0 ? a : i === 1 ? (b || n) : n;
+    const e = pieceAt(str, q, from, to);
+    if (e.exact.length) {
+      orderBuf[filled++] = e;
+    } else if (missing === null && e.piece.length >= SPLIT_TYPO_MIN) {
+      missing = e;
+    } else {
+      return;
+    }
+  }
+  if (missing) orderBuf[filled] = missing;
+  placePieces(str, count, 0, [], true, SPLIT_BASE - SPLIT_STEP * (count - 2));
+};
+
+const splitMatch = (q, str) => {
+  const n = q.length;
+  pieceGen++;
+  splitBest.score = 0;
+  splitBest.spans = null;
+  for (let a = SPLIT_CHUNK; a <= n - SPLIT_CHUNK && splitBest.score < SPLIT_MAX_SCORE; a++) tryPartition(str, q, a, 0, n);
+  if (n >= SPLIT_CHUNK * 3) {
+    for (let a = SPLIT_CHUNK; a <= n - SPLIT_CHUNK * 2 && splitBest.score < SPLIT_MAX_SCORE; a++) {
+      for (let b = a + SPLIT_CHUNK; b <= n - SPLIT_CHUNK && splitBest.score < SPLIT_MAX_SCORE; b++) tryPartition(str, q, a, b, n);
+    }
+  }
+  return splitBest.score;
+};
+
+const splitMisses = (qs, f) => popcount(qs.ma & ~f.ma) + popcount(qs.mb & ~f.mb);
+
 const scoreField = (qs, f) => {
   const toks = f.toks;
   if (f.kind === KIND.acronym) {
@@ -512,7 +662,18 @@ const scoreField = (qs, f) => {
       bestTier = tier;
     }
   }
-  if (best === 0) return false;
+  if (best === 0) {
+    if (qs.len >= SPLIT_MIN_QUERY && qs.len <= SPLIT_MAX_QUERY && ((1 << f.kind) & SPLIT_KINDS) && splitMisses(qs, f) <= (qs.len >= SPLIT_TYPO_MIN + SPLIT_CHUNK ? 1 : 0) && (f.str.includes(qs.head) || f.str.includes(qs.tail))) {
+      const sc = splitMatch(qs.q, f.str);
+      if (sc) {
+        hit.score = sc;
+        hit.k = 0;
+        hit.tier = TIER.split;
+        return true;
+      }
+    }
+    return false;
+  }
   hit.score = best;
   hit.k = bestK;
   hit.tier = bestTier;
@@ -547,6 +708,10 @@ const rangeFor = (f, k, q, tier) => {
   }
   if (tier === TIER.acronym) return [[0, Math.min(q.length, f.str.length)]];
   if (tier === TIER.typo) return [[start, start + Math.min(q.length, t.length)]];
+  if (tier === TIER.split) {
+    splitMatch(q, f.str);
+    return splitBest.spans || [];
+  }
   const out = [];
   let qi = 0;
   for (let j = 0; j < t.length && qi < q.length; j++) {
@@ -676,7 +841,7 @@ const run = (index, raw, opts, swapped) => {
     if (!cache || cache.stamp.length < vocab.list.length) {
       cache = index.cache[i] = { stamp: new Int32Array(vocab.list.length), score: new Float64Array(vocab.list.length), tier: new Uint8Array(vocab.list.length) };
     }
-    return { q, len: q.length, ma: masks.a, mb: masks.b, budget: budgetOf(q.length), vocab, cache, gen };
+    return { q, len: q.length, head: q.slice(0, SPLIT_CHUNK), tail: q.slice(q.length - SPLIT_CHUNK), ma: masks.a, mb: masks.b, budget: budgetOf(q.length), vocab, cache, gen };
   });
   const ord = qs.map((_, i) => i).sort((a, b) => (qs[b].len - qs[a].len) || (a - b));
 
@@ -744,7 +909,7 @@ const run = (index, raw, opts, swapped) => {
     hTT.push(tt);
     hTL.push(d.titleLen);
     hPf.push(pf);
-    if (tier === TIER.typo && !urlScore) typo.push(h);
+    if (tier <= TIER.typo && !urlScore) typo.push(h);
     else plain.push(h);
   }
 
