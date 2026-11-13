@@ -486,7 +486,8 @@ const evalToken = (qs, id) => {
 };
 
 const SPLIT_KINDS = (1 << KIND.title) | (1 << KIND.variant) | (1 << KIND.parent) | (1 << KIND.id);
-const SPLIT_TYPO_MIN = 5;
+const SPLIT_TYPO_MIN = 4;
+const SPLIT_TYPO_LOOSE = 5;
 const SPLIT_MAX_SCORE = SPLIT_BASE + SPLIT_ALIGNED;
 const splitBest = { score: 0, spans: null };
 
@@ -560,6 +561,11 @@ const overlaps = (spans, at, end) => {
   return false;
 };
 
+const touches = (spans, at, end) => {
+  for (let i = 0; i < spans.length; i++) if ((at >= spans[i][1] && at - spans[i][1] <= 1) || (end <= spans[i][0] && spans[i][0] - end <= 1)) return true;
+  return false;
+};
+
 const placePieces = (str, count, k, spans, aligned, base) => {
   if (k === count) {
     const sc = base + (aligned ? SPLIT_ALIGNED : 0);
@@ -586,6 +592,7 @@ const placePieces = (str, count, k, spans, aligned, base) => {
     const at = e.approx[i][0];
     const end = e.approx[i][1];
     if (overlaps(spans, at, end)) continue;
+    if (e.piece.length < SPLIT_TYPO_LOOSE && !touches(spans, at, end)) continue;
     spans.push([at, end]);
     placePieces(str, count, k + 1, spans, aligned && (at === 0 || str.charCodeAt(at - 1) === 32), base - SPLIT_TYPO_COST);
     spans.pop();
