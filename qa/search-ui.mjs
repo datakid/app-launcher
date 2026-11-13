@@ -72,6 +72,16 @@ const run = async (browser, base, lang) => {
     const ind = await firstRow(page);
     record('en: the title highlight comes from the match ranges', ind && ind.key === 'index-builder' && ind.titleMarks.length === 1 && ind.titleMarks[0].toLowerCase() === 'ind', ind && JSON.stringify(ind.titleMarks));
     record('en: a title match has no via line', ind && ind.viaText === null, ind && ind.viaText);
+    await page.fill('#paletteInput', '');
+    await page.keyboard.type('bugpill', { delay: 30 });
+    await page.waitForFunction(() => { const r = document.querySelector('#paletteResults .palette-item[data-key="pharmacy-tools::pillbug"]'); return !!r && [...r.querySelectorAll('.palette-item-title mark')].map((m) => m.textContent).join('').toLowerCase() === 'pillbug'; }, null, { timeout: 4000 }).catch(() => {});
+    const swapped = await firstRow(page);
+    record('en: pieces of a word typed in the wrong order still find the tool and highlight it', swapped && swapped.key === 'pharmacy-tools::pillbug' && swapped.titleMarks.join('').toLowerCase() === 'pillbug', swapped && JSON.stringify([swapped.key, swapped.titleMarks]));
+    await page.fill('#paletteInput', '');
+    await page.keyboard.type('druglist', { delay: 30 });
+    await page.waitForFunction(() => { const r = document.querySelector('#paletteResults .palette-item'); return !!r && r.dataset.key.startsWith('drug-list') && [...r.querySelectorAll('.palette-item-title mark')].map((m) => m.textContent).join('').toLowerCase().replace(/ /g, '') === 'druglist'; }, null, { timeout: 4000 }).catch(() => {});
+    const joined = await firstRow(page);
+    record('en: words typed without the space find the tool', joined && joined.key.startsWith('drug-list') && joined.titleMarks.join('').toLowerCase().replace(/ /g, '') === 'druglist', joined && JSON.stringify([joined.key, joined.titleMarks]));
   }
 
   await page.fill('#paletteInput', '');

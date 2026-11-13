@@ -57,6 +57,41 @@ for (const q of ['closed', 'مغلق']) {
   check(`"${q}" -> Tally and Folio first`, t.length === 2 && t.includes('Form · Tally') && t.includes('Form · Folio'), JSON.stringify(t));
 }
 first('harvest', 'Harvest');
+first('bugpill', 'Pharmacy Tools · Pillbug');
+first('pillbug', 'Pharmacy Tools · Pillbug');
+for (const q of ['druglist', 'listdrug', 'drug-list']) {
+  const t = top(q, 2);
+  check(`"${q}" -> Drug List entries first`, t.length === 2 && t.every((x) => x.startsWith('Drug List')), JSON.stringify(t));
+}
+const swappedPharmacy = top('toolspharmacy', 2);
+check('"toolspharmacy" -> Pharmacy Tools entries first', swappedPharmacy.length === 2 && swappedPharmacy.every((x) => x.startsWith('Pharmacy Tools')), JSON.stringify(swappedPharmacy));
+const swappedAr = top('ادويهقائمه', 2);
+check('"ادويهقائمه" -> Drug List entries first', swappedAr.length === 2 && swappedAr.every((x) => x.startsWith('Drug List')), JSON.stringify(swappedAr));
+check('"bugvertpill" joins pieces of two different apps -> no results', run('bugvertpill').length === 0);
+check('"qwertyuiop" -> no results', run('qwertyuiop').length === 0);
+const bugpil = run('bugpil')[0];
+check('"bugpil" highlights both pieces of the title', !!bugpil && bugpil.field === 'title' && JSON.stringify(bugpil.ranges) === '[[17,20],[21,24]]', bugpil ? JSON.stringify(bugpil.ranges) : 'missing');
+check('a recombined match ranks below a real match', run('pill').length > 0 && titleOf(run('pill')[0]) === 'Pharmacy Tools · Pillbug');
+
+const recombinable = [];
+const notFound = [];
+for (let i = 0; i < entries.length; i++) {
+  for (const raw of [entries[i].app.title.en, entries[i].app.title.ar]) {
+    const words = normalize(raw).split(' ').filter(Boolean);
+    if (words.length === 0 || words.length > 3 || words.some((w) => w.length < 3)) continue;
+    let q = words.slice().reverse().join('');
+    if (words.length === 1) {
+      const w = words[0];
+      if (w.length < 6) continue;
+      const cut = Math.floor(w.length / 2);
+      q = w.slice(cut) + w.slice(0, cut);
+    }
+    if (q.length < 6 || q.length > 32 || (words.length === 3 && q.length < 9)) continue;
+    recombinable.push(q);
+    if (!run(q).some((h) => h.index === i)) notFound.push(`${q} !> ${raw}`);
+  }
+}
+check(`every title, with its words reversed and joined, is still found (${recombinable.length} queries)`, recombinable.length > 40 && notFound.length === 0, notFound.slice(0, 4).join(' | '));
 first('الحصاد', 'Harvest');
 const pills = run('pills').map(titleOf);
 check('"pills" -> Workspace and Pharmacy Tools', pills.includes('Workspace') && pills.some((t) => t.startsWith('Pharmacy Tools')), JSON.stringify(pills));
@@ -101,7 +136,7 @@ check('layoutSwap Arabic to Latin', layoutSwap('المحلل') === 'hglpgg');
 check('layoutSwap lam-alef', layoutSwap('b') === 'لا' && layoutSwap('لا') === 'b');
 
 const sameHits = (a, b) => a.length === b.length && a.every((h, i) => h.index === b[i].index && h.score === b[i].score && h.tier === b[i].tier && h.field === b[i].field);
-const narrowingQueries = ['parser', 'indx bldr', 'الادويه', 'lx-index.vercel.app', 'vercel app', 'pillbug', 'daleel 460', 'duckbench', 'core parser', 'snickerdoodle', 'harvest', 'ledger form', 'full', 'ar', 'sol'];
+const narrowingQueries = ['bugpill', 'druglist', 'listdrug', 'ادويهقائمه', 'parser', 'indx bldr', 'الادويه', 'lx-index.vercel.app', 'vercel app', 'pillbug', 'daleel 460', 'duckbench', 'core parser', 'snickerdoodle', 'harvest', 'ledger form', 'full', 'ar', 'sol'];
 for (const q of narrowingQueries) {
   index.last = null;
   for (let n = 1; n <= q.length; n++) {
@@ -178,7 +213,7 @@ const buildTimes = [];
 for (let i = 0; i < 50; i++) buildTimes.push(timeIt(() => buildIndex(entries, buildOpts)));
 const buildReal = median(buildTimes);
 
-const realQueries = ['parser', 'parsre', 'prsr', 'حشقسثق', 'hglpgg', 'المحلل', 'الادويه', 'ادوية', 'ib', 'indx bldr', 'https://lx-index.vercel.app/', 'lx-index.vercel.app', 'lx-index', 'snickerdoodle', 'netlify', '460', 'duck', 'pillbug', 'draw', 'full', 'core parser', 'closed', 'مغلق', 'harvest', 'الحصاد', 'pills', 'vercel', 'zzzzqqq', '٤٦٠', 'a', 'ab'];
+const realQueries = ['bugpill', 'druglist', 'parser', 'parsre', 'prsr', 'حشقسثق', 'hglpgg', 'المحلل', 'الادويه', 'ادوية', 'ib', 'indx bldr', 'https://lx-index.vercel.app/', 'lx-index.vercel.app', 'lx-index', 'snickerdoodle', 'netlify', '460', 'duck', 'pillbug', 'draw', 'full', 'core parser', 'closed', 'مغلق', 'harvest', 'الحصاد', 'pills', 'vercel', 'zzzzqqq', '٤٦٠', 'a', 'ab'];
 const realTimes = [];
 for (let round = 0; round < 30; round++) {
   for (const q of realQueries) {

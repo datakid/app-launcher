@@ -1,6 +1,6 @@
 export const KIND = { title: 0, variant: 1, parent: 2, acronym: 3, host: 4, url: 5, category: 6, id: 7, icon: 8, status: 9, badge: 10 };
 export const KIND_NAMES = ['title', 'variant', 'parent', 'acronym', 'host', 'url', 'category', 'id', 'icon', 'status', 'badge'];
-export const TIER = { typo: 1, subsequence: 2, substring: 3, acronym: 4, wordStart: 5, prefix: 6, exact: 7 };
+export const TIER = { split: 1, typo: 2, subsequence: 3, substring: 4, acronym: 5, wordStart: 6, prefix: 7, exact: 8 };
 
 const WEIGHT = [1, 0.95, 0.9, 0.85, 0.7, 0.55, 0.5, 0.5, 0.3, 0.4, 0.4];
 const ALT_FACTOR = 0.97;
@@ -10,6 +10,12 @@ const MAX_TOKEN_LEN = 48;
 const MAX_QUERY_LEN = 256;
 const TYPO_CAP = 5;
 const RANGE_LIMIT = 60;
+const SPLIT_CHUNK = 3;
+const SPLIT_MIN_QUERY = SPLIT_CHUNK * 2;
+const SPLIT_MAX_QUERY = 32;
+const SPLIT_BASE = 360;
+const SPLIT_STEP = 30;
+const SPLIT_ALIGNED = 40;
 const PLATFORM_SUFFIXES = ['vercel.app', 'netlify.app', 'github.io', 'pages.dev', 'web.app'];
 const ARTICLE_PREFIXES = ['بال', 'وال', 'فال', 'كال', 'لل', 'ال'];
 const LETTER = /[\p{L}\p{N}]/u;
@@ -478,6 +484,51 @@ const evalToken = (qs, id) => {
   c.tier[id] = tier;
 };
 
+const SPLIT_KINDS = (1 << KIND.title) | (1 << KIND.variant) | (1 << KIND.parent) | (1 << KIND.id);
+const splitBest = { score: 0, spans: null };
+
+const explore = (str, q, cuts, ci, spans, aligned) => {
+  if (ci === cuts.length - 1) {
+    const s = SPLIT_BASE - SPLIT_STEP * (cuts.length - 3) + (aligned ? SPLIT_ALIGNED : 0);
+    if (s > splitBest.score) {
+      splitBest.score = s;
+      splitBest.spans = spans.map((x) => x.slice());
+    }
+    return;
+  }
+  const chunk = q.slice(cuts[ci], cuts[ci + 1]);
+  let at = str.indexOf(chunk);
+  while (at >= 0) {
+    const end = at + chunk.length;
+    let free = true;
+    for (let i = 0; i < spans.length; i++) {
+      if (at < spans[i][1] && end > spans[i][0]) {
+        free = false;
+        break;
+      }
+    }
+    if (free) {
+      spans.push([at, end]);
+      explore(str, q, cuts, ci + 1, spans, aligned && (at === 0 || str.charCodeAt(at - 1) === 32));
+      spans.pop();
+    }
+    at = str.indexOf(chunk, at + 1);
+  }
+};
+
+const splitMatch = (q, str) => {
+  const n = q.length;
+  splitBest.score = 0;
+  splitBest.spans = null;
+  for (let a = SPLIT_CHUNK; a <= n - SPLIT_CHUNK; a++) explore(str, q, [0, a, n], 0, [], true);
+  if (n >= SPLIT_CHUNK * 3) {
+    for (let a = SPLIT_CHUNK; a <= n - SPLIT_CHUNK * 2; a++) {
+      for (let b = a + SPLIT_CHUNK; b <= n - SPLIT_CHUNK; b++) explore(str, q, [0, a, b, n], 0, [], true);
+    }
+  }
+  return splitBest.score;
+};
+
 const scoreField = (qs, f) => {
   const toks = f.toks;
   if (f.kind === KIND.acronym) {
@@ -512,7 +563,18 @@ const scoreField = (qs, f) => {
       bestTier = tier;
     }
   }
-  if (best === 0) return false;
+  if (best === 0) {
+    if (qs.len >= SPLIT_MIN_QUERY && qs.len <= SPLIT_MAX_QUERY && ((1 << f.kind) & SPLIT_KINDS) && !((qs.ma & ~f.ma) | (qs.mb & ~f.mb))) {
+      const sc = splitMatch(qs.q, f.str);
+      if (sc) {
+        hit.score = sc;
+        hit.k = 0;
+        hit.tier = TIER.split;
+        return true;
+      }
+    }
+    return false;
+  }
   hit.score = best;
   hit.k = bestK;
   hit.tier = bestTier;
@@ -547,6 +609,10 @@ const rangeFor = (f, k, q, tier) => {
   }
   if (tier === TIER.acronym) return [[0, Math.min(q.length, f.str.length)]];
   if (tier === TIER.typo) return [[start, start + Math.min(q.length, t.length)]];
+  if (tier === TIER.split) {
+    splitMatch(q, f.str);
+    return splitBest.spans || [];
+  }
   const out = [];
   let qi = 0;
   for (let j = 0; j < t.length && qi < q.length; j++) {
@@ -744,7 +810,7 @@ const run = (index, raw, opts, swapped) => {
     hTT.push(tt);
     hTL.push(d.titleLen);
     hPf.push(pf);
-    if (tier === TIER.typo && !urlScore) typo.push(h);
+    if (tier <= TIER.typo && !urlScore) typo.push(h);
     else plain.push(h);
   }
 
