@@ -92,6 +92,37 @@ for (let i = 0; i < entries.length; i++) {
   }
 }
 check(`every title, with its words reversed and joined, is still found (${recombinable.length} queries)`, recombinable.length > 40 && notFound.length === 0, notFound.slice(0, 4).join(' | '));
+
+for (const [q, title] of [['bulidercriteria', 'Criteria Builder'], ['criteriabulider', 'Criteria Builder'], ['pharmacytoolz', 'Pharmacy Tools'], ['toolspharmcy', 'Pharmacy Tools']]) {
+  const t = top(q, 2);
+  check(`"${q}" -> ${title} entries first`, t.length === 2 && t.every((x) => x.startsWith(title)), JSON.stringify(t));
+}
+const garbled = [];
+const garbledMissed = [];
+for (let i = 0; i < entries.length; i++) {
+  for (const raw of [entries[i].app.title.en, entries[i].app.title.ar]) {
+    const words = normalize(raw).split(' ').filter(Boolean);
+    if (words.length < 2 || words.length > 3 || words.some((w) => w.length < 3)) continue;
+    let longest = 0;
+    for (let w = 1; w < words.length; w++) if (words[w].length > words[longest].length) longest = w;
+    const word = words[longest];
+    if (word.length < 5) continue;
+    let at = Math.floor(word.length / 2);
+    while (at < word.length - 1 && word[at] === word[at + 1]) at++;
+    if (at >= word.length - 1) continue;
+    const swapped = word.slice(0, at) + word[at + 1] + word[at] + word.slice(at + 2);
+    const dropped = word.slice(0, at) + word.slice(at + 1);
+    for (const bad of [swapped, dropped]) {
+      if (bad.length < 5) continue;
+      const q = words.map((w, k) => (k === longest ? bad : w)).reverse().join('');
+      if (q.length < 8 || q.length > 32) continue;
+      garbled.push(q);
+      if (!run(q).some((h) => h.index === i)) garbledMissed.push(`${q} !> ${raw}`);
+    }
+  }
+}
+check(`every title with its words reversed, joined and one longer word mistyped is still found (${garbled.length} queries)`, garbled.length > 40 && garbledMissed.length === 0, garbledMissed.slice(0, 4).join(' | '));
+
 first('الحصاد', 'Harvest');
 const pills = run('pills').map(titleOf);
 check('"pills" -> Workspace and Pharmacy Tools', pills.includes('Workspace') && pills.some((t) => t.startsWith('Pharmacy Tools')), JSON.stringify(pills));
@@ -136,7 +167,7 @@ check('layoutSwap Arabic to Latin', layoutSwap('المحلل') === 'hglpgg');
 check('layoutSwap lam-alef', layoutSwap('b') === 'لا' && layoutSwap('لا') === 'b');
 
 const sameHits = (a, b) => a.length === b.length && a.every((h, i) => h.index === b[i].index && h.score === b[i].score && h.tier === b[i].tier && h.field === b[i].field);
-const narrowingQueries = ['bugpill', 'druglist', 'listdrug', 'ادويهقائمه', 'parser', 'indx bldr', 'الادويه', 'lx-index.vercel.app', 'vercel app', 'pillbug', 'daleel 460', 'duckbench', 'core parser', 'snickerdoodle', 'harvest', 'ledger form', 'full', 'ar', 'sol'];
+const narrowingQueries = ['bulidercriteria', 'bugpill', 'druglist', 'listdrug', 'ادويهقائمه', 'parser', 'indx bldr', 'الادويه', 'lx-index.vercel.app', 'vercel app', 'pillbug', 'daleel 460', 'duckbench', 'core parser', 'snickerdoodle', 'harvest', 'ledger form', 'full', 'ar', 'sol'];
 for (const q of narrowingQueries) {
   index.last = null;
   for (let n = 1; n <= q.length; n++) {
@@ -157,6 +188,16 @@ const mulberry = (seed) => () => {
   t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 };
+
+const randomLetters = mulberry(20261113);
+const junkHits = [];
+for (let n = 0; n < 3000; n++) {
+  const len = 6 + Math.floor(randomLetters() * 8);
+  let junk = '';
+  for (let k = 0; k < len; k++) junk += String.fromCharCode(97 + Math.floor(randomLetters() * 26));
+  if (run(junk).length) junkHits.push(junk);
+}
+check('3000 random strings of 6 to 13 letters match nothing', junkHits.length === 0, junkHits.slice(0, 5).join(', '));
 
 const SYLLABLES = ['ta', 'ri', 'mo', 'ven', 'dex', 'lu', 'pha', 'qui', 'zen', 'bor', 'ka', 'lin', 'sol', 'ver', 'nu', 'ex', 'pro', 'tex', 'dat', 'wik', 'mar', 'cel', 'tri', 'bu', 'gan', 'flo', 'sky', 'ion', 'dra', 'pix'];
 const AR_WORDS = ['قائمة', 'الأدوية', 'حاسبة', 'المحلل', 'مفكرة', 'جدول', 'أدوات', 'الصيدلة', 'بيانات', 'نموذج', 'مراجعة', 'تقرير', 'مخطط', 'فهرس', 'بروتوكول', 'مساحة', 'عمل', 'رسم', 'تحويل', 'نصوص', 'سجل', 'إدارة', 'تجربة', 'منشئ', 'معايير'];
