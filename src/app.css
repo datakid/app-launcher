@@ -1255,13 +1255,14 @@ html.is-zen-transitioning::view-transition-new(.tile) { animation-name: zen-new-
 }
 .palette-cursor.is-visible { opacity: 1; }
 .palette-cursor.is-dimmed { opacity: 0.4; }
-.palette-cursor.is-snapping { transition: none; }
+.palette-cursor.is-snapping,
+:root[data-palette] .palette-cursor.is-snapping { transition: none; }
 
 .palette-item {
   position: relative; z-index: 1;
   display: flex; align-items: center; gap: 0.8rem;
   min-height: 52px; padding: 0.5rem 0.7rem; cursor: pointer;
-  content-visibility: auto; contain-intrinsic-size: auto 52px;
+  content-visibility: auto; contain-intrinsic-size: auto 36px;
   transition: background-color var(--dur-micro) var(--ease-lux);
   animation: paletteItemIn 220ms var(--ease-lux) both;
 }
