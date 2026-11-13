@@ -17,7 +17,7 @@ const boost = (ctx) => ctx.addInitScript(() => {
 });
 
 const open = async (browser, base, opts = {}, url = '/') => {
-  const ctx = await browser.newContext({ viewport: opts.viewport || { width: 1440, height: 900 }, hasTouch: !!opts.mobile, isMobile: !!opts.mobile, reducedMotion: opts.reduced ? 'reduce' : 'no-preference', serviceWorkers: opts.noSw ? 'block' : 'allow' });
+  const ctx = await browser.newContext({ viewport: opts.viewport || { width: 1440, height: 900 }, hasTouch: !!opts.mobile, isMobile: !!opts.mobile, reducedMotion: opts.reduced ? 'reduce' : 'no-preference', ...(opts.scheme ? { colorScheme: opts.scheme } : {}), serviceWorkers: opts.noSw ? 'block' : 'allow' });
   await boost(ctx);
   await ctx.addInitScript(collectorInit);
   if (opts.setup) await opts.setup(ctx);
@@ -83,7 +83,7 @@ const legacyMotion = async (browser, base) => {
   };
   const legacy = await probe('?motion=legacy');
   const current = await probe('');
-  record('?motion=legacy sets data-motion and the legacy timings', legacy.motion === 'legacy' && legacy.version === '240ms' && legacy.boot === '' && legacy.outMs === 190 && legacy.saved.length === 0, legacy);
+  record('?motion=legacy sets data-motion and the legacy timings', legacy.motion === 'legacy' && legacy.version === '240ms' && legacy.boot === '' && legacy.outMs === 120 && legacy.saved.length === 0, legacy);
   record('default motion uses the new timings', current.motion === null && current.version === '120ms' && current.boot === '360ms' && current.outMs === 120, current);
 };
 
@@ -176,10 +176,134 @@ const harvestEntry = async (browser, base) => {
   await ctx.close();
 };
 
+const confirmationDialogs = async (browser, base) => {
+  for (const lang of ['en', 'ar']) {
+    const original = JSON.stringify([{ title: { en: 'Original', ar: 'الأصلي' }, url: 'https://example.com/original', icon: 'fa-link' }]);
+    const { ctx, page } = await open(browser, base, { setup: c => c.addInitScript(({ lang, original }) => {
+      localStorage.setItem('lx-lang', lang);
+      localStorage.setItem('lx-user-links', original);
+    }, { lang, original }) });
+    let nativeDialogs = 0;
+    page.on('dialog', async d => { nativeDialogs += 1; await d.dismiss(); });
+    const stored = () => page.evaluate(() => localStorage.getItem('lx-user-links'));
+    const menu = async action => {
+      await page.locator('#dataToggle').click();
+      await page.locator(`[data-data-action="${action}"]`).click();
+    };
+    const dialog = page.locator('#lx-confirm');
+    const cancel = page.locator('[data-confirm-action="cancel"]');
+    const confirm = page.locator('[data-confirm-action="confirm"]');
+    const upload = async () => {
+      const chooser = page.waitForEvent('filechooser');
+      await menu('import');
+      await (await chooser).setFiles({ name: 'links.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify([{ title: 'Replacement', url: 'https://example.com/replacement', icon: 'fa-link' }])) });
+      await dialog.waitFor({ state: 'visible' });
+    };
+    await menu('reset');
+    await dialog.waitFor({ state: 'visible' });
+    record(`confirm ${lang}: safe action receives focus`, await cancel.evaluate(el => el === document.activeElement), {});
+    await page.keyboard.press('Shift+Tab');
+    record(`confirm ${lang}: reverse Tab stays in modal`, await confirm.evaluate(el => el === document.activeElement), {});
+    await page.keyboard.press('Tab');
+    record(`confirm ${lang}: Tab wraps to safe action`, await cancel.evaluate(el => el === document.activeElement), {});
+    await page.keyboard.press('Escape');
+    await dialog.waitFor({ state: 'detached' });
+    record(`confirm ${lang}: Escape preserves records`, await stored() === original, {});
+    await menu('reset');
+    await dialog.waitFor({ state: 'visible' });
+    await page.mouse.click(0, 0);
+    await dialog.waitFor({ state: 'detached' });
+    record(`confirm ${lang}: backdrop preserves records`, await stored() === original, {});
+    await upload();
+    await cancel.click();
+    await dialog.waitFor({ state: 'detached' });
+    record(`confirm ${lang}: import cancel preserves records`, await stored() === original, {});
+    await upload();
+    await confirm.click();
+    await page.waitForFunction(() => JSON.parse(localStorage.getItem('lx-user-links') || '[]').some(a => a.url === 'https://example.com/replacement'));
+    const imported = JSON.parse(await stored());
+    record(`confirm ${lang}: explicit import keeps existing replacement contract`, imported.length === 1 && imported[0].url === 'https://example.com/replacement', {});
+    await menu('reset');
+    await dialog.waitFor({ state: 'visible' });
+    await confirm.click();
+    await page.waitForFunction(() => localStorage.getItem('lx-user-links') === null);
+    record(`confirm ${lang}: explicit reset removes imported records`, await stored() === null, {});
+    record(`confirm ${lang}: no native dialogs`, nativeDialogs === 0, { nativeDialogs });
+    await ctx.close();
+  }
+};
+
+const confirmationEdges = async (browser, base) => {
+  for (const lang of ['en', 'ar']) {
+    const original = JSON.stringify([{ title: { en: 'Original', ar: 'الأصلي' }, url: 'https://example.com/original', icon: 'fa-link' }]);
+    const changed = JSON.stringify([{ title: { en: 'Changed elsewhere', ar: 'تغير' }, url: 'https://example.com/changed', icon: 'fa-link' }]);
+    const { ctx, page } = await open(browser, base, { setup: c => c.addInitScript(({ lang, original }) => {
+      if (!sessionStorage.getItem('lx-seeded')) {
+        sessionStorage.setItem('lx-seeded', '1');
+        localStorage.setItem('lx-lang', lang);
+        localStorage.setItem('lx-user-links', original);
+      }
+    }, { lang, original }) });
+    const stored = () => page.evaluate(() => localStorage.getItem('lx-user-links'));
+    const menu = async action => {
+      await page.locator('#dataToggle').click();
+      await page.locator(`[data-data-action="${action}"]`).click();
+    };
+    const dialog = page.locator('#lx-confirm');
+    const confirm = page.locator('[data-confirm-action="confirm"]');
+    const upload = async payload => {
+      const chooser = page.waitForEvent('filechooser');
+      await menu('import');
+      await (await chooser).setFiles({ name: 'data.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(payload)) });
+    };
+    await menu('reset');
+    await dialog.waitFor({ state: 'visible' });
+    await page.evaluate(v => localStorage.setItem('lx-user-links', v), changed);
+    await confirm.click();
+    await dialog.waitFor({ state: 'detached' });
+    await page.locator('.lx-toast').first().waitFor({ state: 'visible' });
+    record(`confirm ${lang}: reset aborts when links changed while confirming`, await stored() === changed, {});
+    await upload([{ title: 'Replacement', url: 'https://example.com/replacement', icon: 'fa-link' }]);
+    await dialog.waitFor({ state: 'visible' });
+    await page.evaluate(v => localStorage.setItem('lx-user-links', v), original);
+    await confirm.click();
+    await dialog.waitFor({ state: 'detached' });
+    record(`confirm ${lang}: import aborts when links changed while confirming`, await stored() === original, {});
+    await upload({ app: 'linkexpress', version: 1, links: [], prefs: { sound: '0' } });
+    await page.waitForFunction(() => localStorage.getItem('lx-sound') === '0');
+    record(`confirm ${lang}: prefs-only import shows no dialog and keeps links`, await dialog.count() === 0 && await stored() === original, {});
+    await ctx.close();
+  }
+  for (const scheme of ['light', 'dark']) for (const lang of ['en', 'ar']) {
+    const { ctx, page } = await open(browser, base, { mobile: true, scheme, viewport: { width: 390, height: 780 }, setup: c => c.addInitScript(({ lang }) => {
+      localStorage.setItem('lx-lang', lang);
+      localStorage.setItem('lx-user-links', JSON.stringify([{ title: { en: 'Original', ar: 'الأصلي' }, url: 'https://example.com/original', icon: 'fa-link' }]));
+    }, { lang }) });
+    await page.locator('#dataToggle').click();
+    await page.locator('[data-data-action="reset"]').click();
+    const dialog = page.locator('#lx-confirm');
+    await dialog.waitFor({ state: 'visible' });
+    await page.waitForTimeout(500);
+    const m = await page.evaluate(() => {
+      const d = document.querySelector('#lx-confirm');
+      const r = d.getBoundingClientRect();
+      const bs = [...d.querySelectorAll('button')].map(b => b.getBoundingClientRect());
+      const bg = getComputedStyle(d).backgroundColor;
+      const alpha = /\/\s*([\d.]+)\s*\)|rgba\([^)]*,\s*([\d.]+)\)/.exec(bg);
+      return { inside: r.left >= 0 && r.right <= innerWidth && r.top >= 0 && r.bottom <= innerHeight, buttonsInside: bs.every(b => b.left >= r.left - 1 && b.right <= r.right + 1 && b.top >= r.top - 1 && b.bottom <= r.bottom + 1), tall: bs.every(b => b.height >= 44), rtl: getComputedStyle(d).direction, alpha: alpha ? Number(alpha[1] ?? alpha[2]) : 1 };
+    });
+    record(`confirm ${scheme} ${lang} phone: dialog and buttons fit the viewport`, m.inside && m.buttonsInside, m);
+    record(`confirm ${scheme} ${lang} phone: buttons are at least 44px tall`, m.tall, m);
+    record(`confirm ${scheme} ${lang} phone: fill is opaque and direction matches`, m.alpha === 1 && m.rtl === (lang === 'ar' ? 'rtl' : 'ltr'), m);
+    await page.keyboard.press('Escape');
+    await ctx.close();
+  }
+};
+
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await launchBrowser();
-  for (const step of [versionSwitches, legacyMotion, manifestRefresh, reducedMotion, versionColour, iconFallback, harvestEntry]) {
+  for (const step of [versionSwitches, legacyMotion, manifestRefresh, reducedMotion, versionColour, iconFallback, harvestEntry, confirmationDialogs, confirmationEdges]) {
     try { await step(browser, server.base); } catch (e) { record(step.name, false, { error: String(e.message || e).slice(0, 200) }); }
   }
   await browser.close();
