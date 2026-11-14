@@ -59,6 +59,23 @@ for (const q of ['closed', 'مغلق']) {
 first('harvest', 'Harvest');
 first('bugpill', 'Pharmacy Tools · Pillbug');
 first('pillbug', 'Pharmacy Tools · Pillbug');
+for (const q of ['billbug', 'bugbill']) first(q, 'Pharmacy Tools · Pillbug');
+first('ft', 'Form · Tally');
+for (const q of ['fomtally', 'tallyform', 'talyform', 'form tally']) first(q, 'Form · Tally');
+for (const q of ['lz-parser', 'lx-prser.vercel.app', 'https://lx-parsr.vercel.app/']) first(q, 'Parser');
+const categoryMembers = (id) => new Set(entries.map((e, i) => (e.cat.id === id ? i : -1)).filter((i) => i >= 0));
+for (const cat of catalogue) {
+  if (cat.id === 'palette') continue;
+  const members = categoryMembers(cat.id);
+  const labels = [cat.label.en, cat.label.en.toLowerCase(), cat.label.ar];
+  const word = cat.label.en.toLowerCase();
+  if (word.length > 4) labels.push(word.slice(0, -1), word[0] + word.slice(2), word.slice(0, 2) + word.slice(3), word.slice(0, 2) + 'x' + word.slice(3), word.slice(0, 1) + word[2] + word[1] + word.slice(3));
+  for (const label of labels) {
+    const got = new Set(run(label).map((h) => h.index));
+    const missing = [...members].filter((i) => !got.has(i));
+    check(`category query "${label}" lists every member of ${cat.id}`, missing.length === 0, `${missing.length} of ${members.size} missing`);
+  }
+}
 for (const q of ['druglist', 'listdrug', 'drug-list']) {
   const t = top(q, 2);
   check(`"${q}" -> Drug List entries first`, t.length === 2 && t.every((x) => x.startsWith('Drug List')), JSON.stringify(t));
@@ -122,6 +139,25 @@ for (let i = 0; i < entries.length; i++) {
   }
 }
 check(`every title with its words reversed, joined and one longer word mistyped is still found (${garbled.length} queries)`, garbled.length > 40 && garbledMissed.length === 0, garbledMissed.slice(0, 4).join(' | '));
+
+const shortGarbled = [];
+const shortGarbledMissed = [];
+for (let i = 0; i < entries.length; i++) {
+  for (const raw of [entries[i].app.title.en, entries[i].app.title.ar]) {
+    const words = normalize(raw).split(' ').filter(Boolean);
+    if (words.length < 2 || words.length > 3 || words.some((w) => w.length < 3)) continue;
+    for (let w = 0; w < words.length; w++) {
+      if (words[w].length !== 4) continue;
+      const letters = Array.from(words[w]);
+      letters[1] = letters[1] === 'x' ? 'z' : 'x';
+      const q = words.map((x, k) => (k === w ? letters.join('') : x)).reverse().join('');
+      if (q.length < 7 || q.length > 32) continue;
+      shortGarbled.push(q);
+      if (!run(q).some((h) => h.index === i)) shortGarbledMissed.push(q + ' !> ' + raw);
+    }
+  }
+}
+check(`every title with its words reversed, joined and one 4-letter word mistyped is still found (${shortGarbled.length} queries)`, shortGarbled.length >= 4 && shortGarbledMissed.length === 0, shortGarbledMissed.slice(0, 4).join(' | '));
 
 first('الحصاد', 'Harvest');
 const pills = run('pills').map(titleOf);
