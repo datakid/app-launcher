@@ -43,7 +43,7 @@ const snapshot = async (cdp) => {
 };
 
 const settle = async (page, pad = 100) => {
-  await page.waitForFunction(() => !document.getAnimations().some((a) => a.playState === 'running' && a.effect && a.effect.getComputedTiming().iterations !== Infinity), null, { polling: 50, timeout: 10000 });
+  await page.waitForFunction(() => !document.getAnimations().some((a) => a.timeline === document.timeline && a.playState === 'running' && a.effect && a.effect.getComputedTiming().iterations !== Infinity), null, { polling: 50, timeout: 10000 });
   await page.waitForTimeout(pad);
 };
 

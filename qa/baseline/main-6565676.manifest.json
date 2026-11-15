@@ -1,0 +1,2729 @@
+{
+ "browser": "153.0.8010.12",
+ "matrix": "full",
+ "pin": true,
+ "seed": 20260101,
+ "lowend": false,
+ "shots": {
+  "dark-ar-curated-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7bf17c7da8340c53c490c7a759e705fce4db1a9cb48e1dc6e600f5730295dd17"
+  },
+  "dark-ar-curated-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7faffd9f12078f22e460d1c73034967071df518388bf907341b4af719f4172e4"
+  },
+  "dark-ar-curated-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "4dfb37256164e8eb183358930be7af92f288deace170ddcc62d03b433ab9a8f2"
+  },
+  "dark-ar-curated-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "c2e62e5f621f1ff5faa0059625cd8d34faf3af5a121b3565bb4c938f71947210"
+  },
+  "dark-ar-curated-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "872ac388148d333e6f0e052b3c08d12497a07a54737c1d80183b851d4a6ac716"
+  },
+  "dark-ar-curated-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "9a05a946c99ced5318d2ead8913c953135e27c358d058797b20b67e4a3fd3281"
+  },
+  "dark-ar-curated-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ed8c926a5848b500d13ab40265a111b8c643ac0c90d0031ffcf935766fe0c355"
+  },
+  "dark-ar-curated-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "568ec09cac6b08a54820cd4ccfeafcb69c79b11227d8a157affbe8f0cfd4df47"
+  },
+  "dark-ar-curated-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "faebd3db370ead92763c37e42c04ec4ddb77b8e2099b86764bc86102720434b9"
+  },
+  "dark-ar-curated-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "84c725ed58e1661284924cf501723a2b369b711baa05d2269be6ad855f7dbfd2"
+  },
+  "dark-ar-curated-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "a7bf9c873cfa679fa9df6064a0f6e881729fe35af2b6fcfa33ec0a308c617001"
+  },
+  "dark-ar-curated-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "b49affab117cbbf0add0f0003b89ebd68947ca632675343a16f83ce2c41cbf36"
+  },
+  "dark-ar-curated-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f35b3b79da48784a1029979ea97669d57419182191e6eba341939224e724b882"
+  },
+  "dark-ar-curated-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "911601be057fb40f2e558dbb25e7abd9cafef26ad9b6c20c0d9273538bd32b93"
+  },
+  "dark-ar-curated-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "e0ab08b1d56f7b5d498e7bf7a5ff89c3b5cac7821e30ac360493e72ba92c4e98"
+  },
+  "dark-ar-curated-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b4a445083de3f014c0305cdd1ad8e6255364ca52a8255d5dcbf12d1f43ee04d4"
+  },
+  "dark-ar-curated-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f64d8db3c6c4080990a8bf50d87992f160ee2252fd6e055049054e8555cc4e8c"
+  },
+  "dark-ar-curated-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "2a679856e7c7f34a158124e07a8a1ce0328059420105c55e9d525347e1ffa880"
+  },
+  "dark-ar-curated-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "1a634cfb99c6d6e6f1c29d61253c50e42f240ff663d2d1448bea79b76ac3fbcd"
+  },
+  "dark-ar-curated-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a046b7cadd76b997aab8886bd7d8cf8ca2129c312af7a89d37ef39038e22765d"
+  },
+  "dark-ar-curated-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "40877bd685264e7cdda55150a98153c2055718d8d14832077838780d651f435d"
+  },
+  "dark-ar-curated-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "8cbabf663d4bbac1d6b8fc9d8216ee183f24d6bd2a793356594b97685c7e1780"
+  },
+  "dark-ar-curated-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f17c8a929fd26d7e45ef0cd6742e0b36efe70eff4d6c011e115bef7823cc283b"
+  },
+  "dark-ar-curated-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "07f3d6d9e28974d15ab0ffd12465cc024bded3dfdb602956f3627e47c73a232c"
+  },
+  "dark-ar-curated-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "09d67a9127350bf4ba60e6436f37508996644a6aa99b4f86610ac7800924f1d1"
+  },
+  "dark-ar-curated-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "1a6b2cc1f58dc890d9f3f16d1904a74df37766a7c9f5750673b343ce5e7779fe"
+  },
+  "dark-ar-curated-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "758643481ead3e9886540b57669a8098c9eba94167b35f6c4154d18f1cd5ecf0"
+  },
+  "dark-ar-curated-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "16b567462ed2c2a85ff92d48fc09291360a10e978198356b7294b9277483be8b"
+  },
+  "dark-ar-curated-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0588107983a9c1065c9c01dfd7c0076792b055318dfb8b2727dc848b84e48b69"
+  },
+  "dark-ar-curated-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "55d9acffebc0ed170e4c47fc1965e25816b6de98d91ab16755dbc95ca9cd0dc6"
+  },
+  "dark-ar-curated-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "f035720c4a7f49f7016e6ac5922100a292255ba5a5d03103a7de6c52f25bc418"
+  },
+  "dark-ar-curated-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "bf4ac902edd94c6680ba63fd659c0e3f99a574810f20ef1221053f9b17b1491f"
+  },
+  "dark-ar-curated-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "f3e548c548dd1b7a0fc111bb821a6747baaf13c1d44f177c01f61db99ee48d32"
+  },
+  "dark-ar-curated-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "4032ab176ccd70da7d16c916cec506b5d44f00bdb6fd3afa21455d838a71d5ad"
+  },
+  "dark-ar-mono-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "2928e3bae507b1f835eb8460364a7ece37258ff0d90ef60e1f27a2451659426a"
+  },
+  "dark-ar-mono-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0d5f8567d9bb6748a9aae1c28953df5cb02032200896c5d458c454fc057ef24c"
+  },
+  "dark-ar-mono-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "eae7d082d3049c5378e3a2a6db96dc12e8a900e098aef6b8009b6b1c813ecf4f"
+  },
+  "dark-ar-mono-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "2fb600d986252c47b7781fdba45baf1d04a7dc54ad196d20d2c786d9323939b6"
+  },
+  "dark-ar-mono-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0936c545be814030264e87c1b9464ff772ea4ac93623c98bc70a8a89e75a5bed"
+  },
+  "dark-ar-mono-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "e51db6076ea65ada6696863aeba891eba7321ceb7d2551a5028b53212c815db6"
+  },
+  "dark-ar-mono-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "36d5092d67c2381090ad7f07b5e6677b81194b97c8f7c782fc429e1e15673f21"
+  },
+  "dark-ar-mono-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "b20d0672c4f6618319b6301eb317fecb842dfa54e0768b883c6c086dbc9a59a3"
+  },
+  "dark-ar-mono-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "37b7122bb46839b57efab18945ab094bbe90c62bcf9c083d627ca83ec00f1d54"
+  },
+  "dark-ar-mono-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "d8d67245132fe41a458a5589cba51a8ec014f4b7d80a712da0a67c896673fbac"
+  },
+  "dark-ar-mono-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "4c1e8764f01fb8e949e52c8118fd0acd581db682ea003750f76bab57aaead2e0"
+  },
+  "dark-ar-mono-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "258f9d16aa5ed59d45b19e5d24c728a352b5877bd9047f12a6558c0450f2cf7f"
+  },
+  "dark-ar-mono-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b59f4f05645d26ece664cc8b070b932088d9d2d5788859695c93c32aafdce7e8"
+  },
+  "dark-ar-mono-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "6d40eb68bb872b71461c3708c6967b9afd07db2bb8081c49c0396ff951f33a07"
+  },
+  "dark-ar-mono-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0c4a65581d786ef1fb490a0da8652d20d0c3fc1934065c8c261fdc5d2cd4e56e"
+  },
+  "dark-ar-mono-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7ab3b9ad095051c00f8f06e7805139671d598f6cd62e75dfe8157d3ffe4841bb"
+  },
+  "dark-ar-mono-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "18da169d7c6b07ceb0ca10f97c6760e22bf63524f98862a4e526360054fc8f42"
+  },
+  "dark-ar-mono-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "a0b24ee3f4b390dbc53f410103fc31864a8a8785b471dbcde4ae605ac3d0a5e4"
+  },
+  "dark-ar-mono-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "344b86a027a0e70ac7a4fdd1eb298cee6dcd5fa61320a3ef8cdd7b660c47ce0c"
+  },
+  "dark-ar-mono-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "19debf496a3ee25f9c5535c79a708b3927eff405dfa06adc84267c45ee3d6292"
+  },
+  "dark-ar-mono-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "12e0390efbd68597aff8bc1877fcd83aa52ee249d4eca99a0a5e438ee417d39e"
+  },
+  "dark-ar-mono-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "5c381815e503891655f327f48ad96fbec788e235d22354fd2ece503ce3d66df7"
+  },
+  "dark-ar-mono-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "c52e643aed0d523465e0367e2e2bfe74f8faed5bc50612bfbc5974280cf24a85"
+  },
+  "dark-ar-mono-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "05238566de70a84b7d49f848f9b5b991503f97afa3e3e65af66eb4250dc4be13"
+  },
+  "dark-ar-mono-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "5d987c37063e1374e30f18c5585a8a1f2b010793b1772aafd3ba876879e61b31"
+  },
+  "dark-ar-mono-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "4e76b374162ab641426c54b640682eca0a214d2dd1dd6c9be968e6a2889ab1f3"
+  },
+  "dark-ar-mono-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "85862c30fd4cef017194c704c92213770ced536ed7190ccb72f410a032b49427"
+  },
+  "dark-ar-mono-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "eb8226af70c5723054ab87db45350f362ef45ec3a0babf78f19b56f1d5aedcfe"
+  },
+  "dark-ar-mono-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "2c199e5a7ddbd4760e5e35b8365ef1fbe1347d3f102b0d29a12caf795231d28e"
+  },
+  "dark-ar-mono-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "34f0eb2b613a025b579eadcd07aa88b7669584c5d130c080d7ec9e192afc0c39"
+  },
+  "dark-ar-mono-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "10889bc3521a10998b62c44965a8311d19a3561cbed6b8f3868536aba8607ecd"
+  },
+  "dark-ar-mono-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "865ab37c0ab72a305f97de8af231827090a29d73b5dfcad419189469b3a234af"
+  },
+  "dark-ar-mono-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "5519d9f4b8259d470b9b2e87d6c8b2d0eb3483b2000a6000d97814ea57d98807"
+  },
+  "dark-ar-mono-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "95ced2df078a5556238802553b717e4fb2b35c235975ea3ab39d910eda61f4de"
+  },
+  "dark-ar-muted-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "441cd2262a5fd54c8df6b6635efb5d86720dad3cf6ecd055d34cd706cc70d0af"
+  },
+  "dark-ar-muted-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "cf431884d0b60ceaf5220a3e4a62cdfbf05be43e96ab58b2bf827c3756f7c54b"
+  },
+  "dark-ar-muted-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "acebb6e4961013753a3a78aa5a7263072bd407ab6de4aa3a6727a35b86df7065"
+  },
+  "dark-ar-muted-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "24ac59b7ec27a9aa1c2926598df185eb013ac6add7204a917634a04598546299"
+  },
+  "dark-ar-muted-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f6e35853f638ccd536278bc5928a208137afb7ba2e0167395c16dc6d467ee2ce"
+  },
+  "dark-ar-muted-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "c276e429d3dafa40438abb6ceaea2a0c1a4b3e2c41eb787b1fe7d4018b10e8a9"
+  },
+  "dark-ar-muted-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "c73af0908175d3683954f3639ec6561ea25b3bf7277af810b56857d93861161f"
+  },
+  "dark-ar-muted-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "5c8117ae9a05af804f2b880e8c303c0807bf14b65f2042dca3e7e54011c980e2"
+  },
+  "dark-ar-muted-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b933e88d700c8c7ed4405f57cf68af537cc9895a0b1a6ef52e39a3dc2c755aa0"
+  },
+  "dark-ar-muted-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "9fc81ec84f830dd28ea020584165777a464f91c88b9730f8b912a4040387c6e8"
+  },
+  "dark-ar-muted-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "41bdcc56c3d20491d0b2476a0a7b7afb485e0b42a1d4fef9c955b17d04a40850"
+  },
+  "dark-ar-muted-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "5bde1fbfad2fbb74b35ffff1a2c53f38fcf7e8ff40e18033eec2367de46a64c6"
+  },
+  "dark-ar-muted-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "332c6a37cf95d906a4c8b498d4f7313440f405f6d80ab3a51174b73961f3cefa"
+  },
+  "dark-ar-muted-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0c80865a5c028c1432b1204c9dfcd8978888dcb06339a0a71f2c76d6a3c45305"
+  },
+  "dark-ar-muted-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "4cae75051b5ee70111aabadb0e3e5ccf4943e49b3e7f7f35601863fb893eeef5"
+  },
+  "dark-ar-muted-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a7419b4eea30b10361b879be2ba162f9df46e121ba4f005620845235831a9591"
+  },
+  "dark-ar-muted-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "855b9ea59d5947290edbc67073ef46bb444732afa1aab759343bba11b404aefd"
+  },
+  "dark-ar-muted-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "c7c74be4fbf961a702e94f1483d8756f0948505a8649fd51a842b47cca80b7cd"
+  },
+  "dark-ar-muted-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "e828358970df407c8cbf841eb82d43ad671f7fbdd9ec747b308b4e79b3f3567d"
+  },
+  "dark-ar-muted-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7bc33648ddd481be9f1c1a75ad70c07c25a89268690e5d9e5a4cedf3d99e2eab"
+  },
+  "dark-ar-muted-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "194aff367ddcde36fd5498d05bd13cf5a55c1b433f0792df450ca025b642afe1"
+  },
+  "dark-ar-muted-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "bd2603818e126a475b24528caf08865906778007de64ebe62a3acf89ae05a921"
+  },
+  "dark-ar-muted-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "c20dcd3857fc15089390608f8a9b3b3f81dadc515f9ae254393972ef373d2ba9"
+  },
+  "dark-ar-muted-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "24c5afd06b8af5399c4263e3fd48d4323d512aaa3fd27d8a78f4b9d68bc7eddd"
+  },
+  "dark-ar-muted-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "515a8c690bda647250dd059aaf0b2eca458c965bfcbf582447ec0f91e204a926"
+  },
+  "dark-ar-muted-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a3ee27b219407f35f1d5735e0553ea83355bf98cf98e61febb84d6dd33db0426"
+  },
+  "dark-ar-muted-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "100d70b8b66f18261da8b813604901e0521b2b4f67df977eee2610a66f08947f"
+  },
+  "dark-ar-muted-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "96da450cedebc49fd51a5a04b65ca9e048774bb04b9d0113934ccca92bcf88d6"
+  },
+  "dark-ar-muted-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "da701383cbe0f918c56019725f1282936a0249635ab11eb8838ce9ca3c8e52ed"
+  },
+  "dark-ar-muted-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "4b9c4426af9a74313bad117a0f848a71898dcb232c19b3586cfddebe5c612174"
+  },
+  "dark-ar-muted-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "94dc5d80e738ab5d3d8c3098c2b7d84964480b5c1e5de0d690016f88efaa31d1"
+  },
+  "dark-ar-muted-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "98ab9197813961585af9111b9b008e5dfb469241c4c52e7acf39e5778b7918b6"
+  },
+  "dark-ar-muted-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "b80135a684912b3e3425ca95ee3dcd248e7ac6342c8af6f1504ae92db42040ba"
+  },
+  "dark-ar-muted-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "1a878eb1cae6b8f2141388a564056c5a8f803b21e3662575398b250ae291468e"
+  },
+  "dark-ar-vivid-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "4a2024b601e67ccea54a9983fb201347dc16245e6efb6d731aefd2786e008706"
+  },
+  "dark-ar-vivid-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a0bd835d258d4ed6def18510a954fe76d8b05aff531d9f361501457f912400c1"
+  },
+  "dark-ar-vivid-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "b262a502e3472df18f92eac6730490eafd29d2b438b86954be874675cf93c2c8"
+  },
+  "dark-ar-vivid-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "aae22a3d19d055a514ed3140cbcb1c76fa85b06de813b70a257c217ddf3e2fa9"
+  },
+  "dark-ar-vivid-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b25c6aef27c8eb778a10813107590c4c2281d5c8dd46784baa31902801eaf1aa"
+  },
+  "dark-ar-vivid-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d4619ae8456ec18d96245305bcfd961168760a06bc85a8851a1aeab5f0e2916d"
+  },
+  "dark-ar-vivid-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "e9bbbb2d104afca317f9da88964872c49fcc978a75ce3ef8a999b4792c0c32ad"
+  },
+  "dark-ar-vivid-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "4f6dacf3cbf4a254f6854d5b0c8584debcfc4b1b034c368dd0fbde9a42502bb3"
+  },
+  "dark-ar-vivid-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0320c21702dc684945ac679e25e3957f72a6c0bc5ed107335e5e7ea5ee2a4f0c"
+  },
+  "dark-ar-vivid-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "bbba2d3ce645b80da2e61e4fbb936ad948551f92dcf74494055e196696e66700"
+  },
+  "dark-ar-vivid-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "631239ab420780bcbff3cf22190e7c59b7d7d409f920c648e6f1f1698bb9c470"
+  },
+  "dark-ar-vivid-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "27e4caa91d2c771083ea1ae46947cc7077f2377117f0e073e06cbef62c78a0f9"
+  },
+  "dark-ar-vivid-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a993a5389d506332bcc3aa83e35cf12219c4c81bfd3f78458fc0259606fc2385"
+  },
+  "dark-ar-vivid-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "4561f66f6fea9ecc872cd4b606072f23823ef37fea1e3b86d31f79bdcd8f1210"
+  },
+  "dark-ar-vivid-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "1abe5ac13d9358c1d449bac83c23e426088b16a91f9c7b6e1b0324b1a410b7a5"
+  },
+  "dark-ar-vivid-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "3cfd6f9a1c838496dad77a4f5fa28e6449f1ba29c186bd5266b3c553f0152998"
+  },
+  "dark-ar-vivid-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "dd90e21b98d4a2fe26d0f9ad3fcd89b460dc3279b5afd3569733f67f7cd10c57"
+  },
+  "dark-ar-vivid-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "5b97c64334d3cdf9c6bdcdf25973b9b193e0f0c0e2d3624b78ee88c71c5cb2fa"
+  },
+  "dark-ar-vivid-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "1598059103d18e144ab491e6555bded5510f60756f5bddbd9018b123fa36474e"
+  },
+  "dark-ar-vivid-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "94d2bde4081e188dbb11ecc2b1b7f780fc53a6d641e6c85fd6f38e11dc36e2a4"
+  },
+  "dark-ar-vivid-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "39811f30b8279f0ea9b966d6558498563db7ca5f501bd4ecdab1b55a2a619da5"
+  },
+  "dark-ar-vivid-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "fbe16e974515f28c6162350c779accdcfe2720335f797aa9abee1d8c55fb612c"
+  },
+  "dark-ar-vivid-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "05a225116ee828c36e32a6f5268b7af800936e95f40e4242cc2d11144e76b4b1"
+  },
+  "dark-ar-vivid-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "046b9af452173ae7d3a4d7a367586a71877b1e032fc7bf9bdbcdd0ba2ad29569"
+  },
+  "dark-ar-vivid-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "8e59beb53c5ce2cfcb417a6708552621bcdd263bf0a03bf460c39840ecc1935d"
+  },
+  "dark-ar-vivid-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "820941c47aefe607c1bd4cfa1d8e447f1d37e776e893fc8e3896169e1bf47840"
+  },
+  "dark-ar-vivid-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "d8d1676256626e7d4f81f1f29f604472aa78eb806aa1f7dc935cbc7c29e86e3c"
+  },
+  "dark-ar-vivid-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "2f4c2d79a77336342d970f9d9e4ccdb46efe77c81097c36eea3ef0c3c9b048db"
+  },
+  "dark-ar-vivid-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "39b354e5364d46022a3ac13ce83a31b802944e15ce6f851180a1ca42fd98616f"
+  },
+  "dark-ar-vivid-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "68dcd772162c5b4669c363c4b33c61f6e7415fb7c7462e3a4088af8c9db88a03"
+  },
+  "dark-ar-vivid-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "d29e9f4d0705174291b03e00f5183febdc6924d994193bb28f5dfdf9ad0af90f"
+  },
+  "dark-ar-vivid-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "74bc06606dabf38a0367183e9cbd97db784f6d302a6e6f5621f91734503cac2d"
+  },
+  "dark-ar-vivid-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "057f7f703a44a6b3db938cd906ecfc59810ee7c1499625848017c58b7b0f21f6"
+  },
+  "dark-ar-vivid-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "a2613eeb2da49cac477c1e0c3c730bc7f9117bb4a50ac927f85c486b390e61ca"
+  },
+  "dark-en-curated-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "59b5c9eb4b78ed4a9fbaa6781a154d91dff9c021a57fef1b1a431598caf51a41"
+  },
+  "dark-en-curated-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "bec5d9f3ca4408d1180a0ad0d22046e48c71bdd5fde8062b83a220b9d9aafc0d"
+  },
+  "dark-en-curated-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "9c22d39a38f7f4f5cf5ac3d14080e6299c563c42cc94b94186f0c5bd9a97ddf2"
+  },
+  "dark-en-curated-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "8458feb622dd3d862117c506ef9fd61703f78bbed20133b5d00fcae3330a15cc"
+  },
+  "dark-en-curated-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "43838245f59f4d9248973f62d22ade36aeabe21a3a37232cad5f7b586ea7d18b"
+  },
+  "dark-en-curated-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "6952dd231c20d012702ef4ea89763724d1f8dd14b20f5ecf03b6a2ac57cfbd31"
+  },
+  "dark-en-curated-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "fcbaf5780a0badc047eb2e087a24d65585018e25e8b295a80f0b22c8ea8ad41d"
+  },
+  "dark-en-curated-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "c28577ed44caa6c6d5c2329b7737c2fe2c2cd8624b49365d7ea7a6a3b400b790"
+  },
+  "dark-en-curated-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "201852b363f9ef3d479e3a2e51cc2fb274c07a9ade68785be0ea0d7b91287c88"
+  },
+  "dark-en-curated-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "299579d4d81db4ecc35ae9cbb32b7df34c7f098d6fbe621744dcd881b5520608"
+  },
+  "dark-en-curated-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "6b67b4eb0dd28435cc405a32d4169a192f140e1647086abf08e08c994fef3f8e"
+  },
+  "dark-en-curated-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "4953f8e2d740bf5e94262aebce55488c32b6d2953e4dc72703301e4359a64b51"
+  },
+  "dark-en-curated-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "85583902c3228f5af7fcdb8030511c0497d5e42a6483470f57227673debd9e79"
+  },
+  "dark-en-curated-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "17441dbd30d44bdcf78d87c65778c8c6992b2a67b2e9588400d30952d699572c"
+  },
+  "dark-en-curated-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0599d69430d193b8704e2da2419d73a5d6a02c1d1dbb67146b022acc6c2520ac"
+  },
+  "dark-en-curated-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "037504d091535e95a8cdd390da72b03150694d7aa781acf93d47d9e0f0488a1b"
+  },
+  "dark-en-curated-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b1bf30e7cc681d40c09b77addc4cf12fb554abf2eee9260248a4ae4c94521f6e"
+  },
+  "dark-en-curated-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "5391338ba564f6edec1fff79fbed475cc1e98c30e4cfbf48bea7416de8feebf4"
+  },
+  "dark-en-curated-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "6c319cce10824d8f535ad8ac7d74886e9cb11ddbe464242551ee4a60b75ddf6c"
+  },
+  "dark-en-curated-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "657c2f9058d85d2f1f3f3ee56d33ce90d2dac3063a5738884ffc4d8e37e54c16"
+  },
+  "dark-en-curated-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "274aaeb846f17747581e9d5c6b7fa1c51cee69db70035b7885fe4fa5f48434b4"
+  },
+  "dark-en-curated-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "2b8579f5e1d982837d44564dea9983924b8946bbd291e94df3e0221876521ebb"
+  },
+  "dark-en-curated-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "859be9d2567d27342abdf28d95f3b9e057ead016bca12e740930467ccfdd9dce"
+  },
+  "dark-en-curated-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "b0825ef20e2c1bb2b9886154f31fe8631fac2fa68cb07d72f9a07b1a8c707908"
+  },
+  "dark-en-curated-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "afb9724fdea95490f9521181bdb50b7d138dd7a4861fbecf6bf230260df0cdb7"
+  },
+  "dark-en-curated-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "80ba05653cd057398096f7f2f56c9f5cef6fcc8a23d039d1e3ab94487c77600e"
+  },
+  "dark-en-curated-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "13a74a31a9d11a7cca09fa234b242c9e6537ee2cce907d581fc20d9076f1b2b0"
+  },
+  "dark-en-curated-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "f581f2b71f060c3febf0bd2b5296717a7f8902cd522455d8bd78f27235cade88"
+  },
+  "dark-en-curated-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "e32c17aca43fe7781038baa67c5918eaa9062c94f2f4443a88c7bbb94e913b95"
+  },
+  "dark-en-curated-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "378ec1fad3e0b90aaa864dd1ad855b1426898edd69fce1f710eed6a518dca8e9"
+  },
+  "dark-en-curated-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "8fa77bc867328251fb6c396889a03e8c10646526d776786d0e86c0bedf7765d0"
+  },
+  "dark-en-curated-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "ed2d512c72b1baa83f12465ba92c512e14fc3278ab44b5e6faf23ee9e15491b4"
+  },
+  "dark-en-curated-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "e33e4d05d0b720b5f933c85c28c799da824f00f2a0345ddf4729b8d3b0308bd1"
+  },
+  "dark-en-curated-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "f80f22c3827e06220f3aeeedcab56b0533a4a4bef3899d117f7883d9f5d88c0a"
+  },
+  "dark-en-mono-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "4f756007e43a2e81fa40897aae8a81a7a9dc169780660c0640391e970dbcafa5"
+  },
+  "dark-en-mono-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "063e123e57cc4801952fa5805b37594d98619a1b5778ebdb788ff03615591457"
+  },
+  "dark-en-mono-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "592878e51f6b7789ee0a3c2cc207eded4681c7d1a4696e7d9ea247799d1544d2"
+  },
+  "dark-en-mono-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "ad214645c733c897c6dffadec3081dfb1010308377b7cd3e30c7f66bcbb68ca1"
+  },
+  "dark-en-mono-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "15ac1a806fb48bdb8b9014f52f695af8d41648e29f26d392d85e719dc61f4a4a"
+  },
+  "dark-en-mono-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "060ae6bfcdfb767439f856fee4af5307ee173d115aca37818144425a25f77bfb"
+  },
+  "dark-en-mono-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "6d65dc476339b0b427466616432259976cfda92115bd29b3d8b881581614c4b8"
+  },
+  "dark-en-mono-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "af3535585354ee8ee65a55a310cb93281aa454523b48954cce99a542fb1283cf"
+  },
+  "dark-en-mono-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "082a73e707a547de212f4dd44518556d23ffeb18bea14236d17a19d025c3c12b"
+  },
+  "dark-en-mono-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "7bfe8932a427abb71e046af5d97e70f7aca98b8790c5a0dae85fc628026dfd9d"
+  },
+  "dark-en-mono-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "e096121dd537a626933c90e0a8e8293b9450dad18453157bd13459197a439a82"
+  },
+  "dark-en-mono-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "964532e45fca780ceb99e12608179f30f451d7b68743ffe709442486fd101155"
+  },
+  "dark-en-mono-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "635a304f5baf8a57bd0b0c0f050aa177d864b105e6abbfc6ee279acb2bcd6628"
+  },
+  "dark-en-mono-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "9e86c8acaec331d61640a9e23d91c587f6d944a63089d2fa521d7c351e169a72"
+  },
+  "dark-en-mono-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "1982d99e4b3774bf46ab7426057ffea80c565f13eac5c57858b15a338a32194b"
+  },
+  "dark-en-mono-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7fc5d37efa823bf57be162e1058ea3fe90647b3e1997db6319a3a872f32328a9"
+  },
+  "dark-en-mono-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d480433717da4f11fbcee03f378a1d12a428b882ccd837bd689b0b5bcbc4d1bf"
+  },
+  "dark-en-mono-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "44a21a775fb21ee6c2c915bfbb5671d684022137d8f73a521d707232f6d20ee7"
+  },
+  "dark-en-mono-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "126ea790df8fc9778691bcb21fb11e199222cc939e7b67642a74afc49e138866"
+  },
+  "dark-en-mono-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "10f30c5fb13e36d84440872a6475f13591bf4036e59f4fc3b816ce8b782fb337"
+  },
+  "dark-en-mono-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "69cc6a5b3392f71acfc9c1f7fdbf9c374f18c1fbf1ea11a8d5872edac768bbb1"
+  },
+  "dark-en-mono-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "003af898e43a5ae52e962b2537ba9416e87dba05f32702c7baf2f598bd3a9e64"
+  },
+  "dark-en-mono-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "bc88eb3347260da10d75490fc87cbcb819756952a17371d24606eca8880cc871"
+  },
+  "dark-en-mono-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "0f2dced956f181962f085db61d8fbb1d78f8a1eb3da2abd82c2372cde662d600"
+  },
+  "dark-en-mono-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "84a518badae71d5c7b784eff6ec7c23c3b8e1e916f78d5b44dae86d556d9cfbf"
+  },
+  "dark-en-mono-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "64f5e0757dfb400238c77e4ebb1978b07cb68db5ca8546b22cfc29af24ba87f5"
+  },
+  "dark-en-mono-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "d9ce91f9bbaf5982c584a2137b88ec83e233ffb301f91c055eeda0cd1f9a10b9"
+  },
+  "dark-en-mono-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "58def426a2cd15c192a4a9bac7c2060d0b7c340bade08d5f7448480f96850ef7"
+  },
+  "dark-en-mono-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "89964881dcccd35efd360e2620dd8126a1bdcd6fbbb29b0e336b9edd4d424229"
+  },
+  "dark-en-mono-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "fd223e7dd280edd0a89161f30e1130171f10de052fdffca66bad8da966dee3da"
+  },
+  "dark-en-mono-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "df164a0133fcee655e4c5159d87c01e20524ec581f63abe96602e5a7dc1aca88"
+  },
+  "dark-en-mono-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0856398255e8267a87c35f16ec9e1c036fd1ba551b1c2858063323258bf72bb4"
+  },
+  "dark-en-mono-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "4b9a16d33d58635b641106e7e72a9d7f4d7f7642098be7ac3fd291fec4a9696f"
+  },
+  "dark-en-mono-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "e964ca8a9bae5ca89423ff3cf63c5b807597038f8c2252c2b0e5e0a12d9a4638"
+  },
+  "dark-en-muted-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f55694c0641bf6b45922b01185d74814ec0edf5fa4d918a12245fc4520b966b4"
+  },
+  "dark-en-muted-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "83fb89d7500e4a7d8678c5bd7185c309c2570e7b41ea9cc1ea5e5a37ba536493"
+  },
+  "dark-en-muted-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "e75a5141fe68ab39b57c9d0989a4d97b518c2df6cb46d8218482be96aa931d27"
+  },
+  "dark-en-muted-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "4c4cc2008582d02bfb6379a124524d7dbf4d186e4df7c3054ebe3ac8f96278b0"
+  },
+  "dark-en-muted-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b14cad242cdf1e54252ab8100a6256ab778e5d023b568fc65dbc720a38279570"
+  },
+  "dark-en-muted-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "5eac024e5469d401578df8eb2292ad5e8e67949a35f9fa1006f71e44c687e926"
+  },
+  "dark-en-muted-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "f206bd31bf7b857c8d2ec7e31f6c95d09473d2f9e1f523868eb1903f0b9ecceb"
+  },
+  "dark-en-muted-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "2459fe2bf672cd9e9ed6ef72bcf2594437be4964d756304b7f81d8258aa150d4"
+  },
+  "dark-en-muted-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a24ccec731ed3acbc4d9e0920f41bcad4d8f63cb60b10f851134a2aa20e6460f"
+  },
+  "dark-en-muted-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "a152170b1c74cbf6e838022f27032adc7d26700c41e565f476efb5f27f035136"
+  },
+  "dark-en-muted-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "729c37e5718197e566023bd10baae122ff29309fc6855eca304bb8232576bef3"
+  },
+  "dark-en-muted-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "7f064cb00538dec4fa6310813039f3ae3702239f274f18da4eda93359ef582e9"
+  },
+  "dark-en-muted-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "379b2f462b4a2c403063fc1f73d9f77462e6a4dd02dd780f45eb81bf5f7ecefe"
+  },
+  "dark-en-muted-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0fce798ff5ca699f7e90364217524ab58a4fc4b1ce1cb0f2d736eba3c0e17964"
+  },
+  "dark-en-muted-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "ca9f62ec8e7c190778a1ba13ab4cdae33a73859a4d886474dcf51cef03feb835"
+  },
+  "dark-en-muted-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "83d7d2e01e8c31c9a2dceae3d147b7a6e430e49bcd41d28bd85112c2460ad287"
+  },
+  "dark-en-muted-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "dc56ea1d4397b3dba0379b93b08eb83d81c5ad7c557b723001866156d89156b8"
+  },
+  "dark-en-muted-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "72cc3025c909689f3c99e84929e291ad4d21f0d3dc8ea8c6bd937fae27ed23d2"
+  },
+  "dark-en-muted-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "1d820047da65da3997da26f285fbf15c9a461d6539cf3fec2c09eac78dd59edd"
+  },
+  "dark-en-muted-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "92be046248c4692a05216135254b4be611d6064b8cffe98da1ce6bf762ea24e0"
+  },
+  "dark-en-muted-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "37a4b69432e781d3b70ef2f875dce8ed4c57f9eb4d06d534f1c9ff02b2114ddc"
+  },
+  "dark-en-muted-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "8526efff8469d330d5713ce62bd632bbb9ff77297163b15f5e797f7c73a3e099"
+  },
+  "dark-en-muted-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "208f06aaaa623e2560f5fb4f8bf837abf54c9bd3f73eaa55978d03b7e4b54097"
+  },
+  "dark-en-muted-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "423a3004a21fe524641743da2414ec31582ff701ac2e5107801fa7df79e80849"
+  },
+  "dark-en-muted-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "04c19531bb28fbeea479b361e3f59c5427e83e86e6b6fa2a731877cb978e3d98"
+  },
+  "dark-en-muted-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "fd23df6409d3990c6b8f6df06669ab9e24a5b61fef69dafadd92545192b7996e"
+  },
+  "dark-en-muted-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "59d1f6d117545a26b1654d73f7bd5e50d74b39f3ba1563dd4e029cac154b67dc"
+  },
+  "dark-en-muted-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "90e25eb4b177b369b306ab1c01d8c4bb5c3aa848acd4dbddc3d2c2357d184892"
+  },
+  "dark-en-muted-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "2a7521cfb1294dfb6f3074d37cd284181f677d4dd4a104c88aca25c3c3b70629"
+  },
+  "dark-en-muted-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "e297bfee52b7ca1bda0acc49234997ad749bda245c427daa1a685795c9f467b8"
+  },
+  "dark-en-muted-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "43b365d0a76b9e4fb50b29de664987ab639b691bfcdc1cf623995a4ae39febd4"
+  },
+  "dark-en-muted-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "2c976b55ae21654f101415d7e21e9126b98ea29a2b5d818e8fe642ee21e8a0a4"
+  },
+  "dark-en-muted-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "573ef01c2f1591420af831d8609793c4c1244f3a501fb04887d2b4ffba8eb417"
+  },
+  "dark-en-muted-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "31739e2b2ee10a4a839e049042be9bc314de39b5c090564eb90a0c5cc9e2fbca"
+  },
+  "dark-en-vivid-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "ed1b0f84ae5884170434264936f7bd7d782716e9dbe43b1f4e16a01855b304c2"
+  },
+  "dark-en-vivid-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "2ace69531e84b28daef141cd93ddf33233a33700faf97b489e43617024836926"
+  },
+  "dark-en-vivid-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "64e507c32ea1900f0e615b16d25e46acf352e195dc5821444592820654fa4672"
+  },
+  "dark-en-vivid-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "8d1086bc7abcdab92e6168b7cc60e5cb9a4db05732a0990531ae75bf90518400"
+  },
+  "dark-en-vivid-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "94df33ae5cdd9dd9e0ca7ec26cf2464086a3a517ac62d387d76bd61cf29c52b7"
+  },
+  "dark-en-vivid-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "050d8be36008774abf91795d36728fb9c2279cc0d691638d96875ff83014a917"
+  },
+  "dark-en-vivid-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "1e21d0d0a20229ee62c88930d916c879b33466febf65882745ace95645903893"
+  },
+  "dark-en-vivid-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "89b78df94846f135a5315da3c1e6d80ef4ee9c0d9082763ae362ec4bbcbcb7e4"
+  },
+  "dark-en-vivid-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "6bc268469b0b46f3a036dd7400adfd4aba4e4e1d4548c8fcb4b71e5452b1c30d"
+  },
+  "dark-en-vivid-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "8abc283cfc0d91c9a25ef4a7a7dd4ecf39e17033a592f9a109ab3ca2b1100e93"
+  },
+  "dark-en-vivid-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "bcac3b60479f075d56a409a3550643ccc2f65b633c10d51e0f1f0c328905b36f"
+  },
+  "dark-en-vivid-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "cf4ab679634bbd2420baf1f8c4362bcb5276814f99cb262ccd519ddac6fdbe48"
+  },
+  "dark-en-vivid-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "32aef767a29fdc9e40e68e27fa1a1db0927b589519eaba61d6eaffb401d8318f"
+  },
+  "dark-en-vivid-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "e64c20f531471a4fb9a39cc208cd667323c24484ec809da5ed79e8eab7dfc1ba"
+  },
+  "dark-en-vivid-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "c8bcdf5d364a1c104f85dedecbce8e4703565c9eaed25c7cb5c52fcd93c49271"
+  },
+  "dark-en-vivid-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "6b423f2c4a67a2c2fd665b8de1055b2007a096ebef501abab5fb0f787e855003"
+  },
+  "dark-en-vivid-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "fee85fed2b7c559dc56e2d2938938776664deafe56d9fb3b9e967efcc52f54a4"
+  },
+  "dark-en-vivid-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "acea0c549f878cf9c5aa49acfc78732ecc61f6c25a55e780912d0069107e500f"
+  },
+  "dark-en-vivid-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "d73ad700f211979c95938e3e89a68c8e4b8ba6069f57e89856c2bc01accedd16"
+  },
+  "dark-en-vivid-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d53b063cf74703d52fb50ded7a92aafa0530bb466d6e6a8ebca849815a0eac7c"
+  },
+  "dark-en-vivid-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "faeab390f0976e2c3418ca102723856898fd37eed5ff9ddb19917c08cea3a0c8"
+  },
+  "dark-en-vivid-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "5d17b49b642659e4d02e309c7f44391940cc8ef101e3af2cb34ffc3050662d91"
+  },
+  "dark-en-vivid-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0da3933717b96e5f458a9dde33e8799871e7cc9396fbaa26249c93553a8cacea"
+  },
+  "dark-en-vivid-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "4cb3cc8ab245b02f1b9b4bcee16badd838587ea8358731cd3becdf3fea9a28f8"
+  },
+  "dark-en-vivid-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "5f31bf8d0e99a846d2b53e6beb88982a692d14d1329d3bf268ff3dc06695a943"
+  },
+  "dark-en-vivid-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "dbb62cd3b63ddd4b01e541de3070ad6307375e39ce5366efd727856a067c19dd"
+  },
+  "dark-en-vivid-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "e48e76f0f9c6744007024fce84c9aa8a78672b342682d58b4758fa6485bf410d"
+  },
+  "dark-en-vivid-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "7d9c7e134c6e30d67a46773e04a848198a1d4e78f8cfd0c2717687abaa72a925"
+  },
+  "dark-en-vivid-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a9fa8eabae3b7424944ecc4e544ab62caf0069ca57f809893c62a99920aa7a0b"
+  },
+  "dark-en-vivid-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "1f6d5fd1821e9800de5e62c677d9f8cb613382187e38fd391ca8159e7124f282"
+  },
+  "dark-en-vivid-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "9d60f0a4eb1c6ba57057176f5560719b3bd98484856b0d159ba9bb5ee918a34a"
+  },
+  "dark-en-vivid-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d45cb6db73a3d7fffa3bc7f55f478c2e4e6bed0c50d8c03819a3cc3270f43e7a"
+  },
+  "dark-en-vivid-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "c2c8ca482053fdbb8507db84e62a96df68508c448cde04acc5f3521cabeafabd"
+  },
+  "dark-en-vivid-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "715bf87b9662e50b7646e0a384f804710f0a46e6954e0e437e60fd9aaa68571e"
+  },
+  "light-ar-curated-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "4844b484f74d14fddee1f68bf1bdccaac369d440b04c42cd4ace82c17dc3fd0a"
+  },
+  "light-ar-curated-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "9f7f31276505b7f26dd2de0d76634441a9d138f49fe058843ee8b5dfb5a86084"
+  },
+  "light-ar-curated-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "1e2a3bfa313495f0cc6715458de9daf78a0cfd8e48e3d561724e82cf92350a54"
+  },
+  "light-ar-curated-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "7dfd724490b948695b853f648d414d8a03bb7ffbae7820d552ba7080263e708e"
+  },
+  "light-ar-curated-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "34ec807454ade8d52c17c1314e51950ac176b83b7c85ad8b157e081b6f9f6b35"
+  },
+  "light-ar-curated-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "5baee810fdfb1a6ef91f23d2b9f8bdf8834ed0a6713b53c54048b130d051ef72"
+  },
+  "light-ar-curated-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ef145c3981dda44a205f58f5545a618257c3daba92de249f5901f1aadb400c6b"
+  },
+  "light-ar-curated-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "c2cbfce5ea25d4fa6c8f0a57f7b6ca8b82ff0a2c54bfbbe9b7f6f4a8a2273fd7"
+  },
+  "light-ar-curated-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "05ac2fafedd5555df80aee72e0be56e7e1f6c01442639b8b4cadd42007f17442"
+  },
+  "light-ar-curated-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ae3163ed4d27079f886c6d2dc3b439be5421832fefdd2e76943491cdba03e7e9"
+  },
+  "light-ar-curated-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "a58901ffadbdab7d7e0a590a33d21c01e5d3984556d348b43d44725dd424140c"
+  },
+  "light-ar-curated-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "8c3c967900183794e3b576d68802b1d17675a5458d19491610946d193e99559b"
+  },
+  "light-ar-curated-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "da6a8bf3bf7056012ec15724c9b454e3742eb155f5b639c152e5aae72c4493c9"
+  },
+  "light-ar-curated-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b942aa815aac0eec3ff1ddee45480705f7c77dd08f7e64b75cc98dd61df9d3bc"
+  },
+  "light-ar-curated-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "55e12d1c46052aa01061aa5ec2b5c2a1c0611b28f311a3307dffb9b616a7a935"
+  },
+  "light-ar-curated-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "318dc4a8e37799502ba88f106db15148351cb0f1a5ccbf5ef34e667ebe0fa0b7"
+  },
+  "light-ar-curated-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "89660953040e1d064172a0be4d774ce467712458a3536b71f60adf0fb13e8250"
+  },
+  "light-ar-curated-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "4f1dd7a1194c58897433bd750a3ae46bdbba379400917c11b402623816546dd9"
+  },
+  "light-ar-curated-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "803d92825a9b7ff1cfec9d5ae04930bced50d6abcd7d4c4d6c6ea451d69229cb"
+  },
+  "light-ar-curated-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "9224fad600d60b42cb95927ea21e903cf87810ad3d4573324f1dd4ba46933fff"
+  },
+  "light-ar-curated-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "359c134ac493ede4dd9e41a44e1f5b8fd968fe4d0ebe74c5d25ff3913bf99209"
+  },
+  "light-ar-curated-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "9483a34787c2869e425f81594738f7869e83520382d26ffe21d9ed09a2bad13d"
+  },
+  "light-ar-curated-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "3d0fcb102d885ec5ff8ec17566781cb94275c7cef5523ddcd3802ca99bb64a8f"
+  },
+  "light-ar-curated-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "8e7aa2223dc966d57be8685e45f02f291abb935eb8e493fc258deb41ea54ef14"
+  },
+  "light-ar-curated-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "27e4be1c25ef38ff24a3704751b8a4f3a7614e598dcd8fa8dc3b4202a3b70ff4"
+  },
+  "light-ar-curated-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0ebc25d09404af5a1e1d101a05d41082db86f28ccb18fd1b9022ab2b3b7ac185"
+  },
+  "light-ar-curated-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "069dc91355473aacaecf6b31708e49d0ca41afda9ccaa680e1a1b81e87ac4ac9"
+  },
+  "light-ar-curated-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "865a2b7fac17ba370a62c2f33ef5c3323f4d2122e58cf090bac04b167dd9d29a"
+  },
+  "light-ar-curated-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7dbcfeafe72e07c6f47a41d7565920bc2622e12f10399d71cb9c80d925953de5"
+  },
+  "light-ar-curated-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "c39b47a95f2a8d0351ad493a794db8ef358e9b74f3be9924b9290469d3f32fdd"
+  },
+  "light-ar-curated-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "1ecf9593c16f9d132e6b487ecaf0e6291290141eaa10313271b7a979c5fb573d"
+  },
+  "light-ar-curated-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f0eb3ea1e35605d81929aed64c05d32edb45e9eb140cb01b13eb42fcadd87518"
+  },
+  "light-ar-curated-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "0d26a2147edb048a058c815d1b7fcac3f47f80ca7982bebb51b135a65703d9c2"
+  },
+  "light-ar-curated-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "2dd275e9e4e826360043f2f4e70a1dcfa62fd49f7bad8b29f989711acb9d64ef"
+  },
+  "light-ar-mono-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "751539acc4f8a84333b504a79123ba6eafa8222f8c0396f865b73003230f556d"
+  },
+  "light-ar-mono-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b03217fd678948230eb84287e121870dd849e23308d9b91587855353fa8fd8bd"
+  },
+  "light-ar-mono-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "bb98b26f237c897a1682c32a5d71ecce769a6543d1387c31a9e0f987232e8b5f"
+  },
+  "light-ar-mono-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "b6c6493fdd00210c5d3da073aac78ae163981b3f060d6030944fd31b96e3dd98"
+  },
+  "light-ar-mono-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "9c9d7ce87f23af886e63a5e88c35fcda2f67a8789198aed7ccb380c8eca7b98e"
+  },
+  "light-ar-mono-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f46f4527fc9f5ac4f9a041f99ec9aa6e0388a82ed81cd075a3b18960dd76d256"
+  },
+  "light-ar-mono-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "59e22930b35d1104ce9643c64bedf05d9fb1879874145fe48e440419e262c0ce"
+  },
+  "light-ar-mono-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "dade6a59275029edc98cbca690ddcacd32d99acdb6cc506817a2da476f9e73fa"
+  },
+  "light-ar-mono-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f9d9996cd2c46aa7b25d11c2ae175dc50bd4a3f910d1ed182363631592689a42"
+  },
+  "light-ar-mono-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "497b2128f8947d1e58c7d92ba090293895f5e4c1ed7bc3ecaae4e7e09299870c"
+  },
+  "light-ar-mono-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "1b86090c87a4963b81fb341a2ff79e828dae11cdd47d57319e0625d689dc0aca"
+  },
+  "light-ar-mono-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "00d48c9a1c20744ddffa04393c9645ba917d934b3285a80ab311314e1f2ab3ff"
+  },
+  "light-ar-mono-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f8e471e0e9ff4e4ae851067a58ec58d2482623644577adb5c7824a9e5eb06324"
+  },
+  "light-ar-mono-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "8f4ca44b8969c01a8dff9b22816dd031ed13c12959fe734fb7ba012e3c42c8c2"
+  },
+  "light-ar-mono-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f58666eae7500dd2a0bbdc147e2d55536a994e936c56fcc4322a58816f8a60e1"
+  },
+  "light-ar-mono-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "eddd848adbee57ea9367f9002b862bf2a56cd091797c5b3cd3ad566a4f02066a"
+  },
+  "light-ar-mono-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0b3b25ca99d99570dd5f2aede44b7356e71cab45e1ac09792c76b6d5afedb512"
+  },
+  "light-ar-mono-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "0b5d6831dc1c911f81f3c93ccb4725923c5e1bc1318fff099e25849dd7110c26"
+  },
+  "light-ar-mono-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "13ab4547f33fa87d9c87d4459bd8128c504ee2d3d81d8333d293db53c9404973"
+  },
+  "light-ar-mono-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "780e7c8b57b3d8abf2e57e9066514fed6d572ddd6bc80a5c897d6fc04a4ee9ae"
+  },
+  "light-ar-mono-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "e0ebdeb958ddd25a4632267a321cc54addfc710a5c7aedab61a43984d39eff4d"
+  },
+  "light-ar-mono-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "932f4e48a0f5a0eef834865ecf8df229c192acb51a15514cbaecf6be1565b770"
+  },
+  "light-ar-mono-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "c1d99be9efe8e5f5efb2547c47a59f81c5c9caab71b9b728a570c74f3d682732"
+  },
+  "light-ar-mono-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "d7e30fa953258960f88f75d70a254948eed35912504ee02d0836eb9fc52e2065"
+  },
+  "light-ar-mono-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "5674b794830276ed5fba2ea09edbca697dbc310bfc9171921910abaa48f60613"
+  },
+  "light-ar-mono-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0347b71897216bb892afdd82feb977020aea78ca02c161e2dfc568c4e8c525de"
+  },
+  "light-ar-mono-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "fa724de625d85cc6e852c05ba37bec3d449df27e175897360ec6b5aecf94a4b3"
+  },
+  "light-ar-mono-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "b432e012ca863faacb21f3625c828ecb8366b5b30536adb9c08aa40be7181976"
+  },
+  "light-ar-mono-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "90a4269a00a4fdf3f8f83fc65749551c1f71f26b7b26954529bbf909271c5204"
+  },
+  "light-ar-mono-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "36769b9a9fa4be14f15c0d7b393aea069639bb0cc316ae0cf933ee1578639ed9"
+  },
+  "light-ar-mono-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "a8b86cfe9070a0a87c9fb99e7f7479297f7d29c307a896921599b5786e1beb16"
+  },
+  "light-ar-mono-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "24d2651e9a58d121862e1f096d2ed4d5e4290660fe03c35265ba1cc7795dc4a1"
+  },
+  "light-ar-mono-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "b6b2e1fed27e9603362c2e766f4bbba584b8aa5f0fbafb1b06345c931384aa5b"
+  },
+  "light-ar-mono-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "6854aec88efc203e7eb6d555bc280a2dca80245116cda0637cfa03c465410533"
+  },
+  "light-ar-muted-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f9c5f8e8da94bb9d3b3c795e2341e43db63ca9d17dd1512f6a7deb80e3a4eca6"
+  },
+  "light-ar-muted-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "32b1ebbdf2687c59508491c423e60cf3926c72312f6ad2036c5129ff4f940ad2"
+  },
+  "light-ar-muted-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "0f8c9b744e4483f1eed3f86746d00f646499e93818fb2d34e98841e397d10401"
+  },
+  "light-ar-muted-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "0636b2ae2cc17515e3ac60136c6f99f24c5d86ced226374048bd590761116dd4"
+  },
+  "light-ar-muted-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "23ce62f64c8c3bb7b636d4c8f41ccfc76257b7f336e0296458b21b5e22349ab6"
+  },
+  "light-ar-muted-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "578c897067bea5e6e6ce2e7112b0cf303f048e91b9b9e2ed0076edfade2244c6"
+  },
+  "light-ar-muted-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "2bd819a8052735f1a6d08a68728db9143ef620749bfa29fd5c013dd0a5e5f719"
+  },
+  "light-ar-muted-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "bc44c22138398b25f836a4b6191f240c459d16954a2cbb517a8e29ecfd38010e"
+  },
+  "light-ar-muted-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "ca2ea76eb8b97663e1121f8362554bd9d5343288d4a2bdbad8647ba2a559085a"
+  },
+  "light-ar-muted-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "eb6c95db917f329ed7f7868e49b4aff8aa1cfbd5b10a1189f4ccac16c31494c5"
+  },
+  "light-ar-muted-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "5d3bc6db74edc1479746f51fb60e77b7801910b284403a3ccbcad476172f698d"
+  },
+  "light-ar-muted-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "cc1446e6294f9b0e7709600d5e82fc230cec6e9f8ce7cba43ebbdc4348eb774b"
+  },
+  "light-ar-muted-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a9b94d0f7ab72ed0aec2585a82ca9a938306c0a6bf170183fe7dafaae2254329"
+  },
+  "light-ar-muted-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "dc8d6055d1b7e7c5291de756d8bf77ede9c0a138c02a457b377a99188fefb6ee"
+  },
+  "light-ar-muted-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d0957f5232bff47357f45e87fcded26049ae6785c728c3601ce1235efdce388d"
+  },
+  "light-ar-muted-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "6fa6f3ebaa17436040dc40ec55c468530debc39cdae972390f83d0004ffc2c9f"
+  },
+  "light-ar-muted-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "31c1d2cd814a9dcafd3912c1446cb259de4af7505654ef86d064a9ee0d18282e"
+  },
+  "light-ar-muted-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "9421d25b808ad7cd5984dd072621a3e1ed83aeadd2d65d1d4fe267934492fe18"
+  },
+  "light-ar-muted-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "03b8cd177144219084ca97e5531fe17b4278af03175b8e605eb5d1028eb16f9f"
+  },
+  "light-ar-muted-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "6fc6e969bcad4dbc49903edbe943e9a4d01d6b1a672622d1d662cd8e19be2c8a"
+  },
+  "light-ar-muted-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "7a0cee468448cde5bdee6ad0017332ec5a6c8ea6a22ccd472006a3595632ba4c"
+  },
+  "light-ar-muted-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "f6f6aa5a980c65e62887babcb44e28fa67bc8c00f5499f4cf804c0dea44704eb"
+  },
+  "light-ar-muted-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "2fead47379b9d18b517e12ac44b634bd353bd52f2f5bf9dc92de5df8dbfcf501"
+  },
+  "light-ar-muted-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "afecd2c234fb507f63f6fa65c3d618fea064d4b115b7f80fbf0bb6c4384cd0f7"
+  },
+  "light-ar-muted-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "c8e802b35d1897d9680004dc40967827470ca68708724117c6c43598c0e53b62"
+  },
+  "light-ar-muted-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "59d91ba887ff658983215f50ee90d33727271ac5494575c2426925dd382741e7"
+  },
+  "light-ar-muted-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ce73eafba0d9f9374a617387149255e283f9e3ee0ec200e58d28d9d82bec3383"
+  },
+  "light-ar-muted-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "1c57497f645fcd0fe9b24ae4eba3d2a331d71dd11c567bb7b448461570019c94"
+  },
+  "light-ar-muted-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0d482412aa547e0640550396c4f2848261ac1e4a23111ffd3f8e498dfcf04a58"
+  },
+  "light-ar-muted-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "5fd81457958184f250ebb1f65647f6363c3045f3030e41a07afeb5117d57b6fc"
+  },
+  "light-ar-muted-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "9f4563ceaf9a1dd56a57cb0b523d23773e94833aca24462ccbb103593f986c9f"
+  },
+  "light-ar-muted-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "878c830abc0727b12a56e3b331506c98c25962a8bddfc608a2c21ff94ec33eb9"
+  },
+  "light-ar-muted-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "16cb92947bec259a293bba6bcb4931a0a65065b5d2d2f26ab40f761999dc3835"
+  },
+  "light-ar-muted-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "465ba1e37ab33e4b6c7eaf9cb965e0b45450d639c2cb1e722a7807fd48b3cfcf"
+  },
+  "light-ar-vivid-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "56501b15e72cb48d11cab8fc53100ba9a048dc596e48b643f6ef2179955eb12b"
+  },
+  "light-ar-vivid-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "751d13d3773d5f32ad4083e4c269db0717674357e643e098d0e58933723c77ff"
+  },
+  "light-ar-vivid-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "72bfa28f6593728aad047c59a0b71b3f39c20a5387acda476ba1ba233ffcfb7d"
+  },
+  "light-ar-vivid-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "7ad5415987df964a594a1773820d260b851e13741b9cdea966d10a9215413544"
+  },
+  "light-ar-vivid-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "67fcfa1f01afcd34f6d92ed323328008b10c10d1a438f3d7c24330aad41debdd"
+  },
+  "light-ar-vivid-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "497b90df42f8c08b926893e64ae15a010606b23dee61111bffe4a30e52376b95"
+  },
+  "light-ar-vivid-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "645ada9cc01933dcbc65d0b50b0d5bb3b60c79de6fbe68377b43d049189b2aa3"
+  },
+  "light-ar-vivid-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "252d8efc24226405d8c182b65e3d3901a1dae9cfc74d82509cd7dd3f70f71838"
+  },
+  "light-ar-vivid-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "1b039dc0459809bcf6f542b340411334a8d31aa50ca98a42aedc4e210706cebf"
+  },
+  "light-ar-vivid-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ed38df0d799de837e116d9baaa531a7ca15a6d1ea246d94769bbcc2d0b816d11"
+  },
+  "light-ar-vivid-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "9637f50d9b3c0c8710c79ebda40149caaae4c9c0f11de4e2cdba6edff3361ee1"
+  },
+  "light-ar-vivid-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "a1634be36dece7d2e33a62f4672404a0ad5ee1d09c62779c6e5dd70ffd370724"
+  },
+  "light-ar-vivid-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "79c40e2a97554a263fc36c8ffc5f563f93013fbb2e86d8264e04cfa6394b21ac"
+  },
+  "light-ar-vivid-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "839b6ff3e15893ef013eaba9158b4a0e4b97074b31f3dd9cce73d705f6395860"
+  },
+  "light-ar-vivid-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a95fae31c55fbd288bf783a271f6030dcc3f6a41608707a9d5620eba1990ad37"
+  },
+  "light-ar-vivid-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d478ebe8c0c91990f4c8209c4e0fffd7a0197c1c83faf01af753b26df9d902f2"
+  },
+  "light-ar-vivid-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "2b27be33d29d7fdf8fd26854cb9365ec168d8493aac0ee7ca784c2250986c0ca"
+  },
+  "light-ar-vivid-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "0d05d1991f8f95c41b0a66af18a095d6f308a2a1f14b2862d509aeccc5a95b7c"
+  },
+  "light-ar-vivid-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "b9e72e4d2cc88e012e7109fb3fb8369ecd611b8bd2c28da187971f095c4c01b1"
+  },
+  "light-ar-vivid-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "958c24820a3113254c7ebf52d1d84f0d6ef66f76621f5e6c0ca7d116cdb12da8"
+  },
+  "light-ar-vivid-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "3acbafc5c3b8f440cb235dd8b8ab1f455891201a69c2ddfdc45b54555324aed9"
+  },
+  "light-ar-vivid-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "798821fa20ce2ab2a88d4be1764694dcd7b26d99314a958b73ea9d7229ef706b"
+  },
+  "light-ar-vivid-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "41089919bbb227f34031950de524b61b55e64e47fb67c65d374fccd035f8ece6"
+  },
+  "light-ar-vivid-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "019e92260d8d575d5936a4040b90045c155fdf763b4609321b15498521c89373"
+  },
+  "light-ar-vivid-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "9be1c1d201c67c780b2aa761ab22a6432fa405a9d9914239c33f973f2cd9392d"
+  },
+  "light-ar-vivid-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0527231e5fe90d85ecc4985e21d24ca20ceee2ec04c53790d22a5507c9886296"
+  },
+  "light-ar-vivid-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "7c49bad5e6482b9bc6fef78a7fc50c8d4241653e05facfc7a15bbca316afccae"
+  },
+  "light-ar-vivid-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "b51907fc34081eeeb5bdf93649787b9c752a4833cb19c5745736165863645f7c"
+  },
+  "light-ar-vivid-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b1d648013253f2ad5d14ddc7e6fa3aa7379516d423d7425860df7a8f5424cd70"
+  },
+  "light-ar-vivid-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "29af85a1eaad871ec9572209ac4af470d7736c97e8d16c42dd39aaa6cc846180"
+  },
+  "light-ar-vivid-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "2c0e772b4429fd1445e6d74dd649289740835499a686b85e329881cdb4b6dc3d"
+  },
+  "light-ar-vivid-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "104e61f33c5cdf4848347e4c92e49c5cd0fbdfb1ddb1cd0f0f090089276b1a3f"
+  },
+  "light-ar-vivid-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "0809b540170ead5fbf3b82ecfcd84e19c465acf3b75f3b97268216c0d9817dab"
+  },
+  "light-ar-vivid-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "e251d003dbeb57696d10ef15b9c894c888e5649d66d33689cedd4a3f5c025a1c"
+  },
+  "light-en-curated-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "15d81a9f5426d9d36a069400219773961d974394a5a5f9d54f211c03aac28818"
+  },
+  "light-en-curated-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f028dba685ec5786a0ab6e464cbaaf1e1c47301e11208177f181431b4e13f524"
+  },
+  "light-en-curated-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "2be8569450e2b8d650229046548ec67da5894e89a4fc80eecf0f68cc5d82708a"
+  },
+  "light-en-curated-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "0652c49f7a2b89794025a24641aa96b5e2073e3f97f0d773a7f2b43a11460b77"
+  },
+  "light-en-curated-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "429142b285f4ad2d64f5e39f42569967e9157f79a2181459eb369ee99cd0502a"
+  },
+  "light-en-curated-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7ebf9510fd0cd093ea437436286a495b08d78c346d4310af9253572daf956268"
+  },
+  "light-en-curated-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "4b521e2a054135cf5bde3be316559a915c046b7dedd6041c67c67c183f1209ad"
+  },
+  "light-en-curated-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "fb1120b77ccf813780ff4ba71d797e2525422d2ceac35d6960e0aded39fe6f3a"
+  },
+  "light-en-curated-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "40559d23206f037b1743a06d763c35cebc3e4295659616cef9881d2bfdc83ae5"
+  },
+  "light-en-curated-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "136e1977c319feba0f003e630b28d2b94153e73341d51598d7e2dc1c4ecf8a19"
+  },
+  "light-en-curated-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "c64f9d5a10bd8ad1f30990fa61374f8f961ae2e958c50e02e69c515b66119fb3"
+  },
+  "light-en-curated-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "5526246a56e3bb1109a88ec0df035bfac5a519d16b24cf02ce9e43a07eb0ac48"
+  },
+  "light-en-curated-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "976b7c56eccfdcccb4876dc8c11a923a4feb5dab39cab0fc119d100073c078d6"
+  },
+  "light-en-curated-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "51edfb26db0e1f2ac57a6042f4e5e858d447e353dc444ebc3ff15ea370cdffd8"
+  },
+  "light-en-curated-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "5a4d713f01b1169da50c2767ba66d0b4644d81c6dd7a3a363d378a7793097b8a"
+  },
+  "light-en-curated-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a1a99b18dbfb48f729c4e9084cc01448cbb02629ce8b3e698af0823ab04df434"
+  },
+  "light-en-curated-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a35370c6699da0bedc92344845dfcb7da9fb2918888079d456c8649427fcf41a"
+  },
+  "light-en-curated-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "98f0cb9d41a033b225dd28bb578170757fb5c1a68f20a103c312ce10e26a46d0"
+  },
+  "light-en-curated-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "264a3ec8bbd6a1c37ee00b5f0a7b3eaee65002ab2f0e4cf5b59d7e3a6e0eac2b"
+  },
+  "light-en-curated-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "1b30a48bbd9054577e06af31dac908b34173bad9e29ba7748fb1d772d2060e8f"
+  },
+  "light-en-curated-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "b47dc7bff1bf3ddf3fac2c77b9f8389e9162245c3db9ff583b50ee5ce00ed231"
+  },
+  "light-en-curated-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "4f4dcf87d714d5e4174f9ba1ee5d40047ffc9bcae1aa3a2e02d444bb35635cc8"
+  },
+  "light-en-curated-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "314d86f519ff81548cdde72735b6824cd1bb4bf2c0a7217f3bac4e7aa44b006c"
+  },
+  "light-en-curated-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ead26a58acc38820eb113c95007cc8dfb7666901c16177db09ce604ff60cd49d"
+  },
+  "light-en-curated-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "079c9b27e4d6cd2d949eabddb5037ec8c92d251bbbd1a26a9eb8149493b76d0a"
+  },
+  "light-en-curated-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f2831eb9a6db7889b5338dab151e6f44b171cf650b2079941e9b4a0c63194d36"
+  },
+  "light-en-curated-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "46b6b718dd81f400ad820846726f985c48d89eddf0ddd62f1ad2974df98a044f"
+  },
+  "light-en-curated-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "9e07b7d2e915c2407726e2ef31ff6fe90f8b962c49959b58ffd4d81bf300b9e2"
+  },
+  "light-en-curated-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0043deaf36fb3ec64a3ca4e53895081b8b9053267d6757b385c5a0f0bf46831b"
+  },
+  "light-en-curated-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "25ab399bab8f6a66477ad9fd6b00f4870c732ef47ecf571711f48bdb4d4a9ae1"
+  },
+  "light-en-curated-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "9d5650be90db918340bbb503702ab4e5f7157132a3ce538f5fa95d32e42101d4"
+  },
+  "light-en-curated-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "a4e4fe1e45982d43b29fe7347cb36eaa53946d24bc65271cd04ecc22a493543b"
+  },
+  "light-en-curated-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "dbb3c4b6bf28938ee32978e977f4666996852d1e9929bf7b18ecdcc368fc195e"
+  },
+  "light-en-curated-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "2189d4f4a6026c411491310ba14ad8ebb532573b371b7a7c78ae2f2ec9be4da6"
+  },
+  "light-en-mono-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "592fdd678fd4f73fd02feb8e27b7157cc1b9df07f858e2b0460e58173c691548"
+  },
+  "light-en-mono-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7d4daf3e810b8fb2b6a9dddacd3d4d7f133f01163ff2720f747a182aa384f8d2"
+  },
+  "light-en-mono-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "1f1bc897ab212904f0054000643a2f9a26ed4f3043fa49dc85b8b26a244555b6"
+  },
+  "light-en-mono-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "eaeee9cd032cb03ac8b0a41de1f9f2a548400710d997b22edc64e69c4a4f7f74"
+  },
+  "light-en-mono-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "460150e301b6c0fdc13daf590d86453a773a7c06be195b7a0851006edd03065c"
+  },
+  "light-en-mono-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d2ba95d92010cb4b33f6b4ec82e824d5732b8fa060891d725e026b021496e51d"
+  },
+  "light-en-mono-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "dd540a95242617b8a013907b0f68b25867da3b4d206ed2fba214b7dd70896ca4"
+  },
+  "light-en-mono-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "f21978653c9ee3847407330b1b813c8c1c58483808148348d8e607ec0a679060"
+  },
+  "light-en-mono-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0ee0755c7b93d6ae178373ac5c01d01eaea10e745d85931e3bf15955e14c33f8"
+  },
+  "light-en-mono-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "8cb85076d4984d0bbc6d8ef77efa04148c3fff1a4d4977c11fb98f3bdfcc6997"
+  },
+  "light-en-mono-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "727b68bcba1cfd8a7e53c6d4f38b18166dc9f6fd954dda7a155f05c1d5eb5c6c"
+  },
+  "light-en-mono-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "6b84c9a21c289b7a82b57294aead3c638333bc38d3a0475d6098d154508d4d76"
+  },
+  "light-en-mono-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f7a9e04f28eb6af9f77a5b6c3a546241bec47bc6941801f6ce01f9816c30d382"
+  },
+  "light-en-mono-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b633c4847dacaf42e5d593fb2d69d022ee895633c2ea44e5c88270adcc2740ee"
+  },
+  "light-en-mono-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "9fd02206f54e0be2f903e45c206e897d518a6ad2a5fcf0f047d6068fa7a6be01"
+  },
+  "light-en-mono-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "210887a18ff56c9f1649fa8f16f08db5e153e2d0848a35cedbeb281ee2ddf962"
+  },
+  "light-en-mono-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "6232f231e099a26812f40d965a9ba3d12a83f0ce2ebb58071a691f3c456c6181"
+  },
+  "light-en-mono-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ef855f42319342e9638bfe30c5b8896f457dd5f70b0d9e704590a61530b971ec"
+  },
+  "light-en-mono-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "4740bf4dafb457091d2fa309cfe20a8cf1a29807b259c6431eb30efb938ed42f"
+  },
+  "light-en-mono-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "8f5edf11797756e758e61744372bd5ee9a6281704a0ea5cd95511ee978b772af"
+  },
+  "light-en-mono-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "0c219805cbc3be77dc31124c914d15312bb945e61a82c6fa833ac38f725cc88b"
+  },
+  "light-en-mono-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "b46ea08b303230f0ea074a2951d15a0058383d6efa8522a40fdacc26e5bb2778"
+  },
+  "light-en-mono-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "c7698f9fe5681e9617e2d2df4f35d8060601ab226c8bfc107e6d30b09e46b0fb"
+  },
+  "light-en-mono-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "59f2b244fbc8590b2a92a0e8a3cf3bd6d6482e192603eee2a913d9ab0e249682"
+  },
+  "light-en-mono-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "11b35ddf735c1d2d73e809dacc0f40a84cc9a5ef6cfa2d4196d91ef88dff10fc"
+  },
+  "light-en-mono-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "9215289a33cad1938acf252a6c9f02b4c0dae6dec62bc62bd4d3cb61bfa40ae0"
+  },
+  "light-en-mono-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ec3ce32624917751fcba9ea1dd4b02ded2ddc44d89e4443e8fcdcc249859d3cd"
+  },
+  "light-en-mono-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "f03a6afcbf2b3de5ad6e1556858239cffe7f76e0dab3d952a008cdcfa3a92c9d"
+  },
+  "light-en-mono-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "b32e41a053745b695c13a28a62912734e7b3b6dbbe7c0b030d64ed47f02ee871"
+  },
+  "light-en-mono-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "d85ac862a649e2329eadb8cf32b9b375421d3e38f07facf7dc646983405f3919"
+  },
+  "light-en-mono-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "bef41986f8a12191ab177aa634b1a705717f9ed9cc38828212adfafe8852c936"
+  },
+  "light-en-mono-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "ead1b3d7f80d6b4f452ca14a5d1c382288d3ea2babb6c05f2f3fba0ee9716ea6"
+  },
+  "light-en-mono-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "7af5e8d758bc7ec1787bb4ec1c4067cc0bb3a1105be551904223ffec62f6269f"
+  },
+  "light-en-mono-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "2ebd8b7a2ec4d927718f6bad2e6a7ee6b2be685842efa9f8b295e5e6a0658ccf"
+  },
+  "light-en-muted-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "db1811ce317a33b3d48646e7d502271f8d96f489d4702f2f70ff0c7466fac291"
+  },
+  "light-en-muted-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "45b3560f2d5d4572ecb4e3ca3693da9794d1d03501c469b06c2db4eb078b199c"
+  },
+  "light-en-muted-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "45ff26b38ef58ce436066ad00902e0d64ab61030eb40006e194cca312a2954bd"
+  },
+  "light-en-muted-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "b23b3e2d544acaee2f64af214532a4474bde287130e074a40f6e0e07a5d9add8"
+  },
+  "light-en-muted-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "af20d5baa4233b8d0c20aca674a6ae76fab83eb711afe836b619e502fcac7d36"
+  },
+  "light-en-muted-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "9970b7dfb1cfb59b9b1c718160b1c8e2541981537cd309d589680d8863ccb367"
+  },
+  "light-en-muted-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "8b8d3c523822357d626e46e5dcd8d1ad4740730eaac79e59c9c05906fb25d121"
+  },
+  "light-en-muted-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "ff54451440b2f807177c7fcf1473cc0f4612c986b3c54b9d9c11c21df0814ade"
+  },
+  "light-en-muted-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "fd5cf8cfead4fefaa336a521d84d0998ec7ec24e08a71203850b92639332a8c5"
+  },
+  "light-en-muted-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "2d31a69ddc8dc145b6dbfe231528b62d4713113308f2709102a62023af4098b1"
+  },
+  "light-en-muted-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "c56824740e49f481917f3da1d82f56fc517b746209119eeca680956c599b5a30"
+  },
+  "light-en-muted-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "72a9e5a8296d42942a89b301ed2f1585771804f01fbd31df4b8c7c49e0127bc6"
+  },
+  "light-en-muted-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "4302c0861826e1c5ee11aec2bdc789b0fee1ec652a91f8b77ecc403323cddad6"
+  },
+  "light-en-muted-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "67eadc238d1cd0be14f913254afb6969062341de36398f342b8f6dbca56fd41a"
+  },
+  "light-en-muted-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "071e7945ce7120c6b418a58387b025a4f2188a66c909ad8fbed683f0ff2f5b90"
+  },
+  "light-en-muted-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "ec8ec704670cd5c6abb5fffab1ec2b5b37b11b533f3fd40457ed2195a927ea5b"
+  },
+  "light-en-muted-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "cf0c89f927a2fd9535aa4b7fcfe181d0d12693b5893d48925e1d21dbfbdce9c2"
+  },
+  "light-en-muted-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "fde43228aa6aaf743cf13a4c6a94dae4aa017936fe6634a93e739eb577ea6398"
+  },
+  "light-en-muted-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "77dfb96fd644ebac694d52e46b10d5fcd71e945bde9d6d54132809b262415a3e"
+  },
+  "light-en-muted-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "06927904d374ea27ade549d0ce4104b05a2bd523de131906b688ff99a1feeecd"
+  },
+  "light-en-muted-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "1bf5dc51c414fdfe8f6fd442718f9429e81cd0c14b87362ae201da1fa743345a"
+  },
+  "light-en-muted-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "d3b15caf14a58060eeed7eb0e570af9aad47c50234b3db767cdaa0d34ebc17bf"
+  },
+  "light-en-muted-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "ecb10dd41d257ab172b7b3374e00d3255e6adc1cba5dbee51282240ea1b7c904"
+  },
+  "light-en-muted-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "4bbca544d5b08b51497b9f8ff2359b695f4495e651dd0e9ec086a95fd5ce1ed1"
+  },
+  "light-en-muted-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "29fed5dadb9a49a414648e2b283d5ceab1bd6c36bf6addc56202f604c41d4a6a"
+  },
+  "light-en-muted-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0d72defb1f569b8da82c31fe5e1346cd309f908a09d3d370d2d261fef57e3f78"
+  },
+  "light-en-muted-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "36ba94939f8850855b19476e8029a3a76859dc13ab9a29e3da69fe718d93dcfe"
+  },
+  "light-en-muted-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "b9fb0214ec0ff18680026056674056e2b983c63a4abf61571f8d1f2779289a53"
+  },
+  "light-en-muted-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f83191f87224d4dec2652d4ddc00f2c4b43ea4ac069e77df84d0e94be43068e6"
+  },
+  "light-en-muted-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "29a58d995d84aa9e8cfab7c2301b464cafa39d92f987d6f6d202dce921994f91"
+  },
+  "light-en-muted-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "710cef2a213e9bccd57e97095073c5665ed59d4f76ef33bde910aa706fa25e17"
+  },
+  "light-en-muted-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "58811b2091689885a28e8bafe336cca2a6ac9efc52f37ef38a60dc1054c786b1"
+  },
+  "light-en-muted-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "3da3602351fcf6094e0066f68b37a42748a2a1ee2d89b14288c6b547f7b7ff3e"
+  },
+  "light-en-muted-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "16108bcdc44969b15c37af8eb007eff35dee7aac2d1bf4f2c38be14cbc30f184"
+  },
+  "light-en-vivid-balanced-appearance-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d47e0d3e51af9a03c217f15b61f55b7780a7c236462599e9828014cd67eb6112"
+  },
+  "light-en-vivid-balanced-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "ea0cfa66786488d36cfae5a44f9cdd20c24c6b14d4d856929d4ad75d1a39bd28"
+  },
+  "light-en-vivid-balanced-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "ebfc8356fc57640a8a0e329a8b1fe0a718080aa26b28d563b58b9110b9231be9"
+  },
+  "light-en-vivid-balanced-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "8472c07a9ccf53c62e7ec8f6b34a6ca4735948141dbf569669d275f3667bfe73"
+  },
+  "light-en-vivid-balanced-context-menu-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "1a0f42541c69f06d40bc00dd85cb5af63eb906fce232f7029f9156f7f51d8937"
+  },
+  "light-en-vivid-balanced-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "3b3817ec79e00f14b9759ea0dccf9a06db7d15c6919ab82357f2f716fbe63f0f"
+  },
+  "light-en-vivid-balanced-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "c5c74330056803d51649ba361f4364b6765f587b22487c6cf2b658f27aa1267b"
+  },
+  "light-en-vivid-balanced-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "e95d44aec46e7795a184eb02b51d4db084926092b0d40aa6129ce31ca23f88cd"
+  },
+  "light-en-vivid-balanced-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "518c0f618b3c6624320b424ec20b800dcace13551a29e57f446a676edbceb7cc"
+  },
+  "light-en-vivid-balanced-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "9c7a89f815b966291e9653c3012520c7313f5bda742cf29920f628f4487b26e5"
+  },
+  "light-en-vivid-balanced-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "0234c3c64a522fa2ea0eaf063ca73de2e5b43abe4a6f7fd228fa173392f4c36a"
+  },
+  "light-en-vivid-balanced-palette-detail-1280": {
+   "width": 483,
+   "height": 479,
+   "sha256": "23516f63ac741fc00fb0a97e0c83cfefc6afbfcce4b8e3421c64c354a4eb65dc"
+  },
+  "light-en-vivid-balanced-palette-query-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "52b1d734487c3cdfc1f0d2273e094c6b6acecd1090561f78ecf06b81a3cd3b42"
+  },
+  "light-en-vivid-balanced-qr-dialog-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7a9af1a62c1a49e9ecfe24f8410b8aa62b6918145b6f34d0d623dcf8c83543ed"
+  },
+  "light-en-vivid-balanced-zen-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "f0057aa3892236ca77cbe69d40e461ae236c8675a62b2d2be0b8db26a2e396e3"
+  },
+  "light-en-vivid-balanced-zen-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "2eb72709a83031125bc0e8f59d130e9bf220502351bdcd01d0d820dfc1609c43"
+  },
+  "light-en-vivid-crisp-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "7945106669a15384acc652022a686a3fd3b437e1dee7c21338ea1fecafc0ea1c"
+  },
+  "light-en-vivid-crisp-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "d1ccbae5e62ab872eb40f953b9fd824858347669efb2874785048dc4b4451a9d"
+  },
+  "light-en-vivid-crisp-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "c66ef1288bcf5e9188c02ca98b0d8787f692573e255bcf1f5173adcda183b7a8"
+  },
+  "light-en-vivid-crisp-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "073ee747180e9ea9bb4d6ee8129aade6b69fcbf098955743fa92e2161d59df90"
+  },
+  "light-en-vivid-crisp-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "dc7e5ae206adce1a60168ab1fa17e7e781af64ba6cee97e93dcabf42e797426a"
+  },
+  "light-en-vivid-crisp-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "f3771df2fb25a4f13e8e6e97bad559de8e9339065cc3543f7b5e6124a50ceb15"
+  },
+  "light-en-vivid-crisp-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "0c636bb147464b1da1fa9e731eb85560d142d1076537180df920e7f9d474d8c3"
+  },
+  "light-en-vivid-crisp-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "94a42142fa0a77cd6687bf7a031d70239d8aedb7f8636445b53eec794db9698d"
+  },
+  "light-en-vivid-crisp-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "cf905d9462b97326caf402ebc6f3923bf2870be97d5df9e7011f9a60bc90632c"
+  },
+  "light-en-vivid-soft-bento-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "d11ba92086f3c9cade397f73a3998cad6a516e1dcf8f790a41f6326ecd2d743e"
+  },
+  "light-en-vivid-soft-bento-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "2344985314929fcb85303a49ca334f98311baf3a8abf47a780bc83a91fd8eb39"
+  },
+  "light-en-vivid-soft-bento-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "1ff14a7d69dc43bccfa636dfdd641f358ddf385ecae618bfaf07d9573a731e17"
+  },
+  "light-en-vivid-soft-icons-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "3e97d22f4d2b318350f7aefa5dcdde4983dc7cb1a7bdb8b1d152378ffef7c714"
+  },
+  "light-en-vivid-soft-icons-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "968ef33be6581b02669d072173b106a42b036da49813863a3e07eb8a64c46aaf"
+  },
+  "light-en-vivid-soft-icons-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "7bcd368badb494a6ca7a80a37a1de8007c39b763702df564125846f229ca5c63"
+  },
+  "light-en-vivid-soft-list-1280": {
+   "width": 1280,
+   "height": 900,
+   "sha256": "8a4baef5cdd2dcbf1294e1e78301fb0db5160c5bace7317abd876d3759a869bb"
+  },
+  "light-en-vivid-soft-list-1707": {
+   "width": 1707,
+   "height": 960,
+   "sha256": "eadf9823f6c2d7d387e9ac6b66688d24f8b3b65b22b8ca679dd092ef4e6b2996"
+  },
+  "light-en-vivid-soft-list-390": {
+   "width": 390,
+   "height": 844,
+   "sha256": "c0c957585a72e3ef9d1dcc7565a530dc95e1fd97010f3e9e08625d37ad3d9232"
+  }
+ }
+}

@@ -13,6 +13,8 @@
     "qa:motion": "node qa/motion-lint.mjs",
     "qa:smooth": "node qa/smooth.mjs",
     "qa:comments": "node qa/no-comments.mjs",
+    "qa:baseline": "node qa/baseline.mjs",
+    "qa:style": "node qa/style-diff.mjs",
     "qa:search": "node qa/search.mjs",
     "qa:search-bench": "node qa/search-bench.mjs",
     "build": "node build/build.mjs",
