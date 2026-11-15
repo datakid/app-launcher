@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from '../perf/server.mjs';
 import { siteRoot } from '../perf/site-root.mjs';
+import { LAYER_STATEMENT, normalizeLayerStatement } from '../build/layers.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const TEXT = /\.(html|css|js|json|svg|mjs|webmanifest)$/;
@@ -16,6 +17,9 @@ const main = async () => {
   const html = await fs.readFile(path.join(site, 'index.html'));
   results.htmlGzBytes = zlib.gzipSync(html, { level: 9 }).length;
   results.markersLeft = (html.toString().match(/<!--LX:/g) || []).length;
+  const inline = /<style>([\s\S]*?)<\/style>/.exec(html.toString());
+  results.criticalCssBytes = inline ? inline[1].length : 0;
+  results.criticalLayerOrderFirst = !!inline && normalizeLayerStatement(inline[1]).startsWith(normalizeLayerStatement(LAYER_STATEMENT));
 
   const server = await startServer(site);
   const browser = await launchBrowser();
@@ -63,7 +67,7 @@ const main = async () => {
   await browser.close();
   await server.close();
 
-  results.pass = results.htmlGzBytes <= LIMITS.htmlGz && results.firstLoadGzBytes <= LIMITS.firstLoadGz && results.markersLeft === 0 && results.cdnIconRequests === 0 && results.repeatVisitNetworkRequestsBeforeGrid === 0 && results.offlineGridOk;
+  results.pass = results.htmlGzBytes <= LIMITS.htmlGz && results.firstLoadGzBytes <= LIMITS.firstLoadGz && results.markersLeft === 0 && results.criticalCssBytes > 0 && results.criticalLayerOrderFirst && results.cdnIconRequests === 0 && results.repeatVisitNetworkRequestsBeforeGrid === 0 && results.offlineGridOk;
   console.log(JSON.stringify(results));
   if (!results.pass) process.exit(1);
 };
