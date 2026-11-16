@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from '../perf/server.mjs';
@@ -97,7 +97,7 @@ const SCENARIOS = [
 
 const main = async () => {
   const server = await startServer(rootArg ? path.resolve(rootArg.slice(7)) : siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const rows = [];
   const errors = [];
   for (const view of VIEWS) {

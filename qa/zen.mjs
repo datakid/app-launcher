@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from '../perf/server.mjs';
@@ -219,7 +219,7 @@ const barEdge = async (browser, base) => {
 
 const main = async () => {
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const links = await (await fetch(server.base + '/links.json')).json();
   const biggest = links.categories.slice().sort((a, b) => b.apps.length - a.apps.length)[0];
   const steps = [zenFor('bento', biggest.id, biggest.apps.length), zenFor('list', biggest.id, biggest.apps.length), zenFor('icons', biggest.id, biggest.apps.length), rapid, fallback, header, listFit, iconsRows, barEdge];

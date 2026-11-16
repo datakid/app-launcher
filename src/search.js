@@ -1,6 +1,6 @@
 export const KIND = { title: 0, variant: 1, parent: 2, acronym: 3, host: 4, url: 5, category: 6, id: 7, icon: 8, status: 9, badge: 10 };
 export const KIND_NAMES = ['title', 'variant', 'parent', 'acronym', 'host', 'url', 'category', 'id', 'icon', 'status', 'badge'];
-export const TIER = { typo: 1, subsequence: 2, substring: 3, acronym: 4, wordStart: 5, prefix: 6, exact: 7 };
+export const TIER = { split: 1, typo: 2, subsequence: 3, substring: 4, acronym: 5, wordStart: 6, prefix: 7, exact: 8 };
 
 const WEIGHT = [1, 0.95, 0.9, 0.85, 0.7, 0.55, 0.5, 0.5, 0.3, 0.4, 0.4];
 const ALT_FACTOR = 0.97;
@@ -10,6 +10,20 @@ const MAX_TOKEN_LEN = 48;
 const MAX_QUERY_LEN = 256;
 const TYPO_CAP = 5;
 const RANGE_LIMIT = 60;
+const SPLIT_CHUNK = 3;
+const SPLIT_MIN_QUERY = SPLIT_CHUNK * 2;
+const SPLIT_MAX_QUERY = 32;
+const SPLIT_BASE = 360;
+const SPLIT_STEP = 30;
+const SPLIT_ALIGNED = 40;
+const SPLIT_TYPO_COST = 120;
+const JOIN_MIN = 5;
+const JOIN_BASE = 330;
+const JOIN_COST = 110;
+const JOIN_REVERSED = 20;
+const JOIN_PREFIX = 320;
+const JOIN_EXACT = 340;
+const JOIN_LIMIT = 4;
 const PLATFORM_SUFFIXES = ['vercel.app', 'netlify.app', 'github.io', 'pages.dev', 'web.app'];
 const ARTICLE_PREFIXES = ['بال', 'وال', 'فال', 'كال', 'لل', 'ال'];
 const LETTER = /[\p{L}\p{N}]/u;
@@ -282,8 +296,11 @@ const buildDoc = (entry, opts) => {
   pushLoc(fields, KIND.parent, app.parentTitle);
   if (!opts.titlesOnly) {
     const acr = new Set();
-    if (app.title && app.title.en) acr.add(acronymOf(app.title.en));
-    if (app.parentTitle && app.parentTitle.en) acr.add(acronymOf(app.parentTitle.en));
+    for (const t of [app.title, app.parentTitle]) {
+      if (!t) continue;
+      if (t.en) acr.add(acronymOf(t.en));
+      if (t.ar) acr.add(acronymOf(t.ar));
+    }
     for (const a of acr) {
       if (a.length >= 2) {
         const f = makeField(KIND.acronym, a);
@@ -338,6 +355,29 @@ const buildDoc = (entry, opts) => {
     }
     if (meta.variantBadge) pushLoc(fields, KIND.badge, meta.variantBadge);
   }
+  const sq = [];
+  const seen = new Set();
+  let sqHead = 0;
+  let sqMax = 0;
+  const pushJoined = (fi, str, rev) => {
+    if (seen.has(str)) return;
+    seen.add(str);
+    maskOf(str);
+    const head = (1 << (str.charCodeAt(0) & 31)) | (1 << (str.charCodeAt(1) & 31));
+    sq.push({ fi, s: str, rev, ma: masks.a, mb: masks.b, head, len: str.length });
+    sqHead |= head;
+    if (str.length > sqMax) sqMax = str.length;
+  };
+  for (let fi = 0; fi < fields.length; fi++) {
+    const f = fields[fi];
+    if (f.kind > KIND.parent && f.kind !== KIND.host) continue;
+    const words = f.str.split(' ');
+    if (words.length < 2 || words.length > 6) continue;
+    const forward = words.join('');
+    if (forward.length < JOIN_MIN || forward.length > MAX_TOKEN_LEN) continue;
+    pushJoined(fi, forward, false);
+    if (f.kind !== KIND.host && words.length <= 4) pushJoined(fi, words.slice().reverse().join(''), true);
+  }
   let ma = 0;
   let mb = 0;
   for (const f of fields) {
@@ -348,6 +388,9 @@ const buildDoc = (entry, opts) => {
   const ar = app.title && app.title.ar ? app.title.ar.length : 1e9;
   return {
     fields,
+    sq,
+    sqHead,
+    sqMax,
     ma,
     mb,
     host,
@@ -405,6 +448,41 @@ const osa = (a, an, b, bn, max) => {
   return p1[bn];
 };
 
+const osaBest = (a, an, b, lo, hi, max) => {
+  if (lo > hi) return max + 1;
+  let p2 = prev2;
+  let p1 = prev1;
+  let c = curRow;
+  for (let j = 0; j <= hi; j++) p1[j] = j;
+  for (let i = 1; i <= an; i++) {
+    c[0] = i;
+    let rowMin = i;
+    const ai = a.charCodeAt(i - 1);
+    for (let j = 1; j <= hi; j++) {
+      const bj = b.charCodeAt(j - 1);
+      let v = p1[j - 1] + (ai === bj ? 0 : 1);
+      const del = p1[j] + 1;
+      if (del < v) v = del;
+      const ins = c[j - 1] + 1;
+      if (ins < v) v = ins;
+      if (i > 1 && j > 1 && ai === b.charCodeAt(j - 2) && a.charCodeAt(i - 2) === bj) {
+        const tr = p2[j - 2] + 1;
+        if (tr < v) v = tr;
+      }
+      c[j] = v;
+      if (v < rowMin) rowMin = v;
+    }
+    if (rowMin > max) return max + 1;
+    const tmp = p2;
+    p2 = p1;
+    p1 = c;
+    c = tmp;
+  }
+  let best = max + 1;
+  for (let j = lo; j <= hi; j++) if (p1[j] < best) best = p1[j];
+  return best;
+};
+
 const budgetOf = (len) => (len >= 8 ? 2 : len >= 4 ? 1 : 0);
 
 const hit = { score: 0, k: -1, tier: 0 };
@@ -439,7 +517,7 @@ const evalToken = (qs, id) => {
   } else {
     const idx = tLen > qLen ? t.indexOf(q) : -1;
     if (idx > 0) {
-      s = 700 - (idx > 99 ? 99 : idx);
+      s = (qLen > 2 ? 700 : 520) - (idx > 99 ? 99 : idx);
       tier = TIER.substring;
     }
   }
@@ -478,11 +556,161 @@ const evalToken = (qs, id) => {
   c.tier[id] = tier;
 };
 
+const SPLIT_KINDS = (1 << KIND.title) | (1 << KIND.variant) | (1 << KIND.parent) | (1 << KIND.id);
+const SPLIT_TYPO_MIN = 4;
+const SPLIT_TYPO_LOOSE = 5;
+const SPLIT_MAX_SCORE = SPLIT_BASE + SPLIT_ALIGNED;
+const splitBest = { score: 0, spans: null };
+
+const oneEdit = (p, pl, str, si, sl) => {
+  const m = pl < sl ? pl : sl;
+  let k = 0;
+  while (k < m && p.charCodeAt(k) === str.charCodeAt(si + k)) k++;
+  if (sl === pl) {
+    if (k === pl) return false;
+    let j = k + 1;
+    while (j < pl && p.charCodeAt(j) === str.charCodeAt(si + j)) j++;
+    if (j === pl) return true;
+    if (k + 1 < pl && p.charCodeAt(k) === str.charCodeAt(si + k + 1) && p.charCodeAt(k + 1) === str.charCodeAt(si + k)) {
+      j = k + 2;
+      while (j < pl && p.charCodeAt(j) === str.charCodeAt(si + j)) j++;
+      return j === pl;
+    }
+    return false;
+  }
+  if (sl === pl - 1) {
+    for (let j = k; j < sl; j++) if (p.charCodeAt(j + 1) !== str.charCodeAt(si + j)) return false;
+    return true;
+  }
+  for (let j = k; j < pl; j++) if (p.charCodeAt(j) !== str.charCodeAt(si + j + 1)) return false;
+  return true;
+};
+
+const approxSpans = (p, str) => {
+  const pl = p.length;
+  const last = str.length;
+  const c0 = p.charCodeAt(0);
+  const c1 = p.charCodeAt(1);
+  const out = [];
+  for (let i = 0; i < last; i++) {
+    const s0 = str.charCodeAt(i);
+    const s1 = i + 1 < last ? str.charCodeAt(i + 1) : -1;
+    if (s0 !== c0 && s0 !== c1 && s1 !== c0 && s1 !== c1) continue;
+    const sp = str.indexOf(' ', i);
+    const room = (sp < 0 ? last : sp) - i;
+    if (pl <= room && oneEdit(p, pl, str, i, pl)) out.push([i, i + pl]);
+    else if (pl - 1 <= room && oneEdit(p, pl, str, i, pl - 1)) out.push([i, i + pl - 1]);
+    else if (pl + 1 <= room && i + pl + 1 <= last && oneEdit(p, pl, str, i, pl + 1)) out.push([i, i + pl + 1]);
+  }
+  return out;
+};
+
+const PIECE_SPAN = SPLIT_MAX_QUERY + 1;
+const pieceStamp = new Int32Array(PIECE_SPAN * PIECE_SPAN);
+const pieceMemo = new Array(PIECE_SPAN * PIECE_SPAN);
+const orderBuf = [null, null, null];
+let pieceGen = 0;
+
+const pieceAt = (str, q, a, b) => {
+  const key = a * PIECE_SPAN + b;
+  if (pieceStamp[key] === pieceGen) return pieceMemo[key];
+  const piece = q.slice(a, b);
+  const exact = [];
+  let at = str.indexOf(piece);
+  while (at >= 0) {
+    exact.push(at);
+    at = str.indexOf(piece, at + 1);
+  }
+  const e = { piece, exact, approx: null };
+  pieceStamp[key] = pieceGen;
+  pieceMemo[key] = e;
+  return e;
+};
+
+const overlaps = (spans, at, end) => {
+  for (let i = 0; i < spans.length; i++) if (at < spans[i][1] && end > spans[i][0]) return true;
+  return false;
+};
+
+const touches = (spans, at, end) => {
+  for (let i = 0; i < spans.length; i++) if ((at >= spans[i][1] && at - spans[i][1] <= 1) || (end <= spans[i][0] && spans[i][0] - end <= 1)) return true;
+  return false;
+};
+
+const placePieces = (str, count, k, spans, aligned, base) => {
+  if (k === count) {
+    const sc = base + (aligned ? SPLIT_ALIGNED : 0);
+    if (sc > splitBest.score) {
+      splitBest.score = sc;
+      splitBest.spans = spans.map((x) => x.slice());
+    }
+    return;
+  }
+  const e = orderBuf[k];
+  if (e.exact.length) {
+    const len = e.piece.length;
+    for (let i = 0; i < e.exact.length; i++) {
+      const at = e.exact[i];
+      if (overlaps(spans, at, at + len)) continue;
+      spans.push([at, at + len]);
+      placePieces(str, count, k + 1, spans, aligned && (at === 0 || str.charCodeAt(at - 1) === 32), base);
+      spans.pop();
+    }
+    return;
+  }
+  if (e.approx === null) e.approx = approxSpans(e.piece, str);
+  for (let i = 0; i < e.approx.length; i++) {
+    const at = e.approx[i][0];
+    const end = e.approx[i][1];
+    if (overlaps(spans, at, end)) continue;
+    if (e.piece.length < SPLIT_TYPO_LOOSE && !touches(spans, at, end)) continue;
+    spans.push([at, end]);
+    placePieces(str, count, k + 1, spans, aligned && (at === 0 || str.charCodeAt(at - 1) === 32), base - SPLIT_TYPO_COST);
+    spans.pop();
+  }
+};
+
+const tryPartition = (str, q, a, b, n) => {
+  const count = b ? 3 : 2;
+  let filled = 0;
+  let missing = null;
+  for (let i = 0; i < count; i++) {
+    const from = i === 0 ? 0 : i === 1 ? a : b;
+    const to = i === 0 ? a : i === 1 ? (b || n) : n;
+    const e = pieceAt(str, q, from, to);
+    if (e.exact.length) {
+      orderBuf[filled++] = e;
+    } else if (missing === null && e.piece.length >= SPLIT_TYPO_MIN) {
+      missing = e;
+    } else {
+      return;
+    }
+  }
+  if (missing) orderBuf[filled] = missing;
+  placePieces(str, count, 0, [], true, SPLIT_BASE - SPLIT_STEP * (count - 2));
+};
+
+const splitMatch = (q, str) => {
+  const n = q.length;
+  pieceGen++;
+  splitBest.score = 0;
+  splitBest.spans = null;
+  for (let a = SPLIT_CHUNK; a <= n - SPLIT_CHUNK && splitBest.score < SPLIT_MAX_SCORE; a++) tryPartition(str, q, a, 0, n);
+  if (n >= SPLIT_CHUNK * 3) {
+    for (let a = SPLIT_CHUNK; a <= n - SPLIT_CHUNK * 2 && splitBest.score < SPLIT_MAX_SCORE; a++) {
+      for (let b = a + SPLIT_CHUNK; b <= n - SPLIT_CHUNK && splitBest.score < SPLIT_MAX_SCORE; b++) tryPartition(str, q, a, b, n);
+    }
+  }
+  return splitBest.score;
+};
+
+const splitMisses = (qs, f) => popcount(qs.ma & ~f.ma) + popcount(qs.mb & ~f.mb);
+
 const scoreField = (qs, f) => {
   const toks = f.toks;
   if (f.kind === KIND.acronym) {
     if (toks[0].startsWith(qs.q)) {
-      hit.score = 800;
+      hit.score = toks[0].length === qs.len ? 960 : 800;
       hit.k = 0;
       hit.tier = TIER.acronym;
       return true;
@@ -512,7 +740,18 @@ const scoreField = (qs, f) => {
       bestTier = tier;
     }
   }
-  if (best === 0) return false;
+  if (best === 0) {
+    if (qs.len >= SPLIT_MIN_QUERY && qs.len <= SPLIT_MAX_QUERY && ((1 << f.kind) & SPLIT_KINDS) && splitMisses(qs, f) <= (qs.len >= SPLIT_TYPO_MIN + SPLIT_CHUNK ? 1 : 0) && (f.str.includes(qs.head) || f.str.includes(qs.tail))) {
+      const sc = splitMatch(qs.q, f.str);
+      if (sc) {
+        hit.score = sc;
+        hit.k = 0;
+        hit.tier = TIER.split;
+        return true;
+      }
+    }
+    return false;
+  }
   hit.score = best;
   hit.k = bestK;
   hit.tier = bestTier;
@@ -547,6 +786,10 @@ const rangeFor = (f, k, q, tier) => {
   }
   if (tier === TIER.acronym) return [[0, Math.min(q.length, f.str.length)]];
   if (tier === TIER.typo) return [[start, start + Math.min(q.length, t.length)]];
+  if (tier === TIER.split) {
+    splitMatch(q, f.str);
+    return splitBest.spans || [];
+  }
   const out = [];
   let qi = 0;
   for (let j = 0; j < t.length && qi < q.length; j++) {
@@ -582,7 +825,7 @@ const EMPTY = Object.freeze([]);
 const kindBest = new Float64Array(11);
 const cov = new Int32Array(64);
 const covScore = new Float64Array(64);
-const acc = { total: 0, tt: 0, minTier: 99, pf: -1 };
+const acc = { total: 0, tt: 0, minTier: 99, pf: -1, cl: -1 };
 
 const scoreDoc = (d, qs, ord) => {
   const qn = ord.length;
@@ -603,6 +846,7 @@ const scoreDoc = (d, qs, ord) => {
     let touched = false;
     let tokenBest = 0;
     let tokenBestKind = -1;
+    let tokenBestCl = -1;
     let tokenTier = 0;
     let titleBase = 0;
     for (let fi = 0; fi < fl; fi++) {
@@ -623,10 +867,12 @@ const scoreDoc = (d, qs, ord) => {
       if (val > tokenBest) {
         tokenBest = val;
         tokenBestKind = f.kind;
+        tokenBestCl = hit.tier === TIER.split ? -1 : f.tid[hit.k];
         tokenTier = hit.tier;
       }
     }
     if (tokenBest === 0) return false;
+    if (oi === 0) acc.cl = tokenBestCl;
     let second = 0;
     for (let k = 0; k < 11; k++) if (k !== tokenBestKind && kindBest[k] > second) second = kindBest[k];
     const contribution = tokenBest + AGREE * second;
@@ -643,6 +889,48 @@ const scoreDoc = (d, qs, ord) => {
   acc.minTier = minTier;
   acc.pf = pf;
   return true;
+};
+
+const joinBudget = (len) => (len >= 12 ? 3 : len >= 8 ? 2 : len >= JOIN_MIN ? 1 : 0);
+const joined = { score: 0, fi: -1 };
+
+const joinedScore = (d, jq) => {
+  const q = jq.q;
+  const qLen = jq.len;
+  const budget = jq.budget;
+  const sq = d.sq;
+  const q0 = q.charCodeAt(0);
+  const q1 = q.charCodeAt(1);
+  let best = 0;
+  let bestFi = -1;
+  const floor = qLen - budget;
+  const heads = jq.heads;
+  for (let i = 0; i < sq.length; i++) {
+    const e = sq[i];
+    const tLen = e.len;
+    if (tLen < floor || !(e.head & heads)) continue;
+    if (popcount(jq.ma & ~e.ma) + popcount(jq.mb & ~e.mb) > budget) continue;
+    const t = e.s;
+    let s = 0;
+    if (tLen === qLen && t === q) {
+      s = JOIN_EXACT;
+    } else if (tLen > qLen && t.startsWith(q)) {
+      s = JOIN_PREFIX;
+    } else {
+      const lo = qLen - budget > 1 ? qLen - budget : 1;
+      const hi = tLen < qLen + budget ? tLen : qLen + budget;
+      const dist = osaBest(q, qLen, t, lo, hi, budget);
+      if (dist <= budget && (dist < 2 || q.charCodeAt(0) === t.charCodeAt(0))) s = JOIN_BASE - JOIN_COST * dist;
+    }
+    if (s && e.rev) s -= JOIN_REVERSED;
+    if (s > best) {
+      best = s;
+      bestFi = e.fi;
+    }
+  }
+  joined.score = best;
+  joined.fi = bestFi;
+  return best;
 };
 
 const URL_FIELD = -2;
@@ -668,6 +956,13 @@ const run = (index, raw, opts, swapped) => {
     return all;
   }
 
+  const joinedText = swapped ? '' : tokens.join('');
+  let jq = null;
+  if (joinedText.length >= JOIN_MIN && joinedText.length <= SPLIT_MAX_QUERY) {
+    maskOf(joinedText);
+    jq = { q: joinedText, len: joinedText.length, ma: masks.a, mb: masks.b, budget: joinBudget(joinedText.length), heads: (1 << (joinedText.charCodeAt(0) & 31)) | (1 << (joinedText.charCodeAt(1) & 31)) };
+  }
+
   const vocab = index.vocab;
   const gen = ++index.gen;
   const qs = tokens.map((q, i) => {
@@ -676,7 +971,7 @@ const run = (index, raw, opts, swapped) => {
     if (!cache || cache.stamp.length < vocab.list.length) {
       cache = index.cache[i] = { stamp: new Int32Array(vocab.list.length), score: new Float64Array(vocab.list.length), tier: new Uint8Array(vocab.list.length) };
     }
-    return { q, len: q.length, ma: masks.a, mb: masks.b, budget: budgetOf(q.length), vocab, cache, gen };
+    return { q, len: q.length, head: q.slice(0, SPLIT_CHUNK), tail: q.slice(q.length - SPLIT_CHUNK), ma: masks.a, mb: masks.b, budget: budgetOf(q.length), vocab, cache, gen };
   });
   const ord = qs.map((_, i) => i).sort((a, b) => (qs[b].len - qs[a].len) || (a - b));
 
@@ -697,35 +992,12 @@ const run = (index, raw, opts, swapped) => {
   const hTT = [];
   const hTL = [];
   const hPf = [];
+  const hCl = [];
+  const hJoined = [];
   const plain = [];
   const typo = [];
   const n = candidates ? candidates.length : docs.length;
-  for (let c = 0; c < n; c++) {
-    const di = candidates ? candidates[c] : c;
-    const d = docs[di];
-    let urlScore = 0;
-    if (urlQuery && d.urlKey) {
-      if (d.urlKey === urlQuery.key || d.urlKey.startsWith(urlQuery.key)) urlScore = 2000;
-      else if (d.host === urlQuery.host) urlScore = 1500;
-    }
-    const ok = scoreDoc(d, qs, ord);
-    if (!ok && !urlScore) continue;
-    matched.push(di);
-    let score = 0;
-    let tier = 0;
-    let tt = 0;
-    let pf = -1;
-    if (ok) {
-      score = acc.total;
-      tier = acc.minTier;
-      tt = acc.tt;
-      pf = acc.pf;
-    }
-    if (urlScore) {
-      score = urlScore + (ok ? acc.total : 0);
-      tier = TIER.exact;
-      pf = urlScore === 2000 ? URL_FIELD : HOST_FIELD;
-    }
+  const adjust = (d, score) => {
     if (d.closed) score *= 0.9;
     if (swapped) score *= 0.92;
     if (currentTab && d.catId === currentTab) score += 40;
@@ -737,6 +1009,9 @@ const run = (index, raw, opts, swapped) => {
       }
       score += 60 * r;
     }
+    return score;
+  };
+  const record = (di, d, score, tier, tt, pf, cl, joinedHit) => {
     const h = hDoc.length;
     hDoc.push(di);
     hScore.push(score);
@@ -744,8 +1019,57 @@ const run = (index, raw, opts, swapped) => {
     hTT.push(tt);
     hTL.push(d.titleLen);
     hPf.push(pf);
-    if (tier === TIER.typo && !urlScore) typo.push(h);
+    hCl.push(cl);
+    hJoined.push(joinedHit ? 1 : 0);
+    if (tier <= TIER.typo && !urlScore) typo.push(h);
     else plain.push(h);
+  };
+  let urlScore = 0;
+  for (let c = 0; c < n; c++) {
+    const di = candidates ? candidates[c] : c;
+    const d = docs[di];
+    urlScore = 0;
+    if (urlQuery && d.urlKey) {
+      if (d.urlKey === urlQuery.key || d.urlKey.startsWith(urlQuery.key)) urlScore = 2000;
+      else if (d.host === urlQuery.host) urlScore = 1500;
+    }
+    const ok = scoreDoc(d, qs, ord);
+    if (!ok && !urlScore) continue;
+    matched.push(di);
+    let score = 0;
+    let tier = 0;
+    let tt = 0;
+    let pf = -1;
+    let cl = -1;
+    if (ok) {
+      cl = acc.cl;
+      score = acc.total;
+      tier = acc.minTier;
+      tt = acc.tt;
+      pf = acc.pf;
+    }
+    if (urlScore) {
+      score = urlScore + (ok ? acc.total : 0);
+      tier = TIER.exact;
+      pf = urlScore === 2000 ? URL_FIELD : HOST_FIELD;
+    }
+    record(di, d, adjust(d, score), tier, tt, pf, cl, false);
+  }
+  urlScore = 0;
+
+  if (jq && matched.length < JOIN_LIMIT) {
+    let mp = 0;
+    for (let di = 0; di < docs.length; di++) {
+      if (mp < matched.length && matched[mp] === di) {
+        mp++;
+        continue;
+      }
+      const d = docs[di];
+      if (!(d.sqHead & jq.heads) || d.sqMax < jq.len - jq.budget) continue;
+      const joinScore = joinedScore(d, jq);
+      if (!joinScore) continue;
+      record(di, d, adjust(d, joinScore), TIER.split, 0, joined.fi, -1, true);
+    }
   }
 
   index.last = swapped || urlQuery ? null : { nq, tokens, candidates: matched };
@@ -753,7 +1077,26 @@ const run = (index, raw, opts, swapped) => {
   const cmp = (a, b) => (hScore[b] - hScore[a]) || (hTT[b] - hTT[a]) || (hTL[a] - hTL[b]) || (hDoc[a] - hDoc[b]);
   plain.sort(cmp);
   typo.sort(cmp);
-  const order = typo.length > TYPO_CAP ? plain.concat(typo.slice(0, TYPO_CAP)) : plain.concat(typo);
+  let kept = typo;
+  if (typo.length > TYPO_CAP) {
+    kept = [];
+    const words = new Set();
+    let loose = 0;
+    for (let i = 0; i < typo.length; i++) {
+      const cl = hCl[typo[i]];
+      if (cl >= 0) {
+        if (!words.has(cl)) {
+          if (words.size + loose >= TYPO_CAP) continue;
+          words.add(cl);
+        }
+      } else {
+        if (words.size + loose >= TYPO_CAP) continue;
+        loose++;
+      }
+      kept.push(typo[i]);
+    }
+  }
+  const order = plain.concat(kept);
 
   const limit = opts.rangeLimit == null ? RANGE_LIMIT : opts.rangeLimit;
   const out = new Array(order.length);
@@ -765,7 +1108,12 @@ const run = (index, raw, opts, swapped) => {
     let field = '';
     let text = '';
     let ranges = EMPTY;
-    if (pf === URL_FIELD || pf === HOST_FIELD) {
+    if (hJoined[h]) {
+      const f = d.fields[pf];
+      field = KIND_NAMES[f.kind];
+      text = f.text;
+      if (i < limit) ranges = toOriginal(f, [[0, f.str.length]]);
+    } else if (pf === URL_FIELD || pf === HOST_FIELD) {
       field = pf === URL_FIELD ? 'url' : 'host';
       text = pf === URL_FIELD ? d.urlText : d.host;
       if (i < limit && text) ranges = [[0, text.length]];

@@ -1,7 +1,16 @@
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
-const base = process.argv[2] || 'origin/ship/qr-views-polish';
-const diff = execSync(`git diff ${base} -U0 -- src build qa tools perf harvest compare.html vercel.json`, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+const base = process.argv[2] || 'origin/main';
+const git = (args) => execFileSync('git', args, { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, stdio: ['ignore', 'pipe', 'pipe'] });
+try {
+  git(['rev-parse', '--verify', '--quiet', base + '^{commit}']);
+} catch (e) {
+  const remote = /^([^/]+)\/(.+)$/.exec(base);
+  const fix = remote ? `Run: git fetch ${remote[1]} ${remote[2]}` : 'Pass a ref that exists as the first argument.';
+  console.error(`no-comments: cannot resolve "${base}". ${fix}`);
+  process.exit(1);
+}
+const diff = git(['diff', base, '-U0', '--', 'src', 'build', 'qa', 'tools', 'perf', 'harvest', 'compare.html', 'vercel.json']);
 const bad = [];
 let file = '';
 for (const line of diff.split('\n')) {

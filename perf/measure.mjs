@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from './browser.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -174,7 +174,7 @@ const measureProfile = async (browser, base, profile) => {
 
 const main = async () => {
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const out = {};
   for (const profile of Object.keys(PROFILES)) {
     if (ONLY_PROFILE && profile !== ONLY_PROFILE) continue;

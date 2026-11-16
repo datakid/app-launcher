@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from '../perf/server.mjs';
@@ -9,7 +9,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const main = async () => {
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const results = [];
   for (const profile of [{ name: 'desktop', viewport: { width: 1440, height: 900 } }, { name: 'mobile', viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true }]) {
     const ctx = await browser.newContext({ viewport: profile.viewport, hasTouch: !!profile.hasTouch, isMobile: !!profile.isMobile, reducedMotion: 'no-preference' });

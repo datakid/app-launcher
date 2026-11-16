@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from '../perf/server.mjs';
@@ -163,7 +163,7 @@ const main = async () => {
   const all = { toggles, reopenDuringClose, paletteKey: fromPalette('key'), paletteMouse: fromPalette('mouse'), paletteTouch: fromPalette('touch'), entryPoints, closers, variantSwitch };
   const steps = only ? only.split(',').map((k) => all[k]) : Object.values(all);
   for (const step of steps) {
-    const browser = await chromium.launch();
+    const browser = await launchBrowser();
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
     await browser.close().catch(() => {});
   }

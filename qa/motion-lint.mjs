@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { launchBrowser } from '../perf/browser.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from '../perf/server.mjs';
@@ -11,10 +11,6 @@ const FORBIDDEN = [
   'inline-size', 'block-size', 'right', 'bottom', 'background-position', 'background-size'
 ];
 const FORBIDDEN_PREFIX = ['inset-', 'border-radius-', 'border-start-', 'border-end-', 'border-top-left-', 'border-top-right-', 'border-bottom-left-', 'border-bottom-right-', 'background-position-'];
-
-const ALLOWLIST = [
-  { target: '.card-clip', prop: 'box-shadow', reason: 'list row hover ring is a 1px inset hairline on one row at a time; moving it would change the vivid hover glow, which is outside this brief' }
-];
 
 const TARGETS = [
   { name: '.app-card', sel: '.app-card' },
@@ -62,7 +58,7 @@ const read = (page, state) => page.evaluate(readStates, { targets: TARGETS, stat
 
 const main = async () => {
   const server = await startServer(siteRoot(root));
-  const browser = await chromium.launch();
+  const browser = await launchBrowser();
   const violations = new Map();
   const seen = new Map(TARGETS.map((t) => [t.name, 0]));
   const errors = [];
@@ -73,8 +69,7 @@ const main = async () => {
       const prop = r.prop === 'all' ? 'all' : r.prop;
       if (prop !== 'all' && !isForbidden(prop)) continue;
       const key = `${r.target}${r.pseudo} ${prop}`;
-      const allowed = ALLOWLIST.find((a) => a.target === `${r.target}${r.pseudo}` && a.prop === prop);
-      const entry = violations.get(key) || { target: `${r.target}${r.pseudo}`, prop, allowed: !!allowed, reason: allowed ? allowed.reason : '', where: new Set() };
+      const entry = violations.get(key) || { target: `${r.target}${r.pseudo}`, prop, where: new Set() };
       entry.where.add(`${ctx} ${r.state}`);
       violations.set(key, entry);
     }
@@ -125,10 +120,8 @@ const main = async () => {
   await server.close();
 
   const missing = [...seen.entries()].filter(([, n]) => n === 0).map(([k]) => k);
-  const rows = [...violations.values()].map((v) => ({ target: v.target, prop: v.prop, allowed: v.allowed, reason: v.reason, where: [...v.where].slice(0, 3) }));
-  const failing = rows.filter((r) => !r.allowed);
-  const allowlisted = rows.filter((r) => r.allowed);
-  console.log(JSON.stringify({ checked: Object.fromEntries(seen), failing: failing.length, allowlisted, missing, errors }));
+  const failing = [...violations.values()].map((v) => ({ target: v.target, prop: v.prop, where: [...v.where].slice(0, 3) }));
+  console.log(JSON.stringify({ checked: Object.fromEntries(seen), failing: failing.length, missing, errors }));
   if (failing.length || missing.length || errors.length) {
     failing.forEach((r) => console.log('VIOLATION', r.target, r.prop, JSON.stringify(r.where)));
     process.exit(1);
