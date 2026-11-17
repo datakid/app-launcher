@@ -1,11 +1,13 @@
 {
+  "version": 2,
+  "generatedAt": "2026-11-16T21:18:12.057Z",
+  "hash": "d37debbe",
   "atlas": {
     "cell": 128,
     "file": "icons/atlas.02b8d85c.webp",
     "height": 768,
     "width": 768
   },
-  "generatedAt": "2026-11-11T21:14:44.091Z",
   "glyphAtlas": {
     "cell": 128,
     "file": "icons/glyph-atlas.85619065.webp",
@@ -13,9 +15,8 @@
     "width": 384
   },
   "glyphSprite": {
-    "file": "icons/glyphs.0718a9f3.svg"
+    "file": "icons/glyphs.ee2319a6.svg"
   },
-  "hash": "b6740765",
   "icons": {
     "alt": {
       "bbox": [
@@ -887,7 +888,7 @@
       ],
       "tintRole": "brand"
     },
-    "quoin": {
+    "quoin--quoin": {
       "bbox": [
         0.094,
         0.094,
@@ -897,7 +898,7 @@
       "checkedAt": "2026-11-11T05:52:35.131Z",
       "favicon": null,
       "glyph": {
-        "symbol": "g-quoin"
+        "symbol": "g-quoin--quoin"
       },
       "hash": "83fede528285696d1e2177f951d5992d77c5cef52887da9af2a7ff3282dcfef3",
       "ink": 0.387,
@@ -916,6 +917,38 @@
         "#4c9f87",
         "#91c7aa",
         "#055e56"
+      ],
+      "tintRole": "brand"
+    },
+    "quoin--seam": {
+      "bbox": [
+        0.141,
+        0.102,
+        0.727,
+        0.805
+      ],
+      "checkedAt": "2026-11-16T05:35:18.053Z",
+      "favicon": null,
+      "glyph": {
+        "symbol": "g-quoin--seam"
+      },
+      "hash": "a31342197fab6757d3d7cff1b90dd4cf85c8f4e49f7ae5fa52988c9cbaf9911f",
+      "ink": 0.183,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#bb8368",
+        "#f3c6b0",
+        "#643319"
+      ],
+      "status": "found",
+      "tint": [
+        "#ac716f",
+        "#e3b4b1",
+        "#552323"
       ],
       "tintRole": "brand"
     },
@@ -1024,41 +1057,6 @@
         "#61978d",
         "#a6d4ca",
         "#08463d"
-      ],
-      "tintRole": "brand"
-    },
-    "studio": {
-      "bbox": [
-        0.141,
-        0.094,
-        0.711,
-        0.813
-      ],
-      "checkedAt": "2026-10-31T05:23:35.595Z",
-      "favicon": {
-        "x": 512,
-        "y": 512
-      },
-      "glyph": {
-        "symbol": "g-studio"
-      },
-      "hash": "51513be39b2d5412a3e21f6dc0a4024619d2db6e6d2ae3de012d93c55e8f3700",
-      "ink": 0.23,
-      "layers": 1,
-      "locked": false,
-      "palette": null,
-      "seed": "1f2e3d4c",
-      "shape": "default",
-      "sourceTint": [
-        "#de6e2c",
-        "#fec2a4",
-        "#6d2c00"
-      ],
-      "status": "found",
-      "tint": [
-        "#c06508",
-        "#e7b28c",
-        "#4f2704"
       ],
       "tintRole": "brand"
     },
@@ -1266,6 +1264,5 @@
       ],
       "tintRole": "brand"
     }
-  },
-  "version": 2
+  }
 }

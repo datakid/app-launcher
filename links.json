@@ -116,7 +116,14 @@
           ],
           "defaultVariant": 0
         },
-        { "id": "quoin", "title": { "ar": "كوين", "en": "Quoin" }, "url": "https://power-query-manager.vercel.app/", "icon": "fa-table", "gradient": ["#4c9f87", "#91c7aa", "#055e56"], "isNew": true, "since": "2026-11-11" },
+        {
+          "id": "quoin", "title": { "ar": "كوين", "en": "Quoin" }, "icon": "fa-table", "gradient": ["#4c9f87", "#91c7aa", "#055e56"], "isNew": true, "since": "2026-11-11",
+          "variants": [
+            { "id": "quoin", "label": { "ar": "كوين", "en": "Quoin" }, "url": "https://power-query-manager.vercel.app/", "icon": "fa-table" },
+            { "id": "seam", "label": { "ar": "سيم", "en": "Seam" }, "url": "https://seam-1esq.vercel.app/", "icon": "fa-file-lines" }
+          ],
+          "defaultVariant": 0
+        },
         { "id": "draw", "title": { "ar": "الرسم البياني", "en": "Draw" }, "url": "https://draw-gold.vercel.app/", "icon": "fa-chart-area", "gradient": ["#b45cc9", "#f0aef0", "#5b1a66"], "isNew": true, "since": "2026-09-18" }
       ]
     },
