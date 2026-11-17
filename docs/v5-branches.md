@@ -70,3 +70,11 @@ Two parts of the plan could not be done as written from the build environment, w
 ```
 git push origin --delete ci/harvest-icons ci/pin-main feat/fuzzy-search feat/tarq-quoin feat/v4-tiles-search fix/harvest-icon-alias fix/search-highlight fix/split-typo-four fix/v4-close-out merge/main-beta polish/ceiling-sonnet polish/icons-qr harvest/full-catalog polish/ceiling ship/qr-views-polish
 ```
+
+## One more to delete
+
+`feat/quoin-seam` was a short-lived branch for the Excel Tools card (PR #21). Its commits were moved onto the v5 working branch so the project stays on one branch, and the PR is closed. Nothing on it is unique, so it needs no archive:
+
+```
+git push origin --delete feat/quoin-seam
+```
