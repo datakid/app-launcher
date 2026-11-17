@@ -2,30 +2,13 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { build as esbuild, transform } from 'esbuild';
-import postcss from 'postcss';
+import { build as esbuild } from 'esbuild';
+import { splitCss, minifyCss } from './css.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const src = (f) => path.join(root, 'src', f);
 const dist = path.join(root, 'dist');
 const hash8 = (buf) => crypto.createHash('sha256').update(buf).digest('hex').slice(0, 8);
-
-const CRITICAL_SELECTOR = /^(?::root|html|body|\*)(?:\[[^\]]*\])*$/;
-
-const splitCss = (css) => {
-  const tree = postcss.parse(css);
-  const critical = [];
-  const rest = [];
-  tree.each((node) => {
-    const text = node.toString();
-    if (node.type === 'atrule' && (node.name === 'font-face' || node.name === 'property')) critical.push(text);
-    else if (node.type === 'rule' && node.selectors.every((s) => CRITICAL_SELECTOR.test(s.trim()))) critical.push(text);
-    else rest.push(text);
-  });
-  return { critical: critical.join('\n'), rest: rest.join('\n') };
-};
-
-const minifyCss = async (css) => (await transform(css, { loader: 'css', minify: true })).code;
 
 const FA_SOLID = path.join(root, 'node_modules', '@fortawesome', 'fontawesome-free', 'svgs', 'solid');
 const FA_LITERAL = /(['"`])(fa-[a-z0-9]+(?:-[a-z0-9]+){0,6})\1/g;

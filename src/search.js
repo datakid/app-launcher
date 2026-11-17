@@ -542,7 +542,7 @@ const evalToken = (qs, id) => {
   if (budget > 0 && s < 280) {
     const cmp = tLen < qLen ? tLen : qLen;
     if (cmp >= qLen - budget) {
-      const d = osa(q, qLen, t, cmp, budget);
+      const d = budget < 2 ? osa(q, qLen, t, cmp, budget) : osaBest(q, qLen, t, cmp, tLen < qLen + budget ? tLen : qLen + budget, budget);
       if (d <= budget && d > 0) {
         const ts = 400 - 120 * d;
         if (ts > s) {
