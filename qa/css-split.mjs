@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { splitCss, minifyCss } from '../build/css.mjs';
-import { LAYER_STATEMENT } from '../build/layers.mjs';
+import { LAYERS, LAYER_STATEMENT, CSS_FILES } from '../build/layers.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const failures = [];
@@ -55,12 +55,26 @@ const run = async () => {
   const flat = splitCss('.a { color: red; } :root { --a: 1; }');
   expect('unlayered css is still split', flat.critical.includes(':root') && flat.rest.includes('.a') && flat.critical.startsWith(LAYER_STATEMENT));
 
-  const real = await fs.readFile(path.join(root, 'src', 'app.css'), 'utf8').catch(() => '');
-  if (real) {
-    const split = splitCss(real);
-    expect('app.css yields non-empty critical css', split.critical.length > LAYER_STATEMENT.length);
-    expect('app.css yields non-empty rest css', split.rest.length > 0);
+  const files = await Promise.all(CSS_FILES.map(async (f) => [f, await fs.readFile(path.join(root, 'src', 'css', `${f}.css`), 'utf8')]));
+  const real = files.map(([, t]) => t).join('\n');
+  const split = splitCss(real);
+  expect('src/css yields non-empty critical css', split.critical.length > LAYER_STATEMENT.length);
+  expect('src/css yields non-empty rest css', split.rest.length > 0);
+  const onDisk = (await fs.readdir(path.join(root, 'src', 'css'))).filter((f) => f.endsWith('.css')).map((f) => f.slice(0, -4)).sort();
+  expect('src/css holds exactly the listed files', JSON.stringify(onDisk) === JSON.stringify([...CSS_FILES].sort()));
+  const LAYER_OF = { tokens: 'tokens', base: 'base', layout: 'layout', looks: 'looks', states: 'states', a11y: 'a11y' };
+  for (const [name, text] of files) {
+    const layer = LAYER_OF[name] || 'components';
+    const stripped = text.trim();
+    const open = new RegExp(`^@layer ${layer} \\{`);
+    const globalsOnly = name === 'tokens';
+    const body = globalsOnly ? stripped.slice(stripped.search(/@layer tokens \{/)) : stripped;
+    expect(`${name}.css is wrapped in @layer ${layer}`, !body || (open.test(body) && LAYERS.includes(layer)));
+    expect(`${name}.css has no comments`, !text.includes('/*'));
+    if (name !== 'looks') expect(`${name}.css does not mention data-palette`, !text.includes('data-palette'));
   }
+  const important = (real.match(/!important/g) || []).length;
+  expect(`!important count stays at or below 74 (found ${important})`, important <= 74);
 };
 
 run().then(() => {

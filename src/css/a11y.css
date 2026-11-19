@@ -1,0 +1,142 @@
+@layer a11y {
+  @media (forced-colors: active) {
+    #lx-confirm { background: Canvas; color: CanvasText; border-color: CanvasText; box-shadow: none; }
+    #lx-confirm button, #lx-confirm button.is-primary, #lx-confirm button.is-danger { background: ButtonFace; color: ButtonText; border-color: ButtonText; }
+  }
+  .app-grid.has-dim-engine .app-card { transition: none; }
+  @media (prefers-contrast: more) {
+    .card-clip::after { opacity: max(var(--reveal-o), .35); }
+  }
+  @media (forced-colors: active) {
+    .card-glow, .card-sheen, .closed-tint, .palette-detail-slab, .card-aura, .card-glyph, .palette-scope-indicator { display: none; }
+    .card-clip::after { display: none; }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .scrim::after { display: none; }
+  }
+  @media (forced-colors: active) {
+    .scrim, .scrim::before, .scrim::after { display: none; }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .app-card:hover .card-glow { opacity: .04; }
+  }
+  .palette-action.is-primary {
+    background: light-dark(#fff, rgba(255,255,255,.05));
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 24%, var(--hairline)),
+      0 10px 24px -16px color-mix(in oklab, var(--live-accent) 50%, transparent),
+      0 1px 2px light-dark(rgba(30,24,16,.06), rgba(0,0,0,.3));
+  }
+  .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: calc(var(--lx-row-px) + var(--lx-row-icon) + var(--lx-row-gap)) var(--lx-row-px);
+    block-size: 1px;
+    background: var(--hairline, var(--border));
+    pointer-events: none;
+    z-index: 5;
+    transition: opacity var(--dur-fast) var(--ease-lux);
+  }
+  @media (prefers-contrast: more) {
+    .app-grid[data-layout="list"] { border-color: var(--border); }
+    .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: var(--border); }
+  }
+  @media (forced-colors: active) {
+    .app-grid[data-layout="list"] > .app-card--row .card-clip, .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { background: transparent; }
+    .app-grid[data-layout="list"] > .app-card--row.is-kb-focus .card-clip { outline: 2px solid Highlight; outline-offset: -2px; }
+  }
+  @media (forced-colors: active) {
+    @media (hover: hover) and (pointer: fine) {
+      .app-grid[data-layout="list"] > .app-card--row:hover .card-clip {
+          background: transparent;
+          outline: 2px solid Highlight;
+          outline-offset: -2px;
+        }
+    }
+  }
+  @media (forced-colors: active) {
+    .app-grid[data-layout="list"] > .app-card--row:not(:first-child)::before { background: GrayText; }
+    .lx-glyph { forced-color-adjust: none; }
+  }
+  @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
+    .lx-bar, #lx-palette {
+        -webkit-backdrop-filter: none;
+                backdrop-filter: none;
+      }
+  }
+  @media (forced-colors: active) {
+    .qr-stage { forced-color-adjust: none; background: #fff; }
+    .qr-stage::after, .qr-frame::before, .qr-frame::after { display: none; }
+  }
+  .card-qr:focus-visible,
+  .variant-chip:focus-visible,
+  .card-link-overlay:focus-visible {
+    outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #lx-confirm { transition: none; }
+    #gradient-canvas { animation: none; opacity: 1; }
+    .app-card.is-revealed, .app-card.is-returned { animation: none !important; }
+    h1,
+    .site-header,
+    .tab-rail,
+    .card-glow,
+    .lx-bar,
+    .app-card:not(.is-revealed),
+    .palette-item,
+    .badge-new .badge-dot,
+    .palette-detail-header,
+    .palette-detail-reason,
+    .palette-actions,
+    .grid-empty,
+    .palette-facts,
+    .palette-detail-watermark,
+    .palette-mode,
+    .palette-status::before {
+        animation: none !important;
+      }
+    .palette-item.is-active .app-icon-wrapper, .lx-bar-search svg.fa-magnifying-glass, .tab-btn:active { transform: none !important; }
+    .palette-cursor { transition-property: opacity, background-color !important; }
+    .card-sheen::before, .card-glow, .card-clip::before, .card-glyph { transform: none !important; }
+    .palette-scope-indicator { transition: width 0s, transform 0s !important; }
+    .controls-pill #refreshToggle.is-spinning svg { animation: none; }
+    .spotlight { display: none; }
+    .app-card { --tx: 0 !important; --ty: 0 !important; --tz: 0px !important; --sc: 1 !important; --hov: 0 !important; transform: none !important; translate: none !important; }
+    .card-qr:active { scale: none; }
+    .container, .site-header { transition: none !important; }
+    .tab-btn .label, .tab-btn .label > span { transition: none !important; }
+    .tab-indicator { transition: none !important; }
+    .palette-item::after { transition: opacity var(--dur-fast) var(--ease-out) !important; background-position: 50% 0 !important; }
+    .lx-context-menu { transform: none !important; }
+    .lx-context-menu, .lx-context-menu.is-open { transform: none !important; }
+    .controls-pill, .site-header, .lx-bar, .app-card, .icon-plate { animation: none !important; }
+    .lx-context-menu .ctx-pin.is-nudge svg { animation: none; }
+    .app-grid[data-layout="list"] > .app-card--row .card-clip,
+      .app-grid[data-layout="list"] > .app-card--row::before,
+      .app-grid[data-layout="list"] > .app-card--row::after,
+      .app-grid[data-layout="list"] > .app-card--row .row-go { transition: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    @media (hover: hover) and (pointer: fine) {
+      .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper {
+          translate: none;
+        }
+      .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper { scale: none; transition: none; }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mark-stack, .mark-stack > * { transition: none; }
+    #lx-qr .qr-frame::before, #lx-qr .qr-layer, #lx-qr .qr-logo, #lx-qr .qr-stage::after, .qr-action-label.is-flash { animation: none !important; }
+    .qr-thumb { transition: none; }
+    .app-card--icon:hover .card-qr--icon { translate: none; }
+    *, *::before, *::after, *::backdrop {
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+        animation-duration: 0.01ms !important;
+        animation-delay: 0s !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+  }
+}

@@ -1,0 +1,325 @@
+@font-face {
+  font-family: 'IBM Plex Sans Arabic Fallback';
+  src: local('Arial');
+  ascent-override: 107.25%;
+  descent-override: 41.02%;
+  line-gap-override: 0%;
+  size-adjust: 101.17%;
+}
+@font-face {
+  font-family: 'El Messiri Fallback';
+  src: local('Arial');
+  ascent-override: 106.39%;
+  descent-override: 56.8%;
+  line-gap-override: 0%;
+  size-adjust: 95.78%;
+}
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial');
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+  size-adjust: 107.12%;
+}
+@font-face {
+  font-family: 'Cormorant Garamond Fallback';
+  src: local('Georgia');
+  ascent-override: 104.55%;
+  descent-override: 32.47%;
+  line-gap-override: 0%;
+  size-adjust: 88.38%;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2) format('woff2');
+  unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(fonts/ibm-plex-sans-arabic-latin-400-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(fonts/ibm-plex-sans-arabic-arabic-600-normal.woff2) format('woff2');
+  unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(fonts/ibm-plex-sans-arabic-latin-600-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(fonts/ibm-plex-sans-arabic-arabic-700-normal.woff2) format('woff2');
+  unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'IBM Plex Sans Arabic';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(fonts/ibm-plex-sans-arabic-latin-700-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'El Messiri';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(fonts/el-messiri-arabic-600-normal.woff2) format('woff2');
+  unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'El Messiri';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(fonts/el-messiri-latin-600-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'El Messiri';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(fonts/el-messiri-arabic-700-normal.woff2) format('woff2');
+  unicode-range: U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC,U+102E0-102FB,U+10E60-10E7E,U+10EC2-10EC4,U+10EFC-10EFF,U+1EE00-1EE03,U+1EE05-1EE1F,U+1EE21-1EE22,U+1EE24,U+1EE27,U+1EE29-1EE32,U+1EE34-1EE37,U+1EE39,U+1EE3B,U+1EE42,U+1EE47,U+1EE49,U+1EE4B,U+1EE4D-1EE4F,U+1EE51-1EE52,U+1EE54,U+1EE57,U+1EE59,U+1EE5B,U+1EE5D,U+1EE5F,U+1EE61-1EE62,U+1EE64,U+1EE67-1EE6A,U+1EE6C-1EE72,U+1EE74-1EE77,U+1EE79-1EE7C,U+1EE7E,U+1EE80-1EE89,U+1EE8B-1EE9B,U+1EEA1-1EEA3,U+1EEA5-1EEA9,U+1EEAB-1EEBB,U+1EEF0-1EEF1;
+}
+@font-face {
+  font-family: 'El Messiri';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(fonts/el-messiri-latin-700-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(fonts/inter-latin-400-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url(fonts/inter-latin-500-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(fonts/inter-latin-600-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(fonts/inter-latin-700-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(fonts/cormorant-garamond-latin-600-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(fonts/cormorant-garamond-latin-700-normal.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family: 'Cormorant Garamond';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url(fonts/cormorant-garamond-latin-400-italic.woff2) format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@property --live-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
+@property --gx { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --gy { syntax: '<length>'; inherits: true; initial-value: 0px; }
+@property --tx { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --ty { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --tz { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@property --sc { syntax: '<number>'; inherits: false; initial-value: 1; }
+@property --hov { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --tab-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
+@property --hover-accent { syntax: '<color>'; inherits: true; initial-value: #7c9bff; }
+@property --rx { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
+@property --ry { syntax: '<length-percentage>'; inherits: true; initial-value: -9999px; }
+@property --reveal-o { syntax: '<number>'; inherits: true; initial-value: 0; }
+@property --reveal-r { syntax: '<length>'; inherits: true; initial-value: 230px; }
+@keyframes shimmerText { to { background-position: 100% center; } }
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-16px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes cardEnter {
+  from { opacity: 0; scale: .985; translate: 0 14px; }
+  to   { opacity: 1; scale: 1;    translate: 0 0; }
+}
+@keyframes cardBoot {
+  from { opacity: 0; scale: .965; translate: 0 18px; }
+  to   { opacity: 1; scale: 1;    translate: 0 0; }
+}
+@keyframes focusSettle { from { outline-offset: -8px; } }
+@keyframes revealPulse {
+  0% { box-shadow: 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
+  100% { box-shadow: 0 0 0 14px transparent; }
+}
+@keyframes returnPulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--tint) 55%, transparent); }
+  100% { box-shadow: 0 0 0 18px transparent; }
+}
+@keyframes lx-grid-out {
+  to { transform: translateX(calc(var(--dir, 1) * -18px)) scale(0.98); opacity: 0; }
+}
+@keyframes lx-grid-in {
+  from { transform: translateX(calc(var(--dir, 1) * 18px)) scale(0.98); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@keyframes lx-tile-out { to   { opacity: 0; transform: scale(.97); } }
+@keyframes lx-tile-in  { from { opacity: 0; transform: scale(1.02); } }
+@keyframes zen-old-tile { to { opacity: 0; } }
+@keyframes zen-new-tile { from { opacity: 0; } }
+@keyframes modeIn { from { opacity: 0; transform: scale(0.92) translateX(-4px); } }
+@keyframes paletteItemIn { from { opacity: 0; transform: translateY(4px); } }
+@keyframes watermarkIn { from { opacity: 0; transform: rotate(-3deg) scale(0.94); } }
+@keyframes detailIn { from { opacity: 0; translate: 0 8px; } }
+@keyframes ghostHintFlash {
+  0% { opacity: 0; scale: .6; }
+  40% { opacity: 1; scale: 1.15; }
+  100% { opacity: .75; scale: 1; }
+}
+@keyframes newDot { 50% { box-shadow: 0 0 0 4px color-mix(in oklab, currentColor 18%, transparent); } }
+@keyframes lxSpin { to { transform: rotate(360deg); } }
+@keyframes ctxRise { from { opacity: 0; translate: 0 -3px; } }
+@keyframes cardEnter {
+  from { opacity: 0; scale: .975; translate: 0 22px; }
+  60% { opacity: 1; }
+  to { opacity: 1; scale: 1; translate: 0 0; }
+}
+@keyframes cardBoot {
+  from { opacity: 0; scale: .965; translate: 0 28px; }
+  55% { opacity: 1; }
+  to { opacity: 1; scale: 1; translate: 0 0; }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes paletteItemIn { from { opacity: 0; transform: translateY(6px); } }
+@keyframes detailIn { from { opacity: 0; translate: 0 10px; } }
+@keyframes ctxRise { from { opacity: 0; translate: 0 -5px; } }
+@keyframes pinNudge { 30% { transform: translateY(-2px) scale(1.08); } }
+@keyframes qr-brackets { from { opacity: 0; transform: scale(1.07); } to { opacity: .9; transform: none; } }
+@keyframes qr-pop { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes qr-swap { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes qr-leave { to { opacity: 0; } }
+@keyframes qr-logo-in { from { opacity: 0; transform: translate(-50%, -50%) scale(.6); } to { opacity: 1; transform: translate(-50%, -50%); } }
+@keyframes qr-sweep { 0% { opacity: 0; transform: translateY(-100%); } 15%, 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(263%); } }
+@keyframes qr-label-in { from { opacity: 0; } to { opacity: 1; } }
+@layer tokens {
+  :root:lang(en) {
+    --ui-font: 'Inter', 'Inter Fallback', system-ui, sans-serif;
+    --display-font: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
+  }
+  :root[data-theme="light"] { color-scheme: light; --closed-ink: oklch(50% 0.12 28); }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  :root[data-corners="soft"] {
+    --r-card: 24px; --r-pal: 26px; --r-icon: .32; --r-chip: 999px; --r-chip-in: 999px; --r-badge: 999px;
+    --r-item: 13px; --r-kbd: 7px; --r-menu: 16px; --r-menu-item: 10px;
+  }
+  :root[data-corners="crisp"] {
+    --r-card: 10px; --r-pal: 12px; --r-icon: .22; --r-chip: 6px; --r-chip-in: 4px; --r-badge: 3px;
+    --r-item: 6px; --r-kbd: 3px; --r-menu: 8px; --r-menu-item: 4px;
+    --r-bar: 12px; --r-rail: 8px; --r-pill: 12px; --r-pill-btn: 8px;
+  }
+  :root[data-corners] { --radius: var(--r-card); }
+  :root {
+    color-scheme: dark;
+    --bg: light-dark(#f3f1ec, #030406);
+    --surface: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.028));
+    --surface-hover: light-dark(rgba(255,255,255,0.86), rgba(255,255,255,0.058));
+    --border: light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.07));
+    --border-highlight: light-dark(rgba(20,18,15,0.16), rgba(255,255,255,0.3));
+    --text: light-dark(#15130f, #f6f5f2);
+    --tint: var(--tab-accent);
+    --shadow-soft: light-dark(0 1px 2px rgba(28,25,20,.05), 0 1px 2px rgba(0,0,0,.3)), light-dark(0 10px 28px -14px rgba(28,25,20,.14), 0 10px 30px -14px rgba(0,0,0,.6));
+    --shadow-deep: light-dark(0 2px 8px rgba(28,25,20,.07), 0 2px 6px rgba(0,0,0,.34)), light-dark(0 30px 60px -22px rgba(28,25,20,.18), 0 30px 64px -22px rgba(0,0,0,.72));
+    --lx-panel-w: min(880px, 94vw);
+    --ease-io: cubic-bezier(.65, 0, .35, 1);
+    --dur-tap: 70ms;
+    --ease-snap: cubic-bezier(.2, .9, .2, 1);
+    --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)' opacity='0.05'/%3E%3C/svg%3E");
+    --ui-font: 'IBM Plex Sans Arabic', 'IBM Plex Sans Arabic Fallback', system-ui, sans-serif;
+    --display-font: 'El Messiri', 'El Messiri Fallback', var(--ui-font);
+    --closed-ink: oklch(78% 0.10 28);
+    --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out: var(--ease-lux);
+    --ease-enter: var(--ease-out);
+    --ease-exit: var(--ease-out);
+    --ease-move: var(--ease-smooth);
+    --ease-emphasis: var(--ease-spring);
+    --ease-smooth: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-spring: cubic-bezier(0.3, 1.25, 0.45, 1);
+    --ease-pill: linear(0, 0.006, 0.025 2.8%, 0.101 6.1%, 0.539 18.9%, 0.721 25.3%, 0.849 31.5%, 0.937 38.1%, 0.968 41.8%, 0.991 45.7%, 1.006 50.1%, 1.015 55%, 1.017 63.9%, 1.001 85.9%, 1);
+    --dur-micro: 160ms;
+    --dur-fast: 260ms;
+    --dur-base: 380ms;
+    --tab-dur: 440ms;
+    --dur-slow: 620ms;
+    --dur-story: 820ms;
+    --dur-ambient: 700ms;
+    --lx-tab-out: 120ms;
+    --lx-tab-in: 240ms;
+    --gap: clamp(0.8rem, 1.8dvh, 1.3rem);
+    --hairline: light-dark(rgba(24,20,14,.085), rgba(255,255,255,.065));
+    --hairline-strong: light-dark(rgba(24,20,14,.2), rgba(255,255,255,.18));
+    --lux-ink: light-dark(#17140f, #f4f2ee); transition-property: --tab-accent; transition-duration: var(--dur-fast); transition-timing-function: var(--ease-lux);
+    --radius: 18px;
+    --text-muted: light-dark(rgba(21,19,15,0.58), rgba(246,245,242,0.5));
+    --r-card: 18px; --r-pal: 20px; --r-icon: .28; --r-chip: 9px; --r-chip-in: 7px; --r-badge: 6px;
+    --r-item: 10px; --r-kbd: 5px; --r-menu: 12px; --r-menu-item: 8px;
+    --r-bar: 999px; --r-rail: 999px; --r-pill: 50px; --r-pill-btn: 50%;
+    --stage-light: light-dark(rgba(255,255,255,.5), rgba(255,255,255,.035));
+    --stage-floor: light-dark(rgba(28,25,20,.045), rgba(0,0,0,.2));
+    --lux-ink-soft: light-dark(rgba(23,20,15,.6), rgba(244,242,238,.54)); --chip-h: 28px;
+  }
+  @media (max-width: 1024px) {
+    :root { --chip-h: 32px; }
+  }
+  :root[dir="rtl"] { --tile-sx: 70%; --tile-ang: 200deg; }
+}
