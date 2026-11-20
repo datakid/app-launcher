@@ -1,0 +1,49 @@
+@layer components {
+  .app-grid[data-layout="list"] > .app-card.app-card--row { grid-column: auto !important; grid-row: auto !important; transform: none !important; inline-size: auto; min-inline-size: 0; block-size: auto; min-block-size: 56px; }
+  .app-grid[data-layout="list"] > .app-card--row .card-clip::before, .app-grid[data-layout="list"] > .app-card--row .card-clip::after, .app-grid[data-layout="list"] > .app-card--row .card-shadow, .app-grid[data-layout="list"] > .app-card--row .card-aura, .app-grid[data-layout="list"] > .app-card--row .card-glow, .app-grid[data-layout="list"] > .app-card--row .card-sheen { display: none; }
+  .row-icon { grid-area: icon; position: relative; z-index: 2; inline-size: var(--lx-row-icon, 40px); block-size: var(--lx-row-icon, 40px); pointer-events: none; }
+  .row-text { grid-area: text; position: relative; z-index: 2; min-inline-size: 0; display: flex; flex-direction: column; pointer-events: none; }
+  .app-grid[data-layout="list"] > .app-card--row .card-meta::before { display: none; }
+  .row-chips { grid-area: chips; position: relative; z-index: 3; }
+  .row-badges { grid-area: badges; position: relative; z-index: 2; display: flex; gap: 6px; pointer-events: none; transform: none; }
+  .row-go { grid-area: go; position: relative; z-index: 2; }
+  .app-grid[data-layout="list"] > .app-card--row .row-chips .variant-chips { transform: none; }
+  .app-grid[data-layout="list"] > .app-card--row.status-closed .row-icon { filter: saturate(.25); }
+  .app-grid[data-layout="list"] > .app-card--row.status-closed .app-title { opacity: .7; }
+  @media (max-width: 640px) {
+    .row-chips { justify-self: start; }
+    .row-go { display: none; }
+  }
+  .app-grid[data-layout="list"] > .app-card--row .closed-tint { display: none; }
+  .app-grid[data-layout="list"] > .app-card--row .digit-badge { inset-block-start: auto; inset-inline-start: auto;
+    inset-block-end: -5px;
+    inset-inline-end: -5px;
+    inline-size: 17px;
+    block-size: 17px;
+    border-radius: min(var(--r-badge), 6px);
+    font-size: .62rem; }
+  .app-grid[data-layout="list"] > .app-card--row .card-meta { margin-block-start: 2px; font: 400 .74rem/1.35 var(--ui-font); color: var(--lux-ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 1; transform: none; translate: none; }
+  .app-grid[data-layout="list"] > .app-card--row::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    border-radius: calc(var(--lx-panel-r) - var(--lx-panel-pad));
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tint) var(--lx-row-ring), transparent);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-lux);
+  }
+  @media (max-width: 640px) {
+    .app-grid[data-layout="list"] {
+        --lx-panel-pad: 4px;
+        --lx-row-icon: 36px;
+        --lx-row-px: 12px;
+        inline-size: 100%;
+      }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { transition: translate var(--dur-fast) var(--ease-lux); }
+  }
+  .app-grid[data-layout="list"] .app-icon-wrapper::after { display: none; }
+}

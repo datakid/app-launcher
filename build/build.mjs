@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { build as esbuild } from 'esbuild';
 import { splitCss, minifyCss } from './css.mjs';
+import { CSS_FILES } from './layers.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const src = (f) => path.join(root, 'src', f);
@@ -121,7 +122,8 @@ const main = async () => {
   const spriteSvg = await fs.readFile(path.join(root, spriteFile), 'utf8');
   const spriteInner = /<svg[^>]*>([\s\S]*)<\/svg>/.exec(spriteSvg)[1];
 
-  const { critical, rest } = splitCss(await fs.readFile(src('app.css'), 'utf8'));
+  const cssSource = (await Promise.all(CSS_FILES.map((f) => fs.readFile(src(`css/${f}.css`), 'utf8')))).join('\n');
+  const { critical, rest } = splitCss(cssSource);
   const criticalMin = await minifyCss(critical);
   const restMin = await minifyCss(rest);
   const cssName = `app.${hash8(Buffer.from(restMin))}.css`;

@@ -1,0 +1,98 @@
+@layer components {
+  .app-icon-wrapper .lx-fav.app-icon { filter: none; text-shadow: none; }
+  .card-wide .app-icon-wrapper { --icon-size: clamp(52px, 7.2dvh, 62px); --icon-radius: 15px; }
+  .card-wide .app-icon { font-size: clamp(1.3rem, 3dvh, 1.6rem); }
+  .card-hero .app-icon-wrapper { --icon-size: clamp(72px, 9.5dvh, 88px); --icon-radius: 18px; }
+  .card-hero .app-icon { font-size: clamp(2rem, 4dvh, 2.4rem); }
+  .card-tall .app-icon-wrapper { --icon-size: clamp(64px, 8.4dvh, 84px); --icon-radius: 17px; }
+  .card-tall .app-icon { font-size: clamp(1.7rem, 3.6dvh, 2.2rem); }
+  .app-card.status-closed .app-icon-wrapper { opacity: .78; }
+  .app-card.status-closed .app-icon-wrapper,
+  .app-card.status-closed .app-title {
+    transition: opacity var(--dur-fast) var(--ease-lux);
+  }
+  .app-card.status-closed.is-kb-focus .app-icon-wrapper,
+  .app-card.status-closed.is-kb-focus .app-title {
+    opacity: .9;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .app-card.status-closed:hover .app-icon-wrapper,
+      .app-card.status-closed:hover .app-title {
+        opacity: .9;
+      }
+  }
+  ::view-transition-group(.tile) { animation-duration: var(--dur-fast); animation-timing-function: var(--ease-lux); }
+  ::view-transition-old(.tile)   { animation: lx-tile-out var(--dur-micro) var(--ease-lux) both; }
+  ::view-transition-new(.tile)   { animation: lx-tile-in  var(--dur-micro) var(--ease-lux) .05s both; }
+  .app-icon-wrapper {
+    --icon-size: clamp(46px, 6.4dvh, 56px);
+    --icon-radius: 13px;
+    width: var(--icon-size); height: var(--icon-size);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; flex-shrink: 0;
+    transform: translate3d(calc(var(--tx, 0) * var(--depth, 0px)), calc(var(--ty, 0) * var(--depth, 0px)), 0);
+  }
+  :root[data-corners] .app-icon-wrapper { border-radius: calc(var(--icon-size) * var(--r-icon)); }
+  @media (max-width: 1024px) {
+    .card-hero .app-icon-wrapper { --icon-size: 60px; --icon-radius: 16px; }
+    .card-hero .app-icon { font-size: 1.6rem; }
+  }
+  @media (max-width: 640px) {
+    .card-wide .app-icon-wrapper, .card-hero .app-icon-wrapper, .card-tall .app-icon-wrapper { --icon-size: 60px; --icon-radius: 16px; }
+    .card-wide .app-icon, .card-hero .app-icon, .card-tall .app-icon { font-size: 1.6rem; }
+    .app-grid .app-card .app-icon-wrapper { --icon-size: var(--card-icon); --icon-radius: 13px; }
+    .app-grid .app-card .app-icon { font-size: 1.25rem; }
+  }
+  .app-icon {
+    font-size: clamp(1.1rem, 2.5dvh, 1.4rem);
+    position: relative; z-index: 1;
+    transition: opacity var(--dur-micro) var(--ease-lux); color: rgba(255,255,255,.95); text-shadow: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.26));
+  }
+  .icon-new-dot {
+    position: absolute; inset-block-start: -2px; inset-inline-end: -2px;
+    inline-size: 8px; block-size: 8px; border-radius: 50%;
+    background: var(--tab-accent);
+    box-shadow: 0 0 0 2px var(--bg);
+    z-index: 3;
+  }
+  .icon-new-text { display: none; }
+  .mark-stack { display: grid; place-items: center; transition: opacity var(--dur-micro) var(--ease-lux); }
+  .mark-stack > * { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity var(--lx-version-ms,120ms) cubic-bezier(0.2,0,0,1), visibility 0s linear var(--lx-version-ms,120ms); }
+  .mark-glyph { fill: currentColor; overflow: visible; }
+  .lx-glyph.mark-glyph-atlas::before {
+    -webkit-mask: var(--lx-gatlas) no-repeat;
+            mask: var(--lx-gatlas) no-repeat;
+    -webkit-mask-size: calc(var(--gn) * 100%) calc(var(--grows) * 100%);
+            mask-size: calc(var(--gn) * 100%) calc(var(--grows) * 100%);
+    -webkit-mask-position: calc(var(--ac) / var(--gdx) * 100%) calc(var(--ar) / var(--gdy) * 100%);
+            mask-position: calc(var(--ac) / var(--gdx) * 100%) calc(var(--ar) / var(--gdy) * 100%);
+  }
+  .mark-fav {
+    background-image: var(--lx-atlas);
+    background-repeat: no-repeat;
+    background-size: calc(var(--an) * 100%) calc(var(--arows) * 100%);
+    background-position: calc(var(--ac) / var(--adx) * 100%) calc(var(--ar) / var(--ady) * 100%);
+  }
+  @media (min-width: 1025px) {
+    .card-hero .app-icon-wrapper { grid-area: icon; }
+  }
+  @container (max-height: 155px) {
+    .app-grid[data-rows="4"] .app-icon-wrapper { --icon-size: clamp(32px, 26cqh, 46px); }
+    .app-grid[data-rows="4"] .app-icon { font-size: calc(var(--icon-size) * .4); }
+  }
+  .app-card .app-icon-wrapper { --ak: .85; }
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .app-icon-wrapper::after { display: none; }
+  }
+  @supports (corner-shape: squircle) {
+    :root:not([data-corners="crisp"]) .app-icon-wrapper,
+      :root:not([data-corners="crisp"]) .app-icon-wrapper::before,
+      :root:not([data-corners="crisp"]) .app-icon-wrapper::after {
+        corner-shape: squircle;
+      }
+    :root:not([data-corners="crisp"]) .app-icon-wrapper {
+        --icon-radius-sq: calc(var(--icon-size) * var(--r-icon, .27) * 1.7);
+        border-radius: var(--icon-radius-sq);
+      }
+  }
+}

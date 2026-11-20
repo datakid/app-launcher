@@ -11,7 +11,30 @@ export const QUICK_SURFACES = ['palette-query', 'context-menu'];
 export const DEFAULT_CHROME_ARGS = '--force-color-profile=srgb --font-render-hinting=none --disable-lcd-text';
 export const chromeArgs = (value) => (value || DEFAULT_CHROME_ARGS).split(/\s+/).filter(Boolean);
 
+const cascadeJobs = () => {
+  const jobs = [];
+  const add = (theme, lang, size, palette, view, surface, touch) => {
+    const tag = touch ? '-touch' : '';
+    jobs.push({ group: `${theme}-${lang}-${size.width}${tag}`, theme, lang, size, palette, corner: 'balanced', view, surface, touch, name: `${theme}-${lang}-${palette}-balanced-${surface || view}-${size.width}${tag}` });
+  };
+  for (const theme of THEMES) {
+    for (const palette of PALETTES) {
+      for (const view of VIEWS) {
+        add(theme, 'en', WIDE, palette, view, null, false);
+        add(theme, 'en', SIZES[0], palette, view, null, true);
+      }
+      for (const surface of SURFACES) add(theme, 'en', WIDE, palette, surface === 'zen-icons' ? 'icons' : 'bento', surface, false);
+    }
+    for (const view of VIEWS) add(theme, 'ar', WIDE, 'vivid', view, null, false);
+  }
+  return jobs;
+};
+
 export const buildJobs = (matrix, only) => {
+  if (matrix === 'cascade') {
+    const all = cascadeJobs();
+    return only.length ? all.filter((j) => only.some((o) => j.name.includes(o))) : all;
+  }
   const quick = matrix === 'quick';
   const wantGrid = ['full', 'grid', 'quick'].includes(matrix);
   const wantSurfaces = ['full', 'surfaces', 'quick'].includes(matrix);
@@ -92,7 +115,7 @@ const freezeOrbClock = (fixed) => {
 };
 
 export const newGroupPage = async (browser, first, base, { pin, seed, lowend, errors }) => {
-  const ctx = await browser.newContext({ viewport: { width: first.size.width, height: first.size.height }, reducedMotion: 'reduce' });
+  const ctx = await browser.newContext({ viewport: { width: first.size.width, height: first.size.height }, reducedMotion: 'reduce', ...(first.touch ? { isMobile: true, hasTouch: true } : {}) });
   await ctx.addInitScript(([t, l]) => { try { localStorage.setItem('lx-theme', t); localStorage.setItem('lx-lang', l); } catch (e) {} }, [first.theme, first.lang]);
   await ctx.addInitScript((cores) => {
     Object.defineProperty(Navigator.prototype, 'hardwareConcurrency', { get: () => cores });
@@ -208,5 +231,5 @@ export const reach = async (page, job, base, { pin, settleMs, errors, pointer = 
   if (wrong.length) errors.push(`${job.name}: state mismatch (${wrong.join('; ')})`);
   if (pin && !(await page.evaluate(() => !!window.bgAnim))) errors.push(`${job.name}: window.bgAnim is missing, the orb clock pin is inactive`);
   await enterSurface(page, job, settleMs, pointer);
-  await page.addStyleTag({ content: 'input, textarea { transition: none !important; } *, *::before, *::after { caret-color: transparent !important; }' });
+  await page.addStyleTag({ content: '@layer a11y { input, textarea { transition: none !important; } } *, *::before, *::after { caret-color: transparent !important; }' });
 };
