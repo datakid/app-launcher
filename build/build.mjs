@@ -33,6 +33,15 @@ const inlineFontAwesome = async (html, sources) => {
   return { html: html.replace(FA_ANCHOR, () => added.join('') + FA_ANCHOR), added };
 };
 
+const readTree = async (dir) => {
+  let text = '';
+  for (const e of (await fs.readdir(dir, { withFileTypes: true })).sort((a, b) => a.name.localeCompare(b.name))) {
+    const full = path.join(dir, e.name);
+    text += e.isDirectory() ? await readTree(full) : await fs.readFile(full, 'utf8') + '\n';
+  }
+  return text;
+};
+
 const copyDir = async (from, to) => {
   await fs.mkdir(to, { recursive: true });
   for (const e of await fs.readdir(from, { withFileTypes: true })) {
@@ -129,14 +138,14 @@ const main = async () => {
   const cssName = `app.${hash8(Buffer.from(restMin))}.css`;
   await fs.writeFile(path.join(dist, cssName), restMin);
 
-  const js = await esbuild({ entryPoints: [src('app.js')], bundle: true, format: 'iife', minify: true, target: 'es2022', write: false, legalComments: 'none' });
+  const js = await esbuild({ entryPoints: [src('modules/main.js')], bundle: true, format: 'iife', minify: true, target: 'es2022', write: false, legalComments: 'none' });
   const jsText = js.outputFiles[0].text;
   const jsName = `app.${hash8(Buffer.from(jsText))}.js`;
   await fs.writeFile(path.join(dist, jsName), jsText);
 
   const dataJson = JSON.stringify(links).replace(/</g, '\\u003c');
   let html = await fs.readFile(src('index.html'), 'utf8');
-  const inlined = await inlineFontAwesome(html, [JSON.stringify(links), await fs.readFile(src('app.js'), 'utf8')]);
+  const inlined = await inlineFontAwesome(html, [JSON.stringify(links), await readTree(src('modules'))]);
   html = inlined.html;
   const fill = (marker, value) => {
     if (!html.includes(marker)) throw new Error(`missing ${marker}`);

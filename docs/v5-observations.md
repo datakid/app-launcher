@@ -22,7 +22,7 @@ Every shot checks that the page really reached the theme, look, corners, view, l
 
 Two captures of one build only agree if everything that varies is pinned. These were found, in this order, and each is handled in `qa/matrix.mjs`:
 
-1. `Math.random` seeds the orb field (`OrbField.spawn`: orbit radius, speed, size and phase, `src/app.js` 2826 to 2831). It is replaced by a seeded generator before any page script runs.
+1. `Math.random` seeds the orb field (`OrbField.spawn`: orbit radius, speed, size and phase, `src/modules/orbs.js` 57 to 62). It is replaced by a seeded generator before any page script runs.
 2. The orb bloom reads `performance.now()` even under reduced motion (finding F1). The orb clock is frozen to a fixed value while `render` runs.
 3. The `?qr=` deep link races the glyph preload, so some captures showed the fallback bolt in the dialog header. The QR shot opens the dialog from the card chip instead.
 4. The caret blinks in the palette input and a running input transition beats `!important`. Inputs get `transition: none` and `caret-color: transparent` for the capture.
