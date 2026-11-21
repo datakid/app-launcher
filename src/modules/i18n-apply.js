@@ -9,6 +9,7 @@ import { paletteActiveIndex, paletteItems, renderPaletteResults, setPaletteActiv
 import { syncZenMetrics } from './zen.js';
 import { updateDataButtonLabel } from './data-menu.js';
 import { updateLookButtonLabel } from './appearance-menu.js';
+import { renderQr } from './qr-dialog.js';
 
 const sweepStaticStrings = () => {
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });

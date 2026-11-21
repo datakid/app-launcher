@@ -129,6 +129,25 @@ const site = async (browser, base) => {
   await ctx.close();
 };
 
+const languageSwitch = async (browser, base) => {
+  const { ctx, page } = await open(browser, base, { lang: 'en' });
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e.message || e)));
+  const before = await page.evaluate(() => ({ tab: document.querySelector('#tabRail .tab-btn')?.textContent.trim(), card: document.querySelector('#appGrid .app-card .app-title')?.textContent.trim() }));
+  await openFromMenu(page, '#appGrid .app-card');
+  const dataBefore = await decode(page);
+  const labelBefore = await page.evaluate(() => document.getElementById('lx-qr').getAttribute('aria-label'));
+  await page.evaluate(() => document.getElementById('langToggle').click());
+  await page.waitForTimeout(1200);
+  const after = await page.evaluate(() => ({ lang: document.documentElement.lang, open: document.getElementById('lx-qr').open, label: document.getElementById('lx-qr').getAttribute('aria-label'), tab: document.querySelector('#tabRail .tab-btn')?.textContent.trim(), card: document.querySelector('#appGrid .app-card .app-title')?.textContent.trim() }));
+  const dataAfter = await decode(page);
+  const detail = { errors, before, after, labelBefore, dataBefore, dataAfter };
+  record('language switch with the QR open: no script error', errors.length === 0, detail);
+  record('language switch with the QR open: the page is rebuilt in the new language', after.lang === 'ar' && after.tab !== before.tab && after.card !== before.card, detail);
+  record('language switch with the QR open: the dialog stays open, is relabelled and still decodes the same link', after.open && after.label !== labelBefore && !!dataAfter && dataAfter === dataBefore, detail);
+  await ctx.close();
+};
+
 const reduced = async (browser, base) => {
   const { ctx, page } = await open(browser, base, { reduced: true });
   await page.keyboard.press('Alt+KeyQ');
@@ -447,7 +466,7 @@ const iconsChipAnchor = async (browser, base) => {
 const main = async () => {
   const server = await startServer(siteRoot(root));
   const browser = await launchBrowser();
-  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), iconsNoBadge, bentoVisible, stable, paletteRow(false), paletteRow(true), matrix, bentoChipDrift, iconsChipAnchor];
+  const steps = [core('en', false), core('ar', false), core('en', true), variants, palette, site, languageSwitch, reduced, offline, cardButton('bento', false), cardButton('bento', true), cardButton('list', true), iconsNoBadge, bentoVisible, stable, paletteRow(false), paletteRow(true), matrix, bentoChipDrift, iconsChipAnchor];
   for (const step of steps) {
     try { await step(browser, server.base); } catch (e) { record(step.name || 'step', false, { error: String(e.message || e).slice(0, 240) }); }
   }

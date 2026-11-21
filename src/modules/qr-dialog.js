@@ -235,6 +235,12 @@ const renderQrCode = (swap) => {
   if (swap && v.variant) document.getElementById('qrLive').textContent = `${loc(v.variant.label)} — ${t('qrReady')}`;
 };
 
+export const renderQr = () => {
+  if (!qrState) return;
+  renderQrShell();
+  renderQrCode(false);
+};
+
 const qrSetOrigin = (dialog, el) => {
   let fx = 0;
   let fy = 0;
