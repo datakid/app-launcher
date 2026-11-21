@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'none'">
-<meta name="theme-color" content="#030406">
+<meta name="theme-color" content="#0c0b0a">
 <script>
 (function () {
   try {
@@ -42,7 +42,7 @@
     root.dataset.view = viewParam || (/^(bento|list|icons)$/.test(storedView || '') ? storedView : 'bento');
     if (viewParam) root.dataset.viewLocked = '1';
     var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
+    if (meta) meta.setAttribute('content', isLight ? '#f3f1ec' : '#0c0b0a');
     if (/^https?:$/.test(location.protocol) && window.fetch) {
       window.__lxCatalog = fetch('links.json', { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).catch(function () { return null; });
       window.__lxIcons = fetch('icons/manifest.v2.json', { credentials: 'same-origin', mode: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });

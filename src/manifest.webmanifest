@@ -4,8 +4,8 @@
   "description": "لوحة انطلاق للأدوات والروابط الداخلية",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#030406",
-  "theme_color": "#030406",
+  "background_color": "#0c0b0a",
+  "theme_color": "#0c0b0a",
   "dir": "rtl",
   "lang": "ar",
   "icons": [

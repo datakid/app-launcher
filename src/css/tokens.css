@@ -257,7 +257,7 @@
     --display-font: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
   }
   :root[data-theme="light"] { color-scheme: light; --closed-ink: oklch(50% 0.12 28); }
-  :root[data-theme="dark"] { color-scheme: dark; }
+  :root[data-theme="dark"] { color-scheme: dark; --rim-k: .55; --tile-c-k: .9; --grain-o: .2; --grain-blend: plus-lighter; }
   :root[data-corners="soft"] {
     --r-card: 24px; --r-pal: 26px; --r-icon: .32; --r-chip: 999px; --r-chip-in: 999px; --r-badge: 999px;
     --r-item: 13px; --r-kbd: 7px; --r-menu: 16px; --r-menu-item: 10px;
@@ -270,12 +270,23 @@
   :root[data-corners] { --radius: var(--r-card); }
   :root {
     color-scheme: dark;
-    --bg: light-dark(#f3f1ec, #030406);
-    --surface: light-dark(rgba(255,255,255,0.55), rgba(255,255,255,0.028));
-    --surface-hover: light-dark(rgba(255,255,255,0.86), rgba(255,255,255,0.058));
+    --ground: oklch(.15 .003 80);
+    --bg: light-dark(#f3f1ec, var(--ground));
+    --elev-2: color-mix(in oklab, var(--bg) 93.4%, white);
+    --elev-3: color-mix(in oklab, var(--bg) 91%, white);
+    --glass-2: light-dark(color-mix(in oklab, var(--bg) 92%, transparent), color-mix(in oklab, var(--elev-2) 92%, transparent));
+    --glass-3: light-dark(color-mix(in oklab, var(--bg) 92%, transparent), color-mix(in oklab, var(--elev-3) 92%, transparent));
+    --rim-1: rgb(255 255 255 / .06);
+    --rim-2: rgb(255 255 255 / .08);
+    --rim-3: rgb(255 255 255 / .1);
+    --rim-k: 1;
+    --grain-o: .06;
+    --grain-blend: overlay;
+    --surface: light-dark(rgba(255,255,255,0.55), rgb(255 255 255 / .04));
+    --surface-hover: light-dark(rgba(255,255,255,0.86), rgb(255 255 255 / .066));
     --border: light-dark(rgba(20,18,15,0.06), rgba(255,255,255,0.07));
     --border-highlight: light-dark(rgba(20,18,15,0.16), rgba(255,255,255,0.3));
-    --text: light-dark(#15130f, #f6f5f2);
+    --text: light-dark(#15130f, #ecebe6);
     --tint: var(--tab-accent);
     --shadow-soft: light-dark(0 1px 2px rgba(28,25,20,.05), 0 1px 2px rgba(0,0,0,.3)), light-dark(0 10px 28px -14px rgba(28,25,20,.14), 0 10px 30px -14px rgba(0,0,0,.6));
     --shadow-deep: light-dark(0 2px 8px rgba(28,25,20,.07), 0 2px 6px rgba(0,0,0,.34)), light-dark(0 30px 60px -22px rgba(28,25,20,.18), 0 30px 64px -22px rgba(0,0,0,.72));
@@ -308,15 +319,15 @@
     --gap: clamp(0.8rem, 1.8dvh, 1.3rem);
     --hairline: light-dark(rgba(24,20,14,.085), rgba(255,255,255,.065));
     --hairline-strong: light-dark(rgba(24,20,14,.2), rgba(255,255,255,.18));
-    --lux-ink: light-dark(#17140f, #f4f2ee); transition-property: --tab-accent; transition-duration: var(--dur-fast); transition-timing-function: var(--ease-lux);
+    --lux-ink: light-dark(#17140f, #e9e7e2); transition-property: --tab-accent; transition-duration: var(--dur-fast); transition-timing-function: var(--ease-lux);
     --radius: 18px;
-    --text-muted: light-dark(rgba(21,19,15,0.58), rgba(246,245,242,0.5));
+    --text-muted: light-dark(rgba(21,19,15,0.58), rgba(236,235,230,0.52));
     --r-card: 18px; --r-pal: 20px; --r-icon: .28; --r-chip: 9px; --r-chip-in: 7px; --r-badge: 6px;
     --r-item: 10px; --r-kbd: 5px; --r-menu: 12px; --r-menu-item: 8px;
     --r-bar: 999px; --r-rail: 999px; --r-pill: 50px; --r-pill-btn: 50%;
     --stage-light: light-dark(rgba(255,255,255,.5), rgba(255,255,255,.035));
     --stage-floor: light-dark(rgba(28,25,20,.045), rgba(0,0,0,.2));
-    --lux-ink-soft: light-dark(rgba(23,20,15,.6), rgba(244,242,238,.54)); --chip-h: 28px;
+    --lux-ink-soft: light-dark(rgba(23,20,15,.6), rgba(233,231,226,.56)); --chip-h: 28px;
   }
   @media (max-width: 1024px) {
     :root { --chip-h: 32px; }

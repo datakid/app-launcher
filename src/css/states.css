@@ -406,14 +406,14 @@
         transition: scale var(--dur-tap) var(--ease-lux);
       }
   }
-  .controls-pill, .lx-context-menu, .lx-toast {
-    background-color: color-mix(in oklab, var(--bg) 92%, transparent);
-  }
+  .controls-pill { background-color: var(--glass-2); }
+  .lx-context-menu, .lx-toast, #lx-palette { --glass: var(--glass-3); }
+  .lx-context-menu, .lx-toast { background-color: var(--glass-3); }
   html.lx-scrolling .lx-bar,
   html[data-lowend] :is(.controls-pill, .lx-bar, .tab-rail, .app-grid[data-layout="list"], .lx-context-menu, .lx-toast, #lx-palette) {
     -webkit-backdrop-filter: none !important;
             backdrop-filter: none !important;
-    background-color: color-mix(in oklab, var(--bg) 92%, transparent) !important;
+    background-color: var(--glass, var(--glass-2)) !important;
   }
   #lx-qr[open] {
     display: flex;

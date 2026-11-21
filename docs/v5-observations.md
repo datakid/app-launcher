@@ -99,6 +99,21 @@ Checked against the source and the baseline captures, not against the live site 
 | D7 | dark grounds differ by look | see section 5: the effective grounds are `#050608`, `#060607` and `#100e0c`, not one `#030406` |
 | D8 | tile chroma is not a token | confirmed: no `--tile-c-k` exists. The tile contrast check passes: 432 tiles, none under 3, lowest 3.42 |
 
+### Phase 3 outcome for D1 to D8
+
+| | change | proof |
+|---|---|---|
+| D1 | `OrbField.spawn` draws from a seeded generator (mulberry32, seed 20260101), the same stream the capture harness pins, so every load gets one composition and light mode keeps the composition it was captured with | `qa/orb-seed.mjs`: two loads with different `Math.random` streams give identical orbs in dark and light at 1280 and 390 px; the check fails on the previous build |
+| D2 | the load bloom is dropped in dark and kept in light (owner decision, 2026-11-21) | `qa/orb-seed.mjs`: dark canvas identical at 0.1 s and 60 s, light canvas larger at 0.1 s |
+| D3 | `.scrim::after` reads `--grain-blend` and `--grain-o`; light keeps overlay at .06, dark uses plus-lighter at .2 | on an empty 790 px strip of the final dark ground the longest run of one value is 4 px with the grain and 7 px without it (the old build measured between 7 and 29 px depending on where its random orbs fell), and the grain lifts the mean by about 1 level |
+| D4 | `--elev-2` and `--elev-3` (ground mixed with 6.6 and 9 percent white) and `--glass-2` and `--glass-3` for the live pill, bar, menu, toast and palette fills, `--surface` and `--surface-hover` as white-alpha lifts that keep the orb wash visible through the cards, `--rim-1` to `--rim-3` for the top edge highlights | overlays now sit above the cards instead of below them; the ladder follows each look's own `--bg` |
+| D5 | `--rim-k` scales the pointer rim: 1 in light, .55 in dark | light computed styles unchanged |
+| D6 | dark ink `#f6f5f2` becomes `#ecebe6` (title 16.5:1 on the new ground), muted ink alpha .5 becomes .52 (4.94:1, was 4.95:1), `--pal-ink-2` .42 becomes .46 | contrast computed from the tokens |
+| D7 | one `--ground` token, `oklch(.15 .003 80)` (about `#0c0b0a`), used by all four looks in dark; the Muted vignette edge follows it; `theme-color` and the manifest use `#0c0b0a` | owner chose B on the A/B/C sheets |
+| D8 | `--tile-c-k` multiplies the tile chroma in Vivid and Curated: 1 in light, .9 in dark | `qa:tiles`: 440 tiles, none under 3, lowest 3.43 |
+
+Finding F-P3: `states.css` painted `.controls-pill`, `.lx-context-menu` and `.lx-toast` with `color-mix(in oklab, var(--bg) 92%, transparent)` in the last layer that sets a background colour, so the per-look `background` fills for those three in `chrome.css`, `menus.css` and `looks.css` never showed in either theme. They are deleted (owner approved deleting overridden declarations, 2026-11-21). Two of those rules also reset `background-image` to `none` for Curated and Mono menus, so that reset is kept as one rule.
+
 ## 7. Baseline of the existing checks
 
 All run on `main` in this sandbox (2 vCPU, no GPU).
