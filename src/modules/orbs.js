@@ -1,6 +1,19 @@
 import { MQ, Motion, Spring } from './motion.js';
 import { ORB_SAT, hueFromHex, isLightTheme, paletteMode } from './theme.js';
 
+const ORB_SEED = 20260101;
+
+const mulberry32 = (seed) => {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6D2B79F5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
 class OrbField {
   constructor(canvas) {
     this.cv = canvas;
@@ -45,6 +58,7 @@ class OrbField {
     const n = window.innerWidth < 768 ? 4 : 6;
     const palette = isLightTheme ? [205, 225, 195] : [222, 258, 195];
     const minSide = Math.min(this.cv.width, this.cv.height);
+    const rand = mulberry32(ORB_SEED);
     this.orbs = Array.from({ length: n }, (_, i) => {
       const hue = palette[i % 3];
       const ang = i * 2.399;
@@ -54,12 +68,12 @@ class OrbField {
       return {
         ax, ay,
         x: ax, y: ay,
-        orbitR: minSide * (0.06 + Math.random() * 0.03),
-        orbitSpeed: 0.15 + Math.random() * 0.1,
-        r: Math.random() * 160 + 120,
+        orbitR: minSide * (0.06 + rand() * 0.03),
+        orbitSpeed: 0.15 + rand() * 0.1,
+        r: rand() * 160 + 120,
         hue,
         hueSpring: new Spring(40, 14, hue),
-        phase: Math.random() * Math.PI * 2
+        phase: rand() * Math.PI * 2
       };
     });
   }
@@ -118,7 +132,7 @@ class OrbField {
 
     this.cx.clearRect(0, 0, this.cv.width, this.cv.height);
     this.cx.globalCompositeOperation = isLightTheme ? 'multiply' : 'screen';
-    const bloom = Math.max(0, 1 - (performance.now() - this.bloomStart) / 7000) * 0.15;
+    const bloom = isLightTheme ? Math.max(0, 1 - (performance.now() - this.bloomStart) / 7000) * 0.15 : 0;
     const sat = ORB_SAT[paletteMode()] ?? 1;
     const s1 = Math.round(52 * sat), s2 = Math.round(44 * sat);
 
