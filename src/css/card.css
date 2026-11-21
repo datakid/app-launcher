@@ -83,9 +83,9 @@
     padding: 1px; z-index: 4; pointer-events: none;
     background:
       radial-gradient(var(--reveal-r) circle at var(--rx) var(--ry),
-        rgba(255,255,255,.86), rgba(255,255,255,.3) 26%, rgba(255,255,255,.09) 50%, transparent 74%),
+        rgb(255 255 255 / calc(.86 * var(--rim-k))), rgb(255 255 255 / calc(.3 * var(--rim-k))) 26%, rgb(255 255 255 / calc(.09 * var(--rim-k))) 50%, transparent 74%),
       radial-gradient(calc(var(--reveal-r) * .7) circle at calc(100% - var(--rx)) calc(100% - var(--ry)),
-        rgba(255,255,255,.2), rgba(255,255,255,.05) 40%, transparent 72%);
+        rgb(255 255 255 / calc(.2 * var(--rim-k))), rgb(255 255 255 / calc(.05 * var(--rim-k))) 40%, transparent 72%);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
             mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -222,7 +222,7 @@
   .app-card.status-closed .card-meta::before { background: var(--closed-ink); box-shadow: none; }
   .badge {
     display: inline-flex; align-items: center;
-    background: light-dark(rgba(255,255,255,0.82), rgba(10,11,14,0.52));
+    background: light-dark(rgba(255,255,255,0.82), color-mix(in oklab, var(--bg) 62%, transparent));
     border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
     transition: color var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux); gap: .4rem; text-transform: uppercase;
     box-shadow: none; position: relative;
@@ -322,7 +322,7 @@
       0 0 0 .5px light-dark(rgba(30,24,16,.06), rgba(0,0,0,.5)),
       0 1px 2px light-dark(rgba(30,24,16,.05), rgba(0,0,0,.28)),
       0 16px 36px -24px light-dark(rgba(30,24,16,.24), rgba(0,0,0,.7)),
-      inset 0 1px 0 light-dark(rgba(255,255,255,.9), rgba(255,255,255,.04));
+      inset 0 1px 0 light-dark(rgba(255,255,255,.9), var(--rim-1));
   }
   .card-shadow::after {
     content: ''; position: absolute; inset: 0; border-radius: inherit;
@@ -331,7 +331,7 @@
       0 2px 4px light-dark(rgba(30,24,16,.04), rgba(0,0,0,.3)),
       0 34px 64px -36px light-dark(rgba(30,24,16,.3), rgba(0,0,0,.9)),
       0 26px 56px -40px color-mix(in oklab, var(--tint) 45%, transparent),
-      inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.08));
+      inset 0 1px 0 light-dark(#fff, var(--rim-2));
     transition: opacity var(--dur-slow) var(--ease-lux);
   }
   .card-glow {

@@ -217,7 +217,7 @@ export const applyTheme = (explicit) => {
   isLightTheme = isLight;
 
   const metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (metaTheme) metaTheme.setAttribute('content', isLight ? '#f3f1ec' : '#030406');
+  if (metaTheme) metaTheme.setAttribute('content', isLight ? '#f3f1ec' : '#0c0b0a');
 
   if (explicit !== undefined) {
     try { localStorage.setItem('lx-theme', explicit); } catch (e) { if (LX_DEBUG) console.warn(e); }

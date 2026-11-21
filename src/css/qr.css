@@ -19,9 +19,9 @@
   }
   @supports (color: oklch(from red l c h)) {
     .app-card, .palette-item, #paletteDetail, #lx-palette, #lx-qr {
-        --tile-hi: oklch(from var(--tint) min(calc(l + .17), .92) calc(max(c, .085) * .8) calc(h - 12));
-        --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) max(c, .09) h);
-        --tile-lo: oklch(from var(--tint) clamp(.28, calc(l - .22), .44) calc(max(c, .09) * 1.08) calc(h + 14));
+        --tile-hi: oklch(from var(--tint) min(calc(l + .17), .92) calc(max(c, .085) * .8 * var(--tile-c-k, 1)) calc(h - 12));
+        --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) calc(max(c, .09) * var(--tile-c-k, 1)) h);
+        --tile-lo: oklch(from var(--tint) clamp(.28, calc(l - .22), .44) calc(max(c, .09) * 1.08 * var(--tile-c-k, 1)) calc(h + 14));
         --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) calc(c * .8) calc(h + 14));
         --glyph-accent: color-mix(in oklab, #fff 74%, var(--tile-hi));
         --tint: oklch(from var(--c1, #7c9bff) clamp(.62, l, .7) clamp(.04, c, .085) h);
@@ -48,7 +48,7 @@
     border: 1px solid light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08));
     border-radius: calc(var(--r-pal, 20px) + 4px);
     color: var(--text);
-    background-color: light-dark(rgba(250,249,246,.985), rgba(13,14,18,.975));
+    background-color: light-dark(rgba(250,249,246,.985), color-mix(in oklab, var(--elev-3) 98%, transparent));
     background-image: radial-gradient(80% 50% at 50% -18%, color-mix(in oklab, var(--tint) 12%, transparent), transparent 70%), linear-gradient(180deg, light-dark(rgba(255,255,255,.8), rgba(255,255,255,.035)), transparent 120px);
     box-shadow: 0 1px 1px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.4)), 0 12px 24px -12px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.55)), 0 48px 96px -32px light-dark(rgba(28,25,20,.26), rgba(0,0,0,.8)), inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
     overflow: visible;
@@ -161,7 +161,7 @@
     gap: 0;
     justify-content: center;
     border-radius: 50%;
-    background: light-dark(rgba(255,255,255,.92), rgba(24,26,33,.92));
+    background: light-dark(rgba(255,255,255,.92), color-mix(in oklab, var(--elev-3) 92%, transparent));
     opacity: 0;
     transform: scale(.8);
     transition: opacity 160ms var(--ease-lux), transform 260ms var(--ease-lux), translate 260ms var(--ease-lux), background-color 160ms var(--ease-lux), border-color 160ms var(--ease-lux);

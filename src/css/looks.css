@@ -23,9 +23,9 @@
       :root[data-palette="curated"] #paletteDetail,
       :root[data-palette="curated"] #lx-palette,
       :root[data-palette="curated"] #lx-qr {
-        --tile-hi: oklch(from var(--tint) min(calc(l + .17), .92) calc(max(c, .085) * .8) calc(h - 6));
-        --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) max(c, .09) h);
-        --tile-lo: oklch(from var(--tint) clamp(.28, calc(l - .22), .44) calc(max(c, .09) * 1.08) calc(h + 6));
+        --tile-hi: oklch(from var(--tint) min(calc(l + .17), .92) calc(max(c, .085) * .8 * var(--tile-c-k, 1)) calc(h - 6));
+        --tile-mid: oklch(from var(--tint) clamp(.5, calc(l - .03), .62) calc(max(c, .09) * var(--tile-c-k, 1)) h);
+        --tile-lo: oklch(from var(--tint) clamp(.28, calc(l - .22), .44) calc(max(c, .09) * 1.08 * var(--tile-c-k, 1)) calc(h + 6));
         --tile-shade: oklch(from var(--tint) clamp(.18, calc(l - .34), .3) calc(c * .8) calc(h + 6));
       }
   }
@@ -71,7 +71,7 @@
     :root { --border: light-dark(rgba(20,18,15,.2), rgba(255,255,255,.16)); }
   }
   :root[data-palette="muted"] {
-    --bg: light-dark(#efebe4, #100e0c);
+    --bg: light-dark(#efebe4, var(--ground));
     --surface: light-dark(rgba(255,253,249,.62), rgba(255,248,240,.032));
     --surface-hover: light-dark(rgba(255,253,249,.92), rgba(255,248,240,.058));
     --border: light-dark(rgba(60,48,36,.09), rgba(255,240,225,.07));
@@ -104,7 +104,7 @@
   }
   :root[data-palette="muted"] .variant-chip { color: var(--text-muted); }
   :root[data-palette="muted"] .variant-chip.is-active { color: var(--text); }
-  :root[data-palette="muted"][data-theme="dark"] .scrim { background: radial-gradient(circle at center, transparent 22%, #0a0807 118%); }
+  :root[data-palette="muted"][data-theme="dark"] .scrim { background: radial-gradient(circle at center, transparent 22%, color-mix(in oklab, var(--bg) 62%, black) 118%); }
   :root[data-palette="muted"] h1,
   :root.fonts-ready[data-palette="muted"] h1 {
     background: none;
@@ -152,11 +152,10 @@
   :root[data-palette="muted"] .badge-variant { color: light-dark(#5d6a86, #a3adc6); }
   :root[data-palette="muted"] .badge .badge-dot { animation: none; }
   :root[data-palette="muted"] .palette-action.is-primary .palette-action-icon { background: var(--tile, var(--live-accent)); color: var(--tint-ink); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 30%, transparent); }
+  :root:is([data-palette="curated"], [data-palette="mono"]) .lx-context-menu { background-image: none; }
   :root[data-palette="muted"] .lx-context-menu {
-    background: light-dark(rgba(251,248,243,.94), rgba(24,22,20,.92));
     background-image: linear-gradient(180deg, light-dark(rgba(255,255,255,.6), rgba(255,248,240,.04)), transparent 46px);
   }
-  :root[data-palette="muted"] .lx-toast { background: light-dark(rgba(251,248,243,.96), rgba(24,22,20,.95)); }
   .controls-pill button[aria-pressed="true"] svg,
   .controls-pill button[aria-expanded="true"] svg { color: color-mix(in oklab, var(--tab-accent) 75%, var(--text)); }
   @media (hover: hover) and (pointer: fine) {
@@ -216,9 +215,8 @@
   }
   :root[data-palette="curated"] .badge-new { color: light-dark(#8f6a2a, #cfae66); }
   :root[data-palette="curated"] .badge-variant { color: light-dark(#4f6690, #9fb1d4); }
-  :root[data-palette="curated"] .lx-context-menu { background: light-dark(rgba(253,252,250,.9), rgba(18,19,23,.88)); }
   :root[data-palette="mono"] {
-    --bg: light-dark(#f1f1f0, #060607);
+    --bg: light-dark(#f1f1f0, var(--ground));
     --text: light-dark(#161616, #f3f3f2);
     --text-muted: light-dark(rgba(22,22,22,.58), rgba(243,243,242,.52));
     --surface: light-dark(rgba(255,255,255,.6), rgba(255,255,255,.04));
@@ -280,13 +278,11 @@
       linear-gradient(160deg, light-dark(#8e9196, #b7babf), light-dark(#5c5f66, #74777e) 52%, light-dark(#3a3c42, #43454b));
     box-shadow: 0 6px 14px -8px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.12);
   }
-  :root[data-palette="mono"] .lx-context-menu { background: light-dark(rgba(252,252,251,.92), rgba(16,16,17,.9)); }
-  :root[data-palette="mono"] .lx-toast { background: light-dark(rgba(252,252,251,.96), rgba(16,16,17,.95)); }
   :root[data-palette="mono"] .lx-toast::before { background: var(--text); box-shadow: 0 0 0 3px color-mix(in oklab, var(--text) 14%, transparent); }
   :root[data-palette="mono"] .palette-detail-eyebrow { color: var(--pal-ink-2); }
   :root[data-palette="mono"] :focus-visible { outline-color: color-mix(in oklab, var(--text) 70%, transparent); }
   :root[data-palette="vivid"], :root[data-palette="curated"] {
-    --bg: light-dark(#f4f2ee, #050608);
+    --bg: light-dark(#f4f2ee, var(--ground));
     --surface: light-dark(rgba(255,255,255,.62), rgba(255,255,255,.024));
     --surface-hover: light-dark(rgba(255,255,255,.9), rgba(255,255,255,.045));
   }
@@ -371,7 +367,7 @@
     .app-card:hover .open-affordance { opacity: .95; transform: none; }
   }
   .digit-badge {
-    background: light-dark(rgba(255,255,255,.94), rgba(18,19,23,.86));
+    background: light-dark(rgba(255,255,255,.94), color-mix(in oklab, var(--elev-3) 88%, transparent));
     transition: opacity var(--dur-base) var(--ease-lux), transform var(--dur-slow) var(--ease-lux);
   }
   @media (max-width: 640px) {

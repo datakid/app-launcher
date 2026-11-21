@@ -4,7 +4,6 @@
     position: fixed; inset-inline: 0; bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
     margin-inline: auto; width: max-content; max-width: calc(100vw - 2rem);
     z-index: 400;
-    background: light-dark(rgba(252,251,248,0.95), rgba(18,19,23,0.95));
     border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.09));
     color: var(--text); font-weight: 500; text-align: center;
     opacity: 0; pointer-events: none;
@@ -32,10 +31,10 @@
     position: relative; min-height: 34px;
     padding: .45rem .65rem; gap: .65rem;
     font-size: .84rem; font-weight: 500; letter-spacing: -.003em;
-    color: light-dark(rgba(21,19,15,.88), rgba(246,245,242,.9));
+    color: light-dark(rgba(21,19,15,.88), rgba(236,235,230,.92));
   }
   :root:lang(ar) .lx-context-menu button { letter-spacing: 0; font-size: .86rem; }
-  .lx-context-menu button svg { text-align: center; flex-shrink: 0; width: 15px; height: 15px; font-size: .8rem; color: light-dark(rgba(21,19,15,.5), rgba(246,245,242,.48)); transition: color var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
+  .lx-context-menu button svg { text-align: center; flex-shrink: 0; width: 15px; height: 15px; font-size: .8rem; color: light-dark(rgba(21,19,15,.5), rgba(236,235,230,.5)); transition: color var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-spring); }
   .lx-context-menu button:focus-visible {
     background: color-mix(in oklab, var(--menu-accent) 12%, light-dark(rgba(20,18,15,.035), rgba(255,255,255,.045)));
     color: var(--text);
@@ -75,7 +74,7 @@
   .ctx-head-title { display: flex; align-items: baseline; gap: .4rem; min-width: 0; font-family: var(--display-font); font-size: 1rem; font-weight: 600; line-height: 1.25; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   :root:lang(ar) .ctx-head-title { line-height: 1.5; }
   .ctx-head-variant { font-family: var(--ui-font); font-size: .68rem; font-weight: 600; padding: .08rem .4rem; border-radius: var(--r-badge, 6px); color: color-mix(in oklab, var(--tint) 75%, var(--text)); background: color-mix(in oklab, var(--tint) 14%, transparent); }
-  .ctx-head-sub { display: flex; align-items: center; gap: .45rem; font-size: .7rem; color: light-dark(rgba(21,19,15,.62), rgba(246,245,242,.6)); white-space: nowrap; overflow: hidden; }
+  .ctx-head-sub { display: flex; align-items: center; gap: .45rem; font-size: .7rem; color: light-dark(rgba(21,19,15,.62), rgba(236,235,230,.62)); white-space: nowrap; overflow: hidden; }
   .ctx-head-sub > span[dir] { overflow: hidden; text-overflow: ellipsis; font-variant-numeric: tabular-nums; }
   .ctx-head-closed { flex-shrink: 0; font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--closed-ink); padding: .05rem .35rem; border-radius: var(--r-badge, 6px); background: color-mix(in oklab, var(--closed-ink) 12%, transparent); }
   :root:lang(ar) .ctx-head-closed { letter-spacing: 0; text-transform: none; font-size: .66rem; }
@@ -92,7 +91,7 @@
   .ctx-check { width: 14px; flex-shrink: 0; display: inline-flex; justify-content: center; }
   .lx-context-menu button.is-active { color: var(--text); font-weight: 600; }
   .ctx-mode { display: flex; align-items: center; justify-content: space-between; gap: .6rem; padding: .3rem .3rem .3rem .65rem; }
-  .ctx-mode-label { font-size: .72rem; font-weight: 500; color: light-dark(rgba(21,19,15,.62), rgba(246,245,242,.6)); white-space: nowrap; }
+  .ctx-mode-label { font-size: .72rem; font-weight: 500; color: light-dark(rgba(21,19,15,.62), rgba(236,235,230,.62)); white-space: nowrap; }
   .ctx-seg {
     position: relative; display: inline-grid; grid-template-columns: 1fr 1fr;
     padding: 2px; border-radius: var(--r-chip, 9px);
@@ -131,7 +130,6 @@
     --menu-accent: var(--tab-accent);
     min-width: 228px;
     padding: 6px;
-    background: light-dark(rgba(253,252,250,.9), rgba(20,21,26,.86));
     background-image:
       radial-gradient(120% 60% at 50% -20%, color-mix(in oklab, var(--menu-accent) 9%, transparent), transparent 70%),
       linear-gradient(180deg, light-dark(rgba(255,255,255,.75), rgba(255,255,255,.05)), transparent 46px);
