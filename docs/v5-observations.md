@@ -114,6 +114,25 @@ Checked against the source and the baseline captures, not against the live site 
 
 Finding F-P3: `states.css` painted `.controls-pill`, `.lx-context-menu` and `.lx-toast` with `color-mix(in oklab, var(--bg) 92%, transparent)` in the last layer that sets a background colour, so the per-look `background` fills for those three in `chrome.css`, `menus.css` and `looks.css` never showed in either theme. They are deleted (owner approved deleting overridden declarations, 2026-11-21). Two of those rules also reset `background-image` to `none` for Curated and Mono menus, so that reset is kept as one rule.
 
+### Phase 4 outcome: icon depth
+
+Owner pick (2026-11-22, after the A/B/C sheets): A, stacked copies. B (inset bevel) and C (SVG lighting filter) were only prototypes in the scratch area and are not in the code.
+
+| Plan item | What shipped |
+|---|---|
+| 3A tokens deferred from Phase 3 | `--light-x` (1, and -1 under `dir="rtl"`), `--relief-k`, `--cast-k`, `--bevel-k`, `--spec-o` in `tokens.css`, with dark values for the last three; `--press` for Muted and `--fall` for favicon tiles in `looks.css`. `--light-y` and `--sheen-o` were not added because nothing reads them |
+| 4B glyph | stacked relief: shade and highlight `<use>` copies, offset in `em` so they scale with the glyph (menu head icon included); the old one-pixel glyph drop shadow is gone |
+| 4B plate | `--plate-pass`: specular, falloff toward the bottom-end corner, bounce light along the bottom edge; used by every plate, by favicon tiles (softer, `--fall: 12%`) and by the context-menu head icon |
+| 4B bevel and shadow | `--tile-rim-hi` and `--tile-rim-lo` are soft inset lips that follow the light direction; `--tile-long` is a longer tinted shadow; the ambient shadow shifts away from the light by `--light-x` |
+| 4C looks | Vivid glazed (`--spec-o` 1), Curated satin (.18), Muted letterpress (`--press: -1`, no plate), Mono anodised (specular 0, light bevel 1.4) |
+| 4C dark | cast .6, bevel .6, specular .45 |
+
+Not done, said plainly: the optional pointer-driven specular drift. The two-plane glyph (one symbol in the catalogue) only gets a darker secondary plane; it has no shadow of its own, because both planes share the stacked copies, and no separate hover travel.
+
+Bytes: the new tile CSS pushed the first load 48 bytes over its budget, so 23 declarations that a later layer already overrides were deleted (`card.css` 17, `layout.css` 4, `palette.css` 1, `states.css` 1). Computed-style diff of the build before and after the deletions: 0 differences on the 110 cascade jobs, the 40 world jobs and the state worlds. First load is 266,142 B against 266,240 B, 98 B of headroom.
+
+Proof for the tile change: the full computed-style diff against the Phase 3 build changes only tile elements (plate and its pseudo-elements, glyph and its copies, tile badges, the menu head icon) plus new inherited tokens; no pixel more than 8 levels different outside the tile shadow footprint in 48 look, theme, language and view combinations; `qa:tiles` 440 tiles, lowest five 3.435, 3.437, 3.438, 3.439, 3.439 (before 3.434, 3.436, 3.437, 3.437, 3.437); 400 hover toggles cost 32.1 ms of style recalculation against 35.7 ms before, equal within noise.
+
 ## 7. Baseline of the existing checks
 
 All run on `main` in this sandbox (2 vCPU, no GPU).

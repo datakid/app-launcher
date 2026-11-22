@@ -277,7 +277,6 @@
         transform: none;
       }
   }
-  .palette-action.is-primary.is-active { box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--live-accent) 38%, transparent), 0 0 0 3px color-mix(in oklab, var(--live-accent) 9%, transparent); }
   .palette-action.is-primary .palette-action-icon { width: 30px; height: 30px;
     border-radius: 8px; }
   .palette-scope.is-active { color: var(--text); font-weight: 600; }
