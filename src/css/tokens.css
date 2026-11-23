@@ -257,7 +257,7 @@
     --display-font: 'Cormorant Garamond', 'Cormorant Garamond Fallback', Georgia, serif;
   }
   :root[data-theme="light"] { color-scheme: light; --closed-ink: oklch(50% 0.12 28); }
-  :root[data-theme="dark"] { color-scheme: dark; --rim-k: .55; --tile-c-k: .9; --grain-o: .2; --grain-blend: plus-lighter; }
+  :root[data-theme="dark"] { color-scheme: dark; --rim-k: .55; --tile-c-k: .9; --cast-k: .6; --bevel-k: .6; --spec-o: .45; --grain-o: .2; --grain-blend: plus-lighter; }
   :root[data-corners="soft"] {
     --r-card: 24px; --r-pal: 26px; --r-icon: .32; --r-chip: 999px; --r-chip-in: 999px; --r-badge: 999px;
     --r-item: 13px; --r-kbd: 7px; --r-menu: 16px; --r-menu-item: 10px;
@@ -270,6 +270,11 @@
   :root[data-corners] { --radius: var(--r-card); }
   :root {
     color-scheme: dark;
+    --light-x: 1;
+    --relief-k: 1;
+    --cast-k: 1;
+    --bevel-k: 1;
+    --spec-o: 1;
     --ground: oklch(.15 .003 80);
     --bg: light-dark(#f3f1ec, var(--ground));
     --elev-2: color-mix(in oklab, var(--bg) 93.4%, white);
@@ -332,5 +337,5 @@
   @media (max-width: 1024px) {
     :root { --chip-h: 32px; }
   }
-  :root[dir="rtl"] { --tile-sx: 70%; --tile-ang: 200deg; }
+  :root[dir="rtl"] { --tile-sx: 70%; --tile-ang: 200deg; --light-x: -1; }
 }

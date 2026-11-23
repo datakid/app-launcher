@@ -514,9 +514,16 @@
     isolation: isolate;
     --tile-ring: 0 0 0 .5px light-dark(rgb(15 23 42 / .08), rgb(255 255 255 / .1));
     --tile-contact: 0 1px 2px light-dark(color-mix(in oklab, var(--tile-shade) calc(13% * var(--sk, 1)), transparent), rgb(0 0 0 / .35));
-    --tile-ambient: 0 calc(var(--icon-size) * .16) calc(var(--icon-size) * .34) calc(var(--icon-size) * -.16) light-dark(color-mix(in oklab, var(--tile-lo) calc(36% * var(--sk, 1) * var(--ak, 1)), transparent), color-mix(in oklab, var(--tile-lo) calc(24% * var(--ak, 1)), rgb(0 0 0 / .5)));
-    --tile-rim-hi: inset 0 1px 0 light-dark(rgb(255 255 255 / .38), rgb(255 255 255 / .16));
-    --tile-rim-lo: inset 0 -1px 0 color-mix(in oklab, var(--tile-shade) 30%, transparent);
+    --tile-ambient: calc(var(--light-x) * var(--icon-size) * -.05) calc(var(--icon-size) * .16) calc(var(--icon-size) * .34) calc(var(--icon-size) * -.16) light-dark(color-mix(in oklab, var(--tile-lo) calc(36% * var(--sk, 1) * var(--ak, 1) * var(--cast-k)), transparent), color-mix(in oklab, var(--tile-lo) calc(24% * var(--ak, 1) * var(--cast-k)), rgb(0 0 0 / .5)));
+    --tile-long: calc(var(--light-x) * var(--icon-size) * -.09) calc(var(--icon-size) * .3) calc(var(--icon-size) * .5) calc(var(--icon-size) * -.3) color-mix(in oklab, var(--tile-lo) calc(16% * var(--ak, 1) * var(--cast-k)), transparent);
+  }
+  :root[data-palette]:not([data-palette="muted"]) :is(.app-icon-wrapper, .ctx-head-icon) {
+    --tile-rim-hi: inset calc(var(--light-x) * var(--icon-size) * .014) calc(var(--icon-size) * .022) calc(var(--icon-size) * .03) calc(var(--icon-size) * -.01) rgb(255 255 255 / calc(.4 * var(--bevel-k)));
+    --tile-rim-lo: inset calc(var(--light-x) * var(--icon-size) * -.014) calc(var(--icon-size) * -.028) calc(var(--icon-size) * .04) calc(var(--icon-size) * -.02) color-mix(in oklab, var(--tile-shade) calc(34% * var(--bevel-k)), transparent);
+    --plate-pass:
+      radial-gradient(60% 44% at var(--tile-sx, 30%) 0%, rgb(255 255 255 / calc(.22 * var(--spec-o))), transparent 60%),
+      radial-gradient(80% 70% at calc(100% - var(--tile-sx, 30%)) 115%, color-mix(in oklab, var(--tile-shade) calc(var(--fall, 30%) * var(--relief-k)), transparent), transparent 70%),
+      linear-gradient(0deg, rgb(255 255 255 / calc(.09 * var(--bevel-k))), transparent 14%);
   }
   :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::before {
     content: '';
@@ -528,17 +535,15 @@
     mix-blend-mode: normal;
     opacity: 1;
     pointer-events: none;
-    background:
-      radial-gradient(60% 44% at var(--tile-sx, 30%) 0%, light-dark(rgb(255 255 255 / .22), rgb(255 255 255 / .1)), transparent 60%),
-      linear-gradient(var(--tile-ang, 160deg), var(--tile-hi) 0%, var(--tile-mid) 50%, var(--tile-lo) 100%);
-    box-shadow: var(--tile-ring), var(--tile-contact), var(--tile-ambient), var(--tile-rim-hi), var(--tile-rim-lo);
+    background: var(--plate-pass), linear-gradient(var(--tile-ang, 160deg), var(--tile-hi) 0%, var(--tile-mid) 50%, var(--tile-lo) 100%);
+    box-shadow: var(--tile-ring), var(--tile-contact), var(--tile-ambient), var(--tile-long), var(--tile-rim-hi), var(--tile-rim-lo);
   }
   :root[data-palette="curated"] {
     --border: light-dark(rgba(20,18,15,.065), rgba(255,255,255,.075));
     --hairline: light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08));
     --hairline-strong: light-dark(rgba(20,18,15,.24), rgba(255,255,255,.22));
     --closed-ink: light-dark(oklch(50% 0.1 30), oklch(76% 0.085 30));
-    --stage-light: light-dark(rgba(255,252,246,.6), rgba(255,250,240,.03)); --sk: .8;
+    --stage-light: light-dark(rgba(255,252,246,.6), rgba(255,250,240,.03)); --sk: .8; --spec-o: .18;
   }
   :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper::after {
     content: '';
@@ -564,26 +569,41 @@
         translate: 0 2px;
       }
   }
-  :root[data-palette="mono"][data-theme="light"] .app-icon-wrapper { --tile-rim-hi: inset 0 1px 0 rgb(255 255 255 / .55); }
+  :root[data-palette="mono"] { --spec-o: 0; }
+  :root[data-palette="mono"][data-theme="light"] { --bevel-k: 1.4; }
   :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper :is(svg.app-icon, svg.mark-glyph) {
     fill: url(#lx-gf);
     color: #fff;
-    --lx-ga: var(--glyph-accent);
-    filter: drop-shadow(0 1px 1px color-mix(in oklab, var(--tile-shade) 35%, transparent));
+    --lx-ga: color-mix(in oklab, var(--glyph-accent), var(--tile-shade) 28%);
+    filter: none;
     text-shadow: none;
   }
+  :root[data-palette] :is(.app-icon-wrapper, .ctx-head-icon) svg.mark-glyph > use:not(:last-child) {
+    display: inline;
+    --rc: color-mix(in oklab, var(--tile-shade, #1b1b22) calc(50% * var(--relief-k)), transparent);
+    fill: var(--rc);
+    --lx-ga: var(--rc);
+    translate: calc(var(--light-x) * var(--press, 1) * .028em) calc(var(--press, 1) * .044em);
+  }
+  :root[data-palette] :is(.app-icon-wrapper, .ctx-head-icon) svg.mark-glyph > use:nth-child(2):not(:last-child) {
+    --rc: rgb(255 255 255 / calc(.55 * var(--relief-k)));
+    translate: calc(var(--light-x) * var(--press, 1) * -.022em) calc(var(--press, 1) * -.03em);
+  }
+  :root[data-palette] .ctx-head-icon svg.mark-glyph { filter: none; }
+  :root[data-palette="muted"] { --press: -1; }
   :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper .lx-glyph.mark-glyph-atlas::before {
     background: linear-gradient(180deg, #fff, rgb(255 255 255 / .88));
   }
   :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"] {
     --ak: .5;
+    --fall: 12%;
   }
   :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"]::before {
-    background: linear-gradient(180deg, light-dark(#ffffff, #2c2e33) 0%, light-dark(#f7f5f0, #212328) 100%);
+    background: var(--plate-pass), linear-gradient(180deg, light-dark(#ffffff, #2c2e33) 0%, light-dark(#f7f5f0, #212328) 100%);
   }
   @supports (color: oklch(from red l c h)) {
     :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"]::before {
-        background: linear-gradient(180deg, light-dark(#ffffff, oklch(from var(--tint) .32 .012 h)) 0%, light-dark(oklch(.975 .006 85), oklch(from var(--tint) .26 .01 h)) 100%);
+        background: var(--plate-pass), linear-gradient(180deg, light-dark(#ffffff, oklch(from var(--tint) .32 .012 h)) 0%, light-dark(oklch(.975 .006 85), oklch(from var(--tint) .26 .01 h)) 100%);
       }
   }
   :root[data-palette]:not([data-palette="muted"]) .app-icon-wrapper[data-mark="favicon"] .lx-fav {

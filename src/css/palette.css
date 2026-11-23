@@ -243,7 +243,6 @@
     .palette-results { width: 100%; max-height: 34dvh; border-inline-end: none; border-bottom: 1px solid var(--pal-line); }
     .palette-detail { padding: 1.25rem; }
     .palette-action .palette-keys, .palette-item-trail { display: none; }
-    .palette-detail-watermark { font-size: 7rem; }
     .palette-hints { justify-content: center; }
     .palette-scopes { padding-inline: 0.6rem; }
     .palette-scope-label { max-width: 11ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

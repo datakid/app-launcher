@@ -282,7 +282,10 @@ const glyphHtml = (m, cls) => {
   const r = m.ref;
   if (r.url) return `<span class="${c}lx-glyph" data-ms="${r.sig}" style="--glyph:url(${r.url})" aria-hidden="true"></span>`;
   const scaleStyle = r.scale ? `--glyph-scale:${r.scale}` : '';
-  if (r.sym) return `<svg class="${c}lx-glyph mark-glyph" data-ms="${r.sig}"${scaleStyle ? ` style="${scaleStyle}"` : ''} aria-hidden="true" focusable="false"><use href="#${r.sym}"></use></svg>`;
+  if (r.sym) {
+    const u = `<use href="#${r.sym}"></use>`;
+    return `<svg class="${c}lx-glyph mark-glyph" data-ms="${r.sig}"${scaleStyle ? ` style="${scaleStyle}"` : ''} aria-hidden="true" focusable="false">${u}${u}${u}</svg>`;
+  }
   return `<span class="${c}lx-glyph mark-glyph-atlas" data-ms="${r.sig}" style="--ac:${r.c};--ar:${r.r}${scaleStyle ? `;${scaleStyle}` : ''}" aria-hidden="true"></span>`;
 };
 const favHtml = (m, cls) => {
