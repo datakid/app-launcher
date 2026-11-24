@@ -160,6 +160,29 @@ Findings:
 - F-P5d. The palette rows, the palette close button and the QR thumbs have no pressed state at all. Nothing was added.
 - F-P5e. The QR entrance animations no longer require `[open]`, so reopening a dialog that is still fading out resumes it instead of restarting it.
 
+### Phase 6A outcome: search audit (no engine change)
+
+Bench on the real catalogue (`qa/search-bench.mjs --verbose`, 3,257 queries, 36 entries, 4 categories): top-1 96.5 percent, top-3 98.2, found 98.4. Junk and unrelated words returning something: 0 of 318. Speed on the bench: median 0.041 ms, p95 0.157 ms.
+
+| Family | n | top-1 | top-3 | found |
+|---|---|---|---|---|
+| exact, joined, reversed, reversed joined, typo title (joined), parent + variant, layout swap, prefix, category + word | 63 to 252 each | 100 | 100 | 100 |
+| typo title, typo title reversed, word starts | 63 to 252 | 98 to 98.4 | 100 | 100 |
+| url, id, url typo | 72 to 360 | 97.1 to 99.2 | 100 | 100 |
+| typo word | 1,109 | 93.6 | 95.1 | 95.5 |
+| first letters | 63 | 87.3 | 96.8 | 98.4 |
+| url fragment | 95 | 85.3 | 98.9 | 100 |
+
+Weakest groups, all under 90 percent top-1: three-letter words with one typo (substitute, substitute the first letter, transpose: 0 percent each, n = 7; delete: 57.1 percent), first letters in Arabic (79.4, n = 34), two typos in a word of 5 to 7 letters (61.4) or 8 and more (73.1), url fragments in the middle of a host (82.1) and url fragments starting at the longest part (85.7). Category queries find every member of the tab, with first-12 precision between 42 and 100 percent.
+
+Golden set: `qa/search-golden.json` holds 61 hand-written queries (prefixes, acronyms, half-typed Arabic with and without the article, mixed script, the wrong keyboard layout, pasted URLs, url fragments, version names, category names, typos); `qa/search-golden.mjs` checks that the top result is the expected app, variant or category. Today 55 of 61 pass. The six failures:
+- Five wrong-layout queries for short Arabic names typed on the English layout (`فلو`, `سيم`, `كوين`, `طرق`, `فوليو`): the raw query returns weak subsequence hits (tier 3), so the layout swap, which only runs when the raw query returns nothing, never happens, and the right entry is not first.
+- `rio` for ROI, a transposition in a three-letter word: nothing is returned.
+
+Latency per keystroke (every prefix of every golden query, 5 rounds after warm-up): real catalogue p50 0.022 ms, p95 0.052 ms, max 2.8 ms. The synthetic 5,000-entry catalogue (`qa/search.mjs`): warm median 3.28 ms, p95 9.91 ms (limits 6 and 12), cold median 4.47 ms, p95 9.73 ms; building the index takes 278 ms.
+
+The golden set cannot go in `qa:search` yet because it fails; it is added as a ratchet in 6D. The owner's ten real queries are not in it yet.
+
 ## 7. Baseline of the existing checks
 
 All run on `main` in this sandbox (2 vCPU, no GPU).

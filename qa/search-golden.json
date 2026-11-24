@@ -1,0 +1,307 @@
+[
+ {
+  "group": "prefix",
+  "q": "fo",
+  "app": "ledger-form"
+ },
+ {
+  "group": "prefix",
+  "q": "for",
+  "app": "ledger-form"
+ },
+ {
+  "group": "prefix",
+  "q": "har",
+  "app": "harvest"
+ },
+ {
+  "group": "prefix",
+  "q": "sur",
+  "app": "survival-mirror"
+ },
+ {
+  "group": "prefix",
+  "q": "sol",
+  "app": "solver"
+ },
+ {
+  "group": "prefix",
+  "q": "dra",
+  "app": "draw"
+ },
+ {
+  "group": "acronym",
+  "q": "rc",
+  "app": "roi"
+ },
+ {
+  "group": "acronym",
+  "q": "dp",
+  "app": "prep"
+ },
+ {
+  "group": "acronym",
+  "q": "cb",
+  "app": "criteria-builder"
+ },
+ {
+  "group": "acronym",
+  "q": "dl",
+  "app": "drug-list"
+ },
+ {
+  "group": "acronym",
+  "q": "sm",
+  "app": "survival-mirror"
+ },
+ {
+  "group": "acronym",
+  "q": "tt",
+  "app": "text-tools"
+ },
+ {
+  "group": "arabic partial",
+  "q": "الحاس",
+  "entry": "paid-calculator::calc"
+ },
+ {
+  "group": "arabic partial",
+  "q": "حاسب",
+  "entry": "paid-calculator::calc"
+ },
+ {
+  "group": "arabic partial",
+  "q": "القوم",
+  "entry": "id-dates::id"
+ },
+ {
+  "group": "arabic partial",
+  "q": "المحل",
+  "app": "parser"
+ },
+ {
+  "group": "arabic partial",
+  "q": "الحصا",
+  "app": "harvest"
+ },
+ {
+  "group": "arabic partial",
+  "q": "رسم",
+  "app": "draw"
+ },
+ {
+  "group": "arabic partial",
+  "q": "دفتر",
+  "app": "dafter"
+ },
+ {
+  "group": "arabic partial",
+  "q": "ميزا",
+  "entry": "qisma-mizan::express"
+ },
+ {
+  "group": "arabic partial",
+  "q": "قسم",
+  "entry": "qisma-mizan::full"
+ },
+ {
+  "group": "arabic partial",
+  "q": "بروتو",
+  "app": "protocols"
+ },
+ {
+  "group": "mixed script",
+  "q": "roi سريع",
+  "entry": "roi::express"
+ },
+ {
+  "group": "mixed script",
+  "q": "drug كامل",
+  "entry": "drug-list::full"
+ },
+ {
+  "group": "mixed script",
+  "q": "نموذج folio",
+  "entry": "ledger-form::folio"
+ },
+ {
+  "group": "mixed script",
+  "q": "الأدوية free",
+  "entry": "drug-list::free"
+ },
+ {
+  "group": "wrong layout",
+  "q": "اشقرثسف",
+  "app": "harvest"
+ },
+ {
+  "group": "wrong layout",
+  "q": "سعقرهرشم",
+  "app": "survival-mirror"
+ },
+ {
+  "group": "wrong layout",
+  "q": "hgpwh]",
+  "app": "harvest"
+ },
+ {
+  "group": "wrong layout",
+  "q": "]tjv",
+  "app": "dafter"
+ },
+ {
+  "group": "wrong layout",
+  "q": "ld.hk",
+  "entry": "qisma-mizan::express"
+ },
+ {
+  "group": "wrong layout",
+  "q": "tg,",
+  "entry": "prep::floe"
+ },
+ {
+  "group": "wrong layout",
+  "q": "sdl",
+  "entry": "quoin::seam"
+ },
+ {
+  "group": "wrong layout",
+  "q": ";,dk",
+  "entry": "quoin::quoin"
+ },
+ {
+  "group": "wrong layout",
+  "q": "'vr",
+  "entry": "typing::tarq"
+ },
+ {
+  "group": "wrong layout",
+  "q": "t,gd,",
+  "entry": "ledger-form::folio"
+ },
+ {
+  "group": "url fragment",
+  "q": "slippery",
+  "app": "ledger-form"
+ },
+ {
+  "group": "url fragment",
+  "q": "polars",
+  "entry": "prep::floe"
+ },
+ {
+  "group": "url fragment",
+  "q": "kappa",
+  "entry": "drug-list::full"
+ },
+ {
+  "group": "pasted url",
+  "q": "https://lx-parser.vercel.app/",
+  "app": "parser"
+ },
+ {
+  "group": "pasted url",
+  "q": "seam-1esq.vercel.app",
+  "entry": "quoin::seam"
+ },
+ {
+  "group": "pasted url",
+  "q": "https://www.roi-calc-express.vercel.app/path?x=1",
+  "entry": "roi::express"
+ },
+ {
+  "group": "pasted url",
+  "q": "platen-2zj1",
+  "entry": "typing::platen"
+ },
+ {
+  "group": "pasted url",
+  "q": "bugvert.vercel.app",
+  "entry": "pharmacy-tools::bugvert"
+ },
+ {
+  "group": "version name",
+  "q": "tally",
+  "entry": "ledger-form::tally"
+ },
+ {
+  "group": "version name",
+  "q": "daleel 460",
+  "entry": "paid-calculator::daleel"
+ },
+ {
+  "group": "version name",
+  "q": "mizan",
+  "entry": "qisma-mizan::express"
+ },
+ {
+  "group": "version name",
+  "q": "duckbench",
+  "entry": "prep::prep"
+ },
+ {
+  "group": "version name",
+  "q": "tarq",
+  "entry": "typing::tarq"
+ },
+ {
+  "group": "category",
+  "q": "core",
+  "cat": "core"
+ },
+ {
+  "group": "category",
+  "q": "experimental",
+  "cat": "experimental"
+ },
+ {
+  "group": "typo",
+  "q": "survaival mirror",
+  "app": "survival-mirror"
+ },
+ {
+  "group": "typo",
+  "q": "quion",
+  "entry": "quoin::quoin"
+ },
+ {
+  "group": "typo",
+  "q": "rio",
+  "app": "roi"
+ },
+ {
+  "group": "typo",
+  "q": "typng practice",
+  "app": "typing"
+ },
+ {
+  "group": "typo",
+  "q": "parsr",
+  "app": "parser"
+ },
+ {
+  "group": "typo",
+  "q": "daftar",
+  "app": "dafter"
+ },
+ {
+  "group": "typo",
+  "q": "pharmcy tools",
+  "app": "pharmacy-tools"
+ },
+ {
+  "group": "typo",
+  "q": "critera builder",
+  "app": "criteria-builder"
+ },
+ {
+  "group": "typo",
+  "q": "الحصد",
+  "app": "harvest"
+ },
+ {
+  "group": "typo",
+  "q": "المحلّل",
+  "app": "parser"
+ }
+]
