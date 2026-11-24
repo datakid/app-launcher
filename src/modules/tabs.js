@@ -141,7 +141,8 @@ const moveIndicator = (toId, fromId) => {
   const ind = document.getElementById('tabIndicator');
   const to = railGeom.get(toId);
   if (!ind || !to) return;
-  const from = railGeom.get(fromId) || to;
+  const cs = railAnim && getComputedStyle(ind);
+  const from = cs ? { l: parseFloat(cs.left), r: parseFloat(cs.right) } : railGeom.get(fromId) || to;
 
   railAnim?.cancel(); railAnim = null;
 
@@ -251,8 +252,8 @@ export const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab
     ghost.scrollTop = g.scrollTop;
     container.insertBefore(ghost, g);
     const out = animate(ghost, 
-      [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * (kind === 'tab' ? 8 : MOTION.travelOut)}px,0,0) scale(${MOTION.scaleOut})` }],
-      { duration: mo.outMs, easing: kind === 'tab' ? EASE_EXIT : MOTION.outEase, fill: 'forwards' }
+      [{ opacity: 1, transform: 'translate3d(0,0,0) scale(1)' }, { opacity: 0, transform: `translate3d(${-travel * mo.travelOut}px,0,0) scale(${MOTION.fx.scaleOut})` }],
+      { duration: mo.outMs, easing: EASE_EXIT, fill: 'forwards' }
     );
     anims.push(out);
   }
@@ -265,15 +266,15 @@ export const runGridSwitch = (g, run, travel, nextView = viewMode(), kind = 'tab
   if (g.classList.contains('is-auto-flow')) g.classList.toggle('has-overflow', g.scrollHeight - g.clientHeight > 4);
 
   if (g._cacheHit) {
-    if (!MQ.reducedMotion) anims.push(animate(g, [{ opacity: 0 }, { opacity: 1 }], { duration: motionMs('--dur-micro', 160), easing: EASE_LUX }));
+    if (!MQ.reducedMotion) anims.push(animate(g, [{ opacity: 0 }, { opacity: 1 }], { duration: motionMs('--dur-micro'), easing: EASE_LUX }));
   } else if (!scrollDriven || kind === 'tab') {
     cards.forEach((c, i) => {
       c.classList.add('no-enter');
       c.style.willChange = 'opacity, translate, scale';
-      const from = inFlat && !travel ? `0 ${MOTION.liftIn}px` : `${travel * (kind === 'tab' ? 8 : MOTION.travelIn)}px 0`;
+      const from = inFlat && !travel ? `0 ${MOTION.fx.liftIn}px` : `${travel * mo.travelIn}px 0`;
       const a = animate(c, 
-        [{ opacity: 0, translate: from, scale: String(MOTION.scaleIn) }, { opacity: 1, translate: '0 0', scale: '1' }],
-        { duration: mo.inMs, delay: mo.inDelay + staggerDelay(kind, dists[i], max), easing: kind === 'tab' ? EASE_ENTER : EASE_LUX, fill: 'backwards' }
+        [{ opacity: 0, translate: from, scale: String(MOTION.fx.scaleIn) }, { opacity: 1, translate: '0 0', scale: '1' }],
+        { duration: mo.inMs, delay: mo.inDelay + staggerDelay(kind, dists[i], max), easing: EASE_ENTER, fill: 'backwards' }
       );
       anims.push(a);
     });

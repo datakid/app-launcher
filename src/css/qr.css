@@ -40,7 +40,7 @@
   }
   #lx-qr {
     --qr-ease: var(--ease-lux);
-    --qr-out: cubic-bezier(0.4, 0, 0.7, 0.2);
+    --qr-out: var(--ease-exit);
     --qr-pad: 14px;
     inline-size: min(380px, calc(100vw - 32px));
     margin: auto;
@@ -55,9 +55,9 @@
     opacity: 0;
     transform: scale(.96);
     translate: var(--qr-fx, 0px) calc(var(--qr-fy, 0px) + 14px);
-    transition: opacity var(--lx-qr-out-ms, 150ms) var(--qr-out), transform var(--lx-qr-out-ms, 150ms) var(--qr-out), translate var(--lx-qr-out-ms, 150ms) var(--qr-out), overlay var(--lx-qr-out-ms, 150ms) allow-discrete, display var(--lx-qr-out-ms, 150ms) allow-discrete;
+    transition: opacity var(--mo-qr-out) var(--qr-out), transform var(--mo-qr-out) var(--qr-out), translate var(--mo-qr-out) var(--qr-out), overlay var(--mo-qr-out) allow-discrete, display var(--mo-qr-out) allow-discrete;
   }
-  #lx-qr::backdrop { background: color-mix(in oklab, var(--bg) 58%, transparent); opacity: 0; transition: opacity var(--lx-qr-out-ms, 150ms) var(--qr-out), overlay var(--lx-qr-out-ms, 150ms) allow-discrete, display var(--lx-qr-out-ms, 150ms) allow-discrete; }
+  #lx-qr::backdrop { background: color-mix(in oklab, var(--bg) 58%, transparent); opacity: 0; transition: opacity var(--mo-qr-out) var(--qr-out), overlay var(--mo-qr-out) allow-discrete, display var(--mo-qr-out) allow-discrete; }
   .qr-grab { display: none; }
   .qr-head { display: grid; grid-template-columns: 36px minmax(0, 1fr) 36px; align-items: center; column-gap: 12px; padding-block-end: 14px; margin-inline: -2px; border-block-end: 1px solid var(--hairline, var(--border)); }
   .qr-head-icon .app-icon-wrapper { --icon-size: 36px; --icon-radius: calc(36px * var(--r-icon, .27)); margin: 0; transform: none; }
@@ -67,7 +67,7 @@
   .qr-close { inline-size: 36px; block-size: 36px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--text-muted); cursor: pointer; transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux), transform 220ms var(--qr-ease); }
   .qr-close svg { inline-size: 14px; block-size: 14px; }
   .qr-variants { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(72px, 1fr); align-self: center; padding: 3px; border-radius: calc(var(--r-chip, 9px) + 3px); background: color-mix(in oklab, var(--text) 6%, transparent); }
-  .qr-thumb { position: absolute; inset-block: 3px; inset-inline-start: 0; border-radius: var(--r-chip, 9px); background: light-dark(#fff, rgba(255,255,255,.12)); box-shadow: 0 1px 2px rgba(0,0,0,.18), 0 0 0 1px color-mix(in oklab, var(--tint) 30%, transparent); transition: transform var(--lx-qr-variant-ms, 160ms) var(--qr-ease); }
+  .qr-thumb { position: absolute; inset-block: 3px; inset-inline-start: 0; border-radius: var(--r-chip, 9px); background: light-dark(#fff, rgba(255,255,255,.12)); box-shadow: 0 1px 2px rgba(0,0,0,.18), 0 0 0 1px color-mix(in oklab, var(--tint) 30%, transparent); transition: transform var(--mo-qr-swap) var(--qr-ease); }
   .qr-variant { position: relative; min-block-size: 30px; padding: 0 14px; border: 0; border-radius: var(--r-chip, 9px); background: transparent; color: var(--text-muted); font: 500 .78rem/1 var(--ui-font); white-space: nowrap; cursor: pointer; transition: color 160ms var(--qr-ease); }
   .qr-frame { position: relative; isolation: isolate; align-self: center; padding: 10px; }
   .qr-frame::before {

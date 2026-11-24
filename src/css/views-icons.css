@@ -51,7 +51,7 @@
     position: relative;
     isolation: isolate;
     min-inline-size: 0;
-    animation: cardEnter var(--lx-boot-ms, var(--dur-story)) var(--ease-lux) backwards;
+    animation: cardEnter var(--mo-boot) var(--ease-lux) backwards;
     animation-delay: 0s;
   }
   @media (min-width: 1025px) {

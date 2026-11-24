@@ -2,8 +2,9 @@ import { LX_DEBUG, cycle } from './util.js';
 import { categories } from './catalogue.js';
 import { otherOpenMode, setOpenMode } from './open.js';
 import { CORNERS, PALETTES, VIEWS, cornersMode, paletteMode, setCornersMode, setPaletteMode, setViewMode, viewMode } from './theme.js';
-import { assignHeroReturnFocus, openPalette, requestClosePalette } from './palette/view.js';
+import { assignHeroReturnFocus, openPalette, paletteClosing, requestClosePalette } from './palette/view.js';
 import { closeQr, openQrForApp, openQrForSite } from './qr-dialog.js';
+import { motionMs } from './motion.js';
 import { isZen, toggleZenMode } from './zen.js';
 
 export const initShortcuts = () => {
@@ -36,7 +37,7 @@ export const initShortcuts = () => {
     }
     if ((e.metaKey || e.ctrlKey) && isPhysical(e, 'KeyK', 'k', 'ن')) {
       e.preventDefault();
-      if (paletteDialog.open) { requestClosePalette(); return; }
+      if (paletteDialog.open && !paletteClosing()) { requestClosePalette(); return; }
       if (document.activeElement === searchBtn) assignHeroReturnFocus(true);
       openPalette('');
       return;
@@ -106,7 +107,7 @@ export const initShortcuts = () => {
       if (card) {
         try { localStorage.setItem('lx-last-open', card.dataset.appId); } catch (err) { if (LX_DEBUG) console.warn(err); }
         card.classList.add('is-keylaunched');
-        setTimeout(() => card.classList.remove('is-keylaunched'), 260);
+        setTimeout(() => card.classList.remove('is-keylaunched'), motionMs('--dur-fast'));
         card.querySelector('.card-link-overlay')?.click();
       }
     }

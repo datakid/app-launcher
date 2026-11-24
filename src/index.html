@@ -47,9 +47,6 @@
       window.__lxCatalog = fetch('links.json', { cache: 'no-cache', credentials: 'same-origin', mode: 'same-origin' }).catch(function () { return null; });
       window.__lxIcons = fetch('icons/manifest.v2.json', { credentials: 'same-origin', mode: 'same-origin' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
       try {
-        if (/[?&]motion=legacy(&|$)/.test(location.search)) document.documentElement.dataset.motion = 'legacy';
-      } catch (e) {}
-      try {
         var cachedIcons = JSON.parse(localStorage.getItem('lx-icons') || 'null');
         var needAtlas = false;
         if (cachedIcons && cachedIcons.version === 2 && cachedIcons.icons) {

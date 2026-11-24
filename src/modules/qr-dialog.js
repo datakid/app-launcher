@@ -255,6 +255,8 @@ const qrSetOrigin = (dialog, el) => {
   dialog.style.setProperty('--qr-fy', `${fy.toFixed(1)}px`);
 };
 
+let qrKey = '';
+
 const openQr = (state) => {
   const dialog = document.getElementById('lx-qr');
   if (!dialog || !state) return;
@@ -265,9 +267,14 @@ const openQr = (state) => {
     assignPaletteSkipCloseChime(true);
     closePaletteImmediate();
   }
+  const key = `${state.url}|${state.variantIndex}`;
+  const resume = !dialog.open && qrKey === key && getComputedStyle(dialog).display !== 'none';
+  qrKey = key;
   qrState = { ...state, returnTo: state.returnTo || document.activeElement };
-  renderQrShell();
-  renderQrCode(false);
+  if (!resume) {
+    renderQrShell();
+    renderQrCode(false);
+  }
   qrSetOrigin(dialog, qrState.returnTo);
   dialog.style.translate = '';
   qrOpenedAt = performance.now();

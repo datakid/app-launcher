@@ -5,7 +5,7 @@ import { attachDestinationWarming } from './warm.js';
 import { loc, t } from './i18n.js';
 import { openMode, openModeIcon } from './open.js';
 import { bumpFreq, pushRecent } from './store.js';
-import { Motion } from './motion.js';
+import { Motion, motionMs } from './motion.js';
 import { variantFor, variantForSpan } from './views/bento.js';
 import { pointerVX } from './pointer-field.js';
 import { setInteractionOrigin } from './origin.js';
@@ -21,35 +21,6 @@ export const getSelectedVariantIndex = (app) => {
     if (stored !== null && app.variants[Number(stored)]) return Number(stored);
   } catch (e) { if (LX_DEBUG) console.warn(e); }
   return Number.isInteger(app.defaultVariant) && app.variants[app.defaultVariant] ? app.defaultVariant : 0;
-};
-
-const supportsAnchor = typeof CSS !== 'undefined' && CSS.supports('anchor-name', '--a');
-
-const moveVariantIndicatorLegacy = (chipsEl, btn, instant) => {
-  const indicator = chipsEl.querySelector('.variant-chip-indicator');
-  if (!indicator || !btn) return;
-  const p = chipsEl.getBoundingClientRect(), b = btn.getBoundingClientRect();
-  const x = b.left - p.left, w = b.width;
-  const prevX = chipsEl._lastX ?? x;
-  const dx = x - prevX;
-  const stretch = Math.min(Math.abs(dx) / Math.max(w, 1), 0.3);
-
-  indicator.style.width = `${w}px`;
-  indicator.style.transformOrigin = dx >= 0 ? 'left center' : 'right center';
-
-  if (instant) {
-    indicator.style.transition = 'none';
-    indicator.style.transform = `translateX(${x}px)`;
-  } else {
-    indicator.style.transition = 'transform 0.3s var(--ease-lux)';
-    indicator.style.transform = `translateX(${x}px) scaleX(${1 + stretch})`;
-    clearTimeout(chipsEl._settleTimer);
-    chipsEl._settleTimer = setTimeout(() => {
-      indicator.style.transition = 'transform 0.25s var(--ease-spring)';
-      indicator.style.transform = `translateX(${x}px) scaleX(1)`;
-    }, 140);
-  }
-  chipsEl._lastX = x;
 };
 
 export const gradVars = (g) => `--c1:${tone(g[0])};`;
@@ -277,7 +248,6 @@ export const createCard = (app, idx, placement, cat, opts = {}) => {
         chip.classList.toggle('is-active', ci === i);
         chip.setAttribute('aria-checked', String(ci === i));
       });
-      if (!supportsAnchor) moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), false);
       if (stackable) {
         setActiveVariant(el, String(v.id), { href: v.url, host: hostOf(v.url), label: ariaLabel, c1: tone(appGradient(app, v)[0]) });
       } else {
@@ -301,7 +271,7 @@ export const createCard = (app, idx, placement, cat, opts = {}) => {
               el._iconRaf = requestAnimationFrame(() => { incoming.style.opacity = '1'; });
             });
           }
-        }, 120);
+        }, motionMs('--mo-version'));
       }
       try { localStorage.setItem('lx-variant-' + app.id, String(i)); } catch (e) { if (LX_DEBUG) console.warn(e); }
       invalidateGridCache();
@@ -315,10 +285,6 @@ export const createCard = (app, idx, placement, cat, opts = {}) => {
         applyVariant(i);
       });
     });
-
-    if (!supportsAnchor) {
-      requestAnimationFrame(() => moveVariantIndicatorLegacy(chipsEl, chipsEl.querySelector('.variant-chip.is-active'), true));
-    }
   }
 
   attachDestinationWarming(el.querySelector('.card-link-overlay'));

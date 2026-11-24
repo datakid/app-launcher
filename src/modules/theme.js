@@ -3,7 +3,7 @@ import { categories, fmt } from './catalogue.js';
 import { sfx } from './audio.js';
 import { appGradient, setIcon } from './marks.js';
 import { t } from './i18n.js';
-import { EASE_LUX, MOTION, MQ, Motion, animate, isLowEnd } from './motion.js';
+import { EASE_LUX, MOTION, MQ, Motion, animate, isLowEnd, syncMotion } from './motion.js';
 import { assignPointerFieldDirty } from './pointer-field.js';
 import { closeContextMenu, contextMenuEl } from './context-menu.js';
 import { invalidateGridCache, renderCards } from './grid.js';
@@ -214,6 +214,7 @@ export const applyTheme = (explicit) => {
     : window.matchMedia('(prefers-color-scheme: light)').matches;
 
   document.documentElement.dataset.theme = isLight ? 'light' : 'dark';
+  syncMotion();
   isLightTheme = isLight;
 
   const metaTheme = document.querySelector('meta[name="theme-color"]');

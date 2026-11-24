@@ -133,6 +133,33 @@ Bytes: the new tile CSS pushed the first load 48 bytes over its budget, so 23 de
 
 Proof for the tile change: the full computed-style diff against the Phase 3 build changes only tile elements (plate and its pseudo-elements, glyph and its copies, tile badges, the menu head icon) plus new inherited tokens; no pixel more than 8 levels different outside the tile shadow footprint in 48 look, theme, language and view combinations; `qa:tiles` 440 tiles, lowest five 3.435, 3.437, 3.438, 3.439, 3.439 (before 3.434, 3.436, 3.437, 3.437, 3.437); 400 hover toggles cost 32.1 ms of style recalculation against 35.7 ms before, equal within noise.
 
+### Phase 5 outcome: motion continuity, one clock
+
+Owner decisions on record (2026-11-24): delete the non-anchor variant-chip fallback (-270 B gz), retire `?motion=legacy` now instead of in Phase 7 (-127 B gz).
+
+| Plan item | What shipped |
+|---|---|
+| 1 one clock | `tokens.css` owns every duration and curve used by script: `--lx-tab-*`, `--mo-*` (tab rail, view, palette, QR, crossfade, theme, Zen, boot, hover, travel, lift and scale), `--ease-exit` (now the old JS exit curve, `cubic-bezier(.4, 0, .7, .2)`, distinct from enter), `--ease-accel`, `--ease-xfade`. `motion.js` reads them from the computed style at load, on every motion preference change and when the theme is applied. No literal `cubic-bezier(`, `duration:` or millisecond value is left in `src/modules` and `qa:motion` now fails on one. The six dead duplicate keyframe blocks and the `ctxRise` keyframes are gone |
+| 2 interruptible | tab indicator, palette morph (open, close and reopen), variant thumb, QR sheet and its thumb, Zen toggle (from the live View Transition rects), context menu and appearance menu retarget from their current computed state. `qa/rapid-switch.mjs` reverses each of the eight surfaces at 30, 50 and 80 percent, forward and after a reopen: 48 cases, 48 pass, worst jump 0 px. The Phase 4 build (main) fails 23 of 48, worst 95.31 px (palette), tab indicator 22.97 and 39.73 px, QR content and look menu items restart (60), Zen 15.77 px |
+| 5 press feedback | a forced `:active` on 44 pressables in the grid, palette, QR dialog, context menu and appearance menu: every property that changes on press transitions in `--dur-tap`. Fixed: the bar kbd chip, the magnifier (its layout-layer duration lost to a 380 ms transition set later), the icon-view tile (90 ms literal), `.qr-close`, `.qr-action`, and the variant chip, whose opacity was not in its transition list and changed instantly. The five existing per-rule durations are merged into one rule |
+| 6 `inherits: false` | rejected, measured (below) |
+| 7 `?motion=legacy` | retired (owner), with its token block, the inline script line and the QA check; `qa/behaviour.mjs` now asserts that the default timings are read from the tokens and that changing a token reaches script after a motion preference change |
+
+Not done, said plainly:
+- Item 3, objects travel (tile FLIP between card, palette row, palette detail, context-menu header and QR dialog). First load has 3 bytes of headroom. A first estimate from the minified helper and four call sites is about 400 B gz. No overridden CSS is left to delete (the scan of all 3,730 declarations in cascade order finds none), so it needs either a budget decision or a cut elsewhere.
+- Item 4, rows persisting in the palette, is delivered with the keyed view in Phase 6, as the plan says.
+
+`inherits: false` on `--tx`, `--ty`, `--hov`, `--gx`, `--gy`, measured as an upper bound (the probe leaves the readers on descendants broken, so it can only look better than a real change could): desktop hover sweep on the bento view, 5 runs, 2-CPU software renderer. Elements restyled 59,237 with `inherits: true`, 61,993 with `false`; style recalculations 739 against 776; recalculation time 1,949 ms against 2,090 ms. It does not reduce the work even before paying for the readers, so the registrations stay `inherits: true`.
+
+Proof: computed-style diff against the Phase 4 build (`qa/style-diff.mjs`, quick matrix, 29,432 elements, 0 structural differences). The only non-custom-property differences are `transition-property` on the variant chips (opacity added) and the context menu items (`all` to `opacity, translate`, from keyframes to transitions). The custom-property differences are the six `--lx-*-ms` variables removed, the new `--mo-*` tokens and `--ease-exit`. Screenshot diff, quick matrix, 40 shots, `--policy v5`: pass, largest image 24 pixels over the threshold, none strong. First load 266,237 B against 266,240 B.
+
+Findings:
+- F-P5a. Two surfaces animate layout-bound properties, against the plan's rule that only opacity, transform, translate and scale animate: the tab indicator animates `left` and `right`, and the palette morph animates `clip-path`. Both are as they were; making them continuous was the task here. Converting them to transform needs a decision because the pill stretch and the rounded clip would change look.
+- F-P5b. Tab-switch exits used the enter curve; they now use `--ease-exit`. This is the only timing change in the phase (the duration is unchanged).
+- F-P5c. Component CSS still holds about 100 literal durations and 3 literal curves outside `tokens.css` (`states.css`, `qr.css`). Script is clean; CSS is not, and they were left because a token per literal costs bytes with no behaviour change.
+- F-P5d. The palette rows, the palette close button and the QR thumbs have no pressed state at all. Nothing was added.
+- F-P5e. The QR entrance animations no longer require `[open]`, so reopening a dialog that is still fading out resumes it instead of restarting it.
+
 ## 7. Baseline of the existing checks
 
 All run on `main` in this sandbox (2 vCPU, no GPU).
