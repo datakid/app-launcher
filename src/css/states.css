@@ -81,11 +81,11 @@
     transform: translateY(-12px) scale(0.985);
     pointer-events: none;
   }
-  .controls-pill button:active { opacity: 0.65; transition-duration: var(--dur-tap); }
+  .controls-pill button:active { opacity: 0.65; }
   .controls-pill.is-magnetic button { transition: background-color var(--dur-base) var(--ease-lux), color var(--dur-base) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux); }
   .lx-toast.is-error { border-color: color-mix(in srgb, #f87171 55%, var(--border)); }
   .lx-context-menu button.is-active svg { color: var(--tab-accent); }
-  .lx-context-menu button:active { opacity: 0.7; transition-duration: var(--dur-tap); }
+  .lx-context-menu button:active { opacity: 0.7; }
   .lx-bar.is-focused .tab-rail { opacity: .86; transition: opacity var(--dur-base) var(--ease-lux); }
   .lx-bar-search:focus-visible .lx-bar-label { color: var(--text); }
   @media (hover: hover) and (pointer: fine) {
@@ -102,7 +102,7 @@
   .app-card.is-live .app-title,
   .app-card.is-live .header-end { will-change: transform; }
   @media not ((hover: hover) and (pointer: fine)) {
-    .app-card:active { transform: scale(.982); transition-duration: var(--dur-tap), 90ms; }
+    .app-card:active { transform: scale(.982); transition-duration: var(--dur-tap); }
   }
   .app-card.is-kb-focus { --hov: 1; z-index: 10; }
   @media (hover: hover) and (pointer: fine) {
@@ -141,7 +141,7 @@
   @supports (anchor-name: --a) {
     .variant-chip[aria-checked="true"] { anchor-name: --active-chip; }
   }
-  .variant-chip:active { opacity: 0.7; transition-duration: var(--dur-tap); }
+  .variant-chip:active { opacity: 0.7; }
   .app-card.status-closed.is-kb-focus .closed-tint { opacity: .2; }
   @media (hover: hover) and (pointer: fine) {
     .app-card.status-closed:hover .closed-tint { opacity: .2; }
@@ -268,7 +268,7 @@
         transform: none;
       }
   }
-  .tab-btn:active { opacity: 0.7; transition-duration: var(--dur-tap); transform: scale(.98); }
+  .tab-btn:active { opacity: 0.7; transform: scale(.98); }
   .app-card.is-kb-focus .card-glow { opacity: .045; }
   .variant-chip.is-active { font-weight: 600; }
   .palette-action.is-active .palette-action-icon { transform: none; }
@@ -309,14 +309,13 @@
   .lx-context-menu button.is-failed svg { color: var(--closed-ink); }
   .lx-context-menu .ctx-seg button.is-active { color: var(--text); font-weight: 600; }
   .lx-context-menu .ctx-seg button:focus-visible { box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--menu-accent) 55%, transparent); }
-  .lx-context-menu.is-open .ctx-head,
-  .lx-context-menu.is-open .ctx-group,
-  .lx-context-menu.is-open .ctx-mode,
-  .lx-context-menu.is-open > button { animation: ctxRise 260ms var(--ease-lux) backwards; animation-duration: 420ms; }
-  .lx-context-menu.is-open .ctx-group:nth-of-type(2) { animation-delay: 20ms; }
-  .lx-context-menu.is-open .ctx-group:nth-of-type(3) { animation-delay: 40ms; }
-  .lx-context-menu.is-open .ctx-group:nth-of-type(4) { animation-delay: 55ms; }
-  .lx-context-menu.is-open .ctx-mode { animation-delay: 70ms; }
+  .lx-context-menu .ctx-head, .lx-context-menu .ctx-group, .lx-context-menu .ctx-mode { transition: opacity 420ms var(--ease-lux) var(--rise, 0ms), translate 420ms var(--ease-lux) var(--rise, 0ms); }
+  .lx-context-menu > button { transition: opacity 420ms var(--ease-lux), translate 420ms var(--ease-lux), background-color var(--dur-micro) var(--ease-lux); }
+  @starting-style { .lx-context-menu .ctx-head, .lx-context-menu .ctx-group, .lx-context-menu .ctx-mode, .lx-context-menu > button { opacity: 0; translate: 0 -5px; } }
+  .lx-context-menu .ctx-group:nth-of-type(2) { --rise: 20ms; }
+  .lx-context-menu .ctx-group:nth-of-type(3) { --rise: 40ms; }
+  .lx-context-menu .ctx-group:nth-of-type(4) { --rise: 55ms; }
+  .lx-context-menu .ctx-mode { --rise: 70ms; }
   @media (hover: hover) and (pointer: fine) {
     #refreshToggle:hover svg { transform: rotate(40deg); }
   }
@@ -391,7 +390,7 @@
     .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { translate: 0 -3px; }
     .app-grid[data-layout="icons"] .app-card--icon:active .app-icon-wrapper {
         scale: .94;
-        transition: translate var(--dur-fast) var(--ease-lux), scale 90ms var(--ease-lux);
+        transition: translate var(--dur-fast) var(--ease-lux), scale var(--dur-tap) var(--ease-lux);
       }
     .app-grid[data-layout="icons"] .app-card--icon:hover .icon-label { color: var(--text); }
   }
@@ -421,21 +420,21 @@
     opacity: 1;
     transform: none;
     translate: 0 0;
-    transition: opacity var(--lx-qr-in-ms, 220ms) var(--qr-ease), transform var(--lx-qr-in-ms, 220ms) var(--qr-ease), translate var(--lx-qr-in-ms, 220ms) var(--qr-ease), overlay var(--lx-qr-in-ms, 220ms) allow-discrete, display var(--lx-qr-in-ms, 220ms) allow-discrete;
+    transition: opacity var(--mo-qr-in) var(--qr-ease), transform var(--mo-qr-in) var(--qr-ease), translate var(--mo-qr-in) var(--qr-ease), overlay var(--mo-qr-in) allow-discrete, display var(--mo-qr-in) allow-discrete;
   }
   @starting-style { #lx-qr[open] { opacity: 0; transform: scale(.96); translate: var(--qr-fx, 0px) calc(var(--qr-fy, 0px) + 14px); } }
-  #lx-qr[open]::backdrop { opacity: 1; transition-duration: var(--lx-qr-in-ms, 220ms); }
+  #lx-qr[open]::backdrop { opacity: 1; transition-duration: var(--mo-qr-in); }
   @starting-style { #lx-qr[open]::backdrop { opacity: 0; } }
   .qr-close:hover, .qr-close:focus-visible { background: var(--surface-hover); color: var(--text); }
   .qr-close:active { transform: scale(.92); }
   .qr-variants[hidden], .qr-note[hidden], .qr-action[hidden] { display: none; }
   .qr-variant.is-active { color: var(--text); }
-  #lx-qr[open] .qr-frame::before { animation: qr-brackets 620ms var(--qr-ease) 120ms both; }
-  #lx-qr[open] .qr-stage:not(.is-swap) .qr-layer:not(.is-leaving) { animation: qr-pop 560ms var(--qr-ease) 40ms both; }
-  .qr-stage.is-swap .qr-layer:not(.is-leaving) { animation: qr-swap var(--lx-qr-variant-ms, 160ms) var(--qr-ease) both; }
+  #lx-qr .qr-frame::before { animation: qr-brackets 620ms var(--qr-ease) 120ms both; }
+  #lx-qr .qr-stage:not(.is-swap) .qr-layer:not(.is-leaving) { animation: qr-pop 560ms var(--qr-ease) 40ms both; }
+  .qr-stage.is-swap .qr-layer:not(.is-leaving) { animation: qr-swap var(--mo-qr-swap) var(--qr-ease) both; }
   .qr-layer.is-leaving { animation: qr-leave 120ms var(--qr-ease) both; pointer-events: none; }
-  #lx-qr[open] .qr-stage:not(.is-swap) .qr-logo { animation: qr-logo-in 520ms var(--qr-ease) 280ms both; }
-  #lx-qr[open] .qr-stage:not(.is-swap):not(.is-fail)::after { animation: qr-sweep 900ms cubic-bezier(.4, 0, .2, 1) 260ms both; }
+  #lx-qr .qr-stage:not(.is-swap) .qr-logo { animation: qr-logo-in 520ms var(--qr-ease) 280ms both; }
+  #lx-qr .qr-stage:not(.is-swap):not(.is-fail)::after { animation: qr-sweep 900ms cubic-bezier(.4, 0, .2, 1) 260ms both; }
   .qr-url:hover, .qr-url:focus-visible { background: var(--surface-hover); color: var(--text); }
   .qr-action-label.is-flash { animation: qr-label-in 120ms var(--qr-ease) both; }
   .qr-action:hover, .qr-action:focus-visible { background: var(--surface-hover); border-color: var(--border-highlight); }
@@ -469,7 +468,7 @@
     .palette-qr[hidden] { display: none; }
   }
   .palette-qr:hover, .palette-qr:focus-visible { background: var(--surface-hover); color: var(--text); border-color: var(--border-highlight); }
-  .card-qr:active { scale: .94; transition-duration: var(--dur-tap); }
+  .card-qr:active { scale: .94; }
   .card-qr:focus-visible,
   .variant-chip:focus-visible { outline-offset: 2px; }
   .card-link-overlay:focus-visible {
@@ -486,7 +485,7 @@
   }
   html[data-lowend] .app-icon-wrapper::after, html.lx-scrolling .app-icon-wrapper::after { opacity: 0 !important; }
   @media (hover: hover) and (pointer: fine) {
-    .app-card:not(.app-card--row):not(.app-card--icon):active .app-icon-wrapper { scale: .96; transition-duration: 90ms; }
+    .app-card:not(.app-card--row):not(.app-card--icon):active .app-icon-wrapper { scale: .96; transition-duration: var(--dur-tap); }
     .app-grid[data-layout="list"] > .app-card--row:hover .row-icon .app-icon-wrapper { translate: 0 -1px; }
   }
   .lx-bar.is-focused .lx-bar-ring { opacity: 1; }
@@ -508,4 +507,5 @@
     .app-card:not(.app-card--row):not(.app-card--icon) .app-icon-wrapper,
       .app-grid[data-layout="list"] > .app-card--row .row-icon .app-icon-wrapper { transition: none; }
   }
+  :is(.controls-pill button, .lx-context-menu button, .variant-chip, .tab-btn, .card-qr, .qr-close, .qr-action, .palette-action):active, .lx-bar-search:active :is(svg, .lx-bar-kbd) { transition-duration: var(--dur-tap); }
 }

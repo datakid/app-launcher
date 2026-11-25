@@ -73,7 +73,7 @@ const syncLookMenu = (menu, next = {}) => {
 const openLookMenu = (btn, focusFirst) => {
   closeContextMenu();
   const menu = buildContextMenu();
-  renderLookMenu(menu);
+  if (!menu.querySelector('[data-look-palette]') || getComputedStyle(menu).opacity === '0') renderLookMenu(menu);
   menu.dataset.owner = 'look';
   btn.setAttribute('aria-expanded', 'true');
   const pad = 8;

@@ -33,55 +33,42 @@ export const MQ = (() => {
   for (const key in specs) {
     const mql = window.matchMedia(specs[key]);
     state[key] = mql.matches;
-    mql.addEventListener('change', (e) => { state[key] = e.matches; });
+    mql.addEventListener('change', (e) => { state[key] = e.matches; syncMotion(); });
   }
   return state;
 })();
 
 const motionStyle = getComputedStyle(document.documentElement);
-export const motionMs = (name, fallback) => {
-  const value = motionStyle.getPropertyValue(name).trim();
-  const number = Number.parseFloat(value);
-  return Number.isFinite(number) && /m?s$/.test(value) ? number * (value.endsWith('ms') ? 1 : 1000) : fallback;
+const token = (name) => motionStyle.getPropertyValue(name).trim();
+const unit = (name) => {
+  const v = token(name);
+  const n = Number.parseFloat(v) || 0;
+  return /[^m]s$/.test(v) ? n * 1000 : n;
 };
-export const EASE_LUX = motionStyle.getPropertyValue('--ease-lux').trim() || 'cubic-bezier(0.22, 1, 0.36, 1)';
-export const EASE_ENTER = motionStyle.getPropertyValue('--ease-enter').trim() || EASE_LUX;
-export const EASE_EXIT = motionStyle.getPropertyValue('--ease-exit').trim() || EASE_LUX;
+export const motionMs = unit;
+export const EASE_LUX = token('--ease-lux');
+export const EASE_ENTER = token('--ease-enter');
+export const EASE_EXIT = token('--ease-exit');
+export const EASE_ACCEL = token('--ease-accel');
 export const isLowEnd = () => navigator.hardwareConcurrency <= 4 || (typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 4);
-const MOTION_SHARED = { outEase: 'cubic-bezier(0.4, 0, 0.7, 0.2)', travelOut: 10, travelIn: 14, liftIn: 8, scaleOut: 0.988, scaleIn: 0.982 };
-const MOTION_LEGACY = {
-  ...MOTION_SHARED,
-  tab: { outMs: motionMs('--lx-tab-out', 120), inMs: motionMs('--lx-tab-in', 240), inDelay: 0, stagger: 0, railMs: 460 },
-  view: { outMs: 190, inMs: motionMs('--dur-slow', 620), inDelay: 60, stagger: 150, railMs: 460 },
-  version: { inMs: 240 },
-  paletteOpen: { inMs: 420 },
-  paletteClose: { outMs: 250 },
-  qr: { inMs: 420, outMs: 250, variantMs: 240 },
-  crossfade: { inMs: 280 },
-  theme: { inMs: 460 },
-  boot: { inMs: 0, offset: 120, spread: 260 },
-  hover: { inMs: 0 }
+const MOTION_SPEC = {
+  tab: { outMs: '--lx-tab-out', inMs: '--lx-tab-in', inDelay: '--mo-tab-wait', stagger: '--mo-tab-stagger', railMs: '--mo-tab-rail', travelOut: '--mo-tab-travel', travelIn: '--mo-tab-travel' },
+  view: { outMs: '--mo-view-out', inMs: '--mo-view-in', inDelay: '--mo-view-wait', stagger: '--mo-view-stagger', travelOut: '--mo-travel-out', travelIn: '--mo-travel-in' },
+  fx: { liftIn: '--mo-lift', scaleOut: '--mo-scale-out', scaleIn: '--mo-scale-in' },
+  palette: { inMs: '--mo-pal-in', outMs: '--mo-pal-out', fade: '--mo-pal-fade', wait: '--mo-pal-wait', outFade: '--mo-pal-out-fade', hero: '--mo-pal-hero' },
+  crossfade: { inMs: '--mo-xfade' },
+  theme: { inMs: '--mo-theme' },
+  zen: { inMs: '--mo-zen' },
+  boot: { offset: '--mo-boot-offset', spread: '--mo-boot-spread' }
 };
-const MOTION_NEW = {
-  ...MOTION_SHARED,
-  tab: { outMs: motionMs('--lx-tab-out', 120), inMs: motionMs('--lx-tab-in', 240), inDelay: 0, stagger: 0, railMs: 220 },
-  view: { outMs: 120, inMs: 220, inDelay: 60, stagger: 0, railMs: 220 },
-  version: { inMs: 120 },
-  paletteOpen: { inMs: 200 },
-  paletteClose: { outMs: 140 },
-  qr: { inMs: 220, outMs: 150, variantMs: 160 },
-  crossfade: { inMs: 200 },
-  theme: { inMs: 320 },
-  boot: { inMs: 360, offset: 120, spread: 180 },
-  hover: { inMs: motionMs('--dur-micro', 160) }
+export const MOTION = {};
+export const syncMotion = () => {
+  for (const group in MOTION_SPEC) {
+    const row = MOTION[group] || (MOTION[group] = {});
+    for (const field in MOTION_SPEC[group]) row[field] = unit(MOTION_SPEC[group][field]);
+  }
 };
-export const MOTION = document.documentElement.dataset.motion === 'legacy' ? MOTION_LEGACY : MOTION_NEW;
-document.documentElement.style.setProperty('--lx-version-ms', `${MOTION.version.inMs}ms`);
-document.documentElement.style.setProperty('--lx-qr-in-ms', `${MOTION.qr.inMs}ms`);
-document.documentElement.style.setProperty('--lx-qr-out-ms', `${MOTION.qr.outMs}ms`);
-document.documentElement.style.setProperty('--lx-qr-variant-ms', `${MOTION.qr.variantMs}ms`);
-if (MOTION.boot.inMs) document.documentElement.style.setProperty('--lx-boot-ms', `${MOTION.boot.inMs}ms`);
-if (MOTION.hover.inMs) document.documentElement.style.setProperty('--lx-hover-ms', `${MOTION.hover.inMs}ms`);
+syncMotion();
 let scrollingTimer = 0;
 const onAnyScroll = () => {
   const root = document.documentElement;
@@ -91,7 +78,6 @@ const onAnyScroll = () => {
 };
 document.addEventListener('scroll', onAnyScroll, { passive: true, capture: true });
 if (isLowEnd()) document.documentElement.setAttribute('data-lowend', '');
-export const EASE_ACCEL = 'cubic-bezier(0.4, 0, 1, 1)';
 
 export class Spring {
   constructor(k = 190, c = 24, v = 0, scale = 1, px = false) {

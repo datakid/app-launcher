@@ -48,7 +48,7 @@
     transition-duration: var(--zen-duration);
     transition-timing-function: var(--ease-lux);
   }
-  .lx-bar-search:active svg.fa-magnifying-glass { transform: scale(.94); transition-duration: var(--dur-tap); }
+  .lx-bar-search:active svg.fa-magnifying-glass { transform: scale(.94); }
   .site-header::before,
   .site-header::after {
     content: ''; flex: 0 1 clamp(24px, 5vw, 72px); height: 1px;

@@ -7,12 +7,13 @@ import { scheduleWarmActiveEntry } from '../warm.js';
 import { STRINGS, lang, loc, t } from '../i18n.js';
 import { openInNewTab, openInSameTab, openMode, openModeAction, otherOpenMode } from '../open.js';
 import { bumpFreq, getFreqMap, getRecentEntries, pushRecent, recentScores } from '../store.js';
-import { EASE_ACCEL, EASE_LUX, MOTION, MQ, animate } from '../motion.js';
+import { EASE_ACCEL, EASE_LUX, MOTION, MQ, animate, motionMs } from '../motion.js';
 import { gradVars, isFresh } from '../card.js';
 import { closeContextMenu } from '../context-menu.js';
 import { tone } from '../theme.js';
 import { activateTab, activeViewTransition, assignActiveViewTransition, currentTabId } from '../tabs.js';
 import { allPaletteEntries, highlightTitle, normMap, normalizeAr, paletteSearchIndex, searchCommands } from './query.js';
+import { buildModel, entryKey, needsTryPicks, pickActive } from './model.js';
 import { commandEntries, keycapsHtml, runCommand } from './commands.js';
 import { openQrFromPalette } from '../qr-dialog.js';
 
@@ -80,7 +81,7 @@ const syncPaletteCursor = (instant = false) => {
     instant = true;
   }
   const entry = paletteItems[paletteActiveIndex];
-  const li = entry ? document.getElementById('palette-item-' + sanitizeDomId(paletteEntryKey(entry))) : null;
+  const li = entry ? document.getElementById('palette-item-' + sanitizeDomId(entryKey(entry))) : null;
   if (!li) { cursor.classList.remove('is-visible'); return; }
   const h = li.offsetHeight;
   if (!h) return;
@@ -102,7 +103,6 @@ const syncPaletteCursor = (instant = false) => {
 
 const paletteRowObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(() => syncPaletteCursor(true)) : null;
 let paletteRenderKey = null;
-const paletteEntryKey = (e) => e.app.id;
 
 const sanitizeDomId = (key) => String(key).replace(/[^a-zA-Z0-9_-]/g, '-');
 
@@ -151,9 +151,9 @@ const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   const li = document.createElement('li');
   li.className = 'palette-item' + (isActive ? ' is-active' : '');
   li.setAttribute('role', 'option');
-  li.id = 'palette-item-' + sanitizeDomId(paletteEntryKey(e));
+  li.id = 'palette-item-' + sanitizeDomId(entryKey(e));
   li.setAttribute('aria-selected', String(isActive));
-  li.dataset.key = paletteEntryKey(e);
+  li.dataset.key = entryKey(e);
   li.dataset.index = String(globalIndex);
   li.setAttribute('style', `${gradVars(appGradient(e.app))}--n:${globalIndex};`);
   li.innerHTML = paletteItemContentHtml(e, query);
@@ -263,6 +263,51 @@ const cyclePaletteScope = (step) => {
   setPaletteScope(list[(i + step + list.length) % list.length].id);
 };
 
+const GROUP_LABELS = { commands: 'commandsGroup', recent: 'recentGroup', all: 'allGroup', try: 'tryGroup' };
+
+const pickTryEntries = (allEntries) => {
+  const pool = allEntries.filter(e => !isPaletteOnly(e.cat));
+  const picks = [];
+  const used = new Set();
+  while (picks.length < Math.min(3, pool.length)) {
+    const idx = Math.floor(Math.random() * pool.length);
+    if (used.has(idx)) continue;
+    used.add(idx);
+    picks.push(pool[idx]);
+  }
+  return picks;
+};
+
+const ROW_SLIDE = 'row-slide';
+
+const measureRowTops = (list) => {
+  const top = list.getBoundingClientRect();
+  const tops = new Map();
+  list.querySelectorAll('.palette-item').forEach((li) => {
+    const r = li.getBoundingClientRect();
+    if (r.bottom > top.top && r.top < top.bottom) tops.set(li.dataset.key, r.top);
+    for (const a of li.getAnimations()) if (a.id === ROW_SLIDE) a.cancel();
+  });
+  return tops;
+};
+
+const slideRows = (list, from, stillKey) => {
+  if (!from.size || MQ.reducedMotion) return;
+  const bounds = list.getBoundingClientRect();
+  const duration = motionMs('--dur-micro');
+  list.querySelectorAll('.palette-item').forEach((li) => {
+    const key = li.dataset.key;
+    const was = from.get(key);
+    if (was === undefined || key === stillKey) return;
+    const r = li.getBoundingClientRect();
+    if (r.bottom <= bounds.top || r.top >= bounds.bottom) return;
+    const dy = was - r.top;
+    if (Math.abs(dy) < 1) return;
+    const a = li.animate([{ transform: `translate3d(0, ${dy}px, 0)` }, { transform: 'translate3d(0, 0, 0)' }], { duration, easing: EASE_LUX });
+    a.id = ROW_SLIDE;
+  });
+};
+
 export const renderPaletteResults = (rawQuery) => {
   const paletteResults = document.getElementById('paletteResults');
   const isCmd = paletteCmdMode;
@@ -273,8 +318,7 @@ export const renderPaletteResults = (rawQuery) => {
   const scoped = paletteScope !== 'all';
   const scored = [];
   if (!isCmd) {
-    const short = query.trim().length;
-    const hits = search(paletteSearchIndex(), query, { currentTabId, recents: short > 0 && short <= 2 ? recentScores() : null });
+    const hits = search(paletteSearchIndex(), query, { currentTabId, recents: query.trim() ? recentScores() : null });
     hits.forEach((h) => {
       const e = everyEntry[h.index];
       scopeCounts.all++;
@@ -290,65 +334,31 @@ export const renderPaletteResults = (rawQuery) => {
     : [];
 
   const prevActiveEntry = paletteItems[paletteActiveIndex];
-  const prevActiveKey = prevActiveEntry ? paletteEntryKey(prevActiveEntry) : null;
+  const prevActiveKey = prevActiveEntry ? entryKey(prevActiveEntry) : null;
 
-  const rows = [];
-
-  if (isCmd) {
-    paletteTryPicks = null;
-    paletteItems = query ? rankCommands(query) : commands;
-    if (paletteItems.length) rows.push({ type: 'header', text: t('commandsGroup') });
-    paletteItems.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-  } else if (!query && !scored.length) {
-    paletteItems = [];
-  } else if (!query) {
-    paletteTryPicks = null;
-    const recents = scoped ? [] : getRecentEntries(allEntries, 5);
-    const recentIds = new Set(recents.map(e => e.app.id));
-    const rest = scored.filter(e => !recentIds.has(e.app.id));
-    paletteItems = [...recents, ...rest];
-    if (recents.length) {
-      rows.push({ type: 'header', text: t('recentGroup') });
-      recents.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-      rows.push({ type: 'header', text: t('allGroup') });
-      rest.forEach((e, i) => rows.push({ type: 'item', entry: e, index: recents.length + i }));
-    } else {
-      rest.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-    }
-  } else if (scored.length || cmdHits.length) {
-    paletteTryPicks = null;
-    paletteItems = [...scored, ...cmdHits];
-    scored.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-    if (cmdHits.length) {
-      rows.push({ type: 'header', text: t('commandsGroup') });
-      cmdHits.forEach((e, i) => rows.push({ type: 'item', entry: e, index: scored.length + i }));
-    }
-  } else {
-    if (!paletteTryPicks) {
-      const pool = allEntries.filter(e => !isPaletteOnly(e.cat));
-      const picks = [];
-      const used = new Set();
-      while (picks.length < Math.min(3, pool.length)) {
-        const idx = Math.floor(Math.random() * pool.length);
-        if (used.has(idx)) continue;
-        used.add(idx);
-        picks.push(pool[idx]);
-      }
-      paletteTryPicks = picks;
-    }
-    paletteItems = paletteTryPicks;
-    rows.push({ type: 'header', text: t('tryGroup') });
-    paletteTryPicks.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-  }
+  const wantsPicks = needsTryPicks({ query, isCmd, scored, cmdHits });
+  if (wantsPicks && !paletteTryPicks) paletteTryPicks = pickTryEntries(allEntries);
+  const model = buildModel({
+    query,
+    isCmd,
+    scored,
+    cmdHits,
+    commandList: isCmd ? (query ? rankCommands(query) : commands) : [],
+    recents: !isCmd && !query && scored.length && !scoped ? getRecentEntries(allEntries, 5) : [],
+    tryPicks: paletteTryPicks
+  });
+  if (model.kind !== 'try' && model.kind !== 'empty') paletteTryPicks = null;
+  paletteItems = model.items;
+  const rows = model.rows;
 
   const renderKey = `${isCmd ? 1 : 0}\u0001${paletteScope}\u0001${query}`;
   const sameView = renderKey === paletteRenderKey;
   paletteRenderKey = renderKey;
-  let newActiveIndex = sameView && prevActiveKey ? paletteItems.findIndex(e => paletteEntryKey(e) === prevActiveKey) : -1;
-  if (newActiveIndex === -1) newActiveIndex = paletteItems.length ? 0 : -1;
-  paletteActiveIndex = newActiveIndex;
+  paletteActiveIndex = pickActive(paletteItems, prevActiveKey, sameView);
   paletteActionIndex = 0;
   paletteZone = 'list';
+
+  const slideFrom = sameView ? null : measureRowTops(paletteResults);
 
   paletteResults.classList.toggle('entrance-armed', paletteEntranceArmed);
   paletteEntranceArmed = false;
@@ -366,18 +376,17 @@ export const renderPaletteResults = (rawQuery) => {
     const usedKeys = new Set();
     rows.forEach(row => {
       if (row.type === 'header') {
-        paletteResults.appendChild(buildPaletteHeaderNode(row.text));
+        paletteResults.appendChild(buildPaletteHeaderNode(t(GROUP_LABELS[row.group])));
         return;
       }
-      const key = paletteEntryKey(row.entry);
       const isActive = row.index === paletteActiveIndex;
-      let li = pool.get(key);
+      let li = pool.get(row.key);
       if (li) {
         updatePaletteItemNode(li, row.entry, row.index, query, isActive);
       } else {
         li = buildPaletteItemNode(row.entry, row.index, query, isActive);
       }
-      usedKeys.add(key);
+      usedKeys.add(row.key);
       paletteResults.appendChild(li);
     });
     pool.forEach((li, key) => {
@@ -385,6 +394,7 @@ export const renderPaletteResults = (rawQuery) => {
       paletteRowObserver?.unobserve(li);
       li.remove();
     });
+    if (slideFrom) slideRows(paletteResults, slideFrom, paletteItems[paletteActiveIndex] ? entryKey(paletteItems[paletteActiveIndex]) : null);
   }
 
   updateActiveDescendant();
@@ -448,7 +458,7 @@ export const setPaletteActive = (i, { scroll = true } = {}) => {
   });
   const activeEntry = paletteItems[i];
   if (activeEntry && scroll) {
-    document.getElementById('palette-item-' + sanitizeDomId(paletteEntryKey(activeEntry)))?.scrollIntoView({ block: 'nearest' });
+    document.getElementById('palette-item-' + sanitizeDomId(entryKey(activeEntry)))?.scrollIntoView({ block: 'nearest' });
   }
   updateActiveDescendant();
   updateLiveAccent();
@@ -587,7 +597,7 @@ const updateActiveDescendant = () => {
     input.setAttribute('aria-activedescendant', a ? `palette-action-${a.id}` : '');
   } else {
     const activeEntry = paletteItems[paletteActiveIndex];
-    input.setAttribute('aria-activedescendant', activeEntry ? `palette-item-${sanitizeDomId(paletteEntryKey(activeEntry))}` : '');
+    input.setAttribute('aria-activedescendant', activeEntry ? `palette-item-${sanitizeDomId(entryKey(activeEntry))}` : '');
   }
 };
 
@@ -687,9 +697,9 @@ const openPaletteItem = (i) => {
   executeAction(openModeAction());
 };
 
-const MORPH_OPEN_MS = MOTION.paletteOpen.inMs;
-const MORPH_CLOSE_MS = MOTION.paletteClose.outMs;
-let paletteOpenFinish = null;
+let morph = null;
+let morphFrame = 0;
+let heroTimer = 0;
 
 const awaitAnimationSettled = (anim, maxMs) => new Promise((resolve) => {
   let done = false;
@@ -708,8 +718,90 @@ const awaitAnimationSettled = (anim, maxMs) => new Promise((resolve) => {
   });
 });
 
+const endMorph = () => {
+  paletteBusy = false;
+  const m = morph;
+  if (!m) return;
+  morph = null;
+  cancelAnimationFrame(morphFrame);
+  clearTimeout(heroTimer);
+  m.parts.forEach((a) => a.cancel());
+  const dialog = document.getElementById('lx-palette');
+  dialog.style.willChange = '';
+  dialog.classList.remove('is-morphing');
+  dialog.querySelector('.palette-close')?.style.removeProperty('opacity');
+  document.getElementById('paletteResults')?.style.removeProperty('--stagger-base');
+};
+
+const closeNow = () => {
+  const dialog = document.getElementById('lx-palette');
+  const hero = document.getElementById('lxBarSearch');
+  dialog.close();
+  endMorph();
+  dialog.classList.remove('is-morphing', 'did-morph');
+  document.body.classList.remove('palette-open');
+  if (heroReturnFocus) {
+    heroReturnFocus = false;
+    hero?.focus({ preventScroll: true });
+  }
+};
+
+const morphGeo = (dialog, hero) => {
+  const row = dialog.querySelector('.palette-input-row').getBoundingClientRect();
+  const heroBox = heroRestBox || hero.getBoundingClientRect();
+  const bottomGap = Math.max(0, dialog.getBoundingClientRect().height - row.height);
+  const dy = (heroBox.top + heroBox.height / 2) - (row.top + row.height / 2);
+  return {
+    closed: { clipPath: `inset(0px 0px ${bottomGap}px 0px round 999px)`, transform: `translateY(${dy}px)` },
+    open: { clipPath: 'inset(0px 0px 0px 0px round 20px)', transform: 'translateY(0)' }
+  };
+};
+
+const runMorph = (toOpen, geo) => {
+  const dialog = document.getElementById('lx-palette');
+  const prev = morph;
+  const live = prev && prev.panel;
+  const cs = getComputedStyle(dialog);
+  const bodyEl = dialog.querySelector('.palette-body');
+  const closeEl = dialog.querySelector('.palette-close');
+  const mo = MOTION.palette;
+  const total = toOpen ? mo.inMs : mo.outMs;
+  const ms = live ? Math.max(1, total * (live.effect.getComputedTiming().progress || 0)) : total;
+  const from = live ? { clipPath: cs.clipPath, transform: cs.transform } : geo[toOpen ? 'closed' : 'open'];
+  const fadeMs = live ? ms : total * (toOpen ? mo.fade : mo.outFade);
+  const wait = live || !toOpen ? 0 : total * mo.wait;
+  const fade = (el, to) => animate(el, [{ opacity: live ? getComputedStyle(el).opacity : 1 - to }, { opacity: to }], { duration: fadeMs, delay: wait, easing: EASE_LUX, fill: 'both' });
+  const panel = animate(dialog, [from, geo[toOpen ? 'open' : 'closed']], { duration: ms, easing: toOpen ? EASE_LUX : EASE_ACCEL, fill: 'both' });
+  const parts = [panel, fade(bodyEl, +toOpen)];
+  if (closeEl && (toOpen || live)) parts.push(fade(closeEl, 1));
+  prev?.parts.forEach((a) => a.cancel());
+  const m = { toOpen, geo, panel, parts };
+  morph = m;
+  dialog.style.willChange = 'clip-path, transform';
+  clearTimeout(heroTimer);
+  if (toOpen) document.body.classList.add('palette-open');
+  else heroTimer = setTimeout(() => { document.body.classList.remove('palette-open'); }, Math.max(0, ms - mo.hero));
+  awaitAnimationSettled(panel, total * 3).then(() => {
+    if (morph !== m) return;
+    if (toOpen) {
+      endMorph();
+      if (dialog.open) dialog.classList.add('did-morph');
+      document.body.classList.toggle('palette-open', dialog.open);
+    } else closeNow();
+  });
+};
+
+export const paletteClosing = () => !!morph && !morph.toOpen;
+
 export const openPalette = (seed = '') => {
   const dialog = document.getElementById('lx-palette');
+  const hero = document.getElementById('lxBarSearch');
+  if (paletteClosing() && morph.panel) {
+    hero?.setAttribute('aria-expanded', 'true');
+    sfx.veil(true);
+    runMorph(true, morph.geo);
+    return;
+  }
   if (dialog.open || paletteBusy) return;
   closeContextMenu();
   paletteBusy = true;
@@ -720,7 +812,6 @@ export const openPalette = (seed = '') => {
     assignActiveViewTransition(null);
   }
 
-  const hero = document.getElementById('lxBarSearch');
   const input = document.getElementById('paletteInput');
   const reducedMotion = MQ.reducedMotion;
   const skipMorph = !hero || reducedMotion || typeof dialog.animate !== 'function' ||
@@ -740,7 +831,7 @@ export const openPalette = (seed = '') => {
   if (hero && !heroRestBox) heroRestBox = hero.getBoundingClientRect();
 
   const results = document.getElementById('paletteResults');
-  if (results) results.style.setProperty('--stagger-base', skipMorph ? '0ms' : '110ms');
+  if (results) results.style.setProperty('--stagger-base', skipMorph ? '0ms' : `${MOTION.palette.inMs * .55}ms`);
   renderPaletteResults(seed);
 
   document.querySelector('.container').classList.add('is-dollied');
@@ -758,157 +849,62 @@ export const openPalette = (seed = '') => {
     return;
   }
 
-  const heroBox = heroRestBox;
-
   dialog.classList.remove('did-morph');
   dialog.classList.add('is-morphing');
   dialog.showModal();
   syncPaletteCursor(true);
   sfx.veil(true);
 
-  let openingFrame = 0;
-  let openingDone = false;
-  const openingAnims = [];
-  const chrome = [dialog.querySelector('.palette-close')].filter(Boolean);
-  const finishOpening = () => {
-    if (openingDone) return;
-    openingDone = true;
-    cancelAnimationFrame(openingFrame);
-    dialog.style.willChange = '';
-    dialog.classList.remove('is-morphing');
-    if (dialog.open) dialog.classList.add('did-morph');
-    document.body.classList.toggle('palette-open', dialog.open);
-    results?.style.removeProperty('--stagger-base');
-    openingAnims.forEach(a => { try { a.cancel(); } catch (e) { if (LX_DEBUG) console.warn(e); } });
-    chrome.forEach(el => { el.style.opacity = ''; });
-    paletteOpenFinish = null;
-    paletteBusy = false;
-  };
-  paletteOpenFinish = finishOpening;
+  const pending = { toOpen: true, panel: null, parts: [] };
+  morph = pending;
+  dialog.querySelector('.palette-close')?.style.setProperty('opacity', '0');
   input.focus({ preventScroll: true });
-  openingFrame = requestAnimationFrame(() => {
-    if (openingDone || !dialog.open) return;
-    const row = dialog.querySelector('.palette-input-row');
-    const rowBox = row.getBoundingClientRect();
-    const dlgBox = dialog.getBoundingClientRect();
-
-    document.body.classList.add('palette-open');
-
-    const dy = (heroBox.top + heroBox.height / 2) - (rowBox.top + rowBox.height / 2);
-    const bottomGap = Math.max(0, dlgBox.height - rowBox.height);
-
-    chrome.forEach(el => { el.style.opacity = '0'; });
-
-    dialog.style.willChange = 'clip-path, transform';
-    const panel = animate(dialog, [
-      { clipPath: `inset(0px 0px ${bottomGap}px 0px round 999px)`, transform: `translateY(${dy}px)` },
-      { clipPath: 'inset(0px 0px 0px 0px round 20px)', transform: 'translateY(0)' }
-    ], { duration: MORPH_OPEN_MS, easing: EASE_LUX, fill: 'both' });
-
-    const bodyAnim = animate(dialog.querySelector('.palette-body'), 
-      [{ opacity: 0 }, { opacity: 1 }],
-      { duration: Math.round(170 * MORPH_OPEN_MS / 420), delay: Math.round(100 * MORPH_OPEN_MS / 420), easing: EASE_LUX, fill: 'both' }
-    );
-    const chromeAnim = chrome.map(el => animate(el, 
-      [{ opacity: 0 }, { opacity: 1 }],
-      { duration: Math.round(170 * MORPH_OPEN_MS / 420), delay: Math.round(100 * MORPH_OPEN_MS / 420), easing: EASE_LUX, fill: 'both' }
-    ));
-
-    openingAnims.push(panel, bodyAnim, ...chromeAnim);
-    awaitAnimationSettled(panel, 600).then(finishOpening);
+  morphFrame = requestAnimationFrame(() => {
+    if (morph !== pending || !dialog.open) return;
+    runMorph(true, morphGeo(dialog, hero));
   });
 };
 
 export const closePaletteImmediate = () => {
-  paletteOpenFinish?.();
-  const dialog = document.getElementById('lx-palette');
-  if (!dialog.open) return;
-  const hero = document.getElementById('lxBarSearch');
-  hero?.setAttribute('aria-expanded', 'false');
+  endMorph();
+  if (!document.getElementById('lx-palette').open) return;
+  document.getElementById('lxBarSearch')?.setAttribute('aria-expanded', 'false');
   if (!paletteSkipCloseChime) sfx.veil(false);
   paletteSkipCloseChime = true;
   document.getElementById('paletteGhost')?.replaceChildren();
-  dialog.classList.remove('is-morphing', 'did-morph');
-  dialog.style.willChange = '';
-  dialog.close();
-  document.body.classList.remove('palette-open');
-  if (heroReturnFocus) {
-    heroReturnFocus = false;
-    hero?.focus({ preventScroll: true });
-  }
-  paletteBusy = false;
+  closeNow();
 };
 
 export const requestClosePalette = () => {
-  if (paletteOpenFinish) {
+  const dialog = document.getElementById('lx-palette');
+  if (morph && !morph.panel) {
     closePaletteImmediate();
     return;
   }
-  const dialog = document.getElementById('lx-palette');
-  if (!dialog.open || paletteBusy) return;
+  if (!dialog.open || paletteClosing() || (paletteBusy && !morph)) return;
   paletteBusy = true;
 
   const hero = document.getElementById('lxBarSearch');
   hero?.setAttribute('aria-expanded', 'false');
 
-  const skipChime = paletteSkipCloseChime;
-  if (!skipChime) sfx.veil(false);
+  if (!paletteSkipCloseChime) sfx.veil(false);
   paletteSkipCloseChime = true;
 
-  const g = document.getElementById('paletteGhost'); if (g) g.innerHTML = '';
+  document.getElementById('paletteGhost')?.replaceChildren();
 
-  const reducedMotion = MQ.reducedMotion;
-  const canMorph = !!hero && dialog.classList.contains('did-morph') && !reducedMotion && typeof dialog.animate === 'function';
-
-  const finish = () => {
-    dialog.close();
-    dialog.style.willChange = '';
-    dialog.classList.remove('is-morphing', 'did-morph');
-    document.body.classList.remove('palette-open');
-    if (heroReturnFocus) {
-      heroReturnFocus = false;
-      hero?.focus({ preventScroll: true });
-    }
-    paletteBusy = false;
-  };
-
+  const canMorph = !!hero && (!!morph || dialog.classList.contains('did-morph')) && !MQ.reducedMotion && typeof dialog.animate === 'function';
   if (!canMorph) {
-    finish();
+    closeNow();
     return;
   }
 
-  const row = dialog.querySelector('.palette-input-row').getBoundingClientRect();
-  const heroBox = heroRestBox || hero.getBoundingClientRect();
-  const dlgBox = dialog.getBoundingClientRect();
-  const dy = (heroBox.top + heroBox.height / 2) - (row.top + row.height / 2);
-  const bottomGap = Math.max(0, dlgBox.height - row.height);
-
+  const geo = morph ? morph.geo : morphGeo(dialog, hero);
   dialog.classList.add('is-morphing');
-  dialog.style.willChange = 'clip-path, transform';
-
-  const hideHeroTimer = setTimeout(() => { document.body.classList.remove('palette-open'); }, Math.max(0, MORPH_CLOSE_MS - 80));
-
-  const panel = animate(dialog, [
-    { clipPath: 'inset(0px 0px 0px 0px round 20px)', transform: 'translateY(0)' },
-    { clipPath: `inset(0px 0px ${bottomGap}px 0px round 999px)`, transform: `translateY(${dy}px)` }
-  ], { duration: MORPH_CLOSE_MS, easing: EASE_ACCEL, fill: 'both' });
-
-  const bodyAnim = animate(dialog.querySelector('.palette-body'), 
-    [{ opacity: 1 }, { opacity: 0 }],
-    { duration: Math.round(MORPH_CLOSE_MS * 0.6), easing: EASE_LUX, fill: 'both' }
-  );
-
-  awaitAnimationSettled(panel, 600).then(() => {
-    clearTimeout(hideHeroTimer);
-    try { panel.cancel(); } catch (e) { if (LX_DEBUG) console.warn(e); }
-    try { bodyAnim.cancel(); } catch (e) { if (LX_DEBUG) console.warn(e); }
-    finish();
-  });
+  runMorph(false, geo);
 };
+
 const togglePalette = () => {
-  if (paletteBusy) return;
-  const dialog = document.getElementById('lx-palette');
-  if (dialog.open) requestClosePalette(); else openPalette();
+  if (document.getElementById('lx-palette').open && !paletteClosing()) requestClosePalette(); else openPalette();
 };
 
 export const initPaletteInput = () => {
@@ -1122,6 +1118,6 @@ export const initPaletteHints = () => {
     if (!kbd) return;
     kbd.classList.add('is-pressed');
     clearTimeout(kbd._pressTimer);
-    kbd._pressTimer = setTimeout(() => kbd.classList.remove('is-pressed'), 140);
+    kbd._pressTimer = setTimeout(() => kbd.classList.remove('is-pressed'), motionMs('--dur-micro'));
   });
 };

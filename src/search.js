@@ -483,7 +483,7 @@ const osaBest = (a, an, b, lo, hi, max) => {
   return best;
 };
 
-const budgetOf = (len) => (len >= 8 ? 2 : len >= 4 ? 1 : 0);
+const budgetOf = (len) => (len >= 6 ? 2 : len >= 4 ? 1 : 0);
 
 const hit = { score: 0, k: -1, tier: 0 };
 
@@ -491,7 +491,8 @@ const evalToken = (qs, id) => {
   const vocab = qs.vocab;
   const q = qs.q;
   const qLen = qs.len;
-  const budget = qs.budget;
+  const t = vocab.list[id];
+  const budget = qs.budget === 2 && qLen < 8 && (t.charCodeAt(0) !== q.charCodeAt(0) || t.charCodeAt(1) !== q.charCodeAt(1) || t.length - qLen > 1 || qLen - t.length > 1) ? 1 : qs.budget;
   const c = qs.cache;
   c.stamp[id] = qs.gen;
   c.score[id] = 0;
@@ -504,7 +505,6 @@ const evalToken = (qs, id) => {
     miss = popcount(xa) + popcount(xb);
     if (miss > budget) return;
   }
-  const t = vocab.list[id];
   const tLen = t.length;
   let s = 0;
   let tier = 0;
@@ -538,6 +538,10 @@ const evalToken = (qs, id) => {
       s = sum > 600 ? 600 : sum;
       tier = TIER.subsequence;
     }
+  }
+  if (tier === 0 && qLen === 3 && tLen === 3 && ((t.charCodeAt(0) === q.charCodeAt(1) && t.charCodeAt(1) === q.charCodeAt(0) && t.charCodeAt(2) === q.charCodeAt(2)) || (t.charCodeAt(0) === q.charCodeAt(0) && t.charCodeAt(1) === q.charCodeAt(2) && t.charCodeAt(2) === q.charCodeAt(1)))) {
+    s = 280;
+    tier = TIER.typo;
   }
   if (budget > 0 && s < 280) {
     const cmp = tLen < qLen ? tLen : qLen;
@@ -982,7 +986,7 @@ const run = (index, raw, opts, swapped) => {
     const newTok = tokens[last.tokens.length - 1];
     let stable = true;
     for (let i = 0; i < last.tokens.length - 1; i++) if (last.tokens[i] !== tokens[i]) stable = false;
-    if (stable && newTok.startsWith(lastTok) && (newTok === lastTok || budgetOf(newTok.length) === 0)) candidates = last.candidates;
+    if (stable && newTok.startsWith(lastTok) && (newTok === lastTok || (budgetOf(newTok.length) === 0 && newTok.length !== 3))) candidates = last.candidates;
   }
 
   const matched = [];
@@ -994,21 +998,23 @@ const run = (index, raw, opts, swapped) => {
   const hPf = [];
   const hCl = [];
   const hJoined = [];
+  const hRec = [];
   const plain = [];
   const typo = [];
   const n = candidates ? candidates.length : docs.length;
+  const personal = (d) => {
+    let r = 0;
+    for (const id of d.ids) {
+      const v = recents.get(id);
+      if (v && v > r) r = v;
+    }
+    return r;
+  };
   const adjust = (d, score) => {
     if (d.closed) score *= 0.9;
     if (swapped) score *= 0.92;
     if (currentTab && d.catId === currentTab) score += 40;
-    if (shortQuery && recents) {
-      let r = 0;
-      for (const id of d.ids) {
-        const v = recents.get(id);
-        if (v && v > r) r = v;
-      }
-      score += 60 * r;
-    }
+    if (shortQuery && recents) score += 60 * personal(d);
     return score;
   };
   const record = (di, d, score, tier, tt, pf, cl, joinedHit) => {
@@ -1021,6 +1027,7 @@ const run = (index, raw, opts, swapped) => {
     hPf.push(pf);
     hCl.push(cl);
     hJoined.push(joinedHit ? 1 : 0);
+    hRec.push(recents ? personal(d) : 0);
     if (tier <= TIER.typo && !urlScore) typo.push(h);
     else plain.push(h);
   };
@@ -1074,7 +1081,7 @@ const run = (index, raw, opts, swapped) => {
 
   index.last = swapped || urlQuery ? null : { nq, tokens, candidates: matched };
 
-  const cmp = (a, b) => (hScore[b] - hScore[a]) || (hTT[b] - hTT[a]) || (hTL[a] - hTL[b]) || (hDoc[a] - hDoc[b]);
+  const cmp = (a, b) => (hScore[b] - hScore[a]) || (hTT[b] - hTT[a]) || (hRec[b] - hRec[a]) || (hTL[a] - hTL[b]) || (hDoc[a] - hDoc[b]);
   plain.sort(cmp);
   typo.sort(cmp);
   let kept = typo;
@@ -1135,11 +1142,21 @@ const run = (index, raw, opts, swapped) => {
   return out;
 };
 
+const LITERAL_FIELDS = new Set(['host', 'url']);
+
+const swappedWins = (first, second) => {
+  const top = second[0];
+  if (!top) return false;
+  if (!first.length) return true;
+  return first[0].tier === TIER.subsequence && top.tier === TIER.exact && !LITERAL_FIELDS.has(top.field);
+};
+
 export const search = (index, query, opts = {}) => {
   const raw = String(query == null ? '' : query).slice(0, MAX_QUERY_LEN);
   const first = run(index, raw, opts, false);
-  if (first.length || !raw.trim()) return first;
+  if (!raw.trim() || (first.length && first[0].tier !== TIER.subsequence)) return first;
   const swapped = layoutSwap(raw);
   if (swapped === raw) return first;
-  return run(index, swapped, opts, true);
+  const second = run(index, swapped, opts, true);
+  return swappedWins(first, second) ? second : first;
 };

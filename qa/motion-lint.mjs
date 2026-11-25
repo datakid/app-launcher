@@ -1,4 +1,5 @@
 import { launchBrowser } from '../perf/browser.mjs';
+import { readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { startServer } from '../perf/server.mjs';
@@ -23,6 +24,19 @@ const TARGETS = [
   { name: '.tab-rail > *', sel: '.tab-rail > *' },
   { name: '.variant-chip', sel: '.variant-chip' }
 ];
+
+const jsFiles = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? jsFiles(path.join(dir, d.name)) : d.name.endsWith('.js') ? [path.join(dir, d.name)] : []));
+const LITERAL_CLOCK = [/cubic-bezier\(/, /\b(duration|delay|endDelay)\s*:\s*[1-9]/, /\b[1-9][0-9]*(\.[0-9]+)?ms\b/];
+
+const literalClock = () => {
+  const found = [];
+  for (const file of jsFiles(path.join(root, 'src/modules'))) {
+    readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
+      if (LITERAL_CLOCK.some((re) => re.test(line))) found.push(`${path.relative(root, file)}:${i + 1} ${line.trim().slice(0, 110)}`);
+    });
+  }
+  return found;
+};
 
 const LOOKS = ['vivid', 'curated', 'muted', 'mono'];
 const VIEWS = ['bento', 'list', 'icons'];
@@ -57,6 +71,9 @@ const readStates = ({ targets, state }) => {
 const read = (page, state) => page.evaluate(readStates, { targets: TARGETS, state });
 
 const main = async () => {
+  const literals = literalClock();
+  literals.forEach((l) => console.log('LITERAL', l));
+  if (literals.length) process.exit(1);
   const server = await startServer(siteRoot(root));
   const browser = await launchBrowser();
   const violations = new Map();

@@ -133,6 +133,76 @@ Bytes: the new tile CSS pushed the first load 48 bytes over its budget, so 23 de
 
 Proof for the tile change: the full computed-style diff against the Phase 3 build changes only tile elements (plate and its pseudo-elements, glyph and its copies, tile badges, the menu head icon) plus new inherited tokens; no pixel more than 8 levels different outside the tile shadow footprint in 48 look, theme, language and view combinations; `qa:tiles` 440 tiles, lowest five 3.435, 3.437, 3.438, 3.439, 3.439 (before 3.434, 3.436, 3.437, 3.437, 3.437); 400 hover toggles cost 32.1 ms of style recalculation against 35.7 ms before, equal within noise.
 
+### Phase 5 outcome: motion continuity, one clock
+
+Owner decisions on record (2026-11-24): delete the non-anchor variant-chip fallback (-270 B gz), retire `?motion=legacy` now instead of in Phase 7 (-127 B gz).
+
+| Plan item | What shipped |
+|---|---|
+| 1 one clock | `tokens.css` owns every duration and curve used by script: `--lx-tab-*`, `--mo-*` (tab rail, view, palette, QR, crossfade, theme, Zen, boot, hover, travel, lift and scale), `--ease-exit` (now the old JS exit curve, `cubic-bezier(.4, 0, .7, .2)`, distinct from enter), `--ease-accel`, `--ease-xfade`. `motion.js` reads them from the computed style at load, on every motion preference change and when the theme is applied. No literal `cubic-bezier(`, `duration:` or millisecond value is left in `src/modules` and `qa:motion` now fails on one. The six dead duplicate keyframe blocks and the `ctxRise` keyframes are gone |
+| 2 interruptible | tab indicator, palette morph (open, close and reopen), variant thumb, QR sheet and its thumb, Zen toggle (from the live View Transition rects), context menu and appearance menu retarget from their current computed state. `qa/rapid-switch.mjs` reverses each of the eight surfaces at 30, 50 and 80 percent, forward and after a reopen: 48 cases, 48 pass, worst jump 0 px. The Phase 4 build (main) fails 23 of 48, worst 95.31 px (palette), tab indicator 22.97 and 39.73 px, QR content and look menu items restart (60), Zen 15.77 px |
+| 5 press feedback | a forced `:active` on 44 pressables in the grid, palette, QR dialog, context menu and appearance menu: every property that changes on press transitions in `--dur-tap`. Fixed: the bar kbd chip, the magnifier (its layout-layer duration lost to a 380 ms transition set later), the icon-view tile (90 ms literal), `.qr-close`, `.qr-action`, and the variant chip, whose opacity was not in its transition list and changed instantly. The five existing per-rule durations are merged into one rule |
+| 6 `inherits: false` | rejected, measured (below) |
+| 7 `?motion=legacy` | retired (owner), with its token block, the inline script line and the QA check; `qa/behaviour.mjs` now asserts that the default timings are read from the tokens and that changing a token reaches script after a motion preference change |
+
+Not done, said plainly:
+- Item 3, objects travel (tile FLIP between card, palette row, palette detail, context-menu header and QR dialog). First load has 3 bytes of headroom. A first estimate from the minified helper and four call sites is about 400 B gz. No overridden CSS is left to delete (the scan of all 3,730 declarations in cascade order finds none), so it needs either a budget decision or a cut elsewhere.
+- Item 4, rows persisting in the palette, is delivered with the keyed view in Phase 6, as the plan says.
+
+`inherits: false` on `--tx`, `--ty`, `--hov`, `--gx`, `--gy`, measured as an upper bound (the probe leaves the readers on descendants broken, so it can only look better than a real change could): desktop hover sweep on the bento view, 5 runs, 2-CPU software renderer. Elements restyled 59,237 with `inherits: true`, 61,993 with `false`; style recalculations 739 against 776; recalculation time 1,949 ms against 2,090 ms. It does not reduce the work even before paying for the readers, so the registrations stay `inherits: true`.
+
+Proof: computed-style diff against the Phase 4 build (`qa/style-diff.mjs`, quick matrix, 29,432 elements, 0 structural differences). The only non-custom-property differences are `transition-property` on the variant chips (opacity added) and the context menu items (`all` to `opacity, translate`, from keyframes to transitions). The custom-property differences are the six `--lx-*-ms` variables removed, the new `--mo-*` tokens and `--ease-exit`. Screenshot diff, quick matrix, 40 shots, `--policy v5`: pass, largest image 24 pixels over the threshold, none strong. First load 266,237 B against 266,240 B.
+
+Findings:
+- F-P5a. Two surfaces animate layout-bound properties, against the plan's rule that only opacity, transform, translate and scale animate: the tab indicator animates `left` and `right`, and the palette morph animates `clip-path`. Both are as they were; making them continuous was the task here. Converting them to transform needs a decision because the pill stretch and the rounded clip would change look.
+- F-P5b. Tab-switch exits used the enter curve; they now use `--ease-exit`. This is the only timing change in the phase (the duration is unchanged).
+- F-P5c. Component CSS still holds about 100 literal durations and 3 literal curves outside `tokens.css` (`states.css`, `qr.css`). Script is clean; CSS is not, and they were left because a token per literal costs bytes with no behaviour change.
+- F-P5d. The palette rows, the palette close button and the QR thumbs have no pressed state at all. Nothing was added.
+- F-P5e. The QR entrance animations no longer require `[open]`, so reopening a dialog that is still fading out resumes it instead of restarting it.
+
+### Phase 6A outcome: search audit (no engine change)
+
+Bench on the real catalogue (`qa/search-bench.mjs --verbose`, 3,257 queries, 36 entries, 4 categories): top-1 96.5 percent, top-3 98.2, found 98.4. Junk and unrelated words returning something: 0 of 318. Speed on the bench: median 0.041 ms, p95 0.157 ms.
+
+| Family | n | top-1 | top-3 | found |
+|---|---|---|---|---|
+| exact, joined, reversed, reversed joined, typo title (joined), parent + variant, layout swap, prefix, category + word | 63 to 252 each | 100 | 100 | 100 |
+| typo title, typo title reversed, word starts | 63 to 252 | 98 to 98.4 | 100 | 100 |
+| url, id, url typo | 72 to 360 | 97.1 to 99.2 | 100 | 100 |
+| typo word | 1,109 | 93.6 | 95.1 | 95.5 |
+| first letters | 63 | 87.3 | 96.8 | 98.4 |
+| url fragment | 95 | 85.3 | 98.9 | 100 |
+
+Weakest groups, all under 90 percent top-1: three-letter words with one typo (substitute, substitute the first letter, transpose: 0 percent each, n = 7; delete: 57.1 percent), first letters in Arabic (79.4, n = 34), two typos in a word of 5 to 7 letters (61.4) or 8 and more (73.1), url fragments in the middle of a host (82.1) and url fragments starting at the longest part (85.7). Category queries find every member of the tab, with first-12 precision between 42 and 100 percent.
+
+Golden set: `qa/search-golden.json` holds 61 hand-written queries (prefixes, acronyms, half-typed Arabic with and without the article, mixed script, the wrong keyboard layout, pasted URLs, url fragments, version names, category names, typos); `qa/search-golden.mjs` checks that the top result is the expected app, variant or category. Today 55 of 61 pass. The six failures:
+- Five wrong-layout queries for short Arabic names typed on the English layout (`فلو`, `سيم`, `كوين`, `طرق`, `فوليو`): the raw query returns weak subsequence hits (tier 3), so the layout swap, which only runs when the raw query returns nothing, never happens, and the right entry is not first.
+- `rio` for ROI, a transposition in a three-letter word: nothing is returned.
+
+Latency per keystroke (every prefix of every golden query, 5 rounds after warm-up): real catalogue p50 0.022 ms, p95 0.052 ms, max 2.8 ms. The synthetic 5,000-entry catalogue (`qa/search.mjs`): warm median 3.28 ms, p95 9.91 ms (limits 6 and 12), cold median 4.47 ms, p95 9.73 ms; building the index takes 278 ms.
+
+The golden set was not in `qa:search` at this point because it failed; it is added in 6D (see below). The owner's ten real queries are not in it yet.
+
+### Phase 6 outcome: search improvements, palette seam, ratchet
+
+Bytes first. Phase 5 left 3 B of headroom under the 266,240 B first-load budget, so nothing in Phase 6 would fit. The five first-load Latin fonts (Inter 400, 500, 600, Cormorant Garamond 400 italic and 600) were trimmed with `tools/subset-fonts.mjs`: the same declared `unicode-range`, only OpenType features nothing uses and glyphs outside that range removed. A pixel test rendered every covered codepoint, all 94 x 94 ASCII pairs (kerning), ligatures, tabular figures and small caps at 11 to 28 px on the old and new files: byte-identical screenshots for all five. Saving 25,044 B; first load went from 266,237 B to 241,259 B before the search work and is 241,963 B now (limit unchanged, 24,277 B of headroom). The budget was not raised.
+
+Search (`src/search.js`), each change with failing tests first, one commit each, bench run in full after each:
+
+| Change | Result |
+|---|---|
+| Layout-swapped results are used when the raw query only finds subsequence hits and the swapped reading's top hit is an exact title or keyword match (never host or url) | golden wrong-layout 5 of 10 to 10 of 10; bench identical. Two looser variants regressed the typo family (93.6 to 89.1 and three Arabic typos) and were dropped |
+| Personal tie-break: recents and frequent only order hits whose score is exactly equal, after the title-token key; the palette passes them for every query length | score and tier sequence identical with and without recents (pinned for 15 queries); bench identical |
+| Two typos allowed in 6 and 7 letter words, only when the token shares the first two letters and is within one letter of the query's length | typo word top-1 93.6 to 94.4; junk stays 0 of 318. Allowing it everywhere let `banana`, `bscfi` and `jzmdnl` through, so those are pinned as empty |
+| Swapped neighbours in a 3-letter word (`rio` finds `roi`); narrowing is skipped for 3-letter queries so typing equals the cold result | typo word top-1 94.4 to 95.0; golden 61 of 61 |
+| 1 and 2 letter ordering and highlight ranges: pinned, no engine change needed | no lower title tier outranks a higher one by more than 3 points, typing the second letter equals the cold result, ranges of every top-five golden hit are valid, swapped, typo and split highlights are pinned |
+
+Bench after: top-1 97.0 (was 96.5), top-3 98.8 (was 98.2), found 99.0 (was 98.4); typo word 95.0 / 96.8 / 97.2 (was 93.6 / 95.1 / 95.5); no family moved down; junk 0 of 318. Latency per keystroke on the real catalogue: p50 0.041 ms, p95 0.118 ms (bench median 0.054 ms, p95 0.199 ms); the synthetic 5,000-entry limits still hold. Not changed because the bench gave no case to improve: Arabic article-less words already find their entry in the top three (30 of 30 plain, 30 of 30 with a typo), and Arabic first letters are ambiguous by nature (every title starts with the article).
+
+Palette seam (6C): `palette/model.js` is plain data and imports nothing from the page: rows (headers and items) with the stable key `app.id` (variants already carry `parent::variant`), contiguous item indexes, match tier, field and highlight ranges, plus `pickActive` (first result after a new query, same app when the view is unchanged) and `needsTryPicks`. `view.js` builds DOM from it and keeps its keyed pool, so surviving rows keep their nodes. New: rows that survive a keystroke and moved slide from where they were (transform only, `--dur-micro`, `--ease-lux`, cancelled and measured from the visual position so back-to-back keystrokes stay continuous); the highlighted first row never slides, rows outside the list's viewport snap, reduced motion skips it. The detail pane shows the Phase 4 tile at 72 px (it was 56) when the viewport is at least 860 px tall and 721 px wide; below that the pane has no room for the extra 16 px and stays as it was. New checks: `qa/palette-model.mjs` (20 checks, no browser), `qa/palette-rows.mjs` (13 checks: identity, slide, no travel for the highlight, continuity, settling, reduced motion).
+
+Ratchet (6D): `qa:search` now runs `qa/search.mjs` (357 checks), `qa/search-golden.mjs` (61 queries, 61 pass, highlight ranges validated) and `qa/palette-model.mjs`; `qa/search-bench.mjs` floors are 96.7 / 98.5 / 98.7 (were 95.5 / 97.5 / 97.5). The ten queries the owner actually types are still to be added to the golden set.
+
 ## 7. Baseline of the existing checks
 
 All run on `main` in this sandbox (2 vCPU, no GPU).

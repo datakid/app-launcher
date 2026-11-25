@@ -84,6 +84,90 @@ const swappedPharmacy = top('toolspharmacy', 2);
 check('"toolspharmacy" -> Pharmacy Tools entries first', swappedPharmacy.length === 2 && swappedPharmacy.every((x) => x.startsWith('Pharmacy Tools')), JSON.stringify(swappedPharmacy));
 const swappedAr = top('ادويهقائمه', 2);
 check('"ادويهقائمه" -> Drug List entries first', swappedAr.length === 2 && swappedAr.every((x) => x.startsWith('Drug List')), JSON.stringify(swappedAr));
+
+const topId = (q) => {
+  const h = run(q)[0];
+  return h ? entries[h.index].app.id : null;
+};
+for (const [q, id] of [['hgpwh]', 'harvest'], [']tjv', 'dafter'], ['ld.hk', 'qisma-mizan::express'], ['sdl', 'quoin::seam'], [';,dk', 'quoin::quoin'], ["'vr", 'typing::tarq'], ['t,gd,', 'ledger-form::folio']]) {
+  check(`wrong layout "${q}" -> ${id} first`, topId(q) === id, String(topId(q)));
+}
+for (const [q, id] of [['اكل', 'quoin::seam'], ['ادره', 'pharmacy-tools::pillbug'], ['فويو', 'ledger-form::folio']]) {
+  check(`typo "${q}" is not replaced by its layout swap`, topId(q) === id, String(topId(q)));
+}
+
+for (const [q, id] of [['harvwt', 'harvest'], ['phariay', 'pharmacy-tools::pillbug'], ['الصيدمه', 'pharmacy-tools::pillbug'], ['المعيرر', 'criteria-builder::meridian'], ['العودد', 'qisma-mizan::full']]) {
+  check(`two typos in a 6-8 letter word: "${q}" -> ${id} first`, topId(q) === id, String(topId(q)));
+}
+for (const q of ['banana', 'bscfi', 'jzmdnl', 'plumber', 'quartz']) {
+  check(`two-typo allowance stays closed for unrelated "${q}"`, run(q).length === 0, JSON.stringify(describe(q)));
+}
+
+for (const [q, id] of [['rio', 'roi::full'], ['atl', 'alt'], ['طقر', 'typing::tarq'], ['سمل', 'criteria-builder::rubric']]) {
+  check(`swapped neighbours in a 3-letter word: "${q}" -> ${id} first`, topId(q) === id, String(topId(q)));
+  index.last = null;
+  const cold = search(index, q);
+  index.last = null;
+  search(index, q.slice(0, 2));
+  const warm = search(index, q);
+  check(`swapped neighbours: typing "${q}" gives the cold result`, warm.length === cold.length && warm.every((h, k) => h.index === cold[k].index && h.score === cold[k].score));
+}
+for (const q of ['xyz', 'qzx', 'wqe', 'zxc', 'vvj']) {
+  check(`3-letter junk "${q}" stays empty`, run(q).length === 0, describe(q));
+}
+
+const marked = (q) => {
+  const h = run(q)[0];
+  return h ? h.ranges.map(([a, b]) => h.text.slice(a, b)).join('+') : null;
+};
+check('layout-swapped hit highlights the Arabic title it matched', marked('hgpwh]') === 'الحصاد', String(marked('hgpwh]')));
+check('layout-swapped hit highlights only the matched version name', marked('sdl') === 'سيم', String(marked('sdl')));
+check('typo hit highlights the whole word it corrected', marked('rio') === 'ROI', String(marked('rio')));
+check('two-word typo highlights each corrected word', marked('critera builder') === 'Criteri+Builder', String(marked('critera builder')));
+
+const recentsOf = (pairs) => new Map(pairs);
+const withRecents = (q, pairs) => {
+  index.last = null;
+  return search(index, q, { recents: recentsOf(pairs) });
+};
+const idOf = (h) => entries[h.index].app.id;
+for (const pick of ['text-tools::text', 'pharmacy-tools::pillbug', 'quoin::quoin']) {
+  const got = withRecents('tool', [[pick, 0.9]]).map(idOf);
+  check(`personal tie-break: recent "${pick}" leads the equal-score "tool" group`, got[0] === pick, got.slice(0, 3).join(','));
+}
+const noisy = [['text-tools::text', 0.9], ['roi::full', 0.8], ['drug-list::full', 0.7], ['plan-maker::express', 0.6], ['ledger-form::folio', 0.5], ['quoin::seam', 0.4]];
+for (const q of ['tool', 'tools', 'form', 'data', 'calc', 'list', 'plan', 'drug', 'prsr', 'parsre', 'أدوات', 'دواء', 'قائمة', 'خطة', 'hglpgg']) {
+  const base = run(q);
+  const got = withRecents(q, noisy);
+  check(`personal tie-break: "${q}" keeps the same hits`, base.length === got.length && new Set(base.map(idOf)).size === new Set(got.map(idOf)).size && base.every((h) => got.some((g) => g.index === h.index)));
+  check(`personal tie-break: "${q}" score and tier sequence unchanged`, base.every((h, k) => h.score === got[k].score && h.tier === got[k].tier));
+}
+const shortLetters = 'abcdefghijklmnopqrstuvwxyzابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('');
+const shortQueries = [...shortLetters];
+for (const a of shortLetters) for (const b of shortLetters) shortQueries.push(a + b);
+let invertedPairs = 0;
+let widestInversion = 0;
+let incrementalMisses = 0;
+for (const q of shortQueries) {
+  const cold = run(q);
+  const titled = cold.filter((h) => h.field === 'title');
+  for (let i = 0; i < titled.length; i++) {
+    for (let j = i + 1; j < titled.length; j++) {
+      if (titled[j].tier > titled[i].tier) {
+        invertedPairs++;
+        widestInversion = Math.max(widestInversion, titled[i].score - titled[j].score);
+      }
+    }
+  }
+  if (q.length === 2) {
+    index.last = null;
+    search(index, q[0]);
+    const warm = search(index, q);
+    if (warm.length !== cold.length || warm.some((h, k) => h.index !== cold[k].index || h.score !== cold[k].score)) incrementalMisses++;
+  }
+}
+check('1-2 letter queries: a lower title tier never outranks a higher one by more than 3 points', widestInversion <= 3, `${invertedPairs} pairs, widest ${widestInversion.toFixed(2)}`);
+check('1-2 letter queries: typing the second letter gives the cold result', incrementalMisses === 0, `${incrementalMisses} differ`);
 check('"bugvertpill" joins pieces of two different apps -> no results', run('bugvertpill').length === 0);
 check('"qwertyuiop" -> no results', run('qwertyuiop').length === 0);
 const bugpil = run('bugpil')[0];

@@ -1,6 +1,6 @@
 import { LX_DEBUG } from './util.js';
 import { t } from './i18n.js';
-import { EASE_LUX, MQ, Motion, animate } from './motion.js';
+import { EASE_LUX, MOTION, MQ, Motion, animate } from './motion.js';
 import { assignPointerFieldDirty } from './pointer-field.js';
 import { closeContextMenu } from './context-menu.js';
 import { fitIconLabels, repackIcons } from './views/icons.js';
@@ -52,6 +52,19 @@ const zenCancelFallback = () => {
   });
 };
 
+const zenLive = () => {
+  const cards = [...document.querySelectorAll('#appGrid .app-card')];
+  if (zenVT) {
+    return cards.map((_, i) => {
+      const cs = getComputedStyle(document.documentElement, `::view-transition-group(tile-${i})`);
+      const m = new DOMMatrix(cs.transform);
+      const width = parseFloat(cs.width);
+      return width ? { left: m.e, top: m.f, width, height: parseFloat(cs.height) } : null;
+    });
+  }
+  return zenFallbackAnims.length ? cards.map((c) => (c.querySelector('.card-clip') || c).getBoundingClientRect()) : null;
+};
+
 const zenInterrupt = () => {
   if (zenVT) { try { zenVT.skipTransition(); } catch (e) { if (LX_DEBUG) console.warn(e); } zenVT = null; }
   zenCancelFallback();
@@ -87,9 +100,9 @@ const syncZenLayout = () => {
   if (grid.dataset.layout === 'icons') repackIcons(grid);
 };
 
-const runZenFlip = (enabled, cards, gen) => {
+const runZenFlip = (enabled, cards, gen, from) => {
   zenNeutralizeSprings();
-  const rects = cards.map((c) => c.getBoundingClientRect());
+  const rects = from || cards.map((c) => c.getBoundingClientRect());
   document.body.classList.toggle('is-zen', enabled);
   syncZenLayout();
   updateZenButtonLabel();
@@ -98,6 +111,7 @@ const runZenFlip = (enabled, cards, gen) => {
     if (gen !== zenGen) return;
     const anims = cards.flatMap((card, i) => {
       const old = rects[i];
+      if (!old) return [];
       const next = card.getBoundingClientRect();
       const dx = old.left - next.left;
       const dy = old.top - next.top;
@@ -108,9 +122,9 @@ const runZenFlip = (enabled, cards, gen) => {
       const layers = card.classList.contains('app-card--icon') ? [card] : [card.querySelector('.card-shadow'), card.querySelector('.card-clip')].filter(Boolean);
       return layers.map((layer) => {
         const anim = animate(layer, [
-          { transformOrigin: '0 0', transform: `translate(${dx}px, ${dy}px) scale(${scale})`, opacity: 0.92 },
+          { transformOrigin: '0 0', transform: `translate(${dx}px, ${dy}px) scale(${from ? sxRaw : scale}, ${from ? syRaw : scale})`, opacity: 0.92 },
           { transformOrigin: '0 0', transform: 'none', opacity: 1 }
-        ], { duration: 440, easing: EASE_LUX, fill: 'both' });
+        ], { duration: MOTION.zen.inMs, easing: EASE_LUX, fill: 'both' });
         zenFallbackAnims.push(anim);
         return anim;
       });
@@ -135,6 +149,7 @@ export const setZenMode = (enabled) => {
   const gen = zenGen;
   try { localStorage.setItem('lx-zen', enabled ? '1' : '0'); } catch (e) { if (LX_DEBUG) console.warn(e); }
 
+  const live = zenLive();
   zenInterrupt();
   closeContextMenu();
   stopIdle();
@@ -153,9 +168,9 @@ export const setZenMode = (enabled) => {
   const cards = appGrid ? [...appGrid.querySelectorAll('.app-card')] : [];
 
   document.documentElement.classList.add('is-zen-transitioning');
-  if (appGrid) nameTiles(appGrid, true);
+  if (appGrid && !live) nameTiles(appGrid, true);
 
-  if (document.startViewTransition) {
+  if (document.startViewTransition && !live) {
     let vt;
     try {
       vt = withViewTransition(() => {
@@ -182,7 +197,7 @@ export const setZenMode = (enabled) => {
     return;
   }
 
-  runZenFlip(enabled, cards, gen).finally(() => {
+  runZenFlip(enabled, cards, gen, live).finally(() => {
     zenFinish(gen, zenBtn);
   });
 };

@@ -182,18 +182,6 @@
 @property --reveal-r { syntax: '<length>'; inherits: true; initial-value: 230px; }
 @keyframes shimmerText { to { background-position: 100% center; } }
 @keyframes fadeIn { to { opacity: 1; } }
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-16px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes cardEnter {
-  from { opacity: 0; scale: .985; translate: 0 14px; }
-  to   { opacity: 1; scale: 1;    translate: 0 0; }
-}
-@keyframes cardBoot {
-  from { opacity: 0; scale: .965; translate: 0 18px; }
-  to   { opacity: 1; scale: 1;    translate: 0 0; }
-}
 @keyframes focusSettle { from { outline-offset: -8px; } }
 @keyframes revealPulse {
   0% { box-shadow: 0 0 0 0 light-dark(rgba(20,18,15,.35), rgba(255,255,255,.5)); }
@@ -215,9 +203,7 @@
 @keyframes zen-old-tile { to { opacity: 0; } }
 @keyframes zen-new-tile { from { opacity: 0; } }
 @keyframes modeIn { from { opacity: 0; transform: scale(0.92) translateX(-4px); } }
-@keyframes paletteItemIn { from { opacity: 0; transform: translateY(4px); } }
 @keyframes watermarkIn { from { opacity: 0; transform: rotate(-3deg) scale(0.94); } }
-@keyframes detailIn { from { opacity: 0; translate: 0 8px; } }
 @keyframes ghostHintFlash {
   0% { opacity: 0; scale: .6; }
   40% { opacity: 1; scale: 1.15; }
@@ -225,7 +211,6 @@
 }
 @keyframes newDot { 50% { box-shadow: 0 0 0 4px color-mix(in oklab, currentColor 18%, transparent); } }
 @keyframes lxSpin { to { transform: rotate(360deg); } }
-@keyframes ctxRise { from { opacity: 0; translate: 0 -3px; } }
 @keyframes cardEnter {
   from { opacity: 0; scale: .975; translate: 0 22px; }
   60% { opacity: 1; }
@@ -242,7 +227,6 @@
 }
 @keyframes paletteItemIn { from { opacity: 0; transform: translateY(6px); } }
 @keyframes detailIn { from { opacity: 0; translate: 0 10px; } }
-@keyframes ctxRise { from { opacity: 0; translate: 0 -5px; } }
 @keyframes pinNudge { 30% { transform: translateY(-2px) scale(1.08); } }
 @keyframes qr-brackets { from { opacity: 0; transform: scale(1.07); } to { opacity: .9; transform: none; } }
 @keyframes qr-pop { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -306,7 +290,9 @@
     --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-out: var(--ease-lux);
     --ease-enter: var(--ease-out);
-    --ease-exit: var(--ease-out);
+    --ease-exit: cubic-bezier(0.4, 0, 0.7, 0.2);
+    --ease-accel: cubic-bezier(0.4, 0, 1, 1);
+    --ease-xfade: cubic-bezier(0.2, 0, 0, 1);
     --ease-move: var(--ease-smooth);
     --ease-emphasis: var(--ease-spring);
     --ease-smooth: cubic-bezier(0.32, 0.72, 0, 1);
@@ -321,6 +307,13 @@
     --dur-ambient: 700ms;
     --lx-tab-out: 120ms;
     --lx-tab-in: 240ms;
+    --mo-tab-rail: 220ms; --mo-tab-travel: 8px;
+    --mo-view-out: 120ms; --mo-view-in: 220ms; --mo-view-wait: 60ms;
+    --mo-travel-out: 10px; --mo-travel-in: 14px; --mo-lift: 8px; --mo-scale-out: .988; --mo-scale-in: .982;
+    --mo-version: 120ms; --mo-xfade: 200ms; --mo-theme: 320ms; --mo-zen: 440ms; --mo-hover: 160ms;
+    --mo-pal-in: 200ms; --mo-pal-out: 140ms; --mo-pal-fade: .405; --mo-pal-wait: .238; --mo-pal-out-fade: .6; --mo-pal-hero: 80ms;
+    --mo-qr-in: 220ms; --mo-qr-out: 150ms; --mo-qr-swap: 160ms;
+    --mo-boot: 360ms; --mo-boot-offset: 120ms; --mo-boot-spread: 180ms;
     --gap: clamp(0.8rem, 1.8dvh, 1.3rem);
     --hairline: light-dark(rgba(24,20,14,.085), rgba(255,255,255,.065));
     --hairline-strong: light-dark(rgba(24,20,14,.2), rgba(255,255,255,.18));

@@ -343,7 +343,7 @@ const ensureVariantRule = (id) => {
     el.id = 'lx-variant-rules';
     document.head.appendChild(el);
   }
-  el.appendChild(document.createTextNode(`.app-card[data-active-variant="${id}"] .mark-stack > [data-variant="${id}"]{opacity:1;visibility:visible;transition:opacity var(--lx-version-ms,120ms) cubic-bezier(0.2,0,0,1)}`));
+  el.appendChild(document.createTextNode(`.app-card[data-active-variant="${id}"] .mark-stack > [data-variant="${id}"]{opacity:1;visibility:visible;transition:opacity var(--mo-version) var(--ease-xfade)}`));
 };
 export const stackableVariants = (app) => Array.isArray(app.variants) && app.variants.length > 1 && app.variants.every((v) => /^[a-z0-9-]+$/i.test(String(v.id)));
 const renderMarkStack = (app, cls) => {
