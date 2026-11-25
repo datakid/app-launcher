@@ -230,11 +230,6 @@
   :root[data-corners] #lx-palette kbd,
   :root[data-corners] .lx-bar-kbd,
   :root[data-corners] .palette-scope-count { border-radius: var(--r-kbd); }
-  @media (min-height: 860px) and (min-width: 721px) {
-    .palette-detail .app-icon-wrapper { --icon-radius: 19px; --icon-size: 72px; transform: none; }
-    .palette-detail .app-icon { font-size: 1.6rem; }
-    .palette-detail-header, .palette-facts { flex-shrink: 0; }
-  }
   @media (max-width: 640px) {
     #lx-palette { margin-top: 8dvh; }
     .palette-status { display: none; }

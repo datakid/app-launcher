@@ -13,7 +13,8 @@ const index = buildIndex(entries, { isFresh: (app) => !!app.isNew });
 
 const labelOf = (e) => e.app.id;
 const parentOf = (e) => e.app.parentId || e.app.id;
-const okFor = (g, e) => {
+const okFor = (g, e, hit) => {
+  if (g.field) return hit.field === g.field;
   if (g.entry) return labelOf(e) === g.entry;
   if (g.app) return parentOf(e) === g.app;
   if (g.cat) return e.cat.id === g.cat;
@@ -43,7 +44,7 @@ for (const g of golden) {
     if (problem) rangeFailures.push(`${JSON.stringify(g.q)} -> ${labelOf(entries[h.index])}: ${problem}`);
   }
   const top = hits[0] ? entries[hits[0].index] : null;
-  const pass = !!top && okFor(g, top);
+  const pass = !!top && okFor(g, top, hits[0]);
   const slot = groups.get(g.group) || groups.set(g.group, { n: 0, ok: 0 }).get(g.group);
   slot.n++;
   if (pass) slot.ok++;
