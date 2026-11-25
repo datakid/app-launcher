@@ -96,6 +96,13 @@ for (const [q, id] of [['اكل', 'quoin::seam'], ['ادره', 'pharmacy-tools::
   check(`typo "${q}" is not replaced by its layout swap`, topId(q) === id, String(topId(q)));
 }
 
+for (const [q, id] of [['harvwt', 'harvest'], ['phariay', 'pharmacy-tools::pillbug'], ['الصيدمه', 'pharmacy-tools::pillbug'], ['المعيرر', 'criteria-builder::meridian'], ['العودد', 'qisma-mizan::full']]) {
+  check(`two typos in a 6-8 letter word: "${q}" -> ${id} first`, topId(q) === id, String(topId(q)));
+}
+for (const q of ['banana', 'bscfi', 'jzmdnl', 'plumber', 'quartz']) {
+  check(`two-typo allowance stays closed for unrelated "${q}"`, run(q).length === 0, JSON.stringify(describe(q)));
+}
+
 const recentsOf = (pairs) => new Map(pairs);
 const withRecents = (q, pairs) => {
   index.last = null;

@@ -483,7 +483,7 @@ const osaBest = (a, an, b, lo, hi, max) => {
   return best;
 };
 
-const budgetOf = (len) => (len >= 8 ? 2 : len >= 4 ? 1 : 0);
+const budgetOf = (len) => (len >= 6 ? 2 : len >= 4 ? 1 : 0);
 
 const hit = { score: 0, k: -1, tier: 0 };
 
@@ -491,7 +491,8 @@ const evalToken = (qs, id) => {
   const vocab = qs.vocab;
   const q = qs.q;
   const qLen = qs.len;
-  const budget = qs.budget;
+  const t = vocab.list[id];
+  const budget = qs.budget === 2 && qLen < 8 && (t.charCodeAt(0) !== q.charCodeAt(0) || t.charCodeAt(1) !== q.charCodeAt(1) || t.length - qLen > 1 || qLen - t.length > 1) ? 1 : qs.budget;
   const c = qs.cache;
   c.stamp[id] = qs.gen;
   c.score[id] = 0;
@@ -504,7 +505,6 @@ const evalToken = (qs, id) => {
     miss = popcount(xa) + popcount(xb);
     if (miss > budget) return;
   }
-  const t = vocab.list[id];
   const tLen = t.length;
   let s = 0;
   let tier = 0;
