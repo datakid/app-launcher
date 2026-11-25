@@ -95,6 +95,50 @@ for (const [q, id] of [['hgpwh]', 'harvest'], [']tjv', 'dafter'], ['ld.hk', 'qis
 for (const [q, id] of [['اكل', 'quoin::seam'], ['ادره', 'pharmacy-tools::pillbug'], ['فويو', 'ledger-form::folio']]) {
   check(`typo "${q}" is not replaced by its layout swap`, topId(q) === id, String(topId(q)));
 }
+
+const recentsOf = (pairs) => new Map(pairs);
+const withRecents = (q, pairs) => {
+  index.last = null;
+  return search(index, q, { recents: recentsOf(pairs) });
+};
+const idOf = (h) => entries[h.index].app.id;
+for (const pick of ['text-tools::text', 'pharmacy-tools::pillbug', 'quoin::quoin']) {
+  const got = withRecents('tool', [[pick, 0.9]]).map(idOf);
+  check(`personal tie-break: recent "${pick}" leads the equal-score "tool" group`, got[0] === pick, got.slice(0, 3).join(','));
+}
+const noisy = [['text-tools::text', 0.9], ['roi::full', 0.8], ['drug-list::full', 0.7], ['plan-maker::express', 0.6], ['ledger-form::folio', 0.5], ['quoin::seam', 0.4]];
+for (const q of ['tool', 'tools', 'form', 'data', 'calc', 'list', 'plan', 'drug', 'prsr', 'parsre', 'أدوات', 'دواء', 'قائمة', 'خطة', 'hglpgg']) {
+  const base = run(q);
+  const got = withRecents(q, noisy);
+  check(`personal tie-break: "${q}" keeps the same hits`, base.length === got.length && new Set(base.map(idOf)).size === new Set(got.map(idOf)).size && base.every((h) => got.some((g) => g.index === h.index)));
+  check(`personal tie-break: "${q}" score and tier sequence unchanged`, base.every((h, k) => h.score === got[k].score && h.tier === got[k].tier));
+}
+const shortLetters = 'abcdefghijklmnopqrstuvwxyzابتثجحخدذرزسشصضطظعغفقكلمنهوي'.split('');
+const shortQueries = [...shortLetters];
+for (const a of shortLetters) for (const b of shortLetters) shortQueries.push(a + b);
+let invertedPairs = 0;
+let widestInversion = 0;
+let incrementalMisses = 0;
+for (const q of shortQueries) {
+  const cold = run(q);
+  const titled = cold.filter((h) => h.field === 'title');
+  for (let i = 0; i < titled.length; i++) {
+    for (let j = i + 1; j < titled.length; j++) {
+      if (titled[j].tier > titled[i].tier) {
+        invertedPairs++;
+        widestInversion = Math.max(widestInversion, titled[i].score - titled[j].score);
+      }
+    }
+  }
+  if (q.length === 2) {
+    index.last = null;
+    search(index, q[0]);
+    const warm = search(index, q);
+    if (warm.length !== cold.length || warm.some((h, k) => h.index !== cold[k].index || h.score !== cold[k].score)) incrementalMisses++;
+  }
+}
+check('1-2 letter queries: a lower title tier never outranks a higher one by more than 3 points', widestInversion <= 3, `${invertedPairs} pairs, widest ${widestInversion.toFixed(2)}`);
+check('1-2 letter queries: typing the second letter gives the cold result', incrementalMisses === 0, `${incrementalMisses} differ`);
 check('"bugvertpill" joins pieces of two different apps -> no results', run('bugvertpill').length === 0);
 check('"qwertyuiop" -> no results', run('qwertyuiop').length === 0);
 const bugpil = run('bugpil')[0];

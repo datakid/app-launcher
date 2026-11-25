@@ -273,8 +273,7 @@ export const renderPaletteResults = (rawQuery) => {
   const scoped = paletteScope !== 'all';
   const scored = [];
   if (!isCmd) {
-    const short = query.trim().length;
-    const hits = search(paletteSearchIndex(), query, { currentTabId, recents: short > 0 && short <= 2 ? recentScores() : null });
+    const hits = search(paletteSearchIndex(), query, { currentTabId, recents: query.trim() ? recentScores() : null });
     hits.forEach((h) => {
       const e = everyEntry[h.index];
       scopeCounts.all++;

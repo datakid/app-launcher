@@ -994,21 +994,23 @@ const run = (index, raw, opts, swapped) => {
   const hPf = [];
   const hCl = [];
   const hJoined = [];
+  const hRec = [];
   const plain = [];
   const typo = [];
   const n = candidates ? candidates.length : docs.length;
+  const personal = (d) => {
+    let r = 0;
+    for (const id of d.ids) {
+      const v = recents.get(id);
+      if (v && v > r) r = v;
+    }
+    return r;
+  };
   const adjust = (d, score) => {
     if (d.closed) score *= 0.9;
     if (swapped) score *= 0.92;
     if (currentTab && d.catId === currentTab) score += 40;
-    if (shortQuery && recents) {
-      let r = 0;
-      for (const id of d.ids) {
-        const v = recents.get(id);
-        if (v && v > r) r = v;
-      }
-      score += 60 * r;
-    }
+    if (shortQuery && recents) score += 60 * personal(d);
     return score;
   };
   const record = (di, d, score, tier, tt, pf, cl, joinedHit) => {
@@ -1021,6 +1023,7 @@ const run = (index, raw, opts, swapped) => {
     hPf.push(pf);
     hCl.push(cl);
     hJoined.push(joinedHit ? 1 : 0);
+    hRec.push(recents ? personal(d) : 0);
     if (tier <= TIER.typo && !urlScore) typo.push(h);
     else plain.push(h);
   };
@@ -1074,7 +1077,7 @@ const run = (index, raw, opts, swapped) => {
 
   index.last = swapped || urlQuery ? null : { nq, tokens, candidates: matched };
 
-  const cmp = (a, b) => (hScore[b] - hScore[a]) || (hTT[b] - hTT[a]) || (hTL[a] - hTL[b]) || (hDoc[a] - hDoc[b]);
+  const cmp = (a, b) => (hScore[b] - hScore[a]) || (hTT[b] - hTT[a]) || (hRec[b] - hRec[a]) || (hTL[a] - hTL[b]) || (hDoc[a] - hDoc[b]);
   plain.sort(cmp);
   typo.sort(cmp);
   let kept = typo;
