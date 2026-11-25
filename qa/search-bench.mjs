@@ -278,7 +278,7 @@ if (verbose) {
 }
 
 if (dump) fs.writeFileSync(dumpPath, dump.join('\n') + '\n');
-const floors = { top1: 95.5, top3: 97.5, found: 97.5 };
+const floors = { top1: 96.7, top3: 98.5, found: 98.7 };
 const problems = [];
 if (pct(total.at1, total.n) < floors.top1) problems.push(`top1 ${pct(total.at1, total.n)}% under ${floors.top1}%`);
 if (pct(total.at3, total.n) < floors.top3) problems.push(`top3 ${pct(total.at3, total.n)}% under ${floors.top3}%`);

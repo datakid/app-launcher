@@ -181,7 +181,27 @@ Golden set: `qa/search-golden.json` holds 61 hand-written queries (prefixes, acr
 
 Latency per keystroke (every prefix of every golden query, 5 rounds after warm-up): real catalogue p50 0.022 ms, p95 0.052 ms, max 2.8 ms. The synthetic 5,000-entry catalogue (`qa/search.mjs`): warm median 3.28 ms, p95 9.91 ms (limits 6 and 12), cold median 4.47 ms, p95 9.73 ms; building the index takes 278 ms.
 
-The golden set cannot go in `qa:search` yet because it fails; it is added as a ratchet in 6D. The owner's ten real queries are not in it yet.
+The golden set was not in `qa:search` at this point because it failed; it is added in 6D (see below). The owner's ten real queries are not in it yet.
+
+### Phase 6 outcome: search improvements, palette seam, ratchet
+
+Bytes first. Phase 5 left 3 B of headroom under the 266,240 B first-load budget, so nothing in Phase 6 would fit. The five first-load Latin fonts (Inter 400, 500, 600, Cormorant Garamond 400 italic and 600) were trimmed with `tools/subset-fonts.mjs`: the same declared `unicode-range`, only OpenType features nothing uses and glyphs outside that range removed. A pixel test rendered every covered codepoint, all 94 x 94 ASCII pairs (kerning), ligatures, tabular figures and small caps at 11 to 28 px on the old and new files: byte-identical screenshots for all five. Saving 25,044 B; first load went from 266,237 B to 241,259 B before the search work and is 241,963 B now (limit unchanged, 24,277 B of headroom). The budget was not raised.
+
+Search (`src/search.js`), each change with failing tests first, one commit each, bench run in full after each:
+
+| Change | Result |
+|---|---|
+| Layout-swapped results are used when the raw query only finds subsequence hits and the swapped reading's top hit is an exact title or keyword match (never host or url) | golden wrong-layout 5 of 10 to 10 of 10; bench identical. Two looser variants regressed the typo family (93.6 to 89.1 and three Arabic typos) and were dropped |
+| Personal tie-break: recents and frequent only order hits whose score is exactly equal, after the title-token key; the palette passes them for every query length | score and tier sequence identical with and without recents (pinned for 15 queries); bench identical |
+| Two typos allowed in 6 and 7 letter words, only when the token shares the first two letters and is within one letter of the query's length | typo word top-1 93.6 to 94.4; junk stays 0 of 318. Allowing it everywhere let `banana`, `bscfi` and `jzmdnl` through, so those are pinned as empty |
+| Swapped neighbours in a 3-letter word (`rio` finds `roi`); narrowing is skipped for 3-letter queries so typing equals the cold result | typo word top-1 94.4 to 95.0; golden 61 of 61 |
+| 1 and 2 letter ordering and highlight ranges: pinned, no engine change needed | no lower title tier outranks a higher one by more than 3 points, typing the second letter equals the cold result, ranges of every top-five golden hit are valid, swapped, typo and split highlights are pinned |
+
+Bench after: top-1 97.0 (was 96.5), top-3 98.8 (was 98.2), found 99.0 (was 98.4); typo word 95.0 / 96.8 / 97.2 (was 93.6 / 95.1 / 95.5); no family moved down; junk 0 of 318. Latency per keystroke on the real catalogue: p50 0.041 ms, p95 0.118 ms (bench median 0.054 ms, p95 0.199 ms); the synthetic 5,000-entry limits still hold. Not changed because the bench gave no case to improve: Arabic article-less words already find their entry in the top three (30 of 30 plain, 30 of 30 with a typo), and Arabic first letters are ambiguous by nature (every title starts with the article).
+
+Palette seam (6C): `palette/model.js` is plain data and imports nothing from the page: rows (headers and items) with the stable key `app.id` (variants already carry `parent::variant`), contiguous item indexes, match tier, field and highlight ranges, plus `pickActive` (first result after a new query, same app when the view is unchanged) and `needsTryPicks`. `view.js` builds DOM from it and keeps its keyed pool, so surviving rows keep their nodes. New: rows that survive a keystroke and moved slide from where they were (transform only, `--dur-micro`, `--ease-lux`, cancelled and measured from the visual position so back-to-back keystrokes stay continuous); the highlighted first row never slides, rows outside the list's viewport snap, reduced motion skips it. The detail pane shows the Phase 4 tile at 72 px (it was 56) when the viewport is at least 860 px tall and 721 px wide; below that the pane has no room for the extra 16 px and stays as it was. New checks: `qa/palette-model.mjs` (20 checks, no browser), `qa/palette-rows.mjs` (13 checks: identity, slide, no travel for the highlight, continuity, settling, reduced motion).
+
+Ratchet (6D): `qa:search` now runs `qa/search.mjs` (357 checks), `qa/search-golden.mjs` (61 queries, 61 pass, highlight ranges validated) and `qa/palette-model.mjs`; `qa/search-bench.mjs` floors are 96.7 / 98.5 / 98.7 (were 95.5 / 97.5 / 97.5). The ten queries the owner actually types are still to be added to the golden set.
 
 ## 7. Baseline of the existing checks
 

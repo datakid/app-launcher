@@ -13,6 +13,7 @@ import { closeContextMenu } from '../context-menu.js';
 import { tone } from '../theme.js';
 import { activateTab, activeViewTransition, assignActiveViewTransition, currentTabId } from '../tabs.js';
 import { allPaletteEntries, highlightTitle, normMap, normalizeAr, paletteSearchIndex, searchCommands } from './query.js';
+import { buildModel, entryKey, needsTryPicks, pickActive } from './model.js';
 import { commandEntries, keycapsHtml, runCommand } from './commands.js';
 import { openQrFromPalette } from '../qr-dialog.js';
 
@@ -80,7 +81,7 @@ const syncPaletteCursor = (instant = false) => {
     instant = true;
   }
   const entry = paletteItems[paletteActiveIndex];
-  const li = entry ? document.getElementById('palette-item-' + sanitizeDomId(paletteEntryKey(entry))) : null;
+  const li = entry ? document.getElementById('palette-item-' + sanitizeDomId(entryKey(entry))) : null;
   if (!li) { cursor.classList.remove('is-visible'); return; }
   const h = li.offsetHeight;
   if (!h) return;
@@ -102,7 +103,6 @@ const syncPaletteCursor = (instant = false) => {
 
 const paletteRowObserver = typeof ResizeObserver === 'function' ? new ResizeObserver(() => syncPaletteCursor(true)) : null;
 let paletteRenderKey = null;
-const paletteEntryKey = (e) => e.app.id;
 
 const sanitizeDomId = (key) => String(key).replace(/[^a-zA-Z0-9_-]/g, '-');
 
@@ -151,9 +151,9 @@ const buildPaletteItemNode = (e, globalIndex, query, isActive) => {
   const li = document.createElement('li');
   li.className = 'palette-item' + (isActive ? ' is-active' : '');
   li.setAttribute('role', 'option');
-  li.id = 'palette-item-' + sanitizeDomId(paletteEntryKey(e));
+  li.id = 'palette-item-' + sanitizeDomId(entryKey(e));
   li.setAttribute('aria-selected', String(isActive));
-  li.dataset.key = paletteEntryKey(e);
+  li.dataset.key = entryKey(e);
   li.dataset.index = String(globalIndex);
   li.setAttribute('style', `${gradVars(appGradient(e.app))}--n:${globalIndex};`);
   li.innerHTML = paletteItemContentHtml(e, query);
@@ -263,6 +263,51 @@ const cyclePaletteScope = (step) => {
   setPaletteScope(list[(i + step + list.length) % list.length].id);
 };
 
+const GROUP_LABELS = { commands: 'commandsGroup', recent: 'recentGroup', all: 'allGroup', try: 'tryGroup' };
+
+const pickTryEntries = (allEntries) => {
+  const pool = allEntries.filter(e => !isPaletteOnly(e.cat));
+  const picks = [];
+  const used = new Set();
+  while (picks.length < Math.min(3, pool.length)) {
+    const idx = Math.floor(Math.random() * pool.length);
+    if (used.has(idx)) continue;
+    used.add(idx);
+    picks.push(pool[idx]);
+  }
+  return picks;
+};
+
+const ROW_SLIDE = 'row-slide';
+
+const measureRowTops = (list) => {
+  const top = list.getBoundingClientRect();
+  const tops = new Map();
+  list.querySelectorAll('.palette-item').forEach((li) => {
+    const r = li.getBoundingClientRect();
+    if (r.bottom > top.top && r.top < top.bottom) tops.set(li.dataset.key, r.top);
+    for (const a of li.getAnimations()) if (a.id === ROW_SLIDE) a.cancel();
+  });
+  return tops;
+};
+
+const slideRows = (list, from, stillKey) => {
+  if (!from.size || MQ.reducedMotion) return;
+  const bounds = list.getBoundingClientRect();
+  const duration = motionMs('--dur-micro');
+  list.querySelectorAll('.palette-item').forEach((li) => {
+    const key = li.dataset.key;
+    const was = from.get(key);
+    if (was === undefined || key === stillKey) return;
+    const r = li.getBoundingClientRect();
+    if (r.bottom <= bounds.top || r.top >= bounds.bottom) return;
+    const dy = was - r.top;
+    if (Math.abs(dy) < 1) return;
+    const a = li.animate([{ transform: `translate3d(0, ${dy}px, 0)` }, { transform: 'translate3d(0, 0, 0)' }], { duration, easing: EASE_LUX });
+    a.id = ROW_SLIDE;
+  });
+};
+
 export const renderPaletteResults = (rawQuery) => {
   const paletteResults = document.getElementById('paletteResults');
   const isCmd = paletteCmdMode;
@@ -289,65 +334,31 @@ export const renderPaletteResults = (rawQuery) => {
     : [];
 
   const prevActiveEntry = paletteItems[paletteActiveIndex];
-  const prevActiveKey = prevActiveEntry ? paletteEntryKey(prevActiveEntry) : null;
+  const prevActiveKey = prevActiveEntry ? entryKey(prevActiveEntry) : null;
 
-  const rows = [];
-
-  if (isCmd) {
-    paletteTryPicks = null;
-    paletteItems = query ? rankCommands(query) : commands;
-    if (paletteItems.length) rows.push({ type: 'header', text: t('commandsGroup') });
-    paletteItems.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-  } else if (!query && !scored.length) {
-    paletteItems = [];
-  } else if (!query) {
-    paletteTryPicks = null;
-    const recents = scoped ? [] : getRecentEntries(allEntries, 5);
-    const recentIds = new Set(recents.map(e => e.app.id));
-    const rest = scored.filter(e => !recentIds.has(e.app.id));
-    paletteItems = [...recents, ...rest];
-    if (recents.length) {
-      rows.push({ type: 'header', text: t('recentGroup') });
-      recents.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-      rows.push({ type: 'header', text: t('allGroup') });
-      rest.forEach((e, i) => rows.push({ type: 'item', entry: e, index: recents.length + i }));
-    } else {
-      rest.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-    }
-  } else if (scored.length || cmdHits.length) {
-    paletteTryPicks = null;
-    paletteItems = [...scored, ...cmdHits];
-    scored.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-    if (cmdHits.length) {
-      rows.push({ type: 'header', text: t('commandsGroup') });
-      cmdHits.forEach((e, i) => rows.push({ type: 'item', entry: e, index: scored.length + i }));
-    }
-  } else {
-    if (!paletteTryPicks) {
-      const pool = allEntries.filter(e => !isPaletteOnly(e.cat));
-      const picks = [];
-      const used = new Set();
-      while (picks.length < Math.min(3, pool.length)) {
-        const idx = Math.floor(Math.random() * pool.length);
-        if (used.has(idx)) continue;
-        used.add(idx);
-        picks.push(pool[idx]);
-      }
-      paletteTryPicks = picks;
-    }
-    paletteItems = paletteTryPicks;
-    rows.push({ type: 'header', text: t('tryGroup') });
-    paletteTryPicks.forEach((e, i) => rows.push({ type: 'item', entry: e, index: i }));
-  }
+  const wantsPicks = needsTryPicks({ query, isCmd, scored, cmdHits });
+  if (wantsPicks && !paletteTryPicks) paletteTryPicks = pickTryEntries(allEntries);
+  const model = buildModel({
+    query,
+    isCmd,
+    scored,
+    cmdHits,
+    commandList: isCmd ? (query ? rankCommands(query) : commands) : [],
+    recents: !isCmd && !query && scored.length && !scoped ? getRecentEntries(allEntries, 5) : [],
+    tryPicks: paletteTryPicks
+  });
+  if (model.kind !== 'try' && model.kind !== 'empty') paletteTryPicks = null;
+  paletteItems = model.items;
+  const rows = model.rows;
 
   const renderKey = `${isCmd ? 1 : 0}\u0001${paletteScope}\u0001${query}`;
   const sameView = renderKey === paletteRenderKey;
   paletteRenderKey = renderKey;
-  let newActiveIndex = sameView && prevActiveKey ? paletteItems.findIndex(e => paletteEntryKey(e) === prevActiveKey) : -1;
-  if (newActiveIndex === -1) newActiveIndex = paletteItems.length ? 0 : -1;
-  paletteActiveIndex = newActiveIndex;
+  paletteActiveIndex = pickActive(paletteItems, prevActiveKey, sameView);
   paletteActionIndex = 0;
   paletteZone = 'list';
+
+  const slideFrom = sameView ? null : measureRowTops(paletteResults);
 
   paletteResults.classList.toggle('entrance-armed', paletteEntranceArmed);
   paletteEntranceArmed = false;
@@ -365,18 +376,17 @@ export const renderPaletteResults = (rawQuery) => {
     const usedKeys = new Set();
     rows.forEach(row => {
       if (row.type === 'header') {
-        paletteResults.appendChild(buildPaletteHeaderNode(row.text));
+        paletteResults.appendChild(buildPaletteHeaderNode(t(GROUP_LABELS[row.group])));
         return;
       }
-      const key = paletteEntryKey(row.entry);
       const isActive = row.index === paletteActiveIndex;
-      let li = pool.get(key);
+      let li = pool.get(row.key);
       if (li) {
         updatePaletteItemNode(li, row.entry, row.index, query, isActive);
       } else {
         li = buildPaletteItemNode(row.entry, row.index, query, isActive);
       }
-      usedKeys.add(key);
+      usedKeys.add(row.key);
       paletteResults.appendChild(li);
     });
     pool.forEach((li, key) => {
@@ -384,6 +394,7 @@ export const renderPaletteResults = (rawQuery) => {
       paletteRowObserver?.unobserve(li);
       li.remove();
     });
+    if (slideFrom) slideRows(paletteResults, slideFrom, paletteItems[paletteActiveIndex] ? entryKey(paletteItems[paletteActiveIndex]) : null);
   }
 
   updateActiveDescendant();
@@ -447,7 +458,7 @@ export const setPaletteActive = (i, { scroll = true } = {}) => {
   });
   const activeEntry = paletteItems[i];
   if (activeEntry && scroll) {
-    document.getElementById('palette-item-' + sanitizeDomId(paletteEntryKey(activeEntry)))?.scrollIntoView({ block: 'nearest' });
+    document.getElementById('palette-item-' + sanitizeDomId(entryKey(activeEntry)))?.scrollIntoView({ block: 'nearest' });
   }
   updateActiveDescendant();
   updateLiveAccent();
@@ -586,7 +597,7 @@ const updateActiveDescendant = () => {
     input.setAttribute('aria-activedescendant', a ? `palette-action-${a.id}` : '');
   } else {
     const activeEntry = paletteItems[paletteActiveIndex];
-    input.setAttribute('aria-activedescendant', activeEntry ? `palette-item-${sanitizeDomId(paletteEntryKey(activeEntry))}` : '');
+    input.setAttribute('aria-activedescendant', activeEntry ? `palette-item-${sanitizeDomId(entryKey(activeEntry))}` : '');
   }
 };
 
