@@ -89,6 +89,7 @@ A bilingual (Arabic/English) launchpad for internal tools. A static site built f
 - `tools/icons-v2.mjs`: the icon asset generator described above
 - `links.json`: the catalog
 - `fonts/*.woff2`: self-hosted IBM Plex Sans Arabic, El Messiri, Inter and Cormorant Garamond
+- `tools/subset-fonts.mjs`: how the five first-load Latin faces were trimmed (same declared range, unused OpenType features and glyphs removed, pixel-identical output)
 
 ## Data model
 - Catalog: `{ categories: [{ id, label{ar,en}, icon, accent, key, apps: [{ id, title{ar,en}, url | variants[{id,label,url,icon}], defaultVariant, icon, gradient[3], closed, closedReason, isNew, since }] }] }`
