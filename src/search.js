@@ -1135,11 +1135,21 @@ const run = (index, raw, opts, swapped) => {
   return out;
 };
 
+const LITERAL_FIELDS = new Set(['host', 'url']);
+
+const swappedWins = (first, second) => {
+  const top = second[0];
+  if (!top) return false;
+  if (!first.length) return true;
+  return first[0].tier === TIER.subsequence && top.tier === TIER.exact && !LITERAL_FIELDS.has(top.field);
+};
+
 export const search = (index, query, opts = {}) => {
   const raw = String(query == null ? '' : query).slice(0, MAX_QUERY_LEN);
   const first = run(index, raw, opts, false);
-  if (first.length || !raw.trim()) return first;
+  if (!raw.trim() || (first.length && first[0].tier !== TIER.subsequence)) return first;
   const swapped = layoutSwap(raw);
   if (swapped === raw) return first;
-  return run(index, swapped, opts, true);
+  const second = run(index, swapped, opts, true);
+  return swappedWins(first, second) ? second : first;
 };

@@ -7,6 +7,8 @@ import { flattenCatalogue, buildIndex, search, normalize, layoutSwap } from '../
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = new Set(process.argv.slice(2));
 const verbose = args.has('--verbose');
+const dumpPath = (process.argv.find((a) => a.startsWith('--dump=')) || '').slice(7);
+const dump = dumpPath ? [] : null;
 const catalogue = JSON.parse(fs.readFileSync(path.join(root, 'links.json'), 'utf8')).categories;
 const entries = flattenCatalogue(catalogue);
 const index = buildIndex(entries, { isFresh: (app) => !!app.isNew });
@@ -213,6 +215,7 @@ const note = (key, ok1, ok3, okAny, q) => {
     if (!failures.has(key)) failures.set(key, []);
     failures.get(key).push(q);
   }
+  if (dump && !ok1) dump.push(key + '\t' + q);
 };
 
 const times = [];
@@ -274,6 +277,7 @@ if (verbose) {
   for (const [key, s] of catStats) if (s.bad.length) console.log(`  ${key}: ${s.bad.slice(0, 3).join(' | ')}`);
 }
 
+if (dump) fs.writeFileSync(dumpPath, dump.join('\n') + '\n');
 const floors = { top1: 95.5, top3: 97.5, found: 97.5 };
 const problems = [];
 if (pct(total.at1, total.n) < floors.top1) problems.push(`top1 ${pct(total.at1, total.n)}% under ${floors.top1}%`);

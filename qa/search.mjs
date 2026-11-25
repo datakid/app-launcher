@@ -84,6 +84,17 @@ const swappedPharmacy = top('toolspharmacy', 2);
 check('"toolspharmacy" -> Pharmacy Tools entries first', swappedPharmacy.length === 2 && swappedPharmacy.every((x) => x.startsWith('Pharmacy Tools')), JSON.stringify(swappedPharmacy));
 const swappedAr = top('ادويهقائمه', 2);
 check('"ادويهقائمه" -> Drug List entries first', swappedAr.length === 2 && swappedAr.every((x) => x.startsWith('Drug List')), JSON.stringify(swappedAr));
+
+const topId = (q) => {
+  const h = run(q)[0];
+  return h ? entries[h.index].app.id : null;
+};
+for (const [q, id] of [['hgpwh]', 'harvest'], [']tjv', 'dafter'], ['ld.hk', 'qisma-mizan::express'], ['sdl', 'quoin::seam'], [';,dk', 'quoin::quoin'], ["'vr", 'typing::tarq'], ['t,gd,', 'ledger-form::folio']]) {
+  check(`wrong layout "${q}" -> ${id} first`, topId(q) === id, String(topId(q)));
+}
+for (const [q, id] of [['اكل', 'quoin::seam'], ['ادره', 'pharmacy-tools::pillbug'], ['فويو', 'ledger-form::folio']]) {
+  check(`typo "${q}" is not replaced by its layout swap`, topId(q) === id, String(topId(q)));
+}
 check('"bugvertpill" joins pieces of two different apps -> no results', run('bugvertpill').length === 0);
 check('"qwertyuiop" -> no results', run('qwertyuiop').length === 0);
 const bugpil = run('bugpil')[0];
