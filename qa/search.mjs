@@ -116,6 +116,15 @@ for (const q of ['xyz', 'qzx', 'wqe', 'zxc', 'vvj']) {
   check(`3-letter junk "${q}" stays empty`, run(q).length === 0, describe(q));
 }
 
+const marked = (q) => {
+  const h = run(q)[0];
+  return h ? h.ranges.map(([a, b]) => h.text.slice(a, b)).join('+') : null;
+};
+check('layout-swapped hit highlights the Arabic title it matched', marked('hgpwh]') === 'الحصاد', String(marked('hgpwh]')));
+check('layout-swapped hit highlights only the matched version name', marked('sdl') === 'سيم', String(marked('sdl')));
+check('typo hit highlights the whole word it corrected', marked('rio') === 'ROI', String(marked('rio')));
+check('two-word typo highlights each corrected word', marked('critera builder') === 'Criteri+Builder', String(marked('critera builder')));
+
 const recentsOf = (pairs) => new Map(pairs);
 const withRecents = (q, pairs) => {
   index.last = null;

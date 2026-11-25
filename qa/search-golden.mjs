@@ -21,10 +21,27 @@ const okFor = (g, e) => {
 };
 const waived = new Set(golden.filter((g) => g.waived).map((g) => g.q));
 
+const rangeProblem = (h) => {
+  if (!h.field) return null;
+  if (!h.ranges.length) return 'no ranges';
+  let prev = 0;
+  for (const [a, b] of h.ranges) {
+    if (!(a >= prev && b > a && b <= h.text.length)) return `bad range ${a}-${b} in ${h.text.length} characters`;
+    prev = b;
+  }
+  return null;
+};
+
 const groups = new Map();
 const failures = [];
+const rangeFailures = [];
 for (const g of golden) {
+  index.last = null;
   const hits = search(index, g.q);
+  for (const h of hits.slice(0, 5)) {
+    const problem = rangeProblem(h);
+    if (problem) rangeFailures.push(`${JSON.stringify(g.q)} -> ${labelOf(entries[h.index])}: ${problem}`);
+  }
   const top = hits[0] ? entries[hits[0].index] : null;
   const pass = !!top && okFor(g, top);
   const slot = groups.get(g.group) || groups.set(g.group, { n: 0, ok: 0 }).get(g.group);
@@ -45,7 +62,8 @@ for (const f of failures) {
   const note = waived.has(f.g.q) ? ' (accepted exception)' : '';
   console.log(`FAIL [${f.g.group}] ${JSON.stringify(f.g.q)} expected ${f.g.entry || f.g.app || 'category ' + f.g.cat}, got ${f.got.join(' | ') || 'nothing'}${note}`);
 }
+for (const f of rangeFailures) console.log(`FAIL [highlight] ${f}`);
 if (verbose) console.log(JSON.stringify({ total, okTotal }));
 const unexpected = failures.filter((f) => !waived.has(f.g.q));
-if (unexpected.length) process.exit(1);
+if (unexpected.length || rangeFailures.length) process.exit(1);
 console.log('search golden: ok');
