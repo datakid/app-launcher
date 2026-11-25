@@ -103,6 +103,19 @@ for (const q of ['banana', 'bscfi', 'jzmdnl', 'plumber', 'quartz']) {
   check(`two-typo allowance stays closed for unrelated "${q}"`, run(q).length === 0, JSON.stringify(describe(q)));
 }
 
+for (const [q, id] of [['rio', 'roi::full'], ['atl', 'alt'], ['طقر', 'typing::tarq'], ['سمل', 'criteria-builder::rubric']]) {
+  check(`swapped neighbours in a 3-letter word: "${q}" -> ${id} first`, topId(q) === id, String(topId(q)));
+  index.last = null;
+  const cold = search(index, q);
+  index.last = null;
+  search(index, q.slice(0, 2));
+  const warm = search(index, q);
+  check(`swapped neighbours: typing "${q}" gives the cold result`, warm.length === cold.length && warm.every((h, k) => h.index === cold[k].index && h.score === cold[k].score));
+}
+for (const q of ['xyz', 'qzx', 'wqe', 'zxc', 'vvj']) {
+  check(`3-letter junk "${q}" stays empty`, run(q).length === 0, describe(q));
+}
+
 const recentsOf = (pairs) => new Map(pairs);
 const withRecents = (q, pairs) => {
   index.last = null;

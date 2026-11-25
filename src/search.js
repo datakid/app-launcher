@@ -539,6 +539,10 @@ const evalToken = (qs, id) => {
       tier = TIER.subsequence;
     }
   }
+  if (tier === 0 && qLen === 3 && tLen === 3 && ((t.charCodeAt(0) === q.charCodeAt(1) && t.charCodeAt(1) === q.charCodeAt(0) && t.charCodeAt(2) === q.charCodeAt(2)) || (t.charCodeAt(0) === q.charCodeAt(0) && t.charCodeAt(1) === q.charCodeAt(2) && t.charCodeAt(2) === q.charCodeAt(1)))) {
+    s = 280;
+    tier = TIER.typo;
+  }
   if (budget > 0 && s < 280) {
     const cmp = tLen < qLen ? tLen : qLen;
     if (cmp >= qLen - budget) {
@@ -982,7 +986,7 @@ const run = (index, raw, opts, swapped) => {
     const newTok = tokens[last.tokens.length - 1];
     let stable = true;
     for (let i = 0; i < last.tokens.length - 1; i++) if (last.tokens[i] !== tokens[i]) stable = false;
-    if (stable && newTok.startsWith(lastTok) && (newTok === lastTok || budgetOf(newTok.length) === 0)) candidates = last.candidates;
+    if (stable && newTok.startsWith(lastTok) && (newTok === lastTok || (budgetOf(newTok.length) === 0 && newTok.length !== 3))) candidates = last.candidates;
   }
 
   const matched = [];
