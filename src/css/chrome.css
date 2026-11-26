@@ -14,7 +14,7 @@
     display: flex; align-items: center;
     border: 1px solid var(--border);
     z-index: 100;
-    transition: transform var(--dur-base) var(--ease-lux), background var(--dur-slow) var(--ease-smooth), opacity var(--dur-base) var(--ease-out); animation: slideDown 900ms var(--ease-lux) .2s both;
+    transition: transform var(--dur-base) var(--ease-lux), background var(--dur-slow) var(--ease-smooth), opacity var(--dur-base) var(--ease-out); animation: slideDown var(--t-900) var(--ease-lux) var(--t-200) both;
     padding: .3rem; gap: .1rem;
     border-color: var(--hairline);
     box-shadow:
@@ -27,10 +27,10 @@
     align-self: center; position: relative; z-index: 3; flex-shrink: 0;
     display: flex; align-items: center;
     border: 1px solid var(--border);
-    animation: slideDown var(--dur-story) var(--ease-out) 0.06s both;
+    animation: slideDown var(--dur-story) var(--ease-out) var(--t-60) both;
     --tab-accent: #7c9bff;
     --c1: var(--tab-accent);
-    font-family: var(--ui-font); color: var(--text); animation-duration: 900ms; animation-delay: .12s;
+    font-family: var(--ui-font); color: var(--text); animation-duration: var(--t-900); animation-delay: var(--t-120);
     background: light-dark(rgba(255,255,255,.7), rgb(255 255 255 / .046));
     border-color: var(--hairline);
     box-shadow:
@@ -165,7 +165,7 @@
         gap: 0.25rem; overflow: visible; filter: none; border-radius: 0;
         padding: 0.35rem max(0.5rem, env(safe-area-inset-right, 0px)) calc(0.35rem + env(safe-area-inset-bottom, 0px)) max(0.5rem, env(safe-area-inset-left, 0px));
         background: light-dark(rgba(248,247,243,0.88), color-mix(in oklab, var(--elev-2) 90%, transparent));
-        border-top: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.08));
+        border-top: 1px solid var(--hairline);
         box-shadow: 0 -14px 32px -22px light-dark(rgba(28,25,20,0.3), rgba(0,0,0,0.9));
       }
     .tab-indicator, .tab-ghost { display: none; }
@@ -255,7 +255,7 @@
     display: inline-block; opacity: 0; transform: translateX(6px);
     padding-inline: 0.22em 0.32em; transition: opacity var(--dur-fast) var(--ease-lux), transform var(--tab-dur) var(--ease-lux);
   }
-  .tab-btn[aria-selected="true"] .label > span { opacity: 1; transform: translateX(0); transition-delay: .09s; }
+  .tab-btn[aria-selected="true"] .label > span { opacity: 1; transform: translateX(0); transition-delay: var(--t-90); }
   .title-stack { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; gap: .25rem; }
   @media (max-width: 640px) {
     .container .lx-bar {

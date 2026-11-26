@@ -203,7 +203,7 @@
 @keyframes zen-old-tile { to { opacity: 0; } }
 @keyframes zen-new-tile { from { opacity: 0; } }
 @keyframes modeIn { from { opacity: 0; transform: scale(0.92) translateX(-4px); } }
-@keyframes watermarkIn { from { opacity: 0; transform: rotate(-3deg) scale(0.94); } }
+@keyframes watermarkIn { from { opacity: 0; transform: rotate(calc(-3deg * var(--light-x))) scale(0.94); } }
 @keyframes ghostHintFlash {
   0% { opacity: 0; scale: .6; }
   40% { opacity: 1; scale: 1.15; }
@@ -305,6 +305,8 @@
     --dur-slow: 620ms;
     --dur-story: 820ms;
     --dur-ambient: 700ms;
+    --t-18: 18ms; --t-25: 25ms; --t-40: 40ms; --t-50: 50ms; --t-60: 60ms; --t-90: 90ms; --t-120: 120ms; --t-200: 200ms; --t-220: 220ms; --t-280: 280ms; --t-320: 320ms; --t-340: 340ms; --t-350: 350ms; --t-360: 360ms; --t-420: 420ms; --t-440: 440ms; --t-460: 460ms; --t-520: 520ms; --t-560: 560ms; --t-900: 900ms; --t-1000: 1000ms; --t-1100: 1100ms; --t-1400: 1400ms; --t-1600: 1600ms; --t-2400: 2400ms; --t-2500: 2500ms; --t-3600: 3600ms;
+    --ease-qr: cubic-bezier(.2, .8, .2, 1); --ease-sweep: cubic-bezier(.4, 0, .2, 1);
     --lx-tab-out: 120ms;
     --lx-tab-in: 240ms;
     --mo-tab-rail: 220ms; --mo-tab-travel: 8px;
@@ -317,6 +319,7 @@
     --gap: clamp(0.8rem, 1.8dvh, 1.3rem);
     --hairline: light-dark(rgba(24,20,14,.085), rgba(255,255,255,.065));
     --hairline-strong: light-dark(rgba(24,20,14,.2), rgba(255,255,255,.18));
+    --hairline-faint: light-dark(rgba(20,18,15,.05), rgba(255,255,255,.05));
     --lux-ink: light-dark(#17140f, #e9e7e2); transition-property: --tab-accent; transition-duration: var(--dur-fast); transition-timing-function: var(--ease-lux);
     --radius: 18px;
     --text-muted: light-dark(rgba(21,19,15,0.58), rgba(236,235,230,0.52));

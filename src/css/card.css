@@ -7,7 +7,7 @@
     overflow: auto;
     border: 1px solid var(--hairline-strong);
     border-radius: var(--r-pal, 20px);
-    background: var(--bg);
+    background: light-dark(var(--bg), var(--elev-3));
     color: var(--text);
     box-shadow: var(--shadow-deep);
     font-family: var(--ui-font);
@@ -169,7 +169,7 @@
   }
   .card-tall .card-glyph, .card-hero .card-glyph { font-size: clamp(9rem, 24dvh, 15rem); }
   :root[dir="rtl"] .card-meta { text-align: end; }
-  .badge-new .badge-dot { animation: newDot 2.4s var(--ease-io) 3; }
+  .badge-new .badge-dot { animation: newDot var(--t-2400) var(--ease-io) 3; }
   @supports (height: 1cqh) {
     .card-clip { container-type: size; }
     .card-glyph,
@@ -184,10 +184,11 @@
     content: ''; position: absolute; top: 0; bottom: 0; left: 0; width: 260%;
     transform: translate3d(calc(-80% + var(--hov, 0) * 160%), 0, 0);
   }
+  :root[dir="rtl"] .card-sheen { scale: -1 1; }
   .card-glyph svg, .card-glyph .lx-glyph { display: block; filter: none; }
   :root:lang(en) .app-title { font-feature-settings: "liga", "calt"; letter-spacing: -0.008em; }
   .open-affordance {
-    display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; border: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.1));
+    display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; border: 1px solid var(--hairline);
     opacity: 0; font-size: .6rem;
     box-shadow: none;
     color: color-mix(in oklab, var(--tint-ink) 70%, var(--text));
@@ -197,7 +198,7 @@
   .badge {
     display: inline-flex; align-items: center;
     background: light-dark(rgba(255,255,255,0.82), color-mix(in oklab, var(--bg) 62%, transparent));
-    border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05));
+    border: 1px solid var(--hairline-faint);
     transition: color var(--dur-fast) var(--ease-lux), background-color var(--dur-fast) var(--ease-lux), border-color var(--dur-fast) var(--ease-lux); gap: .4rem; text-transform: uppercase;
     box-shadow: none; position: relative;
   }
@@ -285,7 +286,7 @@
     position: fixed; inset: 0; z-index: 0;
     pointer-events: none;
     transform: scale(1.06); opacity: 0;
-    animation: fadeIn 900ms var(--ease-lux) forwards; animation-duration: 1600ms; filter: saturate(.8);
+    animation: fadeIn var(--t-900) var(--ease-lux) forwards; animation-duration: var(--t-1600); filter: saturate(.8);
   }
   :root[data-theme="dark"] #gradient-canvas { filter: saturate(.75) brightness(.9); }
   .controls-divider { width: 1px; margin: 0 0.2rem; background: linear-gradient(180deg, transparent, var(--border) 25%, var(--border) 75%, transparent); height: 16px; opacity: .6; }
@@ -381,7 +382,7 @@
     will-change: transform, opacity;
     contain: strict;
     background: radial-gradient(closest-side, color-mix(in oklab, var(--hover-accent, var(--tab-accent)) 3%, light-dark(rgba(255,252,245,0.16), rgba(255,255,255,0.02))), transparent 70%);
-    opacity: 0; transition: opacity 900ms var(--ease-lux), --hover-accent var(--dur-slow) var(--ease-lux);
+    opacity: 0; transition: opacity var(--t-900) var(--ease-lux), --hover-accent var(--dur-slow) var(--ease-lux);
   }
   .card-meta {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;

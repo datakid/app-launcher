@@ -28,11 +28,31 @@ const TARGETS = [
 const jsFiles = (dir) => readdirSync(dir, { withFileTypes: true }).flatMap((d) => (d.isDirectory() ? jsFiles(path.join(dir, d.name)) : d.name.endsWith('.js') ? [path.join(dir, d.name)] : []));
 const LITERAL_CLOCK = [/cubic-bezier\(/, /\b(duration|delay|endDelay)\s*:\s*[1-9]/, /\b[1-9][0-9]*(\.[0-9]+)?ms\b/];
 
+const CSS_TIME = /(^|[^\w.-])(\d*\.?\d+)(ms|s)\b/g;
+const cssLiteral = (line) => {
+  for (const segment of line.split(';')) {
+    const decl = segment.slice(segment.lastIndexOf('{') + 1);
+    if (/^\s*--[\w-]+\s*:/.test(decl)) continue;
+    if (/cubic-bezier\(/.test(decl)) return true;
+    for (const m of decl.matchAll(CSS_TIME)) {
+      const ms = parseFloat(m[2]) * (m[3] === 's' ? 1000 : 1);
+      if (ms > 0.01) return true;
+    }
+  }
+  return false;
+};
+
 const literalClock = () => {
   const found = [];
   for (const file of jsFiles(path.join(root, 'src/modules'))) {
     readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
       if (LITERAL_CLOCK.some((re) => re.test(line))) found.push(`${path.relative(root, file)}:${i + 1} ${line.trim().slice(0, 110)}`);
+    });
+  }
+  const cssDir = path.join(root, 'src/css');
+  for (const name of readdirSync(cssDir).filter((n) => n.endsWith('.css'))) {
+    readFileSync(path.join(cssDir, name), 'utf8').split('\n').forEach((line, i) => {
+      if (cssLiteral(line)) found.push(`src/css/${name}:${i + 1} ${line.trim().slice(0, 110)}`);
     });
   }
   return found;
