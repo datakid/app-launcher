@@ -228,19 +228,33 @@ Not light, left alone: the app title and the h1 tone fade run at 135 degrees in 
 
 Surfaces against the elevation ladder (7.3). Screenshots and computed fills of the appearance menu, context menu, toast, confirm dialog, QR sheet, palette, bar and pill in four looks and both themes, and in Arabic for Vivid. In dark the menus, toast, palette and QR sheet are all on `--elev-3` (L .227) and the pill and bar on `--elev-2` (L .206), as the ladder says. The confirm dialog was the only surface off the ladder: it used `--bg`, which in dark is the ground (L .15), so the modal was darker than the menus under it. It now uses `light-dark(var(--bg), var(--elev-3))` (light unchanged). Focus rings are consistent: 2 px solid with 3 px offset on chrome (tabs, pill buttons, scope chips), 2 px with 2 px offset on card chips, inset on the card link, `currentColor` on dialog buttons; keycaps and chips take their radii from `--r-kbd`, `--r-chip` and `--r-chip-in` and their rings from the hairline tokens.
 
-Screenshots against the Phase 0 baseline (7.6). `qa/visual-marks.mjs` on the Phase 0 build (main 6565676) and on this branch, both themes, English and Arabic, four looks, three corners; grid views (bento, list, icons) at 390, 1280 and 1707 px and palette frames (query, detail, dialog, menu) at 1280 px: 544 pairs, `qa/shot-diff.mjs --policy v5`, exact comparison. All 544 differ, as expected: v5 changed the dark ground, the icon tile and the palette. The annotated list, by the share of pixels that differ:
+Screenshots against the Phase 0 baseline (7.6). `qa/visual-marks.mjs` on the Phase 0 build (main 6565676) and on this branch, both themes, English and Arabic, four looks, three corners; grid views (bento, list, icons) at 390, 1280 and 1707 px, plus at 1280 px Zen (bento, icons), the palette (query, detail), the QR dialog and the appearance and context menus: 544 pairs, 34 per look, theme and language, `qa/shot-diff.mjs --policy v5`, exact comparison. All 544 differ, as expected: v5 changed the dark ground, the icon tile and the palette. The annotated list, by the share of pixels that differ:
 
 | Group | Frames | Pixels that differ | Cause |
 |---|---|---|---|
-| Dark grid views, Vivid, Curated, Muted | 3 views x 3 widths x 3 corners x 2 languages each | 82 to 94% | Phase 3: the Ink ground, the elevation ladder and the removed dark bloom move the page background, so nearly the whole frame changes |
+| Dark grid views (Zen frames included), Vivid, Curated, Muted | 54 per look | 82 to 94% | Phase 3: the Ink ground, the elevation ladder and the removed dark bloom move the page background, so nearly the whole frame changes |
 | Dark grid views, Mono | same | 8 to 22% (icons at 390 highest) | the background barely moves in Mono; what changes is the surfaces, rims and icon tiles (Phases 3 and 4) |
-| Dark palette frames | query, detail, dialog, menu | query 49 to 50%, detail 98 to 99.5% (Mono 98%), dialog 90 to 93%, menu 18 to 93% | Phase 3 ground and surfaces, Phase 6 palette rows and detail tile; the query frame is half the screen because the palette panel covers the other half |
-| Light grid views | same 54 per look | 0.3 to 2.7%; icons at 390 px 6.4 to 7.8% | Phase 4: icon tiles, stacked relief, the new tile shape, concentrated on the tiles; icons at 390 have the most tiles per frame |
-| Light palette frames | query, detail, dialog, menu | query 0.2 to 0.6%, detail 0.7 to 2.3%, dialog 0.5 to 0.6%, menu 0.9 to 1.1% | Phase 6: the detail tile and row model; the 56 px tile the owner kept is unchanged |
+| Dark palette, QR dialog and menus | query, detail, QR dialog, appearance and context menu | query 49 to 50%, detail 98 to 99.5% (Mono 98%), dialog 90 to 93%, menu 18 to 93% | Phase 3 ground and surfaces, Phase 6 palette rows and detail tile; the query frame is half the screen because the palette panel covers the other half |
+| Light grid views (Zen frames included) | 54 per look | 0.3 to 2.7%; icons at 390 px 6.4 to 7.8% | Phase 4: icon tiles, stacked relief, the new tile shape, concentrated on the tiles; icons at 390 have the most tiles per frame |
+| Light palette, QR dialog and menus | query, detail, QR dialog, appearance and context menu | query 0.2 to 0.6%, detail 0.7 to 2.3%, dialog 0.5 to 0.6%, menu 0.9 to 1.1% | Phase 6: the detail tile and row model; the 56 px tile the owner kept is unchanged |
 | Muted, light | all frames | 0.07 to 1.2% | the same causes; Muted tiles are low contrast |
 | Arabic, both themes | 272 | the same ranges as English | the same causes |
 
 Phase 7 on its own, measured: the Phase 7 starting build against this one on 32 frames (Arabic dark Vivid and English light Vivid, Balanced corners; every view and palette frame). Four frames are identical and ten differ only by 3 levels or less per channel, which the policy ignores. Sixteen have a few pixels above that (6,599 pixels over all 18 frames with differences; at most 0.009% of any frame; peak 80 levels in one frame, 50 in another, 25 or less elsewhere; one pixel above the strong limit of 64 in the whole set), which is the hairline tone and edge antialiasing. The remaining two frames are over the v5 limit: the Arabic palette query (0.27%) and palette detail (1.34%, peak 14, none strong), where the palette action icons and the watermark are now mirrored. That is the intended Phase 7 change. English frames at rest are unchanged to within hairline tone.
+
+Check suite on the final build (7.6).
+
+| check | result |
+|---|---|
+| `qa:comments`, `qa:css`, `qa:motion` | pass; motion lint checked 907 cards, 544 clips, 981 icon wrappers, 72 palette rows, 99 icon plates, 701 pill buttons, 101 bars, 505 rail items and 408 variant chips with 0 failing, and now also lints stylesheets |
+| `qa:search`, `qa:search-bench` | pass, including the synthetic 5,000-entry catalogue that failed in the baseline on this machine; real catalogue median 0.042 ms, p95 0.141 ms |
+| `qa:cards`, `qa:tiles` | pass; 440 tiles, minimum contrast ratio 3, 0 failing |
+| `qa:load` | pass; first load 242,117 B gzipped against 266,240 (24,123 B headroom), page 26,777 B, 11 requests, 0 CDN icon requests |
+| `qa:quick` | 90 of 90 on an idle machine, three runs in a row. Two earlier runs, the second right after a sandbox restart, failed one job each, always `viewport_icons_vivid_balanced_dark_en_360x640` ("1 icon label cut off"). The cause is not established: the same job, run alone five times each on this build and on the Phase 7 starting build (two on an idle machine, three under four busy loops), never reproduced it. The check measures label overflow 500 ms after load, so a font that arrives late on a cold start is the suspect |
+| `qa:behaviour` and the six scripts chained after it, `qa:qr`, `qa:zen`, `qa:icons` | pass |
+| `perf --assert` with `CI=1` | passes; `perf/RESULTS.md` regenerated from the same run |
+
+One test was flaky and is fixed in `qa/behaviour.mjs`. "Changing a motion token reaches JS after a motion preference change" flipped the reduced-motion emulation and waited a fixed 150 ms. The page learns about the change from a media query event, which fires during the next rendering update; on this machine that sometimes took longer, the app still believed motion was reduced, took the instant path and created no ghost, and the test read `null`. It failed in repeated isolated runs on the Phase 7 starting build as well as on this one, so it was not a regression. The test now waits for three rendered frames after each emulation and polls up to 24 frames for the ghost animation; the assertion (333 ms) is unchanged. Eight of eight isolated runs pass, and so does the full suite.
 
 ## 7. Baseline of the existing checks
 
