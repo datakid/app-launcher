@@ -188,7 +188,7 @@
   .card-glyph svg, .card-glyph .lx-glyph { display: block; filter: none; }
   :root:lang(en) .app-title { font-feature-settings: "liga", "calt"; letter-spacing: -0.008em; }
   .open-affordance {
-    display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; border: 1px solid var(--hairline);
+    display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; border: 1px solid light-dark(rgba(20,18,15,0.08), rgba(255,255,255,0.1));
     opacity: 0; font-size: .6rem;
     box-shadow: none;
     color: color-mix(in oklab, var(--tint-ink) 70%, var(--text));

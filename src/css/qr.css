@@ -140,7 +140,7 @@
     flex-shrink: 0;
     border-radius: var(--r-chip, 9px);
     background: light-dark(rgba(20,18,15,.06), rgba(255,255,255,.08));
-    border: 1px solid var(--hairline);
+    border: 1px solid var(--hairline-ctl);
     color: color-mix(in oklab, var(--tint) 70%, var(--text));
     font: 600 .68rem/1 var(--ui-font);
     letter-spacing: .04em;

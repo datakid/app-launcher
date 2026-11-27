@@ -320,6 +320,7 @@
     --hairline: light-dark(rgba(24,20,14,.085), rgba(255,255,255,.065));
     --hairline-strong: light-dark(rgba(24,20,14,.2), rgba(255,255,255,.18));
     --hairline-faint: light-dark(rgba(20,18,15,.05), rgba(255,255,255,.05));
+    --hairline-ctl: light-dark(rgba(20,18,15,.1), rgba(255,255,255,.12));
     --lux-ink: light-dark(#17140f, #e9e7e2); transition-property: --tab-accent; transition-duration: var(--dur-fast); transition-timing-function: var(--ease-lux);
     --radius: 18px;
     --text-muted: light-dark(rgba(21,19,15,0.58), rgba(236,235,230,0.52));
