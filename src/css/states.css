@@ -12,7 +12,7 @@
   }
   .spotlight.is-active { opacity: 1; }
   .spotlight.is-active.is-idle { opacity: 0.45; }
-  body.is-cinema .spotlight { opacity: .55; transition: opacity 2.5s var(--ease-io); }
+  body.is-cinema .spotlight { opacity: .55; transition: opacity var(--t-2500) var(--ease-io); }
   body.is-cinema .controls-pill { opacity: .5; }
   @media (hover: hover) and (pointer: fine) {
     body.is-card-hover .spotlight.is-active { opacity: 0.4; }
@@ -136,8 +136,8 @@
   @media (hover: hover) and (pointer: fine) {
     .app-grid:hover .app-card:nth-child(-n+9) .digit-badge { opacity: 1; transform: none; }
   }
-  .app-card.is-revealed { animation: revealPulse 1.1s var(--ease-lux); }
-  .app-card.is-returned { animation: returnPulse 1.4s var(--ease-out); }
+  .app-card.is-revealed { animation: revealPulse var(--t-1100) var(--ease-lux); }
+  .app-card.is-returned { animation: returnPulse var(--t-1400) var(--ease-out); }
   @supports (anchor-name: --a) {
     .variant-chip[aria-checked="true"] { anchor-name: --active-chip; }
   }
@@ -235,7 +235,7 @@
         transform: rotate(60deg);
       }
   }
-  .controls-pill #refreshToggle.is-spinning svg { animation: lxSpin 700ms linear infinite; color: var(--tab-accent); }
+  .controls-pill #refreshToggle.is-spinning svg { animation: lxSpin var(--dur-ambient) linear infinite; color: var(--tab-accent); }
   .palette-scopes[hidden] { display: none; }
   @media (hover: hover) and (pointer: fine) {
     .palette-scope:hover {
@@ -309,8 +309,8 @@
   .lx-context-menu button.is-failed svg { color: var(--closed-ink); }
   .lx-context-menu .ctx-seg button.is-active { color: var(--text); font-weight: 600; }
   .lx-context-menu .ctx-seg button:focus-visible { box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--menu-accent) 55%, transparent); }
-  .lx-context-menu .ctx-head, .lx-context-menu .ctx-group, .lx-context-menu .ctx-mode { transition: opacity 420ms var(--ease-lux) var(--rise, 0ms), translate 420ms var(--ease-lux) var(--rise, 0ms); }
-  .lx-context-menu > button { transition: opacity 420ms var(--ease-lux), translate 420ms var(--ease-lux), background-color var(--dur-micro) var(--ease-lux); }
+  .lx-context-menu .ctx-head, .lx-context-menu .ctx-group, .lx-context-menu .ctx-mode { transition: opacity var(--t-420) var(--ease-lux) var(--rise, 0ms), translate var(--t-420) var(--ease-lux) var(--rise, 0ms); }
+  .lx-context-menu > button { transition: opacity var(--t-420) var(--ease-lux), translate var(--t-420) var(--ease-lux), background-color var(--dur-micro) var(--ease-lux); }
   @starting-style { .lx-context-menu .ctx-head, .lx-context-menu .ctx-group, .lx-context-menu .ctx-mode, .lx-context-menu > button { opacity: 0; translate: 0 -5px; } }
   .lx-context-menu .ctx-group:nth-of-type(2) { --rise: 20ms; }
   .lx-context-menu .ctx-group:nth-of-type(3) { --rise: 40ms; }
@@ -320,7 +320,7 @@
     #refreshToggle:hover svg { transform: rotate(40deg); }
   }
   body.is-booted .app-card.is-boot-card,
-  body.is-booted .icon-plate.is-boot-card { animation-duration: 900ms; }
+  body.is-booted .icon-plate.is-boot-card { animation-duration: var(--t-900); }
   .controls-pill button[aria-pressed="true"],
   .controls-pill button[aria-expanded="true"] {
     color: var(--text);
@@ -366,7 +366,7 @@
         transform: rotate(12deg) scale(1);
       }
   }
-  .lx-context-menu .ctx-pin.is-nudge svg { animation: pinNudge 420ms var(--ease-lux); }
+  .lx-context-menu .ctx-pin.is-nudge svg { animation: pinNudge var(--t-420) var(--ease-lux); }
   .lx-context-menu button.is-active .look-view { opacity: .95; }
   .app-grid[data-layout="list"] > .app-card--row.is-kb-focus::before,
   .app-grid[data-layout="list"] > .app-card--row.is-kb-focus + .app-card--row::before { opacity: 0; }
@@ -384,7 +384,7 @@
   }
   .icon-plate.no-enter { animation: none; }
   .app-grid.is-switching .icon-plate { animation: none !important; }
-  body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-duration: 520ms; }
+  body.is-booted .icon-plate.is-boot-card { animation-name: cardBoot; animation-duration: var(--t-520); }
   .icon-plate.is-closed .icon-plate-cap-text { opacity: .5; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
   @media (hover: hover) and (pointer: fine) {
     .app-grid[data-layout="icons"] .app-card--icon:hover .app-icon-wrapper { translate: 0 -3px; }
@@ -429,14 +429,14 @@
   .qr-close:active { transform: scale(.92); }
   .qr-variants[hidden], .qr-note[hidden], .qr-action[hidden] { display: none; }
   .qr-variant.is-active { color: var(--text); }
-  #lx-qr .qr-frame::before { animation: qr-brackets 620ms var(--qr-ease) 120ms both; }
-  #lx-qr .qr-stage:not(.is-swap) .qr-layer:not(.is-leaving) { animation: qr-pop 560ms var(--qr-ease) 40ms both; }
+  #lx-qr .qr-frame::before { animation: qr-brackets var(--dur-slow) var(--qr-ease) var(--t-120) both; }
+  #lx-qr .qr-stage:not(.is-swap) .qr-layer:not(.is-leaving) { animation: qr-pop var(--t-560) var(--qr-ease) var(--t-40) both; }
   .qr-stage.is-swap .qr-layer:not(.is-leaving) { animation: qr-swap var(--mo-qr-swap) var(--qr-ease) both; }
-  .qr-layer.is-leaving { animation: qr-leave 120ms var(--qr-ease) both; pointer-events: none; }
-  #lx-qr .qr-stage:not(.is-swap) .qr-logo { animation: qr-logo-in 520ms var(--qr-ease) 280ms both; }
-  #lx-qr .qr-stage:not(.is-swap):not(.is-fail)::after { animation: qr-sweep 900ms cubic-bezier(.4, 0, .2, 1) 260ms both; }
+  .qr-layer.is-leaving { animation: qr-leave var(--t-120) var(--qr-ease) both; pointer-events: none; }
+  #lx-qr .qr-stage:not(.is-swap) .qr-logo { animation: qr-logo-in var(--t-520) var(--qr-ease) var(--t-280) both; }
+  #lx-qr .qr-stage:not(.is-swap):not(.is-fail)::after { animation: qr-sweep var(--t-900) var(--ease-sweep) var(--dur-fast) both; }
   .qr-url:hover, .qr-url:focus-visible { background: var(--surface-hover); color: var(--text); }
-  .qr-action-label.is-flash { animation: qr-label-in 120ms var(--qr-ease) both; }
+  .qr-action-label.is-flash { animation: qr-label-in var(--t-120) var(--qr-ease) both; }
   .qr-action:hover, .qr-action:focus-visible { background: var(--surface-hover); border-color: var(--border-highlight); }
   .qr-action:active { transform: scale(.975); }
   .qr-action.is-primary { flex: 1; min-inline-size: 0; border-color: transparent; background: var(--tint); color: #fff; }
@@ -447,7 +447,7 @@
   .qr-action:disabled { opacity: .45; cursor: not-allowed; }
   #lx-qr :focus-visible { outline: 2px solid color-mix(in oklab, var(--tint) 70%, var(--text)); outline-offset: 2px; }
   @media (max-width: 640px) {
-    #lx-qr[open] { translate: 0 0; transition-timing-function: cubic-bezier(.2, .8, .2, 1); }
+    #lx-qr[open] { translate: 0 0; transition-timing-function: var(--ease-qr); }
     #lx-qr.is-dragging { transition: none; }
     @starting-style { #lx-qr[open] { opacity: 1; transform: none; translate: 0 100%; } }
   }

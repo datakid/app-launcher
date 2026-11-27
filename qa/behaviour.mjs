@@ -71,17 +71,22 @@ const motionTokens = async (browser, base) => {
     const tabs = [...document.querySelectorAll('.tab-btn')];
     const i = tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true');
     tabs[(i + 1) % tabs.length].click();
-    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
-    const out = document.getAnimations().filter((a) => { const t = a.effect && a.effect.target; return t && t.closest && t.closest('.grid-ghost'); }).map((a) => a.effect.getComputedTiming().duration);
+    const ghostDurations = () => document.getAnimations().filter((a) => { const t = a.effect && a.effect.target; return t && t.closest && t.closest('.grid-ghost'); }).map((a) => a.effect.getComputedTiming().duration);
+    let out = [];
+    for (let frame = 0; frame < 24 && !out.length; frame++) {
+      await new Promise((r) => requestAnimationFrame(r));
+      out = ghostDurations();
+    }
     return out.length ? Math.max(...out) : null;
   });
   const first = await tabOut();
   await page.waitForTimeout(900);
   await page.evaluate(() => document.documentElement.style.setProperty('--lx-tab-out', '333ms'));
+  const frames = () => page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(r)))));
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.waitForTimeout(150);
+  await frames();
   await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.waitForTimeout(150);
+  await frames();
   const second = await tabOut();
   await ctx.close();
   record('motion tokens are the only clock: default values read from CSS', info.legacy === null && parseFloat(info.version) * (/ms$/.test(info.version) ? 1 : 1000) === 120 && parseFloat(info.boot) * (/ms$/.test(info.boot) ? 1 : 1000) === 360 && first === 120, { ...info, first });

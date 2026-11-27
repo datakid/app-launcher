@@ -4,7 +4,7 @@
     position: fixed; inset-inline: 0; bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
     margin-inline: auto; width: max-content; max-width: calc(100vw - 2rem);
     z-index: 400;
-    border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.09));
+    border: 1px solid var(--hairline);
     color: var(--text); font-weight: 500; text-align: center;
     opacity: 0; pointer-events: none;
     display: flex; align-items: center; gap: .55rem;
@@ -16,7 +16,7 @@
       0 0 0 1px color-mix(in oklab, var(--tab-accent) 10%, transparent),
       inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
     transform: translateY(12px) scale(.98);
-    transition: opacity 360ms var(--ease-lux), transform 520ms var(--ease-lux);
+    transition: opacity var(--t-360) var(--ease-lux), transform var(--t-520) var(--ease-lux);
   }
   .ctx-head-icon .lx-fav { inline-size: 100%; block-size: 100%; border-radius: inherit; object-fit: cover; }
   .ctx-head-icon[data-mark="favicon"] { background: light-dark(#ffffff, #171a21); box-shadow: inset 0 0 0 1px light-dark(rgba(15,23,42,.16), rgba(255,255,255,.18)); }
@@ -53,7 +53,7 @@
   .ctx-head {
     display: flex; align-items: center; gap: .7rem;
     padding: .6rem .65rem .75rem; margin-bottom: 4px;
-    border-bottom: 1px solid light-dark(rgba(20,18,15,.08), rgba(255,255,255,.07));
+    border-bottom: 1px solid var(--hairline);
     --tint: var(--c1);
   }
   @supports (color: oklch(from red l c h)) {
@@ -135,21 +135,21 @@
     background-image:
       radial-gradient(120% 60% at 50% -20%, color-mix(in oklab, var(--menu-accent) 9%, transparent), transparent 70%),
       linear-gradient(180deg, light-dark(rgba(255,255,255,.75), rgba(255,255,255,.05)), transparent 46px);
-    border: 1px solid light-dark(rgba(20,18,15,.08), rgba(255,255,255,.085));
+    border: 1px solid var(--hairline);
     box-shadow:
       0 0 0 .5px light-dark(rgba(20,18,15,.04), rgba(0,0,0,.6)),
       0 2px 4px light-dark(rgba(28,25,20,.04), rgba(0,0,0,.28)),
       0 12px 24px -10px light-dark(rgba(28,25,20,.14), rgba(0,0,0,.5)),
       0 32px 64px -24px light-dark(rgba(28,25,20,.22), rgba(0,0,0,.75)),
       inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.07));
-    transition: opacity 220ms var(--ease-lux), transform 360ms var(--ease-lux);
+    transition: opacity var(--t-220) var(--ease-lux), transform var(--t-360) var(--ease-lux);
     border-color: var(--hairline);
   }
   .ctx-seg-thumb {
     position: absolute; top: 2px; bottom: 2px; inset-inline-start: 2px; width: calc(50% - 2px);
     border-radius: var(--r-chip-in, 7px);
     background: light-dark(#fff, rgba(255,255,255,.13));
-    box-shadow: 0 1px 2px light-dark(rgba(20,18,15,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--menu-accent) 24%, transparent); transition: transform 460ms var(--ease-pill);
+    box-shadow: 0 1px 2px light-dark(rgba(20,18,15,.12), rgba(0,0,0,.4)), inset 0 0 0 1px color-mix(in oklab, var(--menu-accent) 24%, transparent); transition: transform var(--t-460) var(--ease-pill);
   }
   .ctx-vrow { display: flex; align-items: center; gap: 2px; border-radius: var(--r-menu-item, 8px); }
   .lx-context-menu .ctx-side {

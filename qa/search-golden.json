@@ -303,5 +303,45 @@
   "group": "typo",
   "q": "المحلّل",
   "app": "parser"
+ },
+ {
+  "group": "owner",
+  "q": "harve",
+  "entry": "harvest"
+ },
+ {
+  "group": "owner",
+  "q": "alt",
+  "entry": "alt"
+ },
+ {
+  "group": "owner",
+  "q": "pail calc",
+  "entry": "paid-calculator::calc"
+ },
+ {
+  "group": "owner",
+  "q": "critirial rubric",
+  "entry": "criteria-builder::rubric"
+ },
+ {
+  "group": "owner",
+  "q": "express plan",
+  "entry": "plan-maker::express"
+ },
+ {
+  "group": "owner",
+  "q": "delel 460",
+  "entry": "paid-calculator::daleel"
+ },
+ {
+  "group": "owner",
+  "q": "paid 460",
+  "entry": "paid-calculator::daleel"
+ },
+ {
+  "group": "owner",
+  "q": ".vercel",
+  "field": "host"
  }
 ]

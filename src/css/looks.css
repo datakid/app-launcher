@@ -51,7 +51,7 @@
     background-size: 200% auto;
     filter: drop-shadow(0 4px 14px light-dark(rgba(20,18,15,.1), rgba(0,0,0,.35)));
   }
-  :root.fonts-ready[data-palette="vivid"] h1 { animation: shimmerText 3.6s var(--ease-lux) .35s 1 both; }
+  :root.fonts-ready[data-palette="vivid"] h1 { animation: shimmerText var(--t-3600) var(--ease-lux) var(--t-350) 1 both; }
   :root[data-palette="vivid"][data-theme="light"] .card-sheen { box-shadow: inset 0 1px 0 #fff; background: linear-gradient(0deg, color-mix(in oklab, var(--tint) 6%, transparent), transparent 34%); }
   :root[data-palette="vivid"][data-theme="light"] .card-sheen::before {
     background: linear-gradient(115deg, transparent 34%, rgba(255,255,255,.55) 47%, rgba(255,255,255,.16) 53%, transparent 66%);
@@ -175,7 +175,7 @@
   :root[data-theme="light"] .variant-chip:not(.is-active) { color: color-mix(in oklab, var(--text-muted) 82%, var(--text)); }
   .palette-action.is-primary .palette-action-icon {
     color: #fff;
-    background: linear-gradient(160deg, color-mix(in oklab, #fff 14%, var(--live-accent)), color-mix(in oklab, #000 16%, var(--live-accent)));
+    background: linear-gradient(var(--tile-ang, 160deg), color-mix(in oklab, #fff 14%, var(--live-accent)), color-mix(in oklab, #000 16%, var(--live-accent)));
     box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 3px 8px -3px color-mix(in oklab, var(--live-accent) 60%, transparent);
   }
   @supports (color: oklch(from red l c h)) {
@@ -269,13 +269,13 @@
   :root[data-palette="mono"] #lx-palette::before { background: linear-gradient(90deg, transparent, light-dark(rgba(0,0,0,.3), rgba(255,255,255,.6)), transparent); }
   :root[data-palette="mono"] .palette-item-title mark { box-shadow: inset 0 -1px 0 color-mix(in oklab, var(--text) 60%, transparent); }
   :root[data-palette="mono"] .palette-action.is-primary .palette-action-icon {
-    background: linear-gradient(160deg, light-dark(#4a4a4a, #d8d8d6), light-dark(#242424, #9a9a98));
+    background: linear-gradient(var(--tile-ang, 160deg), light-dark(#4a4a4a, #d8d8d6), light-dark(#242424, #9a9a98));
     color: light-dark(#fff, #111);
   }
   :root[data-palette="mono"] .ctx-head-icon {
     background:
       linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,0) 52%),
-      linear-gradient(160deg, light-dark(#8e9196, #b7babf), light-dark(#5c5f66, #74777e) 52%, light-dark(#3a3c42, #43454b));
+      linear-gradient(var(--tile-ang, 160deg), light-dark(#8e9196, #b7babf), light-dark(#5c5f66, #74777e) 52%, light-dark(#3a3c42, #43454b));
     box-shadow: 0 6px 14px -8px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.35), inset 0 0 0 1px rgba(255,255,255,.12);
   }
   :root[data-palette="mono"] .lx-toast::before { background: var(--text); box-shadow: 0 0 0 3px color-mix(in oklab, var(--text) 14%, transparent); }
@@ -351,7 +351,7 @@
       var(--text) 50%,
       color-mix(in oklab, var(--tint-ink) 55%, var(--text)) 85%,
       color-mix(in oklab, var(--tint-ink) 72%, var(--text)) 100%);
-    transition: background-position 900ms var(--ease-lux);
+    transition: background-position var(--t-900) var(--ease-lux);
   }
   :root[data-palette] .open-affordance {
     width: 24px; height: 24px;
@@ -479,7 +479,7 @@
     opacity: 1;
     transform: none;
     --ak: 1;
-    transition: translate var(--dur-fast) var(--ease-lux), scale 320ms var(--ease-spring);
+    transition: translate var(--dur-fast) var(--ease-lux), scale var(--t-320) var(--ease-spring);
     pointer-events: none;
   }
   :root[data-palette="muted"] .qr-frame::after, :root[data-palette="mono"] .qr-frame::after { display: none; }

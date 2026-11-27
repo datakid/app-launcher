@@ -5,7 +5,7 @@
     width: var(--lx-panel-w); max-height: min(76dvh, 640px);
     margin: min(15dvh, 140px) auto auto;
     display: flex; flex-direction: column;
-    border: 1px solid light-dark(rgba(20,18,15,0.09), rgba(255,255,255,0.08));
+    border: 1px solid var(--hairline);
     border-radius: var(--pal-radius);
     padding: 0; overflow: hidden; color: var(--text);
     opacity: 0; transform: translateY(-6px) scale(0.985);
@@ -19,7 +19,7 @@
       0 20px 40px -20px light-dark(rgba(30,24,16,.16), rgba(0,0,0,.6)),
       0 70px 120px -50px light-dark(rgba(30,24,16,.3), rgba(0,0,0,.9)),
       inset 0 1px 0 light-dark(#fff, rgba(255,255,255,.06));
-    transition: opacity 260ms var(--ease-lux), transform 420ms var(--ease-lux), --live-accent var(--dur-slow) var(--ease-lux), display 420ms allow-discrete, overlay 420ms allow-discrete; }
+    transition: opacity var(--dur-fast) var(--ease-lux), transform var(--t-420) var(--ease-lux), --live-accent var(--dur-slow) var(--ease-lux), display var(--t-420) allow-discrete, overlay var(--t-420) allow-discrete; }
   :root[dir="rtl"] .palette-input-row { padding: 0 1.5rem 0 1.15rem; }
   .palette-close { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; margin-inline-start: auto; min-width: 36px; min-height: 36px; padding: 0; border: 0; background: transparent; color: var(--pal-ink-2); touch-action: manipulation; transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux); }
   .palette-close-touch { display: none; font-size: 1.35rem; line-height: 1; }
@@ -40,7 +40,7 @@
   }
   .palette-mode svg { font-size: 0.7rem; }
   .palette-keys { display: inline-flex; align-items: center; gap: 3px; flex-shrink: 0; }
-  .palette-close kbd { height: 24px; padding: 0 8px; border-radius: 7px; font-size: 0.68rem; }
+  .palette-close kbd { height: 24px; padding: 0 8px; border-radius: var(--r-kbd); font-size: 0.68rem; }
   .palette-input-wrap { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; }
   .palette-input-wrap #paletteInput { position: relative; z-index: 1; }
   .palette-ghost {
@@ -79,7 +79,7 @@
   .palette-detail-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.7rem; color: var(--pal-ink-2); font-size: 0.9rem; text-align: center; }
   .palette-detail-empty svg { font-size: 1.4rem; opacity: 0.45; }
   .palette-detail-slab-noise { display: none; }
-  .palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; animation: detailIn 280ms var(--ease-lux) both; }
+  .palette-detail-header { position: relative; z-index: 1; display: flex; align-items: center; gap: 1rem; animation: detailIn var(--t-280) var(--ease-lux) both; }
   .palette-detail .app-icon { font-size: 1.25rem; }
   .palette-detail-title-wrap { min-width: 0; display: flex; flex-direction: column; }
   :root:lang(ar) .palette-detail-title { line-height: 1.45; }
@@ -90,7 +90,7 @@
     background: light-dark(rgba(255,255,255,0.6), rgba(255,255,255,0.02));
     box-shadow: inset 0 0 0 1px var(--pal-line);
     overflow: hidden;
-    animation: detailIn 280ms var(--ease-lux) .025s both;
+    animation: detailIn var(--t-280) var(--ease-lux) var(--t-25) both;
   }
   .palette-fact { padding: 0.65rem 0.9rem; min-width: 0; border-inline-start: 1px solid var(--pal-line); }
   .palette-fact:first-child { border-inline-start: 0; }
@@ -102,13 +102,13 @@
     position: relative; z-index: 1;
     font-size: 0.84rem; line-height: 1.5; color: color-mix(in oklab, var(--closed-ink) 55%, var(--text));
     background: color-mix(in oklab, var(--closed-ink) 7%, transparent); border: 1px solid color-mix(in oklab, var(--closed-ink) 18%, transparent); padding: 0.65rem 0.9rem;
-    animation: detailIn var(--dur-fast) var(--ease-lux) .05s both;
+    animation: detailIn var(--dur-fast) var(--ease-lux) var(--t-50) both;
   }
   .palette-detail-badge.badge-new { color: light-dark(#a8720f, #d9a83e); border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
   .palette-detail-badge.badge-closed { color: var(--closed-ink); border-color: color-mix(in oklab, var(--closed-ink) 36%, transparent); background: color-mix(in oklab, var(--closed-ink) 14%, transparent); }
   .palette-detail-badge.badge-variant { color: light-dark(#3b6fd6, #7ea4e8); border-color: color-mix(in oklab, currentColor 28%, transparent); background: color-mix(in oklab, currentColor 11%, transparent); }
   .palette-detail-badge .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
-  .palette-actions { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 2px; margin-top: auto; animation: detailIn 280ms var(--ease-lux) .05s both; }
+  .palette-actions { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 2px; margin-top: auto; animation: detailIn var(--t-280) var(--ease-lux) var(--t-50) both; }
   .palette-action {
     display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 40px; text-align: start;
     background: transparent; border: 0; color: color-mix(in oklab, var(--text) 78%, transparent);
@@ -230,11 +230,6 @@
   :root[data-corners] #lx-palette kbd,
   :root[data-corners] .lx-bar-kbd,
   :root[data-corners] .palette-scope-count { border-radius: var(--r-kbd); }
-  @media (min-height: 860px) and (min-width: 721px) {
-    .palette-detail .app-icon-wrapper { --icon-radius: 19px; --icon-size: 72px; transform: none; }
-    .palette-detail .app-icon { font-size: 1.6rem; }
-    .palette-detail-header, .palette-facts { flex-shrink: 0; }
-  }
   @media (max-width: 640px) {
     #lx-palette { margin-top: 8dvh; }
     .palette-status { display: none; }
@@ -275,7 +270,7 @@
     background: light-dark(rgba(36,30,22,.2), rgba(2,3,5,.58));
     backdrop-filter: blur(6px) saturate(120%);
     -webkit-backdrop-filter: blur(6px) saturate(120%);
-    transition: opacity 360ms var(--ease-lux), display 360ms allow-discrete, overlay 360ms allow-discrete;
+    transition: opacity var(--t-360) var(--ease-lux), display var(--t-360) allow-discrete, overlay var(--t-360) allow-discrete;
   }
   .palette-input-row > svg { font-size: 1.1rem; transition: color var(--dur-base) var(--ease-lux); filter: none; color: color-mix(in oklab, var(--live-accent) 55%, var(--text-muted)); }
   .palette-cursor {
@@ -288,7 +283,7 @@
       inset 0 0 0 1px light-dark(rgba(24,20,14,.06), rgba(255,255,255,.05)),
       0 1px 2px light-dark(rgba(30,24,16,.05), rgba(0,0,0,.28)),
       0 8px 20px -14px color-mix(in oklab, var(--live-accent) 45%, transparent);
-    transition: transform 220ms var(--ease-lux), height 220ms var(--ease-lux), opacity var(--dur-fast) var(--ease-lux);
+    transition: transform var(--t-220) var(--ease-lux), height var(--t-220) var(--ease-lux), opacity var(--dur-fast) var(--ease-lux);
   }
   .palette-cursor::before {
     content: ''; position: absolute; inset-inline-start: 0; top: 50%; transform: translateY(-50%);
@@ -301,16 +296,16 @@
     min-height: 52px; padding: 0.5rem 0.7rem; cursor: pointer;
     content-visibility: auto; contain-intrinsic-size: auto 36px;
     transition: background-color var(--dur-micro) var(--ease-lux);
-    animation: paletteItemIn 220ms var(--ease-lux) both; animation-duration: 360ms; animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * 18ms);
+    animation: paletteItemIn var(--t-220) var(--ease-lux) both; animation-duration: var(--t-360); animation-delay: calc(var(--stagger-base, 0ms) + min(var(--n, 0), 8) * var(--t-18));
   }
-  .palette-detail-header, .palette-facts, .palette-actions { animation-duration: 440ms; }
+  .palette-detail-header, .palette-facts, .palette-actions { animation-duration: var(--t-440); }
   .palette-scope-indicator {
     position: absolute; top: 0.5rem; left: 0; height: 30px; width: 0; pointer-events: none;
     will-change: transform;
     border-radius: 8px;
     background: light-dark(#fff, rgba(255,255,255,.06));
     box-shadow: inset 0 0 0 1px light-dark(rgba(24,20,14,.07), rgba(255,255,255,.06)), 0 1px 2px light-dark(rgba(30,24,16,.06), rgba(0,0,0,.3));
-    transition: transform 340ms var(--ease-lux), width 340ms var(--ease-lux);
+    transition: transform var(--t-340) var(--ease-lux), width var(--t-340) var(--ease-lux);
   }
   .palette-detail-slab {
     position: absolute; inset: 0; z-index: 0;
@@ -320,10 +315,10 @@
   }
   .palette-detail-watermark {
     position: absolute; inset-inline-end: -1.2rem; bottom: -1.8rem;
-    font-size: 9.5rem; transform: rotate(-8deg);
+    font-size: 9.5rem; transform: rotate(calc(-8deg * var(--light-x)));
     animation: watermarkIn var(--dur-story) var(--ease-lux) both;
-    -webkit-mask-image: linear-gradient(200deg, #000 25%, transparent 90%);
-            mask-image: linear-gradient(200deg, #000 25%, transparent 90%); color: color-mix(in oklab, var(--tint) 5%, transparent);
+    -webkit-mask-image: linear-gradient(calc(360deg - var(--tile-ang, 160deg)), #000 25%, transparent 90%);
+            mask-image: linear-gradient(calc(360deg - var(--tile-ang, 160deg)), #000 25%, transparent 90%); color: color-mix(in oklab, var(--tint) 5%, transparent);
   }
   .lx-bar, #lx-palette {
     -webkit-backdrop-filter: blur(12px) saturate(150%);

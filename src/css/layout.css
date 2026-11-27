@@ -59,7 +59,7 @@
   :root[dir="rtl"] .site-header::after { background: linear-gradient(90deg, transparent, var(--hairline-strong)); }
   .palette-detail-badge {
     display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.25rem 0.65rem;
-    background: light-dark(rgba(255,255,255,0.7), rgba(0,0,0,0.3)); border: 1px solid light-dark(rgba(20,18,15,0.05), rgba(255,255,255,0.05)); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .62rem;
+    background: light-dark(rgba(255,255,255,0.7), rgba(0,0,0,0.3)); border: 1px solid var(--hairline-faint); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .62rem;
   }
   .grid-empty {
     flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -103,11 +103,11 @@
   .site-header {
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    animation: slideDown var(--dur-story) var(--ease-lux) 0.06s both;
+    animation: slideDown var(--dur-story) var(--ease-lux) var(--t-60) both;
     max-block-size: var(--site-header-height, 180px);
     transform: translateY(0) scale(1);
     transform-origin: center top;
-    transition: opacity var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux); animation-duration: 1000ms; animation-delay: .04s; gap: clamp(1.2rem, 3vw, 2.4rem);
+    transition: opacity var(--dur-base) var(--ease-lux), transform var(--dur-base) var(--ease-lux); animation-duration: var(--t-1000); animation-delay: var(--t-40); gap: clamp(1.2rem, 3vw, 2.4rem);
   }
   .app-title, .tab-btn, .lx-bar-label, .card-meta, .badge, .variant-chip { font-kerning: normal; }
   :root .app-grid[data-layout="list"] {

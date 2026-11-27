@@ -23,7 +23,7 @@
   }
   ::view-transition-group(.tile) { animation-duration: var(--dur-fast); animation-timing-function: var(--ease-lux); }
   ::view-transition-old(.tile)   { animation: lx-tile-out var(--dur-micro) var(--ease-lux) both; }
-  ::view-transition-new(.tile)   { animation: lx-tile-in  var(--dur-micro) var(--ease-lux) .05s both; }
+  ::view-transition-new(.tile)   { animation: lx-tile-in  var(--dur-micro) var(--ease-lux) var(--t-50) both; }
   .app-icon-wrapper {
     --icon-size: clamp(46px, 6.4dvh, 56px);
     --icon-radius: 13px;

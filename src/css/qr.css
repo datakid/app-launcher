@@ -45,7 +45,7 @@
     inline-size: min(380px, calc(100vw - 32px));
     margin: auto;
     padding: 18px;
-    border: 1px solid light-dark(rgba(20,18,15,.09), rgba(255,255,255,.08));
+    border: 1px solid var(--hairline);
     border-radius: calc(var(--r-pal, 20px) + 4px);
     color: var(--text);
     background-color: light-dark(rgba(250,249,246,.985), color-mix(in oklab, var(--elev-3) 98%, transparent));
@@ -64,11 +64,11 @@
   .qr-head-text { display: flex; flex-direction: column; min-inline-size: 0; }
   .qr-title { font: 600 .94rem/1.35 var(--ui-font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .qr-host { font: 400 .75rem/1.4 var(--ui-font); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: start; direction: ltr; unicode-bidi: isolate; }
-  .qr-close { inline-size: 36px; block-size: 36px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--text-muted); cursor: pointer; transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux), transform 220ms var(--qr-ease); }
+  .qr-close { inline-size: 36px; block-size: 36px; display: grid; place-items: center; border: 0; border-radius: 50%; background: transparent; color: var(--text-muted); cursor: pointer; transition: background-color var(--dur-micro) var(--ease-lux), color var(--dur-micro) var(--ease-lux), transform var(--t-220) var(--qr-ease); }
   .qr-close svg { inline-size: 14px; block-size: 14px; }
   .qr-variants { position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(72px, 1fr); align-self: center; padding: 3px; border-radius: calc(var(--r-chip, 9px) + 3px); background: color-mix(in oklab, var(--text) 6%, transparent); }
   .qr-thumb { position: absolute; inset-block: 3px; inset-inline-start: 0; border-radius: var(--r-chip, 9px); background: light-dark(#fff, rgba(255,255,255,.12)); box-shadow: 0 1px 2px rgba(0,0,0,.18), 0 0 0 1px color-mix(in oklab, var(--tint) 30%, transparent); transition: transform var(--mo-qr-swap) var(--qr-ease); }
-  .qr-variant { position: relative; min-block-size: 30px; padding: 0 14px; border: 0; border-radius: var(--r-chip, 9px); background: transparent; color: var(--text-muted); font: 500 .78rem/1 var(--ui-font); white-space: nowrap; cursor: pointer; transition: color 160ms var(--qr-ease); }
+  .qr-variant { position: relative; min-block-size: 30px; padding: 0 14px; border: 0; border-radius: var(--r-chip, 9px); background: transparent; color: var(--text-muted); font: 500 .78rem/1 var(--ui-font); white-space: nowrap; cursor: pointer; transition: color var(--dur-micro) var(--qr-ease); }
   .qr-frame { position: relative; isolation: isolate; align-self: center; padding: 10px; }
   .qr-frame::before {
     content: "";
@@ -106,16 +106,16 @@
   .qr-stage::after { content: ""; position: absolute; inset-inline: 0; inset-block-start: 0; block-size: 38%; pointer-events: none; opacity: 0; background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--tint) 22%, transparent) 62%, color-mix(in oklab, var(--tint) 52%, transparent) 98%, transparent); }
   .qr-fail { block-size: 100%; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 16px; text-align: center; color: #5b3a1a; font: 500 .9rem/1.4 var(--ui-font); }
   .qr-fail svg { inline-size: 26px; block-size: 26px; }
-  .qr-url { display: block; max-inline-size: 100%; margin-inline: auto; padding: 4px 8px; border: 0; border-radius: var(--r-chip, 9px); background: transparent; color: var(--text-muted); font: 400 .75rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: ltr; unicode-bidi: isolate; cursor: pointer; transition: background-color 160ms var(--qr-ease), color 160ms var(--qr-ease); }
+  .qr-url { display: block; max-inline-size: 100%; margin-inline: auto; padding: 4px 8px; border: 0; border-radius: var(--r-chip, 9px); background: transparent; color: var(--text-muted); font: 400 .75rem/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; direction: ltr; unicode-bidi: isolate; cursor: pointer; transition: background-color var(--dur-micro) var(--qr-ease), color var(--dur-micro) var(--qr-ease); }
   .qr-note { margin: 0; padding: 8px 12px; border-radius: var(--r-chip, 10px); font: 400 .8rem/1.45 var(--ui-font); color: var(--closed-ink); background: color-mix(in oklab, var(--closed-ink) 10%, transparent); text-align: center; }
   .qr-actions { display: flex; gap: 8px; align-items: stretch; }
   .qr-tools { display: flex; gap: 8px; }
-  .qr-action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-block-size: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--r-chip, 9px); background: var(--surface); color: var(--text); font: 500 .84rem/1 var(--ui-font); cursor: pointer; transition: background-color 160ms var(--qr-ease), border-color 160ms var(--qr-ease), transform 220ms var(--qr-ease); }
+  .qr-action { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-block-size: 40px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--r-chip, 9px); background: var(--surface); color: var(--text); font: 500 .84rem/1 var(--ui-font); cursor: pointer; transition: background-color var(--dur-micro) var(--qr-ease), border-color var(--dur-micro) var(--qr-ease), transform var(--t-220) var(--qr-ease); }
   .qr-action svg { inline-size: 14px; block-size: 14px; flex: none; }
   .qr-tools .qr-action { inline-size: 40px; padding: 0; }
   .qr-tools .qr-action-label { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
   @media (max-width: 640px) {
-    #lx-qr { margin: auto 0 0; inline-size: 100vw; max-inline-size: 100vw; border-end-start-radius: 0; border-end-end-radius: 0; padding-block-end: calc(18px + env(safe-area-inset-bottom, 0px)); opacity: 1; transform: none; translate: 0 100%; transition-timing-function: cubic-bezier(.2, .8, .2, 1); }
+    #lx-qr { margin: auto 0 0; inline-size: 100vw; max-inline-size: 100vw; border-end-start-radius: 0; border-end-end-radius: 0; padding-block-end: calc(18px + env(safe-area-inset-bottom, 0px)); opacity: 1; transform: none; translate: 0 100%; transition-timing-function: var(--ease-qr); }
     .qr-grab { display: block; position: relative; block-size: 20px; margin-block: -10px 0; touch-action: none; cursor: grab; }
     .qr-grab::after { content: ""; position: absolute; inset-block-start: 8px; inset-inline: calc(50% - 18px); block-size: 4px; border-radius: 2px; background: color-mix(in oklab, var(--text) 24%, transparent); }
     .qr-stage { --qr-tile: min(72vw, 280px); }
@@ -140,7 +140,7 @@
     flex-shrink: 0;
     border-radius: var(--r-chip, 9px);
     background: light-dark(rgba(20,18,15,.06), rgba(255,255,255,.08));
-    border: 1px solid light-dark(rgba(20,18,15,.1), rgba(255,255,255,.12));
+    border: 1px solid var(--hairline-ctl);
     color: color-mix(in oklab, var(--tint) 70%, var(--text));
     font: 600 .68rem/1 var(--ui-font);
     letter-spacing: .04em;
@@ -164,7 +164,7 @@
     background: light-dark(rgba(255,255,255,.92), color-mix(in oklab, var(--elev-3) 92%, transparent));
     opacity: 0;
     transform: scale(.8);
-    transition: opacity 160ms var(--ease-lux), transform 260ms var(--ease-lux), translate 260ms var(--ease-lux), background-color 160ms var(--ease-lux), border-color 160ms var(--ease-lux);
+    transition: opacity var(--dur-micro) var(--ease-lux), transform var(--dur-fast) var(--ease-lux), translate var(--dur-fast) var(--ease-lux), background-color var(--dur-micro) var(--ease-lux), border-color var(--dur-micro) var(--ease-lux);
   }
   .card-qr--icon svg { inline-size: 11px; block-size: 11px; }
   @media (hover: none), (pointer: coarse) {
@@ -175,7 +175,7 @@
       background-color var(--dur-fast) var(--ease-lux),
       border-color var(--dur-fast) var(--ease-lux),
       color var(--dur-fast) var(--ease-lux),
-      scale var(--dur-micro, 90ms) var(--ease-lux);
+      scale var(--dur-micro, var(--t-90)) var(--ease-lux);
   }
   @container (max-width: 220px) {
     .header-end:has(.badges) .card-qr {
