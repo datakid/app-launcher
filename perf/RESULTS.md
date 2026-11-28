@@ -10,14 +10,14 @@ Final values against `perf/baseline.json`, from `perf/out/latest.json`. The base
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 112 (136) | 64 (80) | -43% |
-| settleMs | 703.45 (730.3) | 678.7 (680.7) | -4% |
-| settleGridMs |  | 678.7 (680.7) | n/a |
+| interactionMs | 112 (136) | 56 (56) | -50% |
+| settleMs | 703.45 (730.3) | 675.1 (678.9) | -4% |
+| settleGridMs |  | 675.1 (678.9) | n/a |
 | readableMs |  |  | n/a |
 | longTasks | 2 (4) | 0 (0) | -100% |
-| worstFrameMs | 66.6 (66.7) | 33.4 (33.4) | -50% |
+| worstFrameMs | 66.6 (66.7) | 33.3 (33.3) | -50% |
 | medianFrameMs | 33.3 (33.4) | 16.7 (16.7) | -50% |
-| droppedFrames | 2 (5) | 1 (3) | -50% |
+| droppedFrames | 2 (5) | 1 (1) | -50% |
 | imageRequests | 0 (0) | 0 (0) | 0% |
 | imageDecodes | 4 (4) | 0 (0) | -100% |
 
@@ -25,14 +25,14 @@ Final values against `perf/baseline.json`, from `perf/out/latest.json`. The base
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 796 (904) | 584 (592) | -27% |
-| settleMs | 3013.7 (3023.1) | 1514.2 (3001.8) | -50% |
-| settleGridMs |  | 897.5 (901.9) | n/a |
-| readableMs |  | 865.7 (901.9) | n/a |
-| longTasks | 6 (10) | 4 (5) | -33% |
-| worstFrameMs | 558.35 (633.3) | 450 (500) | -19% |
+| interactionMs | 796 (904) | 592 (704) | -26% |
+| settleMs | 3013.7 (3023.1) | 1385.7 (3006) | -54% |
+| settleGridMs |  | 935.7 (1006.1) | n/a |
+| readableMs |  | 970.9 (1006.1) | n/a |
+| longTasks | 6 (10) | 4 (6) | -33% |
+| worstFrameMs | 558.35 (633.3) | 500 (533.4) | -10% |
 | medianFrameMs | 33.35 (216.65) | 16.7 (16.7) | -50% |
-| droppedFrames | 7 (13) | 4 (5) | -43% |
+| droppedFrames | 7 (13) | 6 (6) | -14% |
 | imageRequests | 6 (8) | 0 (0) | -100% |
 | imageDecodes | 70 (81) | 6 (9) | -91% |
 
@@ -40,46 +40,46 @@ Final values against `perf/baseline.json`, from `perf/out/latest.json`. The base
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 488 (568) | 280 (336) | -43% |
-| settleMs | 619.45 (705.5) | 382.8 (687.1) | -38% |
-| settleGridMs |  | 382.8 (687.1) | n/a |
-| readableMs | 22.05 (215) | 3.8 (216.1) | -83% |
+| interactionMs | 488 (568) | 472 (544) | -3% |
+| settleMs | 619.45 (705.5) | 603.9 (900.4) | -3% |
+| settleGridMs |  | 603.9 (900.4) | n/a |
+| readableMs | 22.05 (215) | 4 (15.7) | -82% |
 | longTasks | 2 (3) | 1 (1) | -50% |
-| worstFrameMs | 250 (333.4) | 150 (283.3) | -40% |
-| medianFrameMs | 70.83 (116.6) | 16.7 (16.7) | -76% |
-| droppedFrames | 1 (2) | 4 (4) | 300% |
+| worstFrameMs | 250 (333.4) | 400 (533.3) | 60% |
+| medianFrameMs | 70.83 (116.6) | 16.7 (33.3) | -76% |
+| droppedFrames | 1 (2) | 3 (5) | 200% |
 | imageRequests | 0 (3) | 0 (0) | 0% |
-| imageDecodes | 23 (26) | 4 (10) | -83% |
+| imageDecodes | 23 (26) | 4 (9) | -83% |
 
 ### paletteOpen
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 1104 (1208) | 536 (536) | -51% |
-| settleMs | 1861.8 (1984) | 1333.5 (1338.2) | -28% |
-| settleGridMs |  | 4.9 (315.4) | n/a |
+| interactionMs | 1104 (1208) | 552 (576) | -50% |
+| settleMs | 1861.8 (1984) | 1379.3 (1385.7) | -26% |
+| settleGridMs |  | 17.1 (446) | n/a |
 | readableMs |  |  | n/a |
-| longTasks | 4.5 (7) | 5 (5) | 11% |
-| worstFrameMs | 533.3 (583.4) | 416.6 (433.3) | -22% |
-| medianFrameMs | 137.42 (258.35) | 33.4 (33.4) | -76% |
-| droppedFrames | 2.5 (4) | 4 (8) | 60% |
+| longTasks | 4.5 (7) | 4 (5) | -11% |
+| worstFrameMs | 533.3 (583.4) | 333.2 (466.7) | -38% |
+| medianFrameMs | 137.42 (258.35) | 49.9 (58.35) | -64% |
+| droppedFrames | 2.5 (4) | 4 (5) | 60% |
 | imageRequests | 0 (0) | 0 (0) | 0% |
-| imageDecodes | 52 (54) | 6 (6) | -88% |
+| imageDecodes | 52 (54) | 7 (7) | -87% |
 
 ### colorsChange
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 216 (376) | 176 (208) | -19% |
-| settleMs | 1193.9 (3023.9) | 659.3 (3005.8) | -45% |
-| settleGridMs |  | 9.3 (224) | n/a |
+| interactionMs | 216 (376) | 272 (304) | 26% |
+| settleMs | 1193.9 (3023.9) | 749.4 (3002.4) | -37% |
+| settleGridMs |  | 7.1 (332.8) | n/a |
 | readableMs |  |  | n/a |
-| longTasks | 3 (8) | 4 (7) | 33% |
-| worstFrameMs | 483.35 (633.3) | 233.3 (266.6) | -52% |
-| medianFrameMs | 183.35 (350) | 50 (83.3) | -73% |
-| droppedFrames | 1 (9) | 2 (11) | 100% |
+| longTasks | 3 (8) | 2 (7) | -33% |
+| worstFrameMs | 483.35 (633.3) | 333.3 (516.6) | -31% |
+| medianFrameMs | 183.35 (350) | 66.6 (83.3) | -64% |
+| droppedFrames | 1 (9) | 2 (10) | 100% |
 | imageRequests | 0 (0) | 0 (0) | 0% |
-| imageDecodes | 32 (64) | 10 (14) | -69% |
+| imageDecodes | 32 (64) | 8 (12) | -75% |
 
 ### pointerSweep
 
@@ -90,9 +90,9 @@ Final values against `perf/baseline.json`, from `perf/out/latest.json`. The base
 | settleGridMs |  |  | n/a |
 | readableMs |  |  | n/a |
 | longTasks | 10 (24) | 0 (0) | -100% |
-| worstFrameMs | 58.35 (66.7) | 33.2 (33.3) | -43% |
+| worstFrameMs | 58.35 (66.7) | 16.8 (16.8) | -71% |
 | medianFrameMs | 24.95 (33.3) | 16.7 (16.7) | -33% |
-| droppedFrames | 24 (38) | 1 (1) | -96% |
+| droppedFrames | 24 (38) | 0 (0) | -100% |
 | imageRequests | 0 (0) | 0 (0) | 0% |
 | imageDecodes | 0 (0) | 0 (0) | 0% |
 
@@ -102,14 +102,14 @@ Final values against `perf/baseline.json`, from `perf/out/latest.json`. The base
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 452 (480) | 176 (216) | -61% |
-| settleMs | 1008.7 (1157.5) | 743.6 (768.6) | -26% |
-| settleGridMs |  | 743.6 (768.6) | n/a |
+| interactionMs | 452 (480) | 184 (224) | -59% |
+| settleMs | 1008.7 (1157.5) | 787.7 (805) | -22% |
+| settleGridMs |  | 787.7 (805) | n/a |
 | readableMs |  |  | n/a |
 | longTasks | 4.5 (6) | 7 (8) | 56% |
-| worstFrameMs | 241.65 (416.6) | 116.7 (116.7) | -52% |
-| medianFrameMs | 141.68 (166.7) | 66.6 (66.7) | -53% |
-| droppedFrames | 1 (1) | 1 (3) | 0% |
+| worstFrameMs | 241.65 (416.6) | 150 (150) | -38% |
+| medianFrameMs | 141.68 (166.7) | 83.3 (83.4) | -41% |
+| droppedFrames | 1 (1) | 1 (1) | 0% |
 | imageRequests | 0 (0) | 0 (0) | 0% |
 | imageDecodes | 31 (40) | 0 (0) | -100% |
 
@@ -117,61 +117,61 @@ Final values against `perf/baseline.json`, from `perf/out/latest.json`. The base
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 652 (696) | 304 (352) | -53% |
-| settleMs | 3135.6 (3278.7) | 1203.4 (3017) | -62% |
-| settleGridMs |  | 500.4 (570.1) | n/a |
-| readableMs | 1074.45 (1266.8) | 291.7 (300.4) | -73% |
-| longTasks | 8 (9) | 6 (12) | -25% |
-| worstFrameMs | 691.65 (866.6) | 200 (216.7) | -71% |
-| medianFrameMs | 295.82 (358.35) | 49.9 (50) | -83% |
-| droppedFrames | 2 (3) | 5 (12) | 150% |
+| interactionMs | 652 (696) | 408 (416) | -37% |
+| settleMs | 3135.6 (3278.7) | 1257.9 (3018.3) | -60% |
+| settleGridMs |  | 591.2 (751.8) | n/a |
+| readableMs | 1074.45 (1266.8) | 385.9 (418.4) | -64% |
+| longTasks | 8 (9) | 8 (13) | 0% |
+| worstFrameMs | 691.65 (866.6) | 216.7 (300.1) | -69% |
+| medianFrameMs | 295.82 (358.35) | 66.6 (66.7) | -77% |
+| droppedFrames | 2 (3) | 4 (5) | 100% |
 | imageRequests | 6.5 (8) | 0 (0) | -100% |
-| imageDecodes | 64 (75) | 8 (10) | -87% |
+| imageDecodes | 64 (75) | 8 (12) | -87% |
 
 ### viewSwitch
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 304 (456) | 152 (184) | -50% |
-| settleMs | 1073 (1211.4) | 383 (433.8) | -64% |
-| settleGridMs |  | 383 (433.8) | n/a |
-| readableMs | 545.35 (700) | 249.6 (267.1) | -54% |
-| longTasks | 9 (11) | 1 (2) | -89% |
-| worstFrameMs | 158.4 (300) | 66.6 (83.3) | -58% |
-| medianFrameMs | 83.28 (99.95) | 33.3 (50) | -60% |
-| droppedFrames | 1.5 (3) | 2 (3) | 33% |
+| interactionMs | 304 (456) | 144 (200) | -53% |
+| settleMs | 1073 (1211.4) | 430.6 (433.2) | -60% |
+| settleGridMs |  | 430.6 (433.2) | n/a |
+| readableMs | 545.35 (700) | 266.5 (314) | -51% |
+| longTasks | 9 (11) | 2 (4) | -78% |
+| worstFrameMs | 158.4 (300) | 83.3 (83.3) | -47% |
+| medianFrameMs | 83.28 (99.95) | 58.3 (66.5) | -30% |
+| droppedFrames | 1.5 (3) | 0 (2) | -100% |
 | imageRequests | 0 (3) | 0 (0) | 0% |
-| imageDecodes | 22.5 (38) | 6 (7) | -73% |
+| imageDecodes | 22.5 (38) | 6 (8) | -73% |
 
 ### paletteOpen
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 444 (1024) | 336 (408) | -24% |
-| settleMs | 1435.8 (1793.4) | 1066.9 (1168.9) | -26% |
-| settleGridMs |  | 152.3 (214.5) | n/a |
+| interactionMs | 444 (1024) | 528 (592) | 19% |
+| settleMs | 1435.8 (1793.4) | 1288 (1333.2) | -10% |
+| settleGridMs |  | 204.6 (216.6) | n/a |
 | readableMs |  |  | n/a |
-| longTasks | 3.5 (5) | 7 (8) | 100% |
-| worstFrameMs | 449.95 (633.3) | 149.9 (166.7) | -67% |
-| medianFrameMs | 175 (366.6) | 116.7 (116.7) | -33% |
-| droppedFrames | 2 (4) | 0 (0) | -100% |
+| longTasks | 3.5 (5) | 7 (7) | 100% |
+| worstFrameMs | 449.95 (633.3) | 200 (233.3) | -56% |
+| medianFrameMs | 175 (366.6) | 133.3 (166.8) | -24% |
+| droppedFrames | 2 (4) | 1 (2) | -50% |
 | imageRequests | 0 (1) | 0 (0) | 0% |
-| imageDecodes | 62 (70) | 9 (10) | -85% |
+| imageDecodes | 62 (70) | 9 (11) | -85% |
 
 ### colorsChange
 
 | Metric | Baseline | Final | Change |
 |---|---|---|---|
-| interactionMs | 236 (304) | 184 (240) | -22% |
-| settleMs | 945.5 (3054.3) | 539 (3032.9) | -43% |
-| settleGridMs |  | 16.4 (37.6) | n/a |
+| interactionMs | 236 (304) | 232 (232) | -2% |
+| settleMs | 945.5 (3054.3) | 655.4 (3029.3) | -31% |
+| settleGridMs |  | 38.7 (222.1) | n/a |
 | readableMs |  |  | n/a |
-| longTasks | 3 (17) | 5 (7) | 67% |
-| worstFrameMs | 500 (516.6) | 183.4 (216.7) | -63% |
-| medianFrameMs | 166.65 (199.95) | 66.7 (75.05) | -60% |
-| droppedFrames | 1.5 (11) | 2 (13) | 33% |
+| longTasks | 3 (17) | 5 (10) | 67% |
+| worstFrameMs | 500 (516.6) | 183.3 (183.4) | -63% |
+| medianFrameMs | 166.65 (199.95) | 66.6 (116.7) | -60% |
+| droppedFrames | 1.5 (11) | 3 (14) | 100% |
 | imageRequests | 0 (0) | 0 (0) | 0% |
-| imageDecodes | 32 (64) | 12 (16) | -62% |
+| imageDecodes | 32 (64) | 12 (14) | -62% |
 
 ### pointerSweep
 
@@ -181,10 +181,10 @@ Final values against `perf/baseline.json`, from `perf/out/latest.json`. The base
 | settleMs |  |  | n/a |
 | settleGridMs |  |  | n/a |
 | readableMs |  |  | n/a |
-| longTasks | 18.5 (21) | 26 (31) | 41% |
-| worstFrameMs | 216.7 (300) | 133.3 (166.7) | -38% |
-| medianFrameMs | 150 (150) | 66.7 (66.7) | -56% |
-| droppedFrames | 0 (1) | 5 (6) | new |
+| longTasks | 18.5 (21) | 26 (28) | 41% |
+| worstFrameMs | 216.7 (300) | 133.4 (166.6) | -38% |
+| medianFrameMs | 150 (150) | 66.65 (66.8) | -56% |
+| droppedFrames | 0 (1) | 6 (6) | new |
 | imageRequests | 0 (0) | 0 (0) | 0% |
 | imageDecodes | 115 (140) | 2 (3) | -98% |
 
@@ -192,25 +192,25 @@ Final values against `perf/baseline.json`, from `perf/out/latest.json`. The base
 
 | Measure | Value |
 |---|---|
-| `dist/index.html`, gzipped | 26777 bytes (limit 30720) |
-| First load, gzipped total over 11 requests | 242117 bytes (limit 266240) |
+| `dist/index.html`, gzipped | 27151 bytes (limit 30720) |
+| First load, gzipped total over 11 requests | 242966 bytes (limit 266240) |
 | Repeat visit, network requests before the grid appears | 0 |
 | Offline reload shows the grid | yes |
 | Before this work, `index.html` alone, gzipped | 129671 bytes |
 
 First load files, gzipped:
 
-- `/app.680da759.js`: 67298 bytes
-- `/app.e0a82cf3.css`: 29578 bytes
-- `/`: 26777 bytes
+- `/app.10f8d28b.js`: 67570 bytes
+- `/app.01ecf393.css`: 29472 bytes
+- `/`: 27151 bytes
 - `/fonts/cormorant-garamond-latin-400-italic.woff2`: 20252 bytes
 - `/fonts/cormorant-garamond-latin-600-normal.woff2`: 19772 bytes
 - `/fonts/inter-latin-600-normal.woff2`: 18332 bytes
 - `/fonts/inter-latin-500-normal.woff2`: 18280 bytes
 - `/fonts/inter-latin-400-normal.woff2`: 17764 bytes
 - `/icons/glyph-atlas.85619065.webp`: 17746 bytes
-- `/icons/manifest.v2.json`: 3805 bytes
-- `/links.json`: 2513 bytes
+- `/icons/manifest.v2.json`: 4017 bytes
+- `/links.json`: 2610 bytes
 
 ## Icon assets
 
@@ -218,9 +218,9 @@ First load files, gzipped:
 |---|---|---|
 | `icons/atlas.02b8d85c.webp` | 88436 | 88427 |
 | `icons/glyph-atlas.85619065.webp` | 17746 | 17774 |
-| `icons/glyphs.ee2319a6.svg` | 16642 | 6676 |
+| `icons/glyphs.fcda3aad.svg` | 17491 | 6980 |
 | `icons/manifest.json` | 13600 | 3093 |
-| `icons/manifest.v2.json` | 26178 | 3987 |
+| `icons/manifest.v2.json` | 27552 | 4210 |
 | `icons/manifest.v2.schema.json` | 3207 | 841 |
 
 The 64 v1 PNG files (583963 bytes) stay for one release and are not loaded when `manifest.v2.json` is available.
