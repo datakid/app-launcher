@@ -31,7 +31,14 @@
         },
         { "id": "protocols", "title": { "ar": "بروتوكولات الصرف", "en": "Protocols" }, "url": "https://strong-snickerdoodle-02a92f.netlify.app/", "icon": "fa-folder-open", "gradient": ["#cf8350", "#fdba74", "#7c2d12"] },
         { "id": "index-builder", "title": { "ar": "فهرس الأدوية", "en": "Index Builder" }, "url": "https://lx-index.vercel.app/", "icon": "fa-book-medical", "gradient": ["#c6a04e", "#fde68a", "#78350f"], "isNew": true, "since": "2026-08-11" },
-        { "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11" }
+        {
+          "id": "dafter", "title": { "ar": "دفتر الحركة", "en": "Dafter" }, "icon": "fa-book", "gradient": ["#4462b0", "#bfdbfe", "#1e3a8a"], "isNew": true, "since": "2026-08-11",
+          "variants": [
+            { "id": "dafter", "label": { "ar": "دفتر", "en": "Dafter" }, "url": "https://daftar-psi-two.vercel.app/", "icon": "fa-book" },
+            { "id": "materia", "label": { "ar": "ديوان", "en": "Materia" }, "url": "https://meterial-tau.vercel.app/", "icon": "fa-book-medical" }
+          ],
+          "defaultVariant": 0
+        }
       ]
     },
     {
@@ -131,7 +138,8 @@
       "id": "palette", "label": { "ar": "مشغّل بديل", "en": "Alt launcher" },
       "apps": [
         { "id": "alt", "title": { "ar": "الحساب البديل", "en": "Alt Account" }, "url": "https://alt-app-lanucher.vercel.app/", "icon": "fa-user-secret", "gradient": ["#334155", "#94a3b8", "#0f172a"] },
-        { "id": "harvest", "title": { "ar": "الحصاد", "en": "Harvest" }, "url": "https://harvest-studio-phi.vercel.app/", "icon": "fa-rotate-right", "gradient": ["#3f6212", "#a3e635", "#1a2e05"] }
+        { "id": "harvest", "title": { "ar": "الحصاد", "en": "Harvest" }, "url": "https://harvest-studio-phi.vercel.app/", "icon": "fa-rotate-right", "gradient": ["#3f6212", "#a3e635", "#1a2e05"] },
+        { "id": "store", "title": { "ar": "متجر", "en": "Store" }, "url": "https://static-store-fr76.vercel.app/#/polars-desktop-demo", "icon": "fa-box-open", "gradient": ["#549f85", "#a3dbc6", "#064b39"] }
       ]
     }
   ]

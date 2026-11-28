@@ -89,7 +89,7 @@ const topId = (q) => {
   const h = run(q)[0];
   return h ? entries[h.index].app.id : null;
 };
-for (const [q, id] of [['hgpwh]', 'harvest'], [']tjv', 'dafter'], ['ld.hk', 'qisma-mizan::express'], ['sdl', 'quoin::seam'], [';,dk', 'quoin::quoin'], ["'vr", 'typing::tarq'], ['t,gd,', 'ledger-form::folio']]) {
+for (const [q, id] of [['hgpwh]', 'harvest'], [']tjv', 'dafter::dafter'], ['ld.hk', 'qisma-mizan::express'], ['sdl', 'quoin::seam'], [';,dk', 'quoin::quoin'], ["'vr", 'typing::tarq'], ['t,gd,', 'ledger-form::folio']]) {
   check(`wrong layout "${q}" -> ${id} first`, topId(q) === id, String(topId(q)));
 }
 for (const [q, id] of [['اكل', 'quoin::seam'], ['ادره', 'pharmacy-tools::pillbug'], ['فويو', 'ledger-form::folio']]) {
