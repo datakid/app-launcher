@@ -7,7 +7,7 @@
     "qa:quick": "node qa/run.mjs --quick",
     "perf": "node perf/measure.mjs",
     "perf:recalc": "node perf/recalc.mjs",
-    "check": "npm run qa:comments && npm run qa:css && npm run qa:search && npm run qa:search-bench && npm run build && npm run qa:quick && npm run qa:cards && npm run qa:tiles && npm run qa:load && npm run qa:behaviour && npm run qa:qr && npm run qa:zen && npm run qa:icons && npm run perf -- --assert && npm run qa:motion",
+    "check": "npm run qa:comments && npm run qa:css && npm run qa:search && npm run qa:search-bench && npm run build && npm run qa:quick && npm run qa:cards && npm run qa:tiles && npm run qa:load && npm run qa:behaviour && npm run qa:qr && npm run qa:zen && npm run qa:icons && npm run qa:a11y && npm run perf -- --assert && npm run qa:motion",
     "qa:cards": "node qa/card-layout.mjs",
     "qa:tiles": "node qa/tile-contrast.mjs",
     "qa:motion": "node qa/motion-lint.mjs",
@@ -23,7 +23,8 @@
     "qa:behaviour": "node qa/behaviour.mjs && node qa/rapid-switch.mjs && node qa/search-ui.mjs && node qa/search-highlight.mjs && node qa/palette-rows.mjs && node qa/tab-cache.mjs && node qa/orb-seed.mjs",
     "qa:qr": "node qa/qr-encoder.mjs && node qa/qr.mjs && node qa/qr-stress.mjs",
     "qa:zen": "node qa/zen.mjs",
-    "qa:icons": "node qa/icon-solver.mjs && node qa/icons-switch.mjs && node qa/icons-schema.mjs"
+    "qa:icons": "node qa/icon-solver.mjs && node qa/icons-switch.mjs && node qa/icons-schema.mjs",
+    "qa:a11y": "node qa/a11y.mjs"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",

@@ -60,7 +60,7 @@
     .lx-glyph { forced-color-adjust: none; }
   }
   @media (prefers-reduced-transparency: reduce), (forced-colors: active) {
-    .lx-bar, #lx-palette {
+    .lx-bar, #lx-palette, #lx-palette::backdrop {
         -webkit-backdrop-filter: none;
                 backdrop-filter: none;
       }
