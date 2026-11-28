@@ -7,7 +7,7 @@ import { scheduleWarmActiveEntry } from '../warm.js';
 import { STRINGS, lang, loc, t } from '../i18n.js';
 import { openInNewTab, openInSameTab, openMode, openModeAction, otherOpenMode } from '../open.js';
 import { bumpFreq, getFreqMap, getRecentEntries, pushRecent, recentScores } from '../store.js';
-import { EASE_ACCEL, EASE_LUX, MOTION, MQ, animate, motionMs } from '../motion.js';
+import { EASE_ACCEL, EASE_LUX, MOTION, MQ, animate, motionMs, travelTile } from '../motion.js';
 import { gradVars, isFresh } from '../card.js';
 import { closeContextMenu } from '../context-menu.js';
 import { tone } from '../theme.js';
@@ -842,6 +842,7 @@ export const openPalette = (seed = '') => {
   if (skipMorph) {
     dialog.showModal();
     syncPaletteCursor(true);
+    travelTile(dialog.querySelector('#paletteDetail .app-icon-wrapper'));
     document.body.classList.add('palette-open');
     sfx.veil(true);
     input.focus({ preventScroll: true });
@@ -861,6 +862,7 @@ export const openPalette = (seed = '') => {
   input.focus({ preventScroll: true });
   morphFrame = requestAnimationFrame(() => {
     if (morph !== pending || !dialog.open) return;
+    travelTile(dialog.querySelector('#paletteDetail .app-icon-wrapper'));
     runMorph(true, morphGeo(dialog, hero));
   });
 };

@@ -3,6 +3,7 @@ import { categories } from './catalogue.js';
 import { sfx } from './audio.js';
 import { appGradient, appMark, icon, markHtml, retileIcon, setIcon } from './marks.js';
 import { loc, t } from './i18n.js';
+import { noteTile, travelTile } from './motion.js';
 import { OPEN_MODES, openMode, openModeIcon, openUrlWith, otherOpenMode, setOpenMode } from './open.js';
 import { bumpFreq, pushRecent } from './store.js';
 import { tone } from './theme.js';
@@ -130,6 +131,7 @@ const syncCardMenuMode = (menu, mode) => {
 
 export const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false) => {
   closeContextMenu();
+  noteTile(card.querySelector('.app-icon-wrapper') || card);
   const menu = buildContextMenu();
   menu.dataset.owner = 'card';
   const linkEl = card.querySelector('.card-link-overlay');
@@ -237,12 +239,14 @@ export const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false
     const liveChip = card.querySelector('.variant-chip.is-active');
     const vi = liveChip ? Number(liveChip.dataset.variantIndex) : (chipIndex >= 0 ? chipIndex : undefined);
     contextMenuReturn = null;
+    noteTile(menu.querySelector('.ctx-head-icon'));
     closeContextMenu();
     openQrForApp(app, vi, back);
   });
   menu.querySelector('[data-action="details"]').addEventListener('click', () => {
     sfx.click();
     contextMenuReturn = null;
+    noteTile(menu.querySelector('.ctx-head-icon'));
     closeContextMenu();
     assignHeroReturnFocus(false);
     openPalette(title);
@@ -317,4 +321,5 @@ export const openCardContextMenu = (card, clientX, clientY, fromKeyboard = false
   placeContextMenu(menu, clientX, clientY);
   const returnTo = fromKeyboard || card.contains(document.activeElement) ? (linkEl || card) : document.activeElement;
   showContextMenu(menu, { returnTo, focusFirst: fromKeyboard });
+  travelTile(menu.querySelector('.ctx-head-icon'));
 };
