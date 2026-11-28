@@ -314,7 +314,7 @@
     --mo-travel-out: 10px; --mo-travel-in: 14px; --mo-lift: 8px; --mo-scale-out: .988; --mo-scale-in: .982;
     --mo-version: 120ms; --mo-xfade: 200ms; --mo-theme: 320ms; --mo-zen: 440ms; --mo-hover: 160ms;
     --mo-pal-in: 200ms; --mo-pal-out: 140ms; --mo-pal-fade: .405; --mo-pal-wait: .238; --mo-pal-out-fade: .6; --mo-pal-hero: 80ms;
-    --mo-qr-in: 220ms; --mo-qr-out: 150ms; --mo-qr-swap: 160ms;
+    --mo-qr-in: 220ms; --mo-qr-out: 150ms; --mo-qr-swap: 160ms; --mo-tile: 260ms;
     --mo-boot: 360ms; --mo-boot-offset: 120ms; --mo-boot-spread: 180ms;
     --gap: clamp(0.8rem, 1.8dvh, 1.3rem);
     --hairline: light-dark(rgba(24,20,14,.085), rgba(255,255,255,.065));

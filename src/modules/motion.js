@@ -59,7 +59,8 @@ const MOTION_SPEC = {
   crossfade: { inMs: '--mo-xfade' },
   theme: { inMs: '--mo-theme' },
   zen: { inMs: '--mo-zen' },
-  boot: { offset: '--mo-boot-offset', spread: '--mo-boot-spread' }
+  boot: { offset: '--mo-boot-offset', spread: '--mo-boot-spread' },
+  tile: { inMs: '--mo-tile' }
 };
 export const MOTION = {};
 export const syncMotion = () => {
@@ -113,4 +114,19 @@ export const animate = (el, keyframes, options) => {
   if (!MQ.reducedMotion) return el.animate(keyframes, options);
   const instant = typeof options === 'number' || options == null ? { duration: 0 } : { ...options, duration: 0, delay: 0, endDelay: 0 };
   return el.animate(keyframes, instant);
+};
+
+let tileFrom = null;
+export const noteTile = (el) => {
+  const r = el && el.getBoundingClientRect();
+  tileFrom = r && r.width ? { r, at: performance.now() } : null;
+};
+export const travelTile = (el, src) => {
+  const from = tileFrom && performance.now() - tileFrom.at < 800 ? tileFrom.r : src && src.getBoundingClientRect();
+  const to = el && el.getBoundingClientRect();
+  if (!from || !from.width || !to || !to.width) return;
+  tileFrom = null;
+  const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+  const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+  animate(el, [{ translate: `${dx}px ${dy}px`, scale: from.width / to.width }, { translate: '0px 0px', scale: 1 }], { duration: MOTION.tile.inMs, easing: EASE_LUX });
 };

@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "generatedAt": "2026-11-16T21:18:12.057Z",
-  "hash": "d37debbe",
+  "generatedAt": "2026-11-27T16:22:10.874Z",
+  "hash": "26a74e50",
   "atlas": {
     "cell": 128,
     "file": "icons/atlas.02b8d85c.webp",
@@ -15,7 +15,7 @@
     "width": 384
   },
   "glyphSprite": {
-    "file": "icons/glyphs.ee2319a6.svg"
+    "file": "icons/glyphs.fcda3aad.svg"
   },
   "icons": {
     "alt": {
@@ -126,7 +126,7 @@
       ],
       "tintRole": "brand"
     },
-    "dafter": {
+    "dafter--dafter": {
       "bbox": [
         0.172,
         0.094,
@@ -139,7 +139,7 @@
         "y": 0
       },
       "glyph": {
-        "symbol": "g-dafter"
+        "symbol": "g-dafter--dafter"
       },
       "hash": "21f3ebab2ed72523fad91802fec932e4cb437635fdc6e495b541403b7258a08d",
       "ink": 0.389,
@@ -153,6 +153,38 @@
         "#698cf0",
         "#bed0fd",
         "#273c81"
+      ],
+      "tintRole": "brand"
+    },
+    "dafter--materia": {
+      "bbox": [
+        0.141,
+        0.141,
+        0.719,
+        0.719
+      ],
+      "checkedAt": "2026-11-27T12:15:17.723Z",
+      "favicon": null,
+      "glyph": {
+        "symbol": "g-dafter--materia"
+      },
+      "hash": "0eebf11deb8ebb68ce0d30a4b7aa86020e53c8fd47ab7b368da26bd3f56355ae",
+      "ink": 0.301,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#5c8ef3",
+        "#bbd2fd",
+        "#1e3e81"
+      ],
+      "status": "override",
+      "tint": [
+        "#7b85f2",
+        "#c6cefd",
+        "#343881"
       ],
       "tintRole": "brand"
     },
@@ -1057,6 +1089,38 @@
         "#61978d",
         "#a6d4ca",
         "#08463d"
+      ],
+      "tintRole": "brand"
+    },
+    "store": {
+      "bbox": [
+        0.156,
+        0.164,
+        0.719,
+        0.609
+      ],
+      "checkedAt": "2026-11-27T12:15:17.723Z",
+      "favicon": null,
+      "glyph": {
+        "symbol": "g-store"
+      },
+      "hash": "ac96d5325f254593744f0f26e92188ff13a8f3d8c7051ebacd9895ab5e7661da",
+      "ink": 0.25,
+      "layers": 1,
+      "locked": false,
+      "palette": null,
+      "seed": "1f2e3d4c",
+      "shape": "default",
+      "sourceTint": [
+        "#55a38d",
+        "#a5dfcd",
+        "#074e3f"
+      ],
+      "status": "found",
+      "tint": [
+        "#549f85",
+        "#a3dbc6",
+        "#064b39"
       ],
       "tintRole": "brand"
     },

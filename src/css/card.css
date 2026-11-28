@@ -86,10 +86,6 @@
   .card-hero { --reveal-r: 320px; }
   :root[data-theme="light"] .app-card { --reveal-r: 180px; }
   :root[data-theme="light"] .card-hero { --reveal-r: 320px; }
-  @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
-    .card-clip::after { background: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
-    :root[data-theme="light"] .card-clip::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
-  }
   .card-link-overlay {
     position: absolute; inset: 0; z-index: 1;
     border-radius: inherit;

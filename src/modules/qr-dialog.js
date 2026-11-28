@@ -4,7 +4,7 @@ import { categories } from './catalogue.js';
 import { sfx } from './audio.js';
 import { appGradient, findAppById, icon, markHtml, setIcon, wrapOpen } from './marks.js';
 import { loc, t } from './i18n.js';
-import { MQ } from './motion.js';
+import { MQ, noteTile, travelTile } from './motion.js';
 import { getSelectedVariantIndex } from './card.js';
 import { closeContextMenu } from './context-menu.js';
 import { hexBlend, tone } from './theme.js';
@@ -284,6 +284,7 @@ const openQr = (state) => {
   }
   document.body.classList.add('qr-open');
   qrPlaceThumb(false);
+  if (!resume && qrState.app) travelTile(document.getElementById('qrIcon'), qrState.returnTo?.closest?.('.app-card')?.querySelector('.app-icon-wrapper'));
   dialog.querySelector('[data-qr="copy"]')?.focus({ preventScroll: true });
 };
 
@@ -314,6 +315,7 @@ export const openQrFromPalette = (entry) => {
   const back = document.querySelector(`#appGrid .app-card[data-app-id="${CSS.escape(parentId)}"] .card-link-overlay`);
   assignHeroReturnFocus(false);
   assignPaletteSkipCloseChime(true);
+  noteTile(document.querySelector('#paletteDetail .app-icon-wrapper'));
   closePaletteImmediate();
   requestAnimationFrame(() => {
     if (realApp) openQrForApp(realApp, vi, back);

@@ -80,10 +80,6 @@
     background: radial-gradient(var(--reveal-r, 260px) circle at var(--rx) var(--ry),
       rgba(20,18,15,.55), rgba(20,18,15,.2) 26%, rgba(20,18,15,.07) 48%, transparent 74%);
   }
-  @supports not ((mask-composite: exclude) or (-webkit-mask-composite: xor)) {
-    .lx-bar::after { background: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.45); }
-    :root[data-theme="light"] .lx-bar::after { box-shadow: inset 0 0 0 1px rgba(20,18,15,.28); }
-  }
   .tab-rail {
     position: relative; align-self: center; flex-shrink: 0;
     display: flex; justify-content: center; align-items: center;
